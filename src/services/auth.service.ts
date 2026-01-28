@@ -37,8 +37,6 @@ export const verifyEmail = async (payload: VerifyEmailPayload) => {
 };
 
 export const googleLogin = async (payload: GoogleAuthPayload) => {
-  const res = await api.post("/api/auth/google", {
-    payload,
-  });
-  return res.data;
+  const { data } = await api.post("/api/auth/google", payload);
+  return data;
 };

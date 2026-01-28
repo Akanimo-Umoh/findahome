@@ -2,6 +2,7 @@ import alert from "@/assets/images/icon-mail-alert.png";
 import { verifyEmail } from "@/services/auth.service";
 import { AxiosError } from "axios";
 import {
+  useEffect,
   useRef,
   useState,
   type ClipboardEvent,
@@ -16,7 +17,22 @@ export default function VerifyEmail() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
-  const email = (location.state as { email?: string })?.email;
+
+  const state = location.state as { email?: string; from?: string } | null;
+  const email = state?.email;
+  const fromPage = state?.from;
+
+  // redirect if email is missing or not coming from a valid source
+  useEffect(() => {
+    const validSources = ["signup", "login", "google-auth"];
+
+    if (!email || !fromPage || !validSources.includes(fromPage)) {
+      // no email? redirect to signup
+      navigate("/signup", { replace: true });
+    }
+  }, [email, fromPage, navigate]);
+
+  if (!email) return null;
 
   const handleChange = (index: number, value: string) => {
     // Only allow numbers
@@ -83,11 +99,6 @@ export default function VerifyEmail() {
       }
     }
   };
-
-  if (!email) {
-    navigate("/signup", { replace: true });
-    return null;
-  }
 
   return (
     <div className="flex flex-col gap-8 font-ssPro w-full mx-6">

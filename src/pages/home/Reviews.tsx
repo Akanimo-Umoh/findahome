@@ -1,10 +1,13 @@
 import stars from "@/assets/images/icon-rating.svg";
 import rightArrow from "@/assets/images/icon-rightArrow-blue.svg";
+import { useAuthContext } from "@/context/AuthContext";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Reviews() {
   const MAX_STARS = 5;
+  const { isAuthenticated, logout } = useAuthContext();
+  const navigate = useNavigate();
 
   const reviews = [
     {
@@ -36,6 +39,11 @@ export default function Reviews() {
       location: "Ikeja, Lagos",
     },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate("/", { replace: true });
+  };
 
   return (
     <div className="px-6">
@@ -96,22 +104,38 @@ export default function Reviews() {
       <div className="mt-8 bg-button-bg py-3 rounded-2xl flex flex-col gap-4 items-center justify-between">
         <div className="text-white flex flex-col items-center justify-center gap-0.5">
           <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-center">
-            Ready to find your dream home?
+            {isAuthenticated
+              ? "Welcome back!"
+              : "Ready to find your dream home?"}
           </p>
           <p className="text-[12px]">
-            Join thousands of happy homeowners and renters today
+            {isAuthenticated
+              ? "You're all set to explore amazing properties"
+              : "Join thousands of happy homeowners and renters today"}
           </p>
         </div>
 
-        <Link
-          to="/signup"
-          className="flex items-center justify-center gap-2 h-11.25 rounded-lg px-2 bg-white"
-        >
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
-            Sign Up Now
-          </p>
-          <img src={rightArrow} alt="arrow" className="w-5 h-5" />
-        </Link>
+        {isAuthenticated ? (
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 h-11.25 rounded-lg px-6 bg-white hover:bg-gray-100 transition-colors"
+          >
+            <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
+              Logout
+            </p>
+            <img src={rightArrow} alt="arrow" className="w-5 h-5" />
+          </button>
+        ) : (
+          <Link
+            to="/signup"
+            className="flex items-center justify-center gap-2 h-11.25 rounded-lg px-2 bg-white"
+          >
+            <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
+              Sign Up Now
+            </p>
+            <img src={rightArrow} alt="arrow" className="w-5 h-5" />
+          </Link>
+        )}
       </div>
     </div>
   );

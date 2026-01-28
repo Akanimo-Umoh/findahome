@@ -10,7 +10,9 @@ export const useGoogleAuth = () => {
   const navigate = useNavigate();
   const { login } = useAuthContext();
 
-  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse,
+  ) => {
     try {
       setApiError(null);
 
@@ -35,7 +37,7 @@ export const useGoogleAuth = () => {
         navigate("/dashboard", { replace: true });
       } else {
         navigate("/verify-email", {
-          state: { email: result.user.email },
+          state: { email: result.user.email, from: "google-auth" },
           replace: true,
         });
       }
@@ -53,7 +55,9 @@ export const useGoogleAuth = () => {
   };
 
   const handleGoogleError = () => {
-    setApiError("Google authentication was cancelled or failed. Please try again.");
+    setApiError(
+      "Google authentication was cancelled or failed. Please try again.",
+    );
   };
 
   return {

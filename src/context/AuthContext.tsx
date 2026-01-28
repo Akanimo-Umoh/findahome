@@ -10,6 +10,7 @@ type AuthContextType = {
   user: User | null;
   token: string | null;
   isLoading: boolean;
+  isAuthenticated: boolean;
   login: (user: User, token: string) => void;
   logout: () => void;
 };
@@ -20,6 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // user is authenticated if both user and token exist
+  const isAuthenticated = !!(user && token);
 
   // Hydrate token and user from localStorage on load
   useEffect(() => {
@@ -54,7 +58,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, isLoading, isAuthenticated, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

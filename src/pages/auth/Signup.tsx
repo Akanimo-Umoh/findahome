@@ -17,6 +17,7 @@ import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+  // use custom google auth hook
   const {
     apiError: googleApiError,
     setApiError: setGoogleApiError,
@@ -42,6 +43,7 @@ export default function Signup() {
       // add the fixed role "buyer" to the payload
       const payload = {
         ...data,
+        email: data.email.toLowerCase(),
         // role: "buyer" as const,
       };
 
@@ -51,7 +53,7 @@ export default function Signup() {
 
       // redirect to verification page
       navigate("/verify-email", {
-        state: { email: data.email },
+        state: { email: data.email, from: "signup" },
         replace: true,
       });
     } catch (error) {

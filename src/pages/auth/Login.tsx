@@ -19,6 +19,7 @@ type LocationState = {
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  // use custom google auth hook
   const {
     apiError: googleApiError,
     setApiError: setGoogleApiError,
@@ -46,16 +47,29 @@ export default function Login() {
       // clear api errors
       setApiError(null);
       setGoogleApiError(null);
-      const response = await loginApi(data);
-      // store user + token in context
+      const response = await loginApi({
+        email: data.email.toLowerCase(),
+        password: data.password,
+      });
+
+      // check if user us verified before logging in
+      if (!response.user.verified) {
+        // redirect unverified users to verify-email
+        navigate("/verify-email", {
+          state: { email: response.user.email, from: "login" },
+          replace: true,
+        });
+        return;
+      }
+
+      // store user + token in context & redirect to dashboard
       login(response.user, response.token);
       // redirect user
       navigate(from, { replace: true });
     } catch (error) {
-      // ← Changed from err: any
       console.error("Login error:", error);
 
-      // ← Added proper error handling
+      // added proper error handling
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message || "Login failed. Please try again.";
