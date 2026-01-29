@@ -47,11 +47,15 @@ export default function Login() {
       // clear api errors
       setApiError(null);
       setGoogleApiError(null);
+
+      console.log("Data:", data);
+
       const response = await loginApi({
         email: data.email.toLowerCase(),
         password: data.password,
       });
 
+      console.log("Response:", response);
       // check if user us verified before logging in
       if (!response.user.verified) {
         // redirect unverified users to verify-email
