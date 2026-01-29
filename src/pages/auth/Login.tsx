@@ -104,7 +104,7 @@ export default function Login() {
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleError}
               useOneTap
-              text="signup_with"
+              text="signin_with"
               width="100"
             />
           </div>
