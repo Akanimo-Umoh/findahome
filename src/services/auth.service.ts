@@ -17,10 +17,6 @@ type VerifyEmailPayload = {
   code: string;
 };
 
-type GoogleAuthPayload = {
-  tokenId: string;
-};
-
 export const signup = async (payload: SignupPayload) => {
   const { data } = await api.post("/api/auth/register", payload);
   return data;
@@ -36,7 +32,13 @@ export const verifyEmail = async (payload: VerifyEmailPayload) => {
   return data;
 };
 
-export const googleLogin = async (payload: GoogleAuthPayload) => {
-  const { data } = await api.post("/api/auth/google", payload);
+export const googleAuth = async (
+  tokenId: string,
+  mode: "register" | "login",
+) => {
+  const { data } = await api.post("/api/auth/google", {
+    tokenId,
+    mode,
+  });
   return data;
 };

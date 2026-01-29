@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { type CredentialResponse } from "@react-oauth/google";
-import { googleLogin } from "@/services/auth.service";
+import { googleAuth } from "@/services/auth.service";
 import { useAuthContext } from "@/context/AuthContext";
 
 export const useGoogleAuth = () => {
@@ -22,10 +22,11 @@ export const useGoogleAuth = () => {
         return;
       }
 
+      const mode = location.pathname.includes("/signup") ? "register" : "login";
+      console.log(`Google OAuth with mode: ${mode}`);
+
       // Send tokenId to backend
-      const result = await googleLogin({
-        tokenId: credentialResponse.credential,
-      });
+      const result = await googleAuth(credentialResponse.credential, mode);
 
       // Store user and token
       if (result.token && result.user) {
