@@ -70,7 +70,7 @@
 // };
 
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // ← CHANGE: Removed useLocation (not needed)
 import { AxiosError } from "axios";
 import { type CredentialResponse } from "@react-oauth/google";
 import { googleAuth } from "@/services/auth.service";
@@ -79,7 +79,6 @@ import { useAuthContext } from "@/context/AuthContext";
 export const useGoogleAuth = () => {
   const [apiError, setApiError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const { login } = useAuthContext();
 
   const handleGoogleSuccess = async (
@@ -88,31 +87,18 @@ export const useGoogleAuth = () => {
     try {
       setApiError(null);
 
+      // Check if credential exists
       if (!credentialResponse.credential) {
         setApiError("Google authentication failed. Please try again.");
         return;
       }
 
-      // Automatically determine mode based on current page
-      const mode = location.pathname.includes("/signup") ? "register" : "login";
+      // ← CHANGE: Use "register" mode for both pages (works for new and existing users)
+      const mode = "register";
+      console.log(`Google OAuth with mode: ${mode}`);
 
-      console.log("=== GOOGLE AUTH DEBUG ===");
-      console.log("1. Mode:", mode);
-      console.log("2. Current path:", location.pathname);
-      console.log(
-        "3. Credential length:",
-        credentialResponse.credential.length,
-      );
-      console.log("4. Payload:", {
-        tokenId: credentialResponse.credential,
-        mode,
-      });
-      console.log("========================");
-
-      // Send both tokenId AND mode
+      // Send tokenId to backend
       const result = await googleAuth(credentialResponse.credential, mode);
-
-      console.log("5. Success! Result:", result);
 
       // Store user and token
       if (result.token && result.user) {
@@ -129,28 +115,44 @@ export const useGoogleAuth = () => {
         });
       }
     } catch (error) {
-      console.error("=== GOOGLE AUTH ERROR ===");
       console.error("Google auth error:", error);
 
       if (error instanceof AxiosError) {
-        // ← ENHANCED: Log all error details
-        console.error("Full error response:", error.response);
-        console.error("Error data:", error.response?.data);
-        console.error("Error status:", error.response?.status);
-        console.error("Error message:", error.response?.data?.message);
-        console.error("Error details:", error.response?.data?.error);
-        console.error("Request data:", error.config?.data);
-        console.error("Request URL:", error.config?.url);
+        // ← CHANGE: Special handling for 401 unverified user error
+        if (
+          error.response?.status === 401 &&
+          error.response?.data?.message?.toLowerCase().includes("verify")
+        ) {
+          // Extract email from JWT token
+          try {
+            const token = credentialResponse.credential;
+            if (!token) {
+              throw new Error("No credential token available");
+            }
 
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            const email = payload.email;
+
+            // Redirect to verify-email without showing error
+            navigate("/verify-email", {
+              state: { email, from: "google-auth" },
+              replace: true,
+            });
+            return; // ← Exit early, don't show error message
+          } catch (parseError) {
+            console.error("Failed to parse JWT token:", parseError);
+            // If parsing fails, fall through to show error message
+          }
+        }
+
+        // For all other errors, show error message
         const errorMessage =
           error.response?.data?.message ||
-          error.response?.data?.error ||
           "Google authentication failed. Please try again.";
         setApiError(errorMessage);
       } else {
         setApiError("An unexpected error occurred. Please try again.");
       }
-      console.error("========================");
     }
   };
 
