@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 type User = {
   id: string;
   email: string;
-  verified: boolean;
+  isVerified: boolean;
 };
 
 type AuthContextType = {

@@ -10,8 +10,6 @@ import {
 import { Dashboard } from "./pages/dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
-import GuestRoute from "./routes/GuestRoute";
-import VerificationRoute from "./routes/VerificationRoute";
 
 function App() {
   return (
@@ -24,18 +22,14 @@ function App() {
 
           {/* auth routes */}
           <Route element={<AuthLayout />}>
-            <Route element={<GuestRoute />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-            </Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
 
-            <Route element={<VerificationRoute />}>
-              <Route path="/verify-email" element={<VerifyEmail />} />
-              <Route
-                path="/verify-email/success"
-                element={<VerifyEmailSuccess />}
-              />
-            </Route>
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route
+              path="/verify-email/success"
+              element={<VerifyEmailSuccess />}
+            />
           </Route>
 
           {/* protected routes */}

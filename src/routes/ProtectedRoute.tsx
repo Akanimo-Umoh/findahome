@@ -17,7 +17,7 @@ export default function ProtectedRoute() {
       return;
     }
 
-    if (!user.verified) {
+    if (!user.isVerified) {
       // redirect to verify-email with proper state
       navigate("/verify-email", {
         replace: true,
@@ -31,7 +31,7 @@ export default function ProtectedRoute() {
   if (isLoading) return null;
 
   // don't render anything if redirecting
-  if (!user || !token || !user.verified) return null;
+  if (!user || !token || !user.isVerified) return null;
 
   // render the nested route if everything is okay
   return <Outlet />;
