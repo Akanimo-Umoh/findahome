@@ -156,7 +156,7 @@ export default function Login() {
 
         {/* form */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-8">
+          <div className="">
             {/* input ctn */}
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
@@ -236,7 +236,16 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="text-center space-y-2">
+            <div className="border border-red-700 mt-2 flex items-center justify-between text-[12px]">
+              <div className="flex items-center justify-center gap-2">
+                <input type="checkbox" id="remember-me" className="w-4 h-4 rounded-lg" />
+                <label htmlFor="remember-me" className="text-text-secondary">Remember Me</label>
+              </div>
+
+              <Link to="/forgot-password" className="text-[#274AD0]">Forgot Password?</Link>
+            </div>
+
+            <div className="text-center space-y-2 mt-8">
               <button
                 type="submit"
                 disabled={isSubmitting}
