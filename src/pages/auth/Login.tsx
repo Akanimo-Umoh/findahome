@@ -236,13 +236,21 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="border border-red-700 mt-2 flex items-center justify-between text-[12px]">
+            <div className="mt-2 flex items-center justify-between text-[12px]">
               <div className="flex items-center justify-center gap-2">
-                <input type="checkbox" id="remember-me" className="w-4 h-4 rounded-lg" />
-                <label htmlFor="remember-me" className="text-text-secondary">Remember Me</label>
+                <input
+                  type="checkbox"
+                  id="remember-me"
+                  className="w-4 h-4 rounded-lg"
+                />
+                <label htmlFor="remember-me" className="text-text-secondary">
+                  Remember Me
+                </label>
               </div>
 
-              <Link to="/forgot-password" className="text-[#274AD0]">Forgot Password?</Link>
+              <Link to="/forgot-password" className="text-[#274AD0]">
+                Forgot Password?
+              </Link>
             </div>
 
             <div className="text-center space-y-2 mt-8">

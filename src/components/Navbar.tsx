@@ -131,7 +131,7 @@ export default function Navbar() {
               animate={{ x: 0, opacity: 1 }} // slide in
               exit={{ x: 250, opacity: 0 }} // slide out
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="border fixed bg-white top-0 right-0 h-[367px] w-[203px] menu-box-shadow pt-[24px] pl-[17px] pr-6 z-50"
+              className="border fixed bg-white top-0 right-0 h-[367px] w-[203px] pt-6 pl-[17px] pr-6 z-50"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center justify-between gap-1">

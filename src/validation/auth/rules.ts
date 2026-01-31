@@ -49,5 +49,10 @@ export const RegisterFormSchema = z.object({
     .trim(),
 });
 
+export const ForgotPasswordSchema = z.object({
+  email: emailRule,
+});
+
 export type LoginFormData = z.infer<typeof LoginFormSchema>;
 export type RegisterFormData = z.infer<typeof RegisterFormSchema>;
+export type ForgotPasswordFormData = z.infer<typeof ForgotPasswordSchema>;

@@ -21,6 +21,17 @@ type ResendVerificationPayload = {
   email: string;
 };
 
+type ForgotPasswordPayload = {
+  email: string;
+};
+
+type ResetPasswordPayload = {
+  email: string;
+  code: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
 export const signup = async (payload: SignupPayload) => {
   const { data } = await api.post("/auth/register", payload);
   return data;
@@ -51,5 +62,15 @@ export const googleAuth = async (
     tokenId,
     mode,
   });
+  return data;
+};
+
+export const forgotPassword = async (payload: ForgotPasswordPayload) => {
+  const { data } = await api.post("/auth/forgot-password", payload);
+  return data;
+};
+
+export const resetPassword = async (payload: ResetPasswordPayload) => {
+  const { data } = await api.post("/auth/reset-password", payload);
   return data;
 };

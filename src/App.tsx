@@ -2,7 +2,9 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Home } from "./pages/home";
 import {
   AuthLayout,
+  ForgotPassword,
   Login,
+  ResetPassword,
   Signup,
   VerifyEmail,
   VerifyEmailSuccess,
@@ -30,6 +32,8 @@ function App() {
               path="/verify-email/success"
               element={<VerifyEmailSuccess />}
             />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Route>
 
           {/* protected routes */}
