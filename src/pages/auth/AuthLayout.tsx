@@ -10,7 +10,7 @@ export default function AuthLayout() {
         Finda<span className="font-ssPro">Home</span>
       </Link>
 
-      <div className="flex w-full justify-center mt-8">
+      <div className="flex w-full justify-center mt-8 mb-8">
         <Outlet />
       </div>
     </div>

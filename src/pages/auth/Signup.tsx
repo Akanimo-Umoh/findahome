@@ -17,6 +17,8 @@ import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"user" | "agent">("user");
+
   // use custom google auth hook
   const {
     apiError: googleApiError,
@@ -40,11 +42,12 @@ export default function Signup() {
       // clear previous errors
       setApiError(null);
       setGoogleApiError(null);
+
       // add the fixed role "buyer" to the payload
       const payload = {
         ...data,
         email: data.email.toLowerCase(),
-        // role: "buyer" as const,
+        role: selectedRole,
       };
 
       console.log("Sending payload:", payload);
@@ -116,6 +119,41 @@ export default function Signup() {
               Or sign up with email
             </p>
             <hr className="grow border-[#80808059]" />
+          </div>
+        </div>
+
+        {/* Role Selection */}
+        <div className="flex flex-col gap-2">
+          <label className="text-black text-[14px] font-medium">I am a:</label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setSelectedRole("user")}
+              className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                selectedRole === "user"
+                  ? "border-[#274AD0] bg-[#274AD0]/10 text-[#274AD0]"
+                  : "border-gray-300 bg-white text-gray-700"
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[16px] font-semibold">Buyer</span>
+                <span className="text-[10px]">Looking for property</span>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedRole("agent")}
+              className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                selectedRole === "agent"
+                  ? "border-[#274AD0] bg-[#274AD0]/10 text-[#274AD0]"
+                  : "border-gray-300 bg-white text-gray-700"
+              }`}
+            >
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[16px] font-semibold">Agent</span>
+                <span className="text-[10px]">Selling properties</span>
+              </div>
+            </button>
           </div>
         </div>
 

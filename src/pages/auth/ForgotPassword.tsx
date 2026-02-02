@@ -74,7 +74,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="text-text-primary w-full mx-6 flex flex-col items-center justify-center font-ssPro mb-8">
+    <div className="text-text-primary w-full mx-6 flex flex-col items-center justify-center font-ssPro">
       <p className="font-raleway font-semibold text-[18px] tracking-[1px]">
         Forgot Password?
       </p>
@@ -88,17 +88,18 @@ export default function ForgotPassword() {
         </p>
       </div>
 
-      {apiError && (
-        <div
-          className="flex items-center gap-2 p-3 bg-[#FFF0F0] border border-state-error rounded-lg"
-          role="alert"
-        >
-          <img src={inputError} alt="" aria-hidden="true" />
-          <p className="text-[12px] text-state-error">{apiError}</p>
-        </div>
-      )}
-
       <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-8">
+        {/* api error */}
+        {apiError && (
+          <div
+            className="flex items-center gap-2 p-3 bg-[#FFF0F0] border border-state-error rounded-lg mb-2"
+            role="alert"
+          >
+            <img src={inputError} alt="" aria-hidden="true" />
+            <p className="text-[12px] text-state-error">{apiError}</p>
+          </div>
+        )}
+
         <div className="space-y-8">
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-black">

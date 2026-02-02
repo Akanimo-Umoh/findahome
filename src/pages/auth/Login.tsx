@@ -104,6 +104,7 @@ export default function Login() {
       }
     }
   };
+
   return (
     <div className="flex flex-col gap-6 font-ssPro w-full mx-6">
       <div className="flex flex-col items-center justify-center gap-1">

@@ -4,7 +4,7 @@ type SignupPayload = {
   name: string;
   email: string;
   password: string;
-  // role: "buyer" | "seller";
+  // role: "user" | "agent";
 };
 
 type LoginPayload = {
@@ -29,7 +29,6 @@ type ResetPasswordPayload = {
   email: string;
   code: string;
   newPassword: string;
-  confirmPassword: string;
 };
 
 export const signup = async (payload: SignupPayload) => {
@@ -66,11 +65,11 @@ export const googleAuth = async (
 };
 
 export const forgotPassword = async (payload: ForgotPasswordPayload) => {
-  const { data } = await api.post("/auth/forgot-password", payload);
+  const { data } = await api.post("/auth/forget-password", payload);
   return data;
 };
 
 export const resetPassword = async (payload: ResetPasswordPayload) => {
-  const { data } = await api.post("/auth/reset-password", payload);
+  const { data } = await api.post("/auth/change-password", payload);
   return data;
 };
