@@ -1,5 +1,127 @@
+// import { useState } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
+// import { AxiosError } from "axios";
+// import { type CredentialResponse } from "@react-oauth/google";
+// import { googleAuth } from "@/services/auth.service";
+// import { useAuthContext } from "@/context/AuthContext";
+
+// export const useGoogleAuth = (
+//   clearFormError?: (error: string | null) => void,
+// ) => {
+//   const [apiError, setApiError] = useState<string | null>(null);
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const { login } = useAuthContext();
+
+//   const handleGoogleSuccess = async (
+//     credentialResponse: CredentialResponse,
+//   ) => {
+//     try {
+//       setApiError(null);
+//       clearFormError?.(null);
+
+//       if (!credentialResponse.credential) {
+//         setApiError("Google authentication failed. Please try again.");
+//         return;
+//       }
+
+//       let result;
+
+//       try {
+//         result = await googleAuth(credentialResponse.credential, "login");
+//       } catch (loginError) {
+//         if (loginError instanceof AxiosError) {
+//           const errorMessage = loginError.response?.data?.message || "";
+
+//           if (errorMessage.includes("User not found")) {
+//             result = await googleAuth(
+//               credentialResponse.credential,
+//               "register",
+//             );
+//           } else if (
+//             errorMessage.includes("Please login using email/password")
+//           ) {
+//             setApiError(
+//               "This email is registered with email/password. Please use the email login form instead.",
+//             );
+//             return;
+//           } else if (errorMessage.includes("Please verify your email")) {
+//             navigate("/verify-email", {
+//               state: { from: "google-auth" },
+//               replace: true,
+//             });
+//             return;
+//           } else {
+//             throw loginError;
+//           }
+//         } else {
+//           throw loginError;
+//         }
+//       }
+
+//       if (!result) return;
+
+//       if (!result.user?.isVerified) {
+//         navigate("/verify-email", {
+//           state: { email: result.user.email, from: "google-auth" },
+//           replace: true,
+//         });
+//         return;
+//       }
+
+//       // Get the "from" state (where user was trying to go)
+//       const from = (location.state as { from?: string })?.from;
+
+//       // Determine redirect path
+//       const redirectPath =
+//         from ||
+//         (() => {
+//           switch (result.user.role) {
+//             case "user":
+//               return "/dashboard";
+//             case "agent":
+//               return "/agent/dashboard";
+//             case "admin":
+//               return "/admin/dashboard";
+//             default:
+//               return "/dashboard";
+//           }
+//         })();
+
+//       // Store user and token
+//       if (result.token && result.user) {
+//         login(result.user, result.token);
+//         navigate(redirectPath, { replace: true });
+//       }
+//     } catch (error) {
+//       console.error("Google auth error:", error);
+//       if (error instanceof AxiosError) {
+//         const errorMessage =
+//           error.response?.data?.message ||
+//           "Google authentication failed. Please try again.";
+//         setApiError(errorMessage);
+//       } else {
+//         setApiError("An unexpected error occurred. Please try again.");
+//       }
+//     }
+//   };
+
+//   const handleGoogleError = () => {
+//     setApiError(
+//       "Google authentication was cancelled or failed. Please try again.",
+//     );
+//   };
+
+//   return {
+//     apiError,
+//     setApiError,
+//     handleGoogleSuccess,
+//     handleGoogleError,
+//   };
+// };
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AxiosError } from "axios";
 import { type CredentialResponse } from "@react-oauth/google";
 import { googleAuth } from "@/services/auth.service";
@@ -9,60 +131,51 @@ export const useGoogleAuth = (
   clearFormError?: (error: string | null) => void,
 ) => {
   const [apiError, setApiError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false); // ✅ Add loading state
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuthContext();
 
   const handleGoogleSuccess = async (
     credentialResponse: CredentialResponse,
   ) => {
+    setIsLoading(true); // ✅ Start loading
     try {
       setApiError(null);
-      clearFormError?.(null); // Clear form error too
+      clearFormError?.(null);
 
-      // Check if credential exists
       if (!credentialResponse.credential) {
         setApiError("Google authentication failed. Please try again.");
         return;
       }
 
-      console.log("Google OAuth initiated");
-
-      // Try login mode first
       let result;
 
       try {
         result = await googleAuth(credentialResponse.credential, "login");
-        console.log("Google login successful:", result);
       } catch (loginError) {
         if (loginError instanceof AxiosError) {
           const errorMessage = loginError.response?.data?.message || "";
 
-          // If user not found, try to register
           if (errorMessage.includes("User not found")) {
-            console.log("User not found, attempting registration");
             result = await googleAuth(
               credentialResponse.credential,
               "register",
             );
-            console.log("Google registration successful:", result);
-          }
-          // If it's "Please login using email/password", show error
-          else if (errorMessage.includes("Please login using email/password")) {
+          } else if (
+            errorMessage.includes("Please login using email/password")
+          ) {
             setApiError(
               "This email is registered with email/password. Please use the email login form instead.",
             );
             return;
-          }
-          // If it's "Please verify your email", redirect to verify-email
-          else if (errorMessage.includes("Please verify your email")) {
+          } else if (errorMessage.includes("Please verify your email")) {
             navigate("/verify-email", {
               state: { from: "google-auth" },
               replace: true,
             });
             return;
-          }
-          // For any other error, throw it
-          else {
+          } else {
             throw loginError;
           }
         } else {
@@ -70,14 +183,9 @@ export const useGoogleAuth = (
         }
       }
 
-      // If we got here, we have a successful result
       if (!result) return;
 
-      console.log("User verified status:", result.user?.isVerified);
-
-      // Navigate based on verification status
       if (!result.user?.isVerified) {
-        console.log("User not verified, redirecting to verify-email");
         navigate("/verify-email", {
           state: { email: result.user.email, from: "google-auth" },
           replace: true,
@@ -85,11 +193,29 @@ export const useGoogleAuth = (
         return;
       }
 
-      // Store user and token if verified
+      // Get the "from" state (where user was trying to go)
+      const from = (location.state as { from?: string })?.from;
+
+      // Determine redirect path
+      const redirectPath =
+        from ||
+        (() => {
+          switch (result.user.role) {
+            case "user":
+              return "/dashboard";
+            case "agent":
+              return "/agent/dashboard";
+            case "admin":
+              return "/admin/dashboard";
+            default:
+              return "/dashboard";
+          }
+        })();
+
+      // Store user and token
       if (result.token && result.user) {
-        console.log("User verified, logging in and redirecting to dashboard");
         login(result.user, result.token);
-        navigate("/dashboard", { replace: true });
+        navigate(redirectPath, { replace: true });
       }
     } catch (error) {
       console.error("Google auth error:", error);
@@ -101,6 +227,8 @@ export const useGoogleAuth = (
       } else {
         setApiError("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setIsLoading(false); // ✅ Stop loading
     }
   };
 
@@ -108,10 +236,12 @@ export const useGoogleAuth = (
     setApiError(
       "Google authentication was cancelled or failed. Please try again.",
     );
+    setIsLoading(false); // ✅ Stop loading on error
   };
 
   return {
     apiError,
+    isLoading, // ✅ Export loading state
     setApiError,
     handleGoogleSuccess,
     handleGoogleError,

@@ -14,20 +14,21 @@ import { useState } from "react";
 import { AxiosError } from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
+import Loading from "@/components/Loading";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<"user" | "agent">("user");
 
   // use custom google auth hook
   const {
     apiError: googleApiError,
+    isLoading: isGoogleLoading,
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  } = useGoogleAuth();
-
-  const [apiError, setApiError] = useState<string | null>(null);
+  } = useGoogleAuth(setApiError);
 
   const {
     register,
@@ -83,6 +84,10 @@ export default function Signup() {
         }
       })()
     : null;
+
+  if (isGoogleLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col gap-6 font-ssPro w-full mx-6">

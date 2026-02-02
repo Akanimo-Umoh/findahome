@@ -1,4 +1,3 @@
-// import google from "@/assets/images/icon-google.svg";
 import hide from "@/assets/images/icon-hide-password.svg";
 import show from "@/assets/images/icon-show-password.svg";
 import inputError from "@/assets/images/icon-email-error.svg";
@@ -12,6 +11,7 @@ import { login as loginApi } from "@/services/auth.service";
 import { AxiosError } from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { useGoogleAuth } from "@/hooks/useGoogleAuth";
+import Loading from "@/components/Loading";
 
 type LocationState = {
   from?: string;
@@ -24,6 +24,7 @@ export default function Login() {
   // use custom google auth hook
   const {
     apiError: googleApiError,
+    isLoading: isGoogleLoading,
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
@@ -38,7 +39,7 @@ export default function Login() {
   const { login } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as LocationState)?.from || "/dashboard";
+  const from = (location.state as LocationState)?.from || null;
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -68,10 +69,29 @@ export default function Login() {
         return;
       }
 
-      // store user + token in context & redirect to dashboard
+      // determine redirect path
+      // Determine redirect path
+      const redirectPath =
+        from ||
+        (() => {
+          switch (response.user.role) {
+            case "user":
+              return "/dashboard";
+            case "agent":
+              return "/agent/dashboard";
+            case "admin":
+              return "/admin/dashboard";
+            default:
+              return "/dashboard";
+          }
+        })();
+
+      // update context
       login(response.user, response.token);
-      // redirect user
-      navigate(from, { replace: true });
+
+      // redirect user to intended destination
+      // Public route will handle the actual redirect
+      navigate(redirectPath, { replace: true });
     } catch (error) {
       console.error("Login error:", error);
 
@@ -104,6 +124,10 @@ export default function Login() {
       }
     }
   };
+
+  if (isGoogleLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col gap-6 font-ssPro w-full mx-6">

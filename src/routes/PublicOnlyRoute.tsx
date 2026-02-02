@@ -1,40 +1,39 @@
 import { useAuthContext } from "@/context/AuthContext";
-import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 /**
  * PublicOnlyRoute - Allows access only to non-authenticated users
- * Redirects authenticated users to their role-specific dashboard
+ * Redirects authenticated users to their intended destination or dashboard
  */
 export default function PublicOnlyRoute() {
   const { user, token, isLoading } = useAuthContext();
-  const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    if (isLoading) return;
+  if (isLoading) {
+    return null; // or <LoadingSpinner />
+  }
 
-    // If user is authenticated and verified, redirect to their dashboard
-    if (user && token && user.isVerified) {
-      switch (user.role) {
-        case "user":
-          navigate("/dashboard", { replace: true });
-          break;
-        case "agent":
-          navigate("/agent/dashboard", { replace: true });
-          break;
-        case "admin":
-          navigate("/admin/dashboard", { replace: true });
-          break;
-        default:
-          navigate("/", { replace: true });
-      }
+  // If user is authenticated and verified, redirect them
+  if (user && token && user.isVerified) {
+    // Check for return URL from location state (from protected routes)
+    const returnUrl = location.state?.from || location.state?.returnUrl;
+
+    if (returnUrl) {
+      return <Navigate to={returnUrl} replace />;
     }
-  }, [user, token, isLoading, navigate]);
 
-  if (isLoading) return null;
-
-  // If authenticated and verified, don't render (will redirect)
-  if (user && token && user.isVerified) return null;
+    // No return URL, redirect to role-based dashboard
+    switch (user.role) {
+      case "user":
+        return <Navigate to="/dashboard" replace />;
+      case "agent":
+        return <Navigate to="/agent/dashboard" replace />;
+      case "admin":
+        return <Navigate to="/admin/dashboard" replace />;
+      default:
+        return <Navigate to="/" replace />;
+    }
+  }
 
   return <Outlet />;
 }
