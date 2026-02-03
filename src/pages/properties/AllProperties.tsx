@@ -914,7 +914,7 @@ export default function AllProperties() {
           ))}
         </div>
       </main>
-
+ 
       {/* Pagination */}
       <div className="flex items-center justify-center gap-2 py-4 border border-red-600">
         <button

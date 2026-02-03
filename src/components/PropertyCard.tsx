@@ -13,7 +13,7 @@ type PropertyCardProps = {
   avatar: string;
   listed_by: string;
 };
-
+ 
 export default function PropertyCard({
   property_image,
   title,
