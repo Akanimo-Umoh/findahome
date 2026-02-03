@@ -2,7 +2,8 @@ import FeaturedProps from "./FeaturedProps";
 import HowItWorks from "./HowItWorks";
 import Reviews from "./Reviews";
 import Search from "./Search";
-import Why from "./Why";
+import Properties from "./Properties";
+// import Why from "./Why";
 
 export default function Home() {
   return (
@@ -25,22 +26,26 @@ export default function Home() {
       </section>
 
       {/* featured section */}
-      <section className="mt-8">
+      <section className="mt-10">
         <FeaturedProps />
       </section>
 
       {/* why section */}
-      <section className="mt-8">
+      {/* <section className="mt-8">
         <Why />
+      </section> */}
+
+      <section className="mt-10">
+        <Properties />
       </section>
 
       {/* how it works */}
-      <section className="mt-8">
+      <section className="mt-10">
         <HowItWorks />
       </section>
 
       {/* reviews */}
-      <section className="mt-8">
+      <section className="mt-10">
         <Reviews />
       </section>
     </div>

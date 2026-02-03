@@ -30,6 +30,7 @@ import { Users as AdminUsers } from "@/pages/admin/users";
 import { Agents as AdminAgents } from "@/pages/admin/agents";
 import { Properties as AdminProperties } from "@/pages/admin/properties";
 import { Settings as AdminSettings } from "@/pages/admin/settings";
+import { AllProperties } from "@/pages/properties";
 
 export default function AppRoutes() {
   return (
@@ -38,6 +39,9 @@ export default function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
       </Route>
+
+      {/* route without the footer */}
+      <Route path="/properties" element={<AllProperties />} />
 
       {/* ==================== AUTH ROUTES ==================== */}
       {/* Only accessible when NOT logged in */}
@@ -67,7 +71,7 @@ export default function AppRoutes() {
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/agents" element={<Agents />} />
-          <Route path="/properties" element={<div>User Properties</div>} />
+          {/* <Route path="/properties" element={<div>User Properties</div>} /> */}
           <Route path="/favorites" element={<div>Favorites</div>} />
           <Route path="/profile" element={<div>User Profile</div>} />
           <Route path="/settings" element={<div>User Settings</div>} />

@@ -32,21 +32,24 @@ export default function HowItWorks() {
         </p>
       </div>
 
-      <div className="flex gap-5 items-start justify-center mt-6">
+      <div className="flex flex-col items-start justify-center mt-6 max-w-60 mx-auto">
         {works.map((work, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center justify-center gap-1"
-          >
-            <div className="bg-button-bg flex items-center justify-center rounded-full w-12 h-12">
-              <img
-                src={work.icon}
-                alt="search properties"
-                className="w-6 h-6"
-              />
+          <div key={index} className="flex justify-center gap-1 w-full">
+            <div className="w-6 flex flex-col items-center">
+              <div className="bg-button-bg flex items-center justify-center rounded-full w-6 h-6">
+                <img
+                  src={work.icon}
+                  alt="search properties"
+                  className="w-4 h-4"
+                />
+              </div>
+              {/* dashed border */}
+              {index !== works.length - 1 && (
+                <div className="border-l border-dashed border-text-secondary w-[1px] h-[59px]"></div>
+              )}
             </div>
 
-            <div className="text-center">
+            <div className="w-full">
               <p className="text-text-primary font-semibold text-[12px]">
                 {work.title}
               </p>
