@@ -1,15 +1,17 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import propertyImg from "@/assets/images/img-apartment.png";
 import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
+import goBack from "@/assets/images/icon-back.svg";
 import PropertyCard from "@/components/PropertyCard";
 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const ITEMS_PER_PAGE = 3;
+  const navigate = useNavigate();
 
   const properties = [
     {
@@ -458,9 +460,15 @@ export default function AllProperties() {
 
       {/* main contents */}
       <main className="mt-18 mx-6">
-        <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
-          Available Properties
-        </p>
+        <div className="relative flex items-center justify-center">
+          <button onClick={() => navigate(-1)} className="absolute left-0">
+            <img src={goBack} alt="" />
+          </button>
+
+          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center">
+            Available Properties
+          </p>
+        </div>
 
         {/* main properties ctn */}
         <div className="mt-6 space-y-8">
@@ -476,6 +484,7 @@ export default function AllProperties() {
               bathroom={property.bathroom}
               avatar={property.avatar}
               listed_by={property.listed_by}
+              is_verified={false}
             />
           ))}
         </div>

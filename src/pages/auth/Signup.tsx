@@ -128,7 +128,7 @@ export default function Signup() {
         </div>
 
         {/* Role Selection */}
-        <div className="flex flex-col gap-2">
+        <div className="flex-col gap-2 hidden">
           <label className="text-black text-[14px] font-medium">I am a:</label>
           <div className="grid grid-cols-2 gap-3">
             <button

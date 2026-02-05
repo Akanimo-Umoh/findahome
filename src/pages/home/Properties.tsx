@@ -57,6 +57,7 @@ export default function Properties() {
             bathroom={property.bathroom}
             avatar={property.avatar}
             listed_by={property.listed_by}
+            is_verified={false}
           />
         ))}
       </div>

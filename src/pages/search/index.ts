@@ -1,1 +1,1 @@
-export { default as SearchProperties } from "./SearchProperties";
+export { default as SearchResults } from "./SearchResults";

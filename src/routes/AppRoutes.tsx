@@ -31,6 +31,9 @@ import { Agents as AdminAgents } from "@/pages/admin/agents";
 import { Properties as AdminProperties } from "@/pages/admin/properties";
 import { Settings as AdminSettings } from "@/pages/admin/settings";
 import { AllProperties } from "@/pages/properties";
+import { SearchResults } from "@/pages/search";
+import { PropertyDetails } from "@/pages/propertyDetails";
+import NormalLayout from "@/layouts/NormalLayout";
 
 export default function AppRoutes() {
   return (
@@ -42,6 +45,10 @@ export default function AppRoutes() {
 
       {/* route without the footer */}
       <Route path="/properties" element={<AllProperties />} />
+      <Route path="/search" element={<SearchResults />} />
+      <Route element={<NormalLayout />}>
+        <Route path="/details" element={<PropertyDetails />} />
+      </Route>
 
       {/* ==================== AUTH ROUTES ==================== */}
       {/* Only accessible when NOT logged in */}

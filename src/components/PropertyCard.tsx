@@ -2,8 +2,11 @@ import naira from "@/assets/images/naira.svg";
 import location from "@/assets/images/location.svg";
 import bed from "@/assets/images/bed.svg";
 import tubs from "@/assets/images/tubs.svg";
+import verified from "@/assets/images/icon-verified.svg";
+import { Link } from "react-router-dom";
 
 type PropertyCardProps = {
+  id: string;
   property_image: string;
   title: string;
   value: string;
@@ -12,9 +15,11 @@ type PropertyCardProps = {
   bathroom: string;
   avatar: string;
   listed_by: string;
+  is_verified: boolean;
 };
- 
+
 export default function PropertyCard({
+  id,
   property_image,
   title,
   value,
@@ -23,11 +28,21 @@ export default function PropertyCard({
   bathroom,
   avatar,
   listed_by,
+  is_verified,
 }: PropertyCardProps) {
   return (
     <div className="rounded-2xl overflow-hidden">
-      <div>
+      <div className="relative">
         <img src={property_image} alt="" />
+
+        {is_verified && (
+          <div className="p-2 rounded-lg bg-[#10B981] absolute top-2.75 left-2.75 flex items-center justify-center gap-1">
+            <img src={verified} alt="" />
+            <p className="font-raleway text-[14px] tracking-[1px] text-white">
+              Verified
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="px-4 py-3 space-y-6 border rounded-b-2xl border-bg-accent">
@@ -78,12 +93,12 @@ export default function PropertyCard({
           </div>
         </div>
 
-        <button
-          type="button"
+        <Link
+          to={`/property/${id}`}
           className="font-raleway font-semibold text-[14px] tracking-[1px] text-text-primary rounded-lg border border-button-bg bg-button-sec h-[45px] flex items-center justify-center w-full"
         >
           View Details
-        </button>
+        </Link>
       </div>
     </div>
   );
