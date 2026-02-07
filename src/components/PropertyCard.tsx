@@ -33,7 +33,7 @@ export default function PropertyCard({
   return (
     <div className="rounded-2xl overflow-hidden">
       <div className="relative">
-        <img src={property_image} alt="" />
+        <img src={property_image} alt="" className="h-50 w-full" />
 
         {is_verified && (
           <div className="p-2 rounded-lg bg-[#10B981] absolute top-2.75 left-2.75 flex items-center justify-center gap-1">

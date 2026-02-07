@@ -2,152 +2,40 @@ import { useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import PropertyCard from "@/components/PropertyCard";
-import propertyImg from "@/assets/images/img-apartment.png";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
+// import propertyImg from "@/assets/images/img-apartment.png";
+// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
-
-type PropertyProps = {
-  property_image: string;
-  title: string;
-  value: string;
-  location: string;
-  bedroom: string;
-  bathroom: string;
-  avatar: string;
-  listed_by: string;
-  propertyType?: string; // "apartment" or "land"
-  is_verified: boolean;
-};
+import { useProperties } from "@/hooks/useProperties";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Get search filters from URL
-  const filters = {
-    location: searchParams.get("location") || "",
-    propertyType: searchParams.get("propertyType") || "",
-    bedrooms: searchParams.get("bedrooms") || "",
-    priceRange: searchParams.get("priceRange") || "",
-  };
+  const filters = useMemo(
+    () => ({
+      location: searchParams.get("location") || "",
+      propertyType: searchParams.get("propertyType") || "",
+      bedrooms: searchParams.get("bedrooms") || "",
+      priceRange: searchParams.get("priceRange") || "",
+    }),
+    [searchParams],
+  );
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const ITEMS_PER_PAGE = 3;
 
-  // All properties (you should replace this with actual data from API/database)
-  const allProperties: PropertyProps[] = [
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-      propertyType: "apartment",
-      is_verified: true,
-    },
-    {
-      property_image: propertyImg,
-      title: "3 Bedroom House",
-      value: "1.2m",
-      location: "Ikeja, Lagos",
-      bedroom: "3",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "John Doe",
-      propertyType: "apartment",
-      is_verified: false,
-    },
-    {
-      property_image: propertyImg,
-      title: "2 Bedroom Apartment",
-      value: "600k",
-      location: "Victoria Island, Lagos",
-      bedroom: "2",
-      bathroom: "1",
-      avatar: agentAvatar,
-      listed_by: "Jane Smith",
-      propertyType: "apartment",
-      is_verified: true,
-    },
-    // Add more properties here...
-  ];
-
-  // Filter properties based on search params
-  const filteredProperties = useMemo(() => {
-    return allProperties.filter((property) => {
-      // Location filter
-      if (
-        filters.location &&
-        !property.location
-          .toLowerCase()
-          .includes(filters.location.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // Property type filter
-      if (
-        filters.propertyType &&
-        property.propertyType &&
-        property.propertyType !== filters.propertyType
-      ) {
-        return false;
-      }
-
-      // Bedrooms filter
-      if (filters.bedrooms) {
-        if (filters.bedrooms === "4+") {
-          if (parseInt(property.bedroom) < 4) return false;
-        } else {
-          if (property.bedroom !== filters.bedrooms) return false;
-        }
-      }
-
-      // Price range filter
-      if (filters.priceRange) {
-        // Parse property value: "800k" -> 800, "1.2m" -> 1200
-        let propertyPrice: number;
-        const valueStr = property.value.toLowerCase();
-
-        if (valueStr.includes("m")) {
-          propertyPrice = parseFloat(valueStr.replace("m", "")) * 1000;
-        } else if (valueStr.includes("k")) {
-          propertyPrice = parseFloat(valueStr.replace("k", ""));
-        } else {
-          propertyPrice = parseFloat(valueStr);
-        }
-
-        if (filters.priceRange === "3m+") {
-          if (propertyPrice < 3000) return false;
-        } else {
-          const [minStr, maxStr] = filters.priceRange.split("-");
-
-          // Parse min value
-          let min: number;
-          if (minStr.includes("m")) {
-            min = parseFloat(minStr.replace("m", "")) * 1000;
-          } else {
-            min = parseFloat(minStr.replace("k", ""));
-          }
-
-          // Parse max value
-          let max: number;
-          if (maxStr.includes("m")) {
-            max = parseFloat(maxStr.replace("m", "")) * 1000;
-          } else {
-            max = parseFloat(maxStr.replace("k", ""));
-          }
-
-          if (propertyPrice < min || propertyPrice > max) return false;
-        }
-      }
-
-      return true;
-    });
-  }, [filters]);
+  // fetch properties with filters
+  const {
+    properties: filteredProperties,
+    loading,
+    error,
+  } = useProperties({
+    location: filters.location,
+    propertyType: filters.propertyType,
+    bedrooms: filters.bedrooms,
+    priceRange: filters.priceRange,
+  });
 
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -193,6 +81,40 @@ export default function SearchResults() {
 
     return pages;
   };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col font-ssPro">
+        <Navbar />
+        <main className="flex-1 mt-18 mx-6">
+          <div className="flex items-center justify-between">
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+              Search Results
+            </p>
+          </div>
+          <div className="mt-6 text-center text-text-secondary">
+            Searching properties...
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col font-ssPro">
+        <Navbar />
+        <main className="flex-1 mt-18 mx-6">
+          <div className="flex items-center justify-between">
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+              Search Results
+            </p>
+          </div>
+          <div className="mt-6 text-center text-red-500">Error: {error}</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col font-ssPro">
@@ -289,16 +211,13 @@ export default function SearchResults() {
           </div>
         )}
 
-        <div>
-          
-        </div>
-
         {/* Results */}
         <div className="mt-6 space-y-8">
           {currentProperties.length > 0 ? (
-            currentProperties.map((property, index) => (
+            currentProperties.map((property) => (
               <PropertyCard
-                key={startIndex + index}
+                key={property.id}
+                id={property.id}
                 property_image={property.property_image}
                 title={property.title}
                 value={property.value}
@@ -341,7 +260,7 @@ export default function SearchResults() {
                       typeof pageNum === "number" && goToPage(pageNum)
                     }
                     disabled={pageNum === "..."}
-                    className={`min-w-[32px] h-[32px] flex items-center justify-center rounded-md text-[14px] font-medium transition-colors ${
+                    className={`min-w-8 h-8 flex items-center justify-center rounded-md text-[14px] font-medium transition-colors ${
                       pageNum === currentPage
                         ? "bg-[#274AD0] text-white"
                         : pageNum === "..."

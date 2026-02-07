@@ -133,7 +133,7 @@ export default function ForgotPassword() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="font-raleway font-semibold tracking-[1px] text-white w-full bg-button-bg h-12 rounded-lg flex items-center justify-center cursor-pointer"
+            className="font-raleway font-semibold tracking-[1px] text-white w-full h-12 rounded-lg flex items-center justify-center button-style"
           >
             {isSubmitting ? "Sending..." : "Send"}
           </button>

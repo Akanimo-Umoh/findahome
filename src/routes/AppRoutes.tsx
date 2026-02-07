@@ -34,6 +34,7 @@ import { AllProperties } from "@/pages/properties";
 import { SearchResults } from "@/pages/search";
 import { PropertyDetails } from "@/pages/propertyDetails";
 import NormalLayout from "@/layouts/NormalLayout";
+import { Chats } from "@/pages/user/chats";
 
 export default function AppRoutes() {
   return (
@@ -47,7 +48,7 @@ export default function AppRoutes() {
       <Route path="/properties" element={<AllProperties />} />
       <Route path="/search" element={<SearchResults />} />
       <Route element={<NormalLayout />}>
-        <Route path="/details" element={<PropertyDetails />} />
+        <Route path="/property/:id" element={<PropertyDetails />} />
       </Route>
 
       {/* ==================== AUTH ROUTES ==================== */}
@@ -83,6 +84,10 @@ export default function AppRoutes() {
           <Route path="/profile" element={<div>User Profile</div>} />
           <Route path="/settings" element={<div>User Settings</div>} />
         </Route>
+      </Route>
+      {/* user chats */}
+      <Route element={<NormalLayout />}>
+        <Route path="/chat" element={<Chats />} />
       </Route>
 
       {/* ==================== AGENT ROUTES ==================== */}

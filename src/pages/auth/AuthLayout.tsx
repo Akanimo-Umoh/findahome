@@ -13,7 +13,7 @@ export default function AuthLayout() {
     <div className="min-h-screen flex flex-col auth-bg items-center">
       <div className="relative w-full flex items-center justify-center mt-8">
         {showBackButton && (
-          <button onClick={() => navigate(-1)} className="absolute left-6">
+          <button onClick={() => navigate(-1)} className="absolute left-6 cursor-pointer">
             <img src={goBack} alt="" />
           </button>
         )}

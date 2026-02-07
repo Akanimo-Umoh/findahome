@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import hide from "@/assets/images/icon-hide-password.svg";
 import show from "@/assets/images/icon-show-password.svg";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {
   ResetPasswordSchema,
@@ -25,7 +25,12 @@ export default function ResetPassword() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { email } = (location.state as LocationState) || {};
+  const [searchParams] = useSearchParams();
+
+  // check url params first before checking the location state
+  const emailFromUrl = searchParams.get("email");
+  const emailFromState = (location.state as LocationState)?.email;
+  const email = emailFromUrl || emailFromState;
 
   const {
     register,

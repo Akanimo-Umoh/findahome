@@ -1,11 +1,12 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import propertyImg from "@/assets/images/img-apartment.png";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
+// import propertyImg from "@/assets/images/img-apartment.png";
+// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import PropertyCard from "@/components/PropertyCard";
+import { useProperties } from "@/hooks/useProperties";
 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,398 +14,7 @@ export default function AllProperties() {
   const ITEMS_PER_PAGE = 3;
   const navigate = useNavigate();
 
-  const properties = [
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-    {
-      property_image: propertyImg,
-      title: "4 Bedroom Apartment",
-      value: "800k",
-      location: "Lekki Phase 1, Lagos",
-      bedroom: "4",
-      bathroom: "2",
-      avatar: agentAvatar,
-      listed_by: "MaryAnn Kikomu",
-    },
-  ];
+  const { properties, loading, error } = useProperties();
 
   const totalPages = Math.ceil(properties.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -453,6 +63,34 @@ export default function AllProperties() {
     return pages;
   };
 
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col font-ssPro">
+        <Navbar />
+        <main className="flex-1 mt-18 mx-6">
+          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+            Available Properties
+          </p>
+          <div className="mt-6 text-center text-text-secondary">Loading...</div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col font-ssPro">
+        <Navbar />
+        <main className="flex-1 mt-18 mx-6">
+          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+            Available Properties
+          </p>
+          <div className="mt-6 text-center text-red-500">Error: {error}</div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col font-ssPro">
       {/* navbar */}
@@ -461,7 +99,7 @@ export default function AllProperties() {
       {/* main contents */}
       <main className="mt-18 mx-6">
         <div className="relative flex items-center justify-center">
-          <button onClick={() => navigate(-1)} className="absolute left-0">
+          <button onClick={() => navigate(-1)} className="absolute left-0 cursor-pointer">
             <img src={goBack} alt="" />
           </button>
 
@@ -473,9 +111,10 @@ export default function AllProperties() {
         {/* main properties ctn */}
         <div className="mt-6 space-y-8">
           {/* properties ctn */}
-          {currentProperties.map((property, index) => (
+          {currentProperties.map((property) => (
             <PropertyCard
-              key={startIndex + index}
+              key={property.id}
+              id={property.id}
               property_image={property.property_image}
               title={property.title}
               value={property.value}
@@ -484,7 +123,7 @@ export default function AllProperties() {
               bathroom={property.bathroom}
               avatar={property.avatar}
               listed_by={property.listed_by}
-              is_verified={false}
+              is_verified={property.is_verified}
             />
           ))}
         </div>
