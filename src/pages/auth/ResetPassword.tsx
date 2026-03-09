@@ -283,7 +283,7 @@ export default function ResetPassword() {
           type="button"
           onClick={handleResendCode}
           disabled={isResending}
-          className="text-[14px] text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+          className="text-[14px] text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
         >
           {isResending ? "Sending..." : "Resend Code"}
         </button>
