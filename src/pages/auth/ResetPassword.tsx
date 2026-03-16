@@ -8,10 +8,7 @@ import {
   type ResetPasswordFormData,
 } from "@/validation/auth/rules";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  resendVerificationEmail,
-  resetPassword,
-} from "@/services/auth.service";
+import { forgotPassword, resetPassword } from "@/services/auth.service";
 import { AxiosError } from "axios";
 import inputError from "@/assets/images/icon-email-error.svg";
 
@@ -58,7 +55,7 @@ export default function ResetPassword() {
       setApiError(null);
       setSuccessMessage(null);
 
-      await resendVerificationEmail({ email });
+      await forgotPassword({ email });
 
       setSuccessMessage("Reset code sent! Please check your email.");
     } catch (error) {
@@ -286,7 +283,7 @@ export default function ResetPassword() {
           type="button"
           onClick={handleResendCode}
           disabled={isResending}
-          className="text-[14px] text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed mx-auto"
+          className="text-[14px] cursor-pointer text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed mx-auto hover:text-button-bg"
         >
           {isResending ? "Sending..." : "Resend Code"}
         </button>
