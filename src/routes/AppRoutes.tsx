@@ -6,6 +6,7 @@ import {
   Login,
   ResetPassword,
   ResetPasswordSuccess,
+  RoleSelection,
   Signup,
   VerifyEmail,
   VerifyEmailSuccess,
@@ -16,12 +17,12 @@ import MainLayout from "@/layouts/MainLayout";
 
 // User Pages (buyers)
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard";
-import { Agents } from "@/pages/user/agents";
+import { AgentProfile, Agents } from "@/pages/user/agents";
 
 // Agent Pages
 import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard";
 import { Properties as AgentProperties } from "@/pages/agent/properties";
-import { AddProperty } from "@/pages/agent/add-property";
+import { AddProperty, PropertyPreview } from "@/pages/agent/add-property";
 import { Clients as AgentClients } from "@/pages/agent/clients";
 
 // Admin Pages
@@ -32,9 +33,39 @@ import { Properties as AdminProperties } from "@/pages/admin/properties";
 import { Settings as AdminSettings } from "@/pages/admin/settings";
 import { AllProperties } from "@/pages/properties";
 import { SearchResults } from "@/pages/search";
-import { PropertyDetails } from "@/pages/propertyDetails";
+import { LandDetails, PropertyDetails } from "@/pages/propertyDetails";
 import NormalLayout from "@/layouts/NormalLayout";
-import { Chats } from "@/pages/user/chats";
+import { ChatMessages, Chats } from "@/pages/user/chats";
+import {
+  // EscrowTransactionsDetails,
+  FundWallet,
+  Wallet,
+} from "@/pages/user/wallet";
+import {
+  Inspection,
+  InspectionConfirmation,
+  InspectionVisitDetails,
+} from "@/pages/user/inspection";
+import {
+  PropertyEscrowTransaction,
+  PropertyPayment,
+} from "@/pages/user/propertyPayment";
+import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover";
+import { PropertyVisitDetails } from "@/pages/user/visitDetails";
+import { ConfirmHandover } from "@/pages/user/confirmHandover";
+import { TransactionReceipt } from "@/pages/user/receipt";
+import { Recent } from "@/pages/user/recent";
+import { Profile } from "@/pages/user/profile";
+import {
+  DisputeDetail,
+  Disputes,
+  DisputeSubmitted,
+  OpenDispute,
+} from "@/pages/user/disputes";
+import { Miscellaneous } from "@/a";
+import { MyListings } from "@/pages/agent/my-listings";
+import { MyTransactions } from "@/pages/agent/my-transaction";
+import { SavedProperties } from "@/pages/user/saved-properties";
 
 export default function AppRoutes() {
   return (
@@ -46,7 +77,9 @@ export default function AppRoutes() {
 
       {/* route without the footer */}
       <Route path="/properties" element={<AllProperties />} />
-      <Route path="/search" element={<SearchResults />} />
+      <Route element={<NormalLayout />}>
+        <Route path="/search" element={<SearchResults />} />
+      </Route>
       <Route element={<NormalLayout />}>
         <Route path="/property/:id" element={<PropertyDetails />} />
       </Route>
@@ -56,7 +89,8 @@ export default function AppRoutes() {
       <Route element={<PublicOnlyRoute />}>
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={<RoleSelection />} />
+          <Route path="/signup/:role" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
@@ -78,25 +112,64 @@ export default function AppRoutes() {
       <Route element={<RoleBasedRoute allowedRoles={["user"]} />}>
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
-          <Route path="/agents" element={<Agents />} />
           {/* <Route path="/properties" element={<div>User Properties</div>} /> */}
           <Route path="/favorites" element={<div>Favorites</div>} />
-          <Route path="/profile" element={<div>User Profile</div>} />
           <Route path="/settings" element={<div>User Settings</div>} />
         </Route>
+
+        {/* user chats */}
+        <Route element={<NormalLayout />}></Route>
       </Route>
-      {/* user chats */}
+
       <Route element={<NormalLayout />}>
-        <Route path="/chat" element={<Chats />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/my-dispute" element={<Disputes />} />
+        <Route path="/dispute-detail" element={<DisputeDetail />} />
+        <Route path="/open-dispute" element={<OpenDispute />} />
+        <Route path="/open-dispute/submitted" element={<DisputeSubmitted />} />
+        <Route path="/recent-activities" element={<Recent />} />
+        <Route path="/agents" element={<Agents />} />
+        <Route path="/agent-profile" element={<AgentProfile />} />
+        {/* chats list */}
+        <Route path="/chats" element={<Chats />} />
+        {/* single chat */}
+        <Route path="/chat" element={<ChatMessages />} />
+        {/* wallet */}
+        <Route path="/wallet" element={<Wallet />} />
+        {/* fund wallet */}
+        <Route path="/fund-wallet" element={<FundWallet />} />
+        {/* escrow transaction details */}
+        <Route
+          path="/escrow-transactions-details"
+          element={<PropertyEscrowTransaction />}
+        />
+        <Route path="/inspection" element={<Inspection />} />
+        <Route path="/visit-details" element={<InspectionVisitDetails />} />
+        <Route
+          path="/property-visit-details"
+          element={<PropertyVisitDetails />}
+        />
+        <Route
+          path="/confirm-inspection"
+          element={<InspectionConfirmation />}
+        />
+        <Route path="/confirm-handover" element={<ConfirmHandover />} />
+        <Route path="/property-payment" element={<PropertyPayment />} />
+        <Route
+          path="/property-handover-schedule"
+          element={<PropertyHandoverSchedule />}
+        />
+        <Route path="/transaction-receipt" element={<TransactionReceipt />} />
+        <Route path="/saved-properties" element={<SavedProperties />} />
+        <Route path="/land-details" element={<LandDetails />} />
       </Route>
 
       {/* ==================== AGENT ROUTES ==================== */}
       {/* Only for users with role: "agent" */}
       <Route element={<RoleBasedRoute allowedRoles={["agent"]} />}>
         <Route element={<MainLayout />}>
-          <Route path="/agent/dashboard" element={<AgentDashboard />} />
+          {/* <Route path="/agent/dashboard" element={<AgentDashboard />} /> */}
           <Route path="/agent/properties" element={<AgentProperties />} />
-          <Route path="/agent/properties/add" element={<AddProperty />} />
           <Route
             path="/agent/properties/edit/:id"
             element={<div>Edit Property</div>}
@@ -110,6 +183,16 @@ export default function AppRoutes() {
           <Route path="/agent/profile" element={<div>Agent Profile</div>} />
           <Route path="/agent/settings" element={<div>Agent Settings</div>} />
         </Route>
+      </Route>
+
+      <Route element={<NormalLayout />}>
+        {/* don't forget to add the links for the different dashboards route */}
+        <Route path="/agent/dashboard" element={<AgentDashboard />} />
+        <Route path="/agent/mis" element={<Miscellaneous />} />
+        <Route path="/agent/my-listings" element={<MyListings />} />
+        <Route path="/agent/properties/add" element={<AddProperty />} />
+        <Route path="/agent/preview" element={<PropertyPreview />} />
+        <Route path="/agent/my-transactions" element={<MyTransactions />} />
       </Route>
 
       {/* ==================== ADMIN ROUTES ==================== */}

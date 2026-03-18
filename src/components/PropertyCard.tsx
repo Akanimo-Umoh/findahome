@@ -13,9 +13,10 @@ type PropertyCardProps = {
   location: string;
   bedroom: string;
   bathroom: string;
-  avatar: string;
+  agent_avatar: string;
   listed_by: string;
   is_verified: boolean;
+  img_height: string;
 };
 
 export default function PropertyCard({
@@ -26,14 +27,15 @@ export default function PropertyCard({
   location: propertyLocation,
   bedroom,
   bathroom,
-  avatar,
+  agent_avatar,
   listed_by,
   is_verified,
+  img_height,
 }: PropertyCardProps) {
   return (
     <div className="rounded-2xl overflow-hidden">
       <div className="relative">
-        <img src={property_image} alt="" className="h-50 w-full" />
+        <img src={property_image} alt="" className={`w-full ${img_height}`} />
 
         {is_verified && (
           <div className="p-2 rounded-lg bg-[#10B981] absolute top-2.75 left-2.75 flex items-center justify-center gap-1">
@@ -60,7 +62,9 @@ export default function PropertyCard({
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-1">
                 <img src={location} alt="" className="w-4 h-4" />
-                <p className="line-clamp-1 text-[12px]">{propertyLocation}</p>
+                <p className="line-clamp-1 text-[12px] text-text-secondary">
+                  {propertyLocation}
+                </p>
               </div>
 
               <div className="flex items-center gap-2 text-[12px] text-text-secondary">
@@ -79,7 +83,7 @@ export default function PropertyCard({
             <div className="flex items-center gap-1">
               <div>
                 <img
-                  src={avatar}
+                  src={agent_avatar}
                   alt=""
                   className="w-5 h-5 rounded-full object-cover"
                 />
