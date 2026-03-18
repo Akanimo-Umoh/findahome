@@ -46,9 +46,10 @@ export default function Properties() {
             location={property.location}
             bedroom={property.bedroom}
             bathroom={property.bathroom}
-            avatar={property.avatar}
+            agent_avatar={property.agent_avatar}
             listed_by={property.listed_by}
             is_verified={false}
+            img_height="h-50"
           />
         ))}
       </div>

@@ -7,7 +7,7 @@ import rightArrow from "@/assets/images/icon-right-arrow.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import PropertyCard from "@/components/PropertyCard";
 import { useProperties } from "@/hooks/useProperties";
-
+ 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -99,7 +99,10 @@ export default function AllProperties() {
       {/* main contents */}
       <main className="mt-18 mx-6">
         <div className="relative flex items-center justify-center">
-          <button onClick={() => navigate(-1)} className="absolute left-0 cursor-pointer">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-0 cursor-pointer"
+          >
             <img src={goBack} alt="" />
           </button>
 
@@ -121,9 +124,10 @@ export default function AllProperties() {
               location={property.location}
               bedroom={property.bedroom}
               bathroom={property.bathroom}
-              avatar={property.avatar}
+              agent_avatar={property.agent_avatar}
               listed_by={property.listed_by}
               is_verified={property.is_verified}
+              img_height="h-50"
             />
           ))}
         </div>

@@ -2,8 +2,9 @@
 @import url("https://fonts.cdnfonts.com/css/source-sans-pro");
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "tailwind-scrollbar-hide/v4";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&: is(.dark *));
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -75,6 +76,10 @@
   --color-component-primary: #ffffff;
   --color-sec-but: #274ad0;
   --color-disabled-but: #0a0a0a59;
+
+  --color-success: #149d18;
+  --color-warning: #f8b400;
+  --color-error: #ff6b6b;
 }
 
 :root {
@@ -151,7 +156,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-ssPro;
   }
 }
 
@@ -167,6 +172,10 @@
 
 .input-ctn {
   @apply w-full bg-white h-8 rounded-lg flex items-center justify-between px-2 text-[14px];
+}
+
+.filter-input {
+  @apply w-full bg-white h-8 rounded-xl flex items-center justify-between px-2 text-[14px] border border-text-disabled;
 }
 
 .hideScroll {
@@ -201,4 +210,72 @@
 
 .button-style {
   @apply bg-button-bg hover:bg-button-hover cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.chat-header {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.payment-summary {
+  @apply text-[12px] leading-4;
+}
+
+.payment-summary-ctn {
+  @apply flex items-center justify-between;
+}
+
+.agent-card {
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.recent-card {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.filter-shadow {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+.performance-shadow {
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.listings-shadow {
+  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.addPropType {
+  @apply text-[14px] w-full rounded-lg h-[45px] border border-text-secondary;
+}
+
+.addPropTypeFeatures {
+  @apply text-[14px] w-full rounded-lg h-[29px] border border-text-secondary;
+}
+
+.addBank {
+  @apply bg-button-sec px-2 h-[45px] w-full text-[14px] rounded-xl border-2 border-bg-accent;
+}
+
+.ads-select {
+  @apply border-none outline-none shadow-none;
+}
+
+/* .step3-slider [data-slot="slider-track"] {
+  @apply bg-text-disabled;
+}
+.step3-slider [data-slot="slider-range"] {
+  @apply bg-text-secondary;
+} */
+
+.step3-slider [data-slot="slider-thumb"] {
+  @apply bg-button-bg border-button-bg;
+}
+
+.manage-ad {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.agent-profile {
+  background: linear-gradient(180deg, #e2eeff 0%, #ffffff 100%);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }

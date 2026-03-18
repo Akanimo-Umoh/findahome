@@ -3,6 +3,7 @@ import HowItWorks from "./HowItWorks";
 import Reviews from "./Reviews";
 import Search from "./Search";
 import Properties from "./Properties";
+import Faq from "./Faq";
 // import Why from "./Why";
 
 export default function Home() {
@@ -42,6 +43,11 @@ export default function Home() {
       {/* how it works */}
       <section className="mt-10">
         <HowItWorks />
+      </section>
+
+      {/* frequently asked questions */}
+      <section className="mt-10">
+        <Faq />
       </section>
 
       {/* reviews */}

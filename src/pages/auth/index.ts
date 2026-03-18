@@ -6,3 +6,4 @@ export { default as AuthLayout } from "./AuthLayout";
 export { default as ForgotPassword } from "./ForgotPassword";
 export { default as ResetPassword } from "./ResetPassword";
 export { default as ResetPasswordSuccess } from "./ResetPasswordSuccess";
+export { default as RoleSelection } from "./RoleSelection";

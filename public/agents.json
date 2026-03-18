@@ -1,0 +1,68 @@
+{
+  "agents": [
+    {
+      "id": "agent_1",
+      "name": "MaryAnn Kikomu",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": true,
+      "rating": "4.8",
+      "total_listings": "127"
+    },
+    {
+      "id": "agent_2",
+      "name": "John Okafor",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": false,
+      "rating": "4.5",
+      "total_listings": "89"
+    },
+    {
+      "id": "agent_3",
+      "name": "Sarah Johnson",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": true,
+      "rating": "4.9",
+      "total_listings": "156"
+    },
+    {
+      "id": "agent_4",
+      "name": "David Chen",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": true,
+      "rating": "5.0",
+      "total_listings": "78"
+    },
+    {
+      "id": "agent_5",
+      "name": "Emmanuel Ade",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": false,
+      "rating": "4.3",
+      "total_listings": "45"
+    },
+    {
+      "id": "agent_6",
+      "name": "Grace Adeyemi",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": true,
+      "rating": "4.6",
+      "total_listings": "112"
+    },
+    {
+      "id": "agent_7",
+      "name": "Peter Obi",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": true,
+      "rating": "4.4",
+      "total_listings": "93"
+    },
+    {
+      "id": "agent_8",
+      "name": "Funmi Balogun",
+      "avatar": "/images/agentAvatar.jpg",
+      "is_verified": false,
+      "rating": "4.2",
+      "total_listings": "67"
+    }
+  ]
+}

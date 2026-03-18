@@ -6,7 +6,18 @@ import PropertyCard from "@/components/PropertyCard";
 // import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
+import filterIcon from "@/assets/images/icon-filter.svg";
 import { useProperties } from "@/hooks/useProperties";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import landImg from "@/assets/agentImages/img-land.png";
+import avatarImg from "@/assets/images/agentAvatar.jpg";
+// import LandCard from "@/components/LandCard";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -116,11 +127,52 @@ export default function SearchResults() {
     );
   }
 
-  return (
-    <div className="flex min-h-screen flex-col font-ssPro">
-      <Navbar />
+  // const lands = [
+  //   {
+  //     id: "1",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "2",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  //   {
+  //     id: "3",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "4",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  // ];
 
-      <main className="flex-1 mt-18 mx-6 mb-10">
+  return (
+    <div className="">
+      <main className="flex-1 mx-6 mb-10">
         <div className="flex items-center justify-between">
           <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
             Search Results
@@ -129,6 +181,41 @@ export default function SearchResults() {
             {filteredProperties.length}{" "}
             {filteredProperties.length === 1 ? "property" : "properties"} found
           </p>
+        </div>
+
+        {/* sort and filter by */}
+        <div className="flex items-center justify-between gap-2 mt-6">
+          <Select>
+            <SelectTrigger className="border-none outline-none shadow-none text-[14px] text-text-primary">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low-to-high">Price: Low to High</SelectItem>
+              <SelectItem value="high-to-low">Price: High to Low</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="most-popular">Most Popular</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <button
+            type="button"
+            className="filter-shadow w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-white"
+          >
+            <img src={filterIcon} alt="" />
+          </button>
+
+          {/* <button
+            type="button"
+            className="text-white bg-button-bg rounded-lg px-2 py-1 flex items-center justify-center"
+          >
+            All
+          </button>
+          <button
+            type="button"
+            className="text-text-primary bg-button-sec rounded-lg px-2 py-1 flex items-center justify-center w-full"
+          >
+            Verified only
+          </button> */}
         </div>
 
         {/* Active Filters */}
@@ -224,9 +311,10 @@ export default function SearchResults() {
                 location={property.location}
                 bedroom={property.bedroom}
                 bathroom={property.bathroom}
-                avatar={property.avatar}
+                agentAvatar={property.agentAvatar}
                 listed_by={property.listed_by}
                 is_verified={property.is_verified}
+                img_height="h-[200px]"
               />
             ))
           ) : (
@@ -236,6 +324,22 @@ export default function SearchResults() {
               </p>
             </div>
           )}
+
+          {/* land card */}
+          {/* {lands.map((land) => (
+            <LandCard
+              key={land.id}
+              id={land.id}
+              property_image={land.property_image}
+              title={land.title}
+              value={land.value}
+              location={land.location}
+              avatar={land.avatar}
+              listed_by={land.listed_by}
+              is_verified={land.is_verified}
+              img_height="h-[150px]"
+            />
+          ))} */}
 
           {/* Pagination */}
           {filteredProperties.length > ITEMS_PER_PAGE && (

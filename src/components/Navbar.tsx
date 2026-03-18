@@ -13,17 +13,19 @@ import agentsActive from "@/assets/images/icon-active-agents.svg";
 import chatsActive from "@/assets/images/icon-active-chat.svg";
 import recentActive from "@/assets/images/icon-active-recent.svg";
 import walletActive from "@/assets/images/icon-active-wallet.svg";
-import downArrow from "@/assets/images/icon-downArrow.svg";
+import rightArrow from "@/assets/images/icon-nav-rightArrow.svg";
 import iconDispute from "@/assets/images/icon-disputes.svg";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [hidden, setHidden] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuthContext();
 
-  const links = [
+  const authenticatedLinks = [
     {
       icon: dashboard,
       iconActive: dashboardActive,
@@ -55,6 +57,42 @@ export default function Navbar() {
       link: "/wallet",
     },
   ];
+
+  const unauthenticatedLinks = [
+    {
+      icon: dashboard,
+      iconActive: dashboardActive,
+      title: "Home",
+      link: "/",
+    },
+    {
+      icon: agents,
+      iconActive: agentsActive,
+      title: "Find Agents",
+      link: "/agents",
+    },
+    {
+      icon: chats,
+      iconActive: chatsActive,
+      title: "Apartments",
+      link: "/properties",
+    },
+    {
+      icon: recent,
+      iconActive: recentActive,
+      title: "About us",
+      link: "/about",
+    },
+    {
+      icon: wallet,
+      iconActive: walletActive,
+      title: "My Wallet",
+      link: "/wallet",
+    },
+  ];
+
+  // use appropriate links based on auth state
+  const links = isAuthenticated ? authenticatedLinks : unauthenticatedLinks;
 
   // Handle scroll
   useEffect(() => {
@@ -100,6 +138,11 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setOpenMenu(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
   };
 
   return (
@@ -148,60 +191,115 @@ export default function Navbar() {
               <div className="flex flex-col h-full justify-between">
                 <div>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center justify-between gap-1">
-                      <img
-                        src={avatar}
-                        className="w-7.5 h-7.5 rounded-full object-cover"
-                        alt="profile"
-                      />
+                    {isAuthenticated && (
+                      <div className="flex items-center justify-between gap-1">
+                        <img
+                          src={avatar}
+                          className="w-7.5 h-7.5 rounded-full object-cover"
+                          alt="profile"
+                        />
 
-                      <p className="text-sm text-text-100">Ntekim Victoria</p>
-                    </div>
+                        <p className="text-sm text-text-100">{user?.name}</p>
+                      </div>
+                    )}
 
                     <img
                       src={close}
                       alt="close"
                       onClick={handleMenu}
-                      className="cursor-pointer"
+                      className="cursor-pointer ml-auto"
                     />
                   </div>
 
                   {/* nav links */}
                   <div className="space-y-2 mt-6">
-                    {links.map((link, index) => {
-                      const isActive = location.pathname === link.link;
+                    {isAuthenticated ? (
+                      links.map((link, index) => {
+                        const isActive = location.pathname === link.link;
 
-                      return (
-                        <Link
-                          key={index}
-                          to={link.link}
-                          onClick={handleMenu}
-                          className="flex items-center justify-between py-0.5"
-                        >
-                          <div
-                            className={`flex items-center justify-center gap-1 p-1 ${isActive ? "bg-button-bg rounded-lg" : ""}`}
+                        return (
+                          <Link
+                            key={index}
+                            to={link.link}
+                            onClick={handleMenu}
+                            className="flex items-center justify-between py-0.5"
                           >
-                            <img
-                              src={isActive ? link.iconActive : link.icon}
-                              alt="dashboard"
-                            />
-                            <p
-                              className={`text-[12px] ${isActive ? "text-white" : "text-text-100"}`}
+                            <div
+                              className={`flex items-center justify-center gap-1 p-1 ${isActive ? "bg-button-bg rounded-lg" : ""}`}
                             >
-                              {link.title}
-                            </p>
-                          </div>
-                          <img src={downArrow} alt="" />
-                        </Link>
-                      );
-                    })}
+                              <img
+                                src={isActive ? link.iconActive : link.icon}
+                                alt="dashboard"
+                              />
+                              <p
+                                className={`text-[12px] ${isActive ? "text-white" : "text-text-100"}`}
+                              >
+                                {link.title}
+                              </p>
+                            </div>
+                            <img src={rightArrow} alt="" />
+                          </Link>
+                        );
+                      })
+                    ) : (
+                      <>
+                        {links.map((link, index) => {
+                          const isActive = location.pathname === link.link;
+
+                          return (
+                            <Link
+                              key={index}
+                              to={link.link}
+                              onClick={handleMenu}
+                              className="flex items-center justify-between py-0.5"
+                            >
+                              <div
+                                className={`flex items-center justify-center gap-1 p-1 ${isActive ? "bg-button-bg rounded-lg" : ""}`}
+                              >
+                                <img
+                                  src={isActive ? link.iconActive : link.icon}
+                                  alt="dashboard"
+                                />
+                                <p
+                                  className={`text-[12px] ${isActive ? "text-white" : "text-text-100"}`}
+                                >
+                                  {link.title}
+                                </p>
+                              </div>
+                              <img src={rightArrow} alt="" />
+                            </Link>
+                          );
+                        })}
+
+                        <div className="mt-6 flex items-center justify-between">
+                          <Link
+                            to="/login"
+                            className="text-[12px] text-text-primary flex items-center justify-center border border-button-bg bg-button-disabled h-6 rounded-lg w-[70px]"
+                          >
+                            Sign in
+                          </Link>
+
+                          <Link
+                            to="/signup"
+                            className="text-[12px] text-white flex items-center justify-center bg-button-bg rounded-lg w-[70px] h-6"
+                          >
+                            Sign up
+                          </Link>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
 
-                <Link to="" className="flex gap-1">
-                  <img src={iconDispute} alt="" />
-                  <p className="text-[12px] text-text-primary">My Disputes</p>
-                </Link>
+                {isAuthenticated && (
+                  <button
+                    onClick={handleLogout}
+                    className="flex gap-1 border border-button-bg rounded-lg h-6 p-1"
+                  >
+                    <img src={iconDispute} alt="" />
+                    <p className="text-[12px] text-text-primary">Logout</p>
+                  </button>
+                )}
               </div>
             </motion.div>
           </>

@@ -2,7 +2,7 @@
 import hide from "@/assets/images/icon-hide-password.svg";
 import show from "@/assets/images/icon-show-password.svg";
 import inputError from "@/assets/images/icon-email-error.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -17,9 +17,11 @@ import { useGoogleAuth } from "@/hooks/useGoogleAuth";
 import Loading from "@/components/Loading";
 
 export default function Signup() {
+  const { role } = useParams<{ role: "user" | "agent" }>();
+  const selectedRole = role ?? "user";
+
   const [showPassword, setShowPassword] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const [selectedRole, setSelectedRole] = useState<"user" | "agent">("user");
 
   // use custom google auth hook
   const {
@@ -124,41 +126,6 @@ export default function Signup() {
               Or sign up with email
             </p>
             <hr className="grow border-[#80808059]" />
-          </div>
-        </div>
-
-        {/* Role Selection */}
-        <div className="flex-col gap-2 hidden">
-          <label className="text-black text-[14px] font-medium">I am a:</label>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setSelectedRole("user")}
-              className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                selectedRole === "user"
-                  ? "border-[#274AD0] bg-[#274AD0]/10 text-[#274AD0]"
-                  : "border-gray-300 bg-white text-gray-700"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-[16px] font-semibold">Buyer</span>
-                <span className="text-[10px]">Looking for property</span>
-              </div>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedRole("agent")}
-              className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                selectedRole === "agent"
-                  ? "border-[#274AD0] bg-[#274AD0]/10 text-[#274AD0]"
-                  : "border-gray-300 bg-white text-gray-700"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-1">
-                <span className="text-[16px] font-semibold">Agent</span>
-                <span className="text-[10px]">Selling properties</span>
-              </div>
-            </button>
           </div>
         </div>
 
@@ -306,7 +273,7 @@ export default function Signup() {
                 {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
 
-              <p className="text-[12px] text-text-secondary">
+              <p className="text-[12px] leading-4 text-text-secondary">
                 Already have an account?&nbsp;
                 <Link to="/login" className="text-[#274AD0]">
                   Login

@@ -1,16 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type ChatAgentModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  propertyId: string;
+  propertyTitle: string;
+  agentId: string;
+  agentName: string;
 };
 
 export default function ChatAgentModal({
   isOpen,
   onClose,
+  propertyId,
+  propertyTitle,
+  agentId,
+  agentName,
 }: ChatAgentModalProps) {
   const navigate = useNavigate();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +34,14 @@ export default function ChatAgentModal({
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  // navigate to chat with property and agent info
+  const handleContinueToChat = () => {
+    onClose();
+    navigate(`/chat?propertyId=${propertyId}&agentId=${agentId}`, {
+      state: { propertyId, propertyTitle, agentId, agentName },
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-50 modal-enter">
@@ -79,13 +96,14 @@ export default function ChatAgentModal({
             <div className="mt-4 flex items-center justify-center py-1 px-4 gap-4">
               <input
                 type="checkbox"
-                name=""
                 id="terms"
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
                 className="h-4 w-4 cursor-pointer"
               />
               <label
                 htmlFor="terms"
-                className="text-[14px] text-black font-semibold"
+                className="text-[14px] text-black font-semibold cursor-pointer"
               >
                 I have read and understand these tips
               </label>
@@ -93,10 +111,8 @@ export default function ChatAgentModal({
 
             <button
               type="button"
-              onClick={() => {
-                onClose();
-                navigate("/chat");
-              }}
+              onClick={handleContinueToChat}
+              disabled={!acceptedTerms}
               className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-[45px] rounded-lg flex items-center justify-center w-full mt-4 button-style"
             >
               Continue to chat
