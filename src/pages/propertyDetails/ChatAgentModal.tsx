@@ -6,8 +6,13 @@ type ChatAgentModalProps = {
   onClose: () => void;
   propertyId: string;
   propertyTitle: string;
+  propertyImage?: string;
+  propertyPrice?: number;
+  propertyAddress?: string;
   agentId: string;
   agentName: string;
+  agentAvatar?: string | null;
+  agentIsVerified?: boolean;
 };
 
 export default function ChatAgentModal({
@@ -15,8 +20,13 @@ export default function ChatAgentModal({
   onClose,
   propertyId,
   propertyTitle,
+  propertyImage,
+  propertyPrice,
+  propertyAddress,
   agentId,
   agentName,
+  agentAvatar,
+  agentIsVerified,
 }: ChatAgentModalProps) {
   const navigate = useNavigate();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -37,7 +47,17 @@ export default function ChatAgentModal({
   const handleContinueToChat = () => {
     onClose();
     navigate(`/chat?propertyId=${propertyId}&agentId=${agentId}`, {
-      state: { propertyId, propertyTitle, agentId, agentName },
+      state: {
+        propertyId,
+        propertyTitle,
+        propertyImage,
+        propertyPrice,
+        propertyAddress,
+        agentId,
+        agentName,
+        agentAvatar,
+        agentIsVerified,
+      },
     });
   };
 

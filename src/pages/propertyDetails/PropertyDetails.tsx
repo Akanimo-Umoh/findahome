@@ -14,6 +14,7 @@ import { useState } from "react";
 import ChatAgentModal from "./ChatAgentModal";
 import ImageCarousel from "./ImageCarousel";
 import agentAvatar from "@/assets/images/agentAvatar.jpg";
+import Spinner from "@/components/Spinner";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
@@ -22,11 +23,7 @@ export default function PropertyDetails() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (loading) {
-    return (
-      <div className="mx-6 font-ssPro min-h-screen flex items-center justify-center">
-        <p className="text-text-secondary text-[14px]">Loading property...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (error || !property) {
@@ -37,10 +34,10 @@ export default function PropertyDetails() {
             {error || "Property not found"}
           </p>
           <button
-            onClick={() => navigate("/properties")}
+            onClick={() => navigate(-1)}
             className="mt-4 text-[#274AD0] underline"
           >
-            Back to Properties
+            Go back
           </button>
         </div>
       </div>
@@ -201,8 +198,8 @@ export default function PropertyDetails() {
               <div className="flex gap-1 items-center text-[12px] text-text-secondary">
                 <img src={starIcon} alt="" />
                 <div className="flex items-center justify-center gap-1">
-                  {property.owner.rating && (
-                    <p>{property.owner.rating > 0} Rating.</p>
+                  {property.owner.rating > 0 && (
+                    <p>{property.owner.rating} Rating.</p>
                   )}
                   {property.owner.totalListings > 0 && (
                     <p>{property.owner.totalListings} Listings</p>
@@ -240,8 +237,17 @@ export default function PropertyDetails() {
         onClose={() => setIsModalOpen(false)}
         propertyId={property._id}
         propertyTitle={property.title}
+        propertyImage={property.images?.[0]}
+        propertyPrice={property.price}
+        propertyAddress={property.address}
         agentId={property.owner._id}
         agentName={property.owner.name}
+        agentAvatar={
+          Array.isArray(property.owner.profilePicture)
+            ? (property.owner.profilePicture[0] ?? null)
+            : property.owner.profilePicture
+        }
+        agentIsVerified={property.owner.isVerified}
       />
     </div>
   );
