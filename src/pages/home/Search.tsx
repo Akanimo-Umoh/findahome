@@ -14,7 +14,7 @@ export default function Search() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useState({
     location: "",
-    propertyType: "",
+    propertyType: "apartment",
     bedrooms: "",
     priceRange: "",
   });

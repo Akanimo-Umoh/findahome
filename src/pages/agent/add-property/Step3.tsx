@@ -10,7 +10,7 @@ import bathroomIcon from "@/assets/agentImages/icon-bathrooms.svg";
 import UploadImages from "./UploadImages";
 import UploadDocuments from "./UploadDocuments";
 import UploadVideo from "./UploadVideo";
-import SubmissionSuccessful from "./SubmissionSuccessful";
+// import SubmissionSuccessful from "./SubmissionSuccessful";
 
 export default function Step3() {
   return (

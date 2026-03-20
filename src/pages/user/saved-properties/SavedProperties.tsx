@@ -1,109 +1,109 @@
 import saveIcon from "@/assets/images/icon-heart.svg";
 import goBack from "@/assets/images/icon-back.svg";
 // import apartmentImg from "@/assets/images/img-apartment.png";
-import avatarImg from "@/assets/images/agentAvatar.jpg";
+// import avatarImg from "@/assets/images/agentAvatar.jpg";
 import { useNavigate } from "react-router-dom";
 // import PropertyCard from "@/components/PropertyCard";
-import landImg from "@/assets/agentImages/img-land.png";
-import LandCard from "@/components/LandCard";
+// import landImg from "@/assets/agentImages/img-land.png";
+// import LandCard from "@/components/LandCard";
 
 export default function SavedProperties() {
   const navigate = useNavigate();
 
-//   const properties = [
-//     {
-//       id: "1",
-//       property_image: apartmentImg,
-//       title: "4 Bedroom Apartment",
-//       value: "800k",
-//       location: "Lekki Phase 1, Lagos",
-//       bedroom: "4",
-//       bathroom: "2",
-//       avatar: avatarImg,
-//       listed_by: "MaryAnn Kikomu",
-//       is_verified: false,
-//     },
-//     {
-//       id: "2",
-//       property_image: apartmentImg,
-//       title: "4 Bedroom Apartment",
-//       value: "800k",
-//       location: "Lekki Phase 1, Lagos",
-//       bedroom: "4",
-//       bathroom: "2",
-//       avatar: avatarImg,
-//       listed_by: "MaryAnn Kikomu",
-//       is_verified: true,
-//     },
-//     {
-//       id: "3",
-//       property_image: apartmentImg,
-//       title: "4 Bedroom Apartment",
-//       value: "800k",
-//       location: "Lekki Phase 1, Lagos",
-//       bedroom: "4",
-//       bathroom: "2",
-//       avatar: avatarImg,
-//       listed_by: "MaryAnn Kikomu",
-//       is_verified: false,
-//     },
-//     {
-//       id: "4",
-//       property_image: apartmentImg,
-//       title: "4 Bedroom Apartment",
-//       value: "800k",
-//       location: "Lekki Phase 1, Lagos",
-//       bedroom: "4",
-//       bathroom: "2",
-//       avatar: avatarImg,
-//       listed_by: "MaryAnn Kikomu",
-//       is_verified: true,
-//     },
-//   ];
+  // const properties = [
+  //   {
+  //     id: "1",
+  //     property_image: apartmentImg,
+  //     title: "4 Bedroom Apartment",
+  //     value: "800k",
+  //     location: "Lekki Phase 1, Lagos",
+  //     bedroom: "4",
+  //     bathroom: "2",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "2",
+  //     property_image: apartmentImg,
+  //     title: "4 Bedroom Apartment",
+  //     value: "800k",
+  //     location: "Lekki Phase 1, Lagos",
+  //     bedroom: "4",
+  //     bathroom: "2",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  //   {
+  //     id: "3",
+  //     property_image: apartmentImg,
+  //     title: "4 Bedroom Apartment",
+  //     value: "800k",
+  //     location: "Lekki Phase 1, Lagos",
+  //     bedroom: "4",
+  //     bathroom: "2",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "4",
+  //     property_image: apartmentImg,
+  //     title: "4 Bedroom Apartment",
+  //     value: "800k",
+  //     location: "Lekki Phase 1, Lagos",
+  //     bedroom: "4",
+  //     bathroom: "2",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  // ];
 
-  const lands = [
-    {
-      id: "1",
-      property_image: landImg,
-      title: "600sqm of residential land",
-      value: "3.6M",
-      location: "Lekki Phase 1, Lagos",
-      avatar: avatarImg,
-      listed_by: "MaryAnn Kikomu",
-      is_verified: false,
-    },
-    {
-      id: "2",
-      property_image: landImg,
-      title: "600sqm of residential land",
-      value: "3.6M",
-      location: "Lekki Phase 1, Lagos",
-      avatar: avatarImg,
-      listed_by: "MaryAnn Kikomu",
-      is_verified: true,
-    },
-    {
-      id: "3",
-      property_image: landImg,
-      title: "600sqm of residential land",
-      value: "3.6M",
-      location: "Lekki Phase 1, Lagos",
-      avatar: avatarImg,
-      listed_by: "MaryAnn Kikomu",
-      is_verified: false,
-    },
-    {
-      id: "4",
-      property_image: landImg,
-      title: "600sqm of residential land",
-      value: "3.6M",
-      location: "Lekki Phase 1, Lagos",
-      avatar: avatarImg,
-      listed_by: "MaryAnn Kikomu",
-      is_verified: true,
-    },
-  ];
- 
+  // const lands = [
+  //   {
+  //     id: "1",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "2",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  //   {
+  //     id: "3",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: false,
+  //   },
+  //   {
+  //     id: "4",
+  //     property_image: landImg,
+  //     title: "600sqm of residential land",
+  //     value: "3.6M",
+  //     location: "Lekki Phase 1, Lagos",
+  //     avatar: avatarImg,
+  //     listed_by: "MaryAnn Kikomu",
+  //     is_verified: true,
+  //   },
+  // ];
+
   return (
     <div className="text-text-primary px-6 mb-10">
       {/* header */}
@@ -134,8 +134,8 @@ export default function SavedProperties() {
 
         {/* main apartment card ctn */}
         {/* this is for the apartment cards */}
-        {/* <div className="space-y-8 mt-8">
-          {properties.map((property) => (
+        <div className="space-y-8 mt-8">
+          {/* {properties.map((property) => (
             <PropertyCard
               key={property.id}
               id={property.id}
@@ -150,11 +150,11 @@ export default function SavedProperties() {
               is_verified={property.is_verified}
               img_height="h-[150px]"
             />
-          ))}
-        </div> */}
+          ))} */}
+        </div>
 
         {/* main land card ctn */}
-        {/* this is for the land cards */}
+        {/* this is for the land cards
         <div className="mt-8 space-y-8">
           {lands.map((land) => (
             <LandCard
@@ -170,7 +170,7 @@ export default function SavedProperties() {
               img_height="h-[150px]"
             />
           ))}
-        </div>
+        </div> */}
       </main>
     </div>
   );

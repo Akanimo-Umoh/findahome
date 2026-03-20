@@ -33,7 +33,7 @@ import { Properties as AdminProperties } from "@/pages/admin/properties";
 import { Settings as AdminSettings } from "@/pages/admin/settings";
 import { AllProperties } from "@/pages/properties";
 import { SearchResults } from "@/pages/search";
-import { LandDetails, PropertyDetails } from "@/pages/propertyDetails";
+import { PropertyDetails } from "@/pages/propertyDetails";
 import NormalLayout from "@/layouts/NormalLayout";
 import { ChatMessages, Chats } from "@/pages/user/chats";
 import {
@@ -161,7 +161,6 @@ export default function AppRoutes() {
         />
         <Route path="/transaction-receipt" element={<TransactionReceipt />} />
         <Route path="/saved-properties" element={<SavedProperties />} />
-        <Route path="/land-details" element={<LandDetails />} />
       </Route>
 
       {/* ==================== AGENT ROUTES ==================== */}

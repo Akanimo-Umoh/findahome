@@ -1,13 +1,12 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-// import propertyImg from "@/assets/images/img-apartment.png";
-// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import PropertyCard from "@/components/PropertyCard";
 import { useProperties } from "@/hooks/useProperties";
- 
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
+
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -18,8 +17,11 @@ export default function AllProperties() {
 
   const totalPages = Math.ceil(properties.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentProperties = properties.slice(startIndex, endIndex);
+  // start index + end index
+  const currentProperties = properties.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE,
+  );
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -32,12 +34,12 @@ export default function AllProperties() {
     const pages: (number | string)[] = [];
 
     if (totalPages <= 7) {
-      // Show all pages if total is 7 or less
+      // show all pages if total is 7 or less
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
+      // always show first page
       pages.push(1);
 
       if (currentPage > 3) {
@@ -56,7 +58,7 @@ export default function AllProperties() {
         pages.push("...");
       }
 
-      // Always show last page
+      // always show last page
       pages.push(totalPages);
     }
 
@@ -67,11 +69,24 @@ export default function AllProperties() {
     return (
       <div className="flex min-h-screen flex-col font-ssPro">
         <Navbar />
-        <main className="flex-1 mt-18 mx-6">
-          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
-            Available Properties
-          </p>
-          <div className="mt-6 text-center text-text-secondary">Loading...</div>
+        <main className="mt-18 mx-6">
+          <div className="relative flex items-center justify-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="absolute left-0 cursor-pointer"
+            >
+              <img src={goBack} alt="" />
+            </button>
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center">
+              Available Properties
+            </p>
+          </div>
+
+          <div className="mt-6 space-y-8">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <PropertyCardSkeleton key={index} />
+            ))}
+          </div>
         </main>
       </div>
     );
@@ -82,9 +97,18 @@ export default function AllProperties() {
       <div className="flex min-h-screen flex-col font-ssPro">
         <Navbar />
         <main className="flex-1 mt-18 mx-6">
-          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
-            Available Properties
-          </p>
+          <div className="relative flex items-center justify-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="absolute left-0 cursor-pointer"
+            >
+              <img src={goBack} alt="" />
+            </button>
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+              Available Properties
+            </p>
+          </div>
+
           <div className="mt-6 text-center text-red-500">Error: {error}</div>
         </main>
       </div>
@@ -116,17 +140,8 @@ export default function AllProperties() {
           {/* properties ctn */}
           {currentProperties.map((property) => (
             <PropertyCard
-              key={property.id}
-              id={property.id}
-              property_image={property.property_image}
-              title={property.title}
-              value={property.value}
-              location={property.location}
-              bedroom={property.bedroom}
-              bathroom={property.bathroom}
-              agent_avatar={property.agent_avatar}
-              listed_by={property.listed_by}
-              is_verified={property.is_verified}
+              key={property._id}
+              property={property}
               img_height="h-50"
             />
           ))}

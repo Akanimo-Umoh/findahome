@@ -138,7 +138,7 @@ export default function ChatMessages() {
               <p className="line-clamp-1">Lekki Phase 1, Lagos.</p>
               <p className="flex items-center">
                 <img src={iconNaira} alt="" />
-                <span>{property.value}/yr</span>
+                <span>{property.price.toLocaleString()}/yr</span>
               </p>
             </div>
           </div>

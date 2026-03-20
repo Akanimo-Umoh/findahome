@@ -3,7 +3,7 @@ import PropertyCard from "@/components/PropertyCard";
 import { useProperties } from "@/hooks/useProperties";
 
 export default function Properties() {
-  const { properties, loading, error } = useProperties({ limit: 3 });
+  const { properties, loading, error } = useProperties();
 
   if (loading) {
     return (
@@ -27,6 +27,9 @@ export default function Properties() {
     );
   }
 
+  // slice to 3 for the homepage preview
+  const previewProperties = properties.slice(0, 3);
+
   return (
     <div className="font-ssPro mx-6">
       <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
@@ -36,19 +39,10 @@ export default function Properties() {
       {/* main properties ctn */}
       <div className="mt-6 space-y-8">
         {/* properties ctn */}
-        {properties.map((property) => (
+        {previewProperties.map((property) => (
           <PropertyCard
-            key={property.id}
-            id={property.id}
-            property_image={property.property_image}
-            title={property.title}
-            value={property.value}
-            location={property.location}
-            bedroom={property.bedroom}
-            bathroom={property.bathroom}
-            agent_avatar={property.agent_avatar}
-            listed_by={property.listed_by}
-            is_verified={false}
+            key={property._id}
+            property={property}
             img_height="h-50"
           />
         ))}

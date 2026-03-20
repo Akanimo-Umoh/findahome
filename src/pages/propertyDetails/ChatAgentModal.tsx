@@ -27,7 +27,6 @@ export default function ChatAgentModal({
     } else {
       document.body.style.overflow = "";
     }
-
     return () => {
       document.body.style.overflow = "";
     };
@@ -35,7 +34,6 @@ export default function ChatAgentModal({
 
   if (!isOpen) return null;
 
-  // navigate to chat with property and agent info
   const handleContinueToChat = () => {
     onClose();
     navigate(`/chat?propertyId=${propertyId}&agentId=${agentId}`, {
@@ -48,9 +46,10 @@ export default function ChatAgentModal({
       {/* overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* modal */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white min-h-[40vh] rounded-t-[32px]">
-        <div className="mx-6 my-7.5">
+      {/* modal — everything lives inside here */}
+      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] max-h-[90vh] flex flex-col">
+        {/* scrollable content */}
+        <div className="overflow-y-auto flex-1 mx-6 mt-6">
           <div className="font-raleway max-w-[281px] text-center mx-auto">
             <p className="text-[14px] font-semibold text-text-primary">
               Before you chat with an agent
@@ -62,7 +61,7 @@ export default function ChatAgentModal({
           </div>
 
           <div className="mt-4">
-            <ul className="list-disc text-[12px] text-text-secondary mx-6 flex flex-col gap-3 items-center justify-center">
+            <ul className="list-disc text-[12px] text-text-secondary mx-6 flex flex-col gap-3 justify-center">
               <li>
                 FindaHome will never ask for your personal banking details in
                 the chat.
@@ -76,7 +75,7 @@ export default function ChatAgentModal({
                 system.
               </li>
               <li>
-                Verify the agent’s identity — only chat with agents that have
+                Verify the agent's identity — only chat with agents that have
                 the NIN verification badge.
               </li>
               <li>
@@ -84,8 +83,8 @@ export default function ChatAgentModal({
                 calls, or messages until payment and inspection are verified.
               </li>
               <li>
-                Report suspicious behavior immediately using the “Report Agent”
-                option in chat
+                Report suspicious behavior immediately using the "Report Agent"
+                option in chat.
               </li>
               <li>
                 Be respectful and professional — FindaHome promotes safe,
@@ -99,7 +98,7 @@ export default function ChatAgentModal({
                 id="terms"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="h-4 w-4 cursor-pointer"
+                className="h-6 w-6 cursor-pointer"
               />
               <label
                 htmlFor="terms"
@@ -108,16 +107,19 @@ export default function ChatAgentModal({
                 I have read and understand these tips
               </label>
             </div>
-
-            <button
-              type="button"
-              onClick={handleContinueToChat}
-              disabled={!acceptedTerms}
-              className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-[45px] rounded-lg flex items-center justify-center w-full mt-4 button-style"
-            >
-              Continue to chat
-            </button>
           </div>
+        </div>
+
+        {/* button — pinned inside modal, never scrolls */}
+        <div className="shrink-0 mx-6 py-6">
+          <button
+            type="button"
+            onClick={handleContinueToChat}
+            disabled={!acceptedTerms}
+            className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-[45px] rounded-lg flex items-center justify-center w-full button-style disabled:opacity-50"
+          >
+            Continue to chat
+          </button>
         </div>
       </div>
     </div>
