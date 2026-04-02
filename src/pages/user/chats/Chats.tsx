@@ -19,10 +19,6 @@ export default function Chats() {
       agent: "Jasmine Properties",
       last_message: "Is this property still available?, I'd love t...",
       last_message_time: "22:00 PM",
-      current_status: "Inspection Scheduled",
-      current_status_icon: iconInspection,
-      status_bg: "bg-bg-accent",
-      status_color: "text-[#274AD0]",
       unread_message: "1",
     },
     {
@@ -31,10 +27,6 @@ export default function Chats() {
       agent: "Jasmine Properties",
       last_message: "Is this property still available?, I'd love t...",
       last_message_time: "22:00 PM",
-      current_status: "In Escrow",
-      current_status_icon: iconEscrow,
-      status_bg: "bg-[#D0272733]",
-      status_color: "text-[#D02727]",
       unread_message: "4",
     },
     {
@@ -55,10 +47,6 @@ export default function Chats() {
       agent: "Jasmine Properties",
       last_message: "Is this property still available?, I'd love t...",
       last_message_time: "22:00 PM",
-      current_status: "Awaiting handover",
-      current_status_icon: iconAwaiting,
-      status_bg: "bg-bg-accent",
-      status_color: "text-[#274AD0]",
       unread_message: "2",
     },
     {
@@ -67,10 +55,6 @@ export default function Chats() {
       agent: "Jasmine Properties",
       last_message: "Is this property still available?, I'd love t...",
       last_message_time: "22:00 PM",
-      current_status: "Awaiting handover",
-      current_status_icon: iconAwaiting,
-      status_bg: "bg-bg-accent",
-      status_color: "text-[#274AD0]",
       unread_message: "3",
     },
   ];
@@ -141,7 +125,7 @@ export default function Chats() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-[61px]">
+                <div className="flex items-center justify-between gap-[61px]">
                   <div
                     className={`${message.status_bg} rounded-2xl px-2 py-1 flex items-center justify-center gap-1`}
                   >
