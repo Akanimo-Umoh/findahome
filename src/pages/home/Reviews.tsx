@@ -108,7 +108,7 @@ export default function Reviews() {
               ? "Welcome back!"
               : "Ready to find your dream home?"}
           </p>
-          <p className="text-[12px]">
+          <p className="text-[12px] text-center">
             {isAuthenticated
               ? "You're all set to explore amazing properties"
               : "Join thousands of happy homeowners and renters today"}

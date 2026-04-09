@@ -9,20 +9,25 @@ import Faq from "./Faq";
 export default function Home() {
   return (
     <div className="font-ssPro">
-      <section className="heroBg pt-4.25 pb-17.25">
-        <div className="flex flex-col items-center justify-center text-center gap-1 max-w-[342px] mx-auto text-white">
-          <p className="font-raleway text-[18px] font-semibold tracking-[1px] leading-7.5">
-            Find your next home, stress-free
-          </p>
+      <section className="heroBg pt-9.25 pb-10.75 relative">
+        {/* black overlay */}
+        <div className="absolute inset-0 bg-black/20" />
 
-          <p className="text-[12px] leading-4.5">
-            Discover verified properties across Nigeria. Connect with trusted
-            agents and move in safely.
-          </p>
-        </div>
+        <div className="relative z-10">
+          <div className="flex flex-col items-center justify-center text-center gap-1 max-w-[342px] mx-auto text-white">
+            <p className="font-raleway text-[18px] font-semibold tracking-[1px] leading-7.5">
+              Find your next home, stress-free
+            </p>
 
-        <div className="mt-17 mx-6">
-          <Search />
+            <p className="text-[12px] leading-4">
+              Discover verified properties across Nigeria. Connect with trusted
+              agents and move in safely.
+            </p>
+          </div>
+
+          <div className="mt-55.5 mx-6">
+            <Search />
+          </div>
         </div>
       </section>
 

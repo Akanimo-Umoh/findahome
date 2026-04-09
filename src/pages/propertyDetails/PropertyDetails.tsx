@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import goBackIcon from "@/assets/images/icon-back.svg";
 import heartIcon from "@/assets/images/icon-heart.svg";
+import addFavoriteIcon from "@/assets/images/icon-add-to-favorite.svg";
 import nairaIcon from "@/assets/images/icon-naira.svg";
 import location from "@/assets/images/location.svg";
 import bed from "@/assets/images/bed.svg";
@@ -15,12 +16,15 @@ import ChatAgentModal from "./ChatAgentModal";
 import ImageCarousel from "./ImageCarousel";
 import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import Spinner from "@/components/Spinner";
+import { useFavorite } from "@/hooks/useFavorite";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { property, loading, error } = useProperty(id || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { isSaved, isLoading, toggleFavorite } = useFavorite(id || "");
 
   if (loading) {
     return <Spinner />;
@@ -57,8 +61,16 @@ export default function PropertyDetails() {
           Property Details
         </p>
 
-        <button type="button" className="cursor-pointer">
-          <img src={heartIcon} alt="" />
+        <button
+          type="button"
+          onClick={toggleFavorite}
+          disabled={isLoading}
+          className="cursor-pointer"
+        >
+          <img
+            src={isSaved ? heartIcon : addFavoriteIcon}
+            alt="save property"
+          />
         </button>
       </div>
 
@@ -70,9 +82,15 @@ export default function PropertyDetails() {
         />
       </div>
 
-      {/* price and details */}
+      {/* details */}
       <section className="mt-3">
-        <div className="flex items-center">
+        {/* name */}
+        <p className="text-[18px] font-raleway font-semibold tracking-[1px] text-black">
+          {property.title}
+        </p>
+
+        {/* price */}
+        <div className="flex items-center mt-3">
           <img src={nairaIcon} alt="naira" />
           <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-[#274AD0]">
             {property.price.toLocaleString()}
@@ -89,7 +107,11 @@ export default function PropertyDetails() {
           </div>
 
           {/* bed and bath for apartment only */}
-          {!isLand && (
+          {isLand ? (
+            <div className="text-[12px] leading-4 text-text-secondary">
+              Land type: {property.landType}
+            </div>
+          ) : (
             <div className="flex gap-6 text-[12px] text-text-secondary items-center">
               {/* bedroom */}
               <div className="details-Prop">
@@ -105,17 +127,9 @@ export default function PropertyDetails() {
             </div>
           )}
 
-          {/* land type - only for land */}
-          {isLand && property.landType && (
-            <div className="text-[12px] leading-4 text-text-secondary">
-              Land type:{" "}
-              <span className="font-semibold">{property.landType}</span>
-            </div>
-          )}
-
           {/* inspection fee and service charge */}
           {(property.inspectionFee || property.serviceCharge) && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-start gap-5">
               {property.inspectionFee && (
                 <p className="text-[12px] tracking-[1px] text-text-secondary">
                   Inspection fee:{" "}

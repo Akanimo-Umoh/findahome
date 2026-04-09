@@ -1,4 +1,5 @@
 import property from "@/assets/images/property.jpg";
+import landImg from "@/assets/images/img-land.jpg";
 import naira from "@/assets/images/naira.svg";
 import location from "@/assets/images/location.svg";
 import bed from "@/assets/images/bed.svg";
@@ -18,12 +19,11 @@ export default function FeaturedProps() {
       listed_by: "MaryAnn Kikomu",
     },
     {
-      property_image: property,
-      title: "4 Bedroom Apartment",
-      value: "800k",
+      property_image: landImg,
+      title: "800 Sqm of Land",
+      value: "30M",
       location: "Lekki Phase 1, Lagos",
-      bedroom: "2",
-      bathroom: "2",
+      landType: "Residential Land",
       avatar: agentAvatar,
       listed_by: "MaryAnn Kikomu",
     },
@@ -74,7 +74,7 @@ export default function FeaturedProps() {
               </div>
 
               <div className="space-y-2 mt-1">
-                <div className="font-raleway text-[12px] font-semibold space-y-2 tracking-[1px]">
+                <div className="font-raleway text-[12px] font-semibold space-y-1 tracking-[1px]">
                   <p className="text-black line-clamp-2 h-9">{feature.title}</p>
                   <p className="flex items-center text-text-primary">
                     <img src={naira} alt="naira" /> {feature.value}
@@ -88,16 +88,22 @@ export default function FeaturedProps() {
                       <p className="line-clamp-2">{feature.location}</p>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1">
-                        <img src={bed} alt="" /> <p>{feature.bedroom} Beds</p>
+                    {feature.landType ? (
+                      <div className="flex items-center">
+                        <p>{feature.landType}</p>
                       </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                          <img src={bed} alt="" /> <p>{feature.bedroom} Beds</p>
+                        </div>
 
-                      <div className="flex items-center gap-1">
-                        <img src={tubs} alt="" />{" "}
-                        <p>{feature.bathroom} Baths</p>
+                        <div className="flex items-center gap-1">
+                          <img src={tubs} alt="" />{" "}
+                          <p>{feature.bathroom} Baths</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-0.5">

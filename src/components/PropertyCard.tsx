@@ -9,13 +9,9 @@ import agentAvatar from "@/assets/images/agentAvatar.jpg";
 
 type PropertyCardProps = {
   property: Property;
-  img_height: string;
 };
 
-export default function PropertyCard({
-  property,
-  img_height = "h-50",
-}: PropertyCardProps) {
+export default function PropertyCard({ property }: PropertyCardProps) {
   const isLand = property.propertyType === "land";
 
   return (
@@ -24,7 +20,7 @@ export default function PropertyCard({
         <img
           src={property.images[0]}
           alt={property.title}
-          className={`w-full ${isLand ? "h-37.5" : img_height} object-cover`}
+          className="w-full h-50 object-cover"
         />
 
         {property.owner.isVerified && (
@@ -58,9 +54,12 @@ export default function PropertyCard({
                 </p>
               </div>
 
-              {/* only renders for non-land properties */}
-              {!isLand && (
-                <div className="flex items-center gap-2 text-[12px] text-text-secondary">
+              {isLand ? (
+                <div className="flex items-center h-5 text-[12px] text-text-secondary">
+                  Land Type: {property.landType}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-[12px] text-text-secondary h-5">
                   <div className="flex items-center gap-1">
                     <img src={bed} alt="" className="w-4 h-4" />
                     <p>{property.bedroom} Beds</p>

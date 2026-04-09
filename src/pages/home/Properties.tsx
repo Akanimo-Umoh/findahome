@@ -1,34 +1,14 @@
 import { Link } from "react-router-dom";
 import PropertyCard from "@/components/PropertyCard";
 import { useProperties } from "@/hooks/useProperties";
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
 
 export default function Properties() {
   const { properties, loading, error } = useProperties();
 
-  if (loading) {
-    return (
-      <div className="font-ssPro mx-6">
-        <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
-          Available Properties
-        </p>
-        <div className="mt-6 text-center text-text-secondary">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="font-ssPro mx-6">
-        <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
-          Available Properties
-        </p>
-        <div className="mt-6 text-center text-red-500">Error: {error}</div>
-      </div>
-    );
-  }
-
   // slice to 3 for the homepage preview
   const previewProperties = properties.slice(0, 3);
+  const skeletons = Array(3).fill(null);
 
   return (
     <div className="font-ssPro mx-6">
@@ -38,21 +18,27 @@ export default function Properties() {
 
       {/* main properties ctn */}
       <div className="mt-6 space-y-8">
-        {/* properties ctn */}
-        {previewProperties.map((property) => (
-          <PropertyCard
-            key={property._id}
-            property={property}
-            img_height="h-50"
-          />
-        ))}
+        {loading ? (
+          // show skeletons
+          skeletons.map((_, index) => <PropertyCardSkeleton key={index} />)
+        ) : error ? (
+          // show error message
+          <div className="text-center text-red-500">Error: {error}</div>
+        ) : (
+          // show properties
+          previewProperties.map((property) => (
+            <PropertyCard key={property._id} property={property} />
+          ))
+        )}
       </div>
 
-      <div className="text-center mt-2">
-        <Link to="/properties" className="text-text-secondary text-center">
-          See More
-        </Link>
-      </div>
+      {!loading && !error && (
+        <div className="text-center mt-2">
+          <Link to="/properties" className="text-text-secondary text-center">
+            See More
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

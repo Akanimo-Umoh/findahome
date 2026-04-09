@@ -70,12 +70,12 @@ import { SavedProperties } from "@/pages/user/saved-properties";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* ==================== PUBLIC ROUTES ==================== */}
+      {/* PUBLIC ROUTES */}
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
       </Route>
 
-      {/* route without the footer */}
+      {/* public routes without the footer */}
       <Route path="/properties" element={<AllProperties />} />
       <Route element={<NormalLayout />}>
         <Route path="/search" element={<SearchResults />} />
@@ -84,7 +84,7 @@ export default function AppRoutes() {
         <Route path="/property/:id" element={<PropertyDetails />} />
       </Route>
 
-      {/* ==================== AUTH ROUTES ==================== */}
+      {/* AUTH ROUTES */}
       {/* Only accessible when NOT logged in */}
       <Route element={<PublicOnlyRoute />}>
         <Route element={<AuthLayout />}>
@@ -100,7 +100,7 @@ export default function AppRoutes() {
         </Route>
       </Route>
 
-      {/* ==================== VERIFICATION ROUTES ==================== */}
+      {/* VERIFICATION ROUTES */}
       {/* Accessible during signup/login flow */}
       <Route element={<AuthLayout />}>
         <Route path="/verify-email" element={<VerifyEmail />} />
@@ -120,6 +120,8 @@ export default function AppRoutes() {
         {/* user chats */}
         <Route element={<NormalLayout />}></Route>
       </Route>
+
+      
 
       <Route element={<NormalLayout />}>
         <Route path="/profile" element={<Profile />} />
