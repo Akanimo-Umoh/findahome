@@ -1,6 +1,9 @@
 import editIcon from "@/assets/images/icon-blue-edit.svg";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function PersonalInformation() {
+  const { user } = useAuthContext();
+
   return (
     <div>
       <p className="text-black">Personal Information</p>
@@ -9,7 +12,7 @@ export default function PersonalInformation() {
         <div>
           <p className="text-text-secondary">Full Name:</p>
           <div className="flex items-center justify-between">
-            <p>Victoria Ntekim</p>
+            <p>{user?.name}</p>
             <img src={editIcon} alt="" />
           </div>
         </div>
@@ -17,7 +20,7 @@ export default function PersonalInformation() {
         <div>
           <p className="text-text-secondary">Email Address:</p>
           <div className="flex items-center justify-between">
-            <p>etimvictoria62@gmail.com</p>
+            <p>{user?.email}</p>
             <img src={editIcon} alt="" />
           </div>
         </div>

@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [apiError, setApiError] = useState<string | null>(null);
@@ -74,21 +74,21 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="text-text-primary w-full mx-6 flex flex-col items-center justify-center font-ssPro">
-      <p className="font-raleway font-semibold text-[18px] tracking-[1px]">
+    <div className="text-text-primary w-full mx-6 flex flex-col items-center justify-center font-ssPro md:mx-7.5 md:my-5">
+      <p className="font-raleway font-semibold text-[18px] tracking-[1px] md:text-[28px] md:font-medium">
         Forgot Password?
       </p>
 
-      <div className="mt-12 flex flex-col items-center justify-center gap-2">
-        <img src={forgotPasswordImg} alt="" className="" />
+      <div className="mt-12 flex flex-col items-center justify-center gap-2 md:mt-1">
+        <img src={forgotPasswordImg} alt="" className="md:hidden" />
 
-        <p className="text-[12px] text-center max-w-[242px] text-text-primary">
+        <p className="text-[12px] text-center max-w-[242px] text-text-primary md:max-w-70 md:leading-4">
           Please enter your email address associated with this account. We will
           send you reset instructions
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-8">
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full mt-8 md:mt-10">
         {/* api error */}
         {apiError && (
           <div
@@ -100,7 +100,7 @@ export default function ForgotPassword() {
           </div>
         )}
 
-        <div className="space-y-8">
+        <div className="space-y-8 md:space-y-6">
           <div className="flex flex-col gap-2">
             <label htmlFor="email" className="text-black">
               Email
@@ -110,7 +110,7 @@ export default function ForgotPassword() {
               type="text"
               id="email"
               placeholder="Enter Email"
-              className={`w-full text-black text-[14px] placeholder:text-text-secondary rounded-xl bg-white px-2 h-[45px] outline-none ${errors.email ? "border-2 border-state-error" : "border border-[#0A0A0A59]"}`}
+              className={`w-full text-black text-[14px] placeholder:text-text-secondary rounded-xl bg-white px-2 h-[45px] outline-none ${errors.email ? "border-2 border-state-error" : "border-2 border-text-disabled"}`}
               aria-invalid={errors.email ? "true" : "false"}
               aria-describedby={errors.email ? "email-error" : undefined}
               {...register("email")}
@@ -129,14 +129,22 @@ export default function ForgotPassword() {
               </div>
             )}
           </div>
+          <div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="font-raleway font-semibold tracking-[1px] text-white w-full h-12 rounded-lg flex items-center justify-center button-style"
+            >
+              {isSubmitting ? "Sending..." : "Send"}
+            </button>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="font-raleway font-semibold tracking-[1px] text-white w-full h-12 rounded-lg flex items-center justify-center button-style"
-          >
-            {isSubmitting ? "Sending..." : "Send"}
-          </button>
+            <Link
+              to="/login"
+              className="hidden md:flex mt-5 font-raleway font-semibold tracking-[1px] text-button-bg mx-auto w-fit"
+            >
+              Back to login
+            </Link>
+          </div>
         </div>
       </form>
     </div>

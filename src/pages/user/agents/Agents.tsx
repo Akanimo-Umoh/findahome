@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import goBack from "@/assets/images/icon-back.svg";
 import searchIcon from "@/assets/images/icon-black-search.svg";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 import AgentsCard from "./AgentsCard";
 
 export default function Agents() {
@@ -42,7 +42,7 @@ export default function Agents() {
           </label>
         </div>
 
-        {/* filter */}
+        {/* filter
         <div className="">
           <Select>
             <SelectTrigger className="filter-input">
@@ -53,7 +53,7 @@ export default function Agents() {
               <SelectItem value="land">Land</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+        </div> */}
       </div>
 
       {/* agents */}

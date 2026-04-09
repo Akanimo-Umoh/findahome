@@ -3,9 +3,9 @@ import goBack from "@/assets/images/icon-back.svg";
 import iconOptions from "@/assets/images/icon-chat-options.svg";
 import iconSearch from "@/assets/images/icon-messages-search.svg";
 import propertyImg from "@/assets/images/property.jpg";
-import iconInspection from "@/assets/images/icon-chats-inspection-scheduled.svg";
-import iconAwaiting from "@/assets/images/icon-chats-awaiting-handover.svg";
-import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg";
+// import iconInspection from "@/assets/images/icon-chats-inspection-scheduled.svg";
+// import iconAwaiting from "@/assets/images/icon-chats-awaiting-handover.svg";
+// import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg";
 import iconCompleted from "@/assets/images/icon-chats-completed.svg";
 import imgMessages from "@/assets/images/img-chats-messages.png";
 

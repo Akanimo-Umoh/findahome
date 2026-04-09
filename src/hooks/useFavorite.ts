@@ -1,5 +1,6 @@
 import { useAuthContext } from "@/context/AuthContext";
 import api from "@/services/api";
+import type { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -17,11 +18,10 @@ export function useFavorite(propertyId: string) {
 
     async function checkIfSaved() {
       try {
-        const response = await api.get("/api/favorite");
-        const favorites = response.data; // adjust based on your API response shape
+        const response = await api.get("/favorite");
+        const favorites = response.data.favorites;
         const alreadySaved = favorites.some(
-          (fav: any) =>
-            fav.property._id === propertyId || fav.property === propertyId,
+          (fav: any) => fav.property._id === propertyId,
         );
         setIsSaved(alreadySaved);
       } catch (error) {
@@ -39,18 +39,31 @@ export function useFavorite(propertyId: string) {
       return;
     }
 
+    if (!propertyId) return;
+
+    // update the UI immediately
+    const previousState = isSaved;
+    setIsSaved(!isSaved);
     setIsLoading(true);
+
+    // console.log("sending propertyId:", propertyId);
     try {
-      if (isSaved) {
-        await api.delete("/api/favorite", { data: { propertyId } });
+      if (previousState) {
+        await api.delete("/favorite", { data: { propertyId } });
         toast.success("Removed from saved properties");
-        setIsSaved(false);
       } else {
-        await api.post("/api/favorite", { propertyId });
+        await api.post("/favorite", { propertyId });
         toast.success("Property saved");
-        setIsSaved(true);
       }
     } catch (error) {
+      // if the api call fails, revert back
+      setIsSaved(previousState);
+      const axiosError = error as AxiosError<{ message: string }>;
+      const message = axiosError.response?.data?.message;
+      if (message === "Already in favorites") {
+        setIsSaved(true);
+        return;
+      }
       toast.error("Something went wrong, please try again");
     } finally {
       setIsLoading(false);

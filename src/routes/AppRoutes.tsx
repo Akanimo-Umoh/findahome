@@ -79,8 +79,6 @@ export default function AppRoutes() {
       <Route path="/properties" element={<AllProperties />} />
       <Route element={<NormalLayout />}>
         <Route path="/search" element={<SearchResults />} />
-      </Route>
-      <Route element={<NormalLayout />}>
         <Route path="/property/:id" element={<PropertyDetails />} />
       </Route>
 
@@ -110,21 +108,22 @@ export default function AppRoutes() {
       {/* ==================== USER ROUTES (BUYERS) ==================== */}
       {/* Only for users with role: "user" */}
       <Route element={<RoleBasedRoute allowedRoles={["user"]} />}>
+        {/* routes with both navbar and footer  for the user*/}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
           {/* <Route path="/properties" element={<div>User Properties</div>} /> */}
-          <Route path="/favorites" element={<div>Favorites</div>} />
+
           <Route path="/settings" element={<div>User Settings</div>} />
         </Route>
 
-        {/* user chats */}
-        <Route element={<NormalLayout />}></Route>
+        {/* routes without the footer for the user */}
+        <Route element={<NormalLayout />}>
+          <Route path="/saved-properties" element={<SavedProperties />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Route>
 
-      
-
       <Route element={<NormalLayout />}>
-        <Route path="/profile" element={<Profile />} />
         <Route path="/my-dispute" element={<Disputes />} />
         <Route path="/dispute-detail" element={<DisputeDetail />} />
         <Route path="/open-dispute" element={<OpenDispute />} />
@@ -162,7 +161,6 @@ export default function AppRoutes() {
           element={<PropertyHandoverSchedule />}
         />
         <Route path="/transaction-receipt" element={<TransactionReceipt />} />
-        <Route path="/saved-properties" element={<SavedProperties />} />
       </Route>
 
       {/* ==================== AGENT ROUTES ==================== */}

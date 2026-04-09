@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"); */
+@import url('https://fonts.googleapis.com/css2?family=Metamorphous&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
 @import url("https://fonts.cdnfonts.com/css/source-sans-pro");
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -48,6 +49,7 @@
 
   /* fonts */
   --font-raleway: "Raleway";
+  --font-metamorphous: "Metamorphous";
   --font-ssPro: "Source Sans Pro";
 
   /* bg colors */
@@ -168,6 +170,7 @@
   background: url(./assets/images/img-hero-background.jpg);
   background-position: top;
   background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .input-ctn {
@@ -278,4 +281,21 @@
 .agent-profile {
   background: linear-gradient(180deg, #e2eeff 0%, #ffffff 100%);
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+@media (min-width: 768px) {
+  .auth-bg {
+    background: url("./assets/images/img-auth-user-tablet-bg.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
+  .heroBg {
+    background: url(./assets/images/img-hero-background-tablet.jpg);
+    background-position: top;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 }

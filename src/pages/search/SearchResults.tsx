@@ -5,8 +5,7 @@ import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
 import filterIcon from "@/assets/images/icon-filter.svg";
 import goBack from "@/assets/images/icon-back.svg";
-import searchIcon from "@/assets/images/icon-messages-search.svg";
-import { useFilteredProperties } from "@/hooks/useProperties";
+import { useProperties } from "@/hooks/useProperties";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
+import Search from "../home/Search";
 
 type SortOption = "low-to-high" | "high-to-low" | "newest" | "";
 type FilterOption = "all" | "verified";
@@ -26,38 +26,21 @@ export default function SearchResults() {
   const [filterBy, setFilterBy] = useState<FilterOption>("all");
   const [showFilter, setShowFilter] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Get search filters from URL
-  const filters = useMemo(
-    () => ({
-      location: searchParams.get("location") || "",
-      propertyType: searchParams.get("propertyType") || "",
-      bedrooms: searchParams.get("bedrooms") || "",
-      priceRange: searchParams.get("priceRange") || "",
-      query: searchParams.get("query") || "",
-    }),
-    [searchParams],
-  );
-
+  const query = searchParams.get("query") || "";
   const currentPage = Number(searchParams.get("page")) || 1;
   const ITEMS_PER_PAGE = 3;
 
-  // apply url filters
-  const {
-    properties: filteredProperties,
-    loading,
-    error,
-  } = useFilteredProperties(filters);
+  const { properties, loading, error } = useProperties();
 
   // display properties
   const displayProperties = useMemo(() => {
-    let result = [...filteredProperties];
+    let result = [...properties];
 
-    // inline search
-    if (filters.query.trim()) {
-      const search = filters.query.toLowerCase();
+    // text search for title and address
+    if (query.trim()) {
+      const search = query.toLowerCase();
       result = result.filter(
         (p) =>
           p.title.toLowerCase().includes(search) ||
@@ -83,7 +66,7 @@ export default function SearchResults() {
     }
 
     return result;
-  }, [filteredProperties, filters.query, filterBy, sortBy]);
+  }, [properties, query, filterBy, sortBy]);
 
   const totalPages = Math.ceil(displayProperties.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -128,13 +111,6 @@ export default function SearchResults() {
     return pages;
   };
 
-  const removeFilter = (key: string) => {
-    const params = new URLSearchParams(searchParams);
-    params.delete(key);
-    params.set("page", "1");
-    setSearchParams(params);
-  };
-
   return (
     <div className="">
       <main className="flex-1 mx-6 mb-10">
@@ -160,17 +136,10 @@ export default function SearchResults() {
         </p>
 
         {/* search */}
-        <div className="relative flex items-center justify-center mt-4">
-          <img src={searchIcon} alt="" className="absolute left-3" />
-
-          <input
-            type="text"
-            placeholder="Search property here"
-            defaultValue={filters.query}
-            onChange={(e) => {
-              const value = e.target.value;
-
-              // debounce after 400ms
+        <div className="flex items-center justify-center mt-4">
+          <Search
+            defaultValue={query}
+            onChange={(value) => {
               if (debounceRef.current) clearTimeout(debounceRef.current);
               debounceRef.current = setTimeout(() => {
                 const params = new URLSearchParams(searchParams);
@@ -183,7 +152,6 @@ export default function SearchResults() {
                 setSearchParams(params, { replace: true });
               }, 400);
             }}
-            className="w-full py-2 pr-3 pl-8 rounded-xl bg-bg-tertiary text-[12px] leading-4"
           />
         </div>
 
@@ -249,61 +217,6 @@ export default function SearchResults() {
           </div>
         </div>
 
-        {/* Active Filters */}
-        {(filters.location ||
-          filters.propertyType ||
-          filters.bedrooms ||
-          filters.priceRange) && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {filters.location && (
-              <span className="px-3 py-1 bg-gray-100 rounded-full text-[12px] flex items-center gap-2">
-                Location: {filters.location}
-                <button
-                  onClick={() => removeFilter("location")}
-                  className="text-red-500"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {filters.propertyType && (
-              <span className="px-3 py-1 bg-gray-100 rounded-full text-[12px] flex items-center gap-2">
-                Type:{" "}
-                {filters.propertyType.charAt(0).toUpperCase() +
-                  filters.propertyType.slice(1)}
-                {/* no × button */}
-              </span>
-            )}
-            {filters.bedrooms && (
-              <span className="px-3 py-1 bg-gray-100 rounded-full text-[12px] flex items-center gap-2">
-                {filters.bedrooms === "4+"
-                  ? "4+ Bedrooms"
-                  : `${filters.bedrooms} Bedroom${filters.bedrooms === "1" ? "" : "s"}`}
-                <button
-                  onClick={() => removeFilter("bedrooms")}
-                  className="text-red-500"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-            {filters.priceRange && (
-              <span className="px-3 py-1 bg-gray-100 rounded-full text-[12px] flex items-center gap-2">
-                ₦{" "}
-                {filters.priceRange === "3m+"
-                  ? "3M+"
-                  : filters.priceRange.toUpperCase()}
-                <button
-                  onClick={() => removeFilter("priceRange")}
-                  className="text-red-500"
-                >
-                  ×
-                </button>
-              </span>
-            )}
-          </div>
-        )}
-
         {/* Results */}
         <div className="mt-6 space-y-8">
           {loading || isTransitioning ? (
@@ -321,17 +234,13 @@ export default function SearchResults() {
           ) : currentProperties.length > 0 ? (
             // results
             currentProperties.map((property) => (
-              <PropertyCard
-                key={property._id}
-                property={property}
-                img_height="h-[200px]"
-              />
+              <PropertyCard key={property._id} property={property} />
             ))
           ) : (
             // no results
             <div className="text-center py-12">
               <p className="text-text-secondary text-[14px]">
-                No properties found matching your search criteria.
+                No properties found matching your search.
               </p>
             </div>
           )}

@@ -10,39 +10,63 @@ import Summary from "./Summary";
 import PersonalInformation from "./PersonalInformation";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/context/AuthContext";
+import { useProfilePicture } from "@/hooks/useProfilePicture";
+import { useRef } from "react";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { logout } = useAuthContext();
+  const { user, logout } = useAuthContext();
+  const { changeProfilePicture, isUploading } = useProfilePicture();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleLogout = () => {
     logout();
     navigate("/", { replace: true });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      changeProfilePicture(file);
+    }
+  };
+
   return (
     <div className="px-6 text-text-primary mb-10">
       {/* header */}
       <div className="flex items-center gap-4 mt-0.5">
-        <div className="relative">
+        <div className="relative shrink-0">
           <img
-            src={avatar}
+            src={user?.profilePicture ?? avatar}
             alt=""
             className="w-17.5 h-17.5 object-cover rounded-full"
           />
-          <img
-            src={addPicture}
-            alt=""
-            className="absolute -bottom-1 right-0 "
+
+          {/* file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
           />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isUploading}
+            className="absolute -bottom-1 right-0 disabled:opacity-50"
+          >
+            <img src={addPicture} alt="change profile picture" />
+          </button>
         </div>
 
         <div className="flex flex-col gap-2">
           <div>
-            <p className="font-raleway font-semibold tracking-[1px]">
-              Victoria Ntekim
+            <p className="font-raleway font-semibold tracking-[1px] line-clamp-1">
+              {user?.name}
             </p>
-            <p className="text-[12px] leadinig-4">etimvictoria62@gmail.com</p>
+            <p className="text-[12px] leadinig-4 line-clamp-1">{user?.email}</p>
           </div>
 
           {/* <div className="flex items-center py-1 px-2 gap-1 border border-button-bg rounded-lg">

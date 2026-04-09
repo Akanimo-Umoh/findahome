@@ -130,12 +130,12 @@ export default function Login() {
   }
 
   return (
-    <div className="flex flex-col gap-6 font-ssPro w-full mx-6">
+    <div className="flex flex-col gap-6 font-ssPro w-full mx-6 md:my-5 md:mx-7.5 md:gap-10">
       <div className="flex flex-col items-center justify-center gap-1">
-        <p className="text-text-primary text-[18px] tracking-[1px] font-semibold font-raleway">
+        <p className="text-text-primary text-[18px] tracking-[1px] font-semibold font-raleway md:text-[28px] md:font-medium">
           Log in to your account
         </p>
-        <p className="text-[14px] text-text-secondary">
+        <p className="text-[14px] text-text-secondary md:text-[16px]">
           Start your journey to finding the perfect home
         </p>
       </div>
@@ -160,7 +160,7 @@ export default function Login() {
 
           <div className="flex items-center justify-center gap-1">
             <hr className="grow border-[#80808059]" />
-            <p className="text-[12px] text-text-secondary">
+            <p className="text-[12px] text-text-secondary md:text-[14px]">
               Or log in with email
             </p>
             <hr className="grow border-[#80808059]" />
@@ -192,7 +192,7 @@ export default function Login() {
                   type="text"
                   id="email"
                   placeholder="Enter Email"
-                  className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] px-2 rounded-xl outline-none ${errors.email ? "border-2 border-state-error" : "border-none"}`}
+                  className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] px-2 rounded-xl outline-none ${errors.email ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
                   {...register("email")}
@@ -222,7 +222,7 @@ export default function Login() {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     placeholder="Enter Password"
-                    className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] pl-2 pr-10 rounded-xl outline-none ${errors.password ? "border-2 border-state-error" : "border-none"}`}
+                    className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] pl-2 pr-10 rounded-xl outline-none ${errors.password ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
                     aria-invalid={errors.password ? "true" : "false"}
                     aria-describedby={
                       errors.password ? "password-error" : undefined
@@ -230,21 +230,19 @@ export default function Login() {
                     {...register("password")}
                   />
 
-                  <button
-                    type="button"
+                  <p
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    tabIndex={0}
                   >
                     <img
                       src={showPassword ? hide : show}
                       alt=""
                       aria-hidden="true"
                     />
-                  </button>
+                  </p>
                 </div>
                 {errors.password && (
                   <div
@@ -278,16 +276,16 @@ export default function Login() {
               </Link>
             </div>
 
-            <div className="text-center space-y-2 mt-8">
+            <div className="text-center space-y-2 mt-8 md:mt-10 md:space-y-6">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-sec-but h-[37px] w-full font-raleway text-component-primary font-semibold tracking-[1px] text-[14px] rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1e3aa8] transition-colors"
+                className="bg-sec-but h-[37px] w-full font-raleway text-component-primary font-semibold tracking-[1px] text-[14px] rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1e3aa8] transition-colors md:h-[45px] md:text-[16px]"
               >
                 {isSubmitting ? "Logging in..." : "Log in"}
               </button>
 
-              <p className="text-[12px] text-text-secondary">
+              <p className="text-[12px] text-text-secondary md:text-[14px]">
                 Don’t have an account?&nbsp;
                 <Link to="/signup" className="text-[#274AD0]">
                   Create account

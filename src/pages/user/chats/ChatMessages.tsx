@@ -288,7 +288,7 @@ export default function ChatMessages() {
       time: "11:00 AM",
     },
   ]);
-
+  
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();

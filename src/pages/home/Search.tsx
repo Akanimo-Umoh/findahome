@@ -1,30 +1,36 @@
-// import search from "@/assets/images/search.svg";
 import searchIcon from "@/assets/agentImages/icon-search.svg";
-// import dropdown from "@/assets/images/icon-downArrow.svg";
 import { useNavigate } from "react-router-dom";
-import { useState, type FormEvent } from "react";
+import React, { useState } from "react";
 
-export default function Search() {
+type SearchProps = {
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+};
+
+export default function Search({ defaultValue = "", onChange }: SearchProps) {
+  const navigate = useNavigate();
+  const [value, setValue] = useState(defaultValue);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (value.trim()) {
+      navigate(`/search?query=${encodeURIComponent(value.trim())}&page=1`);
+    }
+  };
+
   return (
-    <form className="">
-      {/* <div className="space-y-4 flex flex-col items-center w-full">
-        <div className="flex items-center justify-between gap-4 w-full">
-          <div className="input-ctn">
-            <input
-              type="text"
-              placeholder="Enter Location"
-              className="placeholder:text-text-secondary w-full outline-none text-text-primary"
-            />
-          </div>
-        </div>
-      </div> */}
-
-      <div className="flex items-center justify-center relative h-8">
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex items-center justify-center relative h-8 w-full">
         <img src={searchIcon} alt="" className="absolute left-3" />
 
         <input
           type="text"
           placeholder="Search property here"
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            onChange?.(e.target.value);
+          }}
           className="text-[12px] leading-4 placeholder:text-text-secondary w-full pl-8 pr-4 bg-bg-tertiary h-full rounded-xl outline-none"
         />
       </div>
