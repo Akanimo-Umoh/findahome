@@ -493,7 +493,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollY]);
-
+ 
   // lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "unset";
