@@ -35,7 +35,7 @@ import { AllProperties } from "@/pages/properties";
 import { SearchResults } from "@/pages/search";
 import { PropertyDetails } from "@/pages/propertyDetails";
 import NormalLayout from "@/layouts/NormalLayout";
-import { ChatMessages, Chats } from "@/pages/user/chats";
+// import { ChatMessages, Chats } from "@/pages/user/chats";
 import {
   // EscrowTransactionsDetails,
   FundWallet,
@@ -66,6 +66,8 @@ import { Miscellaneous } from "@/a";
 import { MyListings } from "@/pages/agent/my-listings";
 import { MyTransactions } from "@/pages/agent/my-transaction";
 import { SavedProperties } from "@/pages/user/saved-properties";
+import Chats from "@/components/Chats";
+import ChatMessages from "@/components/ChatMessages";
 
 export default function AppRoutes() {
   return (
@@ -131,10 +133,7 @@ export default function AppRoutes() {
         <Route path="/recent-activities" element={<Recent />} />
         <Route path="/agents" element={<Agents />} />
         <Route path="/agent-profile" element={<AgentProfile />} />
-        {/* chats list */}
-        <Route path="/chats" element={<Chats />} />
-        {/* single chat */}
-        <Route path="/chat" element={<ChatMessages />} />
+
         {/* wallet */}
         <Route path="/wallet" element={<Wallet />} />
         {/* fund wallet */}
@@ -167,7 +166,6 @@ export default function AppRoutes() {
       {/* Only for users with role: "agent" */}
       <Route element={<RoleBasedRoute allowedRoles={["agent"]} />}>
         <Route element={<MainLayout />}>
-          {/* <Route path="/agent/dashboard" element={<AgentDashboard />} /> */}
           <Route path="/agent/properties" element={<AgentProperties />} />
           <Route
             path="/agent/properties/edit/:id"
@@ -182,14 +180,17 @@ export default function AppRoutes() {
           <Route path="/agent/profile" element={<div>Agent Profile</div>} />
           <Route path="/agent/settings" element={<div>Agent Settings</div>} />
         </Route>
+
+        <Route element={<NormalLayout />}>
+          <Route path="/agent/dashboard" element={<AgentDashboard />} />
+          <Route path="/agent/add-property" element={<AddProperty />} />
+        </Route>
       </Route>
 
       <Route element={<NormalLayout />}>
         {/* don't forget to add the links for the different dashboards route */}
-        <Route path="/agent/dashboard" element={<AgentDashboard />} />
         <Route path="/agent/mis" element={<Miscellaneous />} />
         <Route path="/agent/my-listings" element={<MyListings />} />
-        <Route path="/agent/properties/add" element={<AddProperty />} />
         <Route path="/agent/preview" element={<PropertyPreview />} />
         <Route path="/agent/my-transactions" element={<MyTransactions />} />
       </Route>
@@ -218,8 +219,15 @@ export default function AppRoutes() {
       >
         <Route element={<MainLayout />}>
           <Route path="/notifications" element={<div>Notifications</div>} />
-          <Route path="/messages" element={<div>Messages</div>} />
           <Route path="/help" element={<div>Help Center</div>} />
+        </Route>
+
+        <Route element={<NormalLayout />}>
+          {/* chats list */}
+          <Route path="/messages" element={<Chats />} />
+          {/* single chat */}
+          <Route path="/messages/chat" element={<ChatMessages />} />
+          <Route path="/messages/:chatId" element={<ChatMessages />} />
         </Route>
       </Route>
 

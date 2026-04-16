@@ -1,2 +1,2 @@
-export { default as Chats } from "./Chats";
-export { default as ChatMessages } from "./ChatMessages";
+export { default as AgentChats } from "./Chats";
+// export { default as AgentChatMessages } from "./ChatMessages";

@@ -319,7 +319,7 @@
 // }
 
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import menu from "@/assets/images/icon-menu.svg";
 import close from "@/assets/images/closeMenu.svg";
 import avatar from "@/assets/images/avatar.jpg";
@@ -335,6 +335,7 @@ import recentActive from "@/assets/images/icon-active-recent.svg";
 import walletActive from "@/assets/images/icon-active-wallet.svg";
 import rightArrow from "@/assets/images/icon-nav-rightArrow.svg";
 import logoutIcon from "@/assets/images/icon-user.svg";
+import logoIcon from "@/assets/images/icon-logo-tablet.svg";
 import activeRightArrowIcon from "@/assets/images/icon-white-right-arrow.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuthContext } from "@/context/AuthContext";
@@ -349,14 +350,15 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
   const [hidden, setHidden] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuthContext();
+  const navigate = useNavigate();
 
   // ── MOBILE LINKS ──
   const mobileUserLinks = [
     {
       icon: dashboard,
       iconActive: dashboardActive,
-      title: "Dashboard",
-      link: "/dashboard",
+      title: "Home",
+      link: "/",
     },
     {
       icon: agents,
@@ -364,7 +366,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
       title: "Find Agents",
       link: "/agents",
     },
-    { icon: chats, iconActive: chatsActive, title: "Chats", link: "/chats" },
+    { icon: chats, iconActive: chatsActive, title: "Chats", link: "/messages" },
     {
       icon: recent,
       iconActive: recentActive,
@@ -393,6 +395,12 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
       link: "/agent/my-listings",
     },
     {
+      icon: chats,
+      iconActive: chatsActive,
+      title: "Chats",
+      link: "/messages",
+    },
+    {
       icon: wallet,
       iconActive: walletActive,
       title: "My Wallet",
@@ -411,7 +419,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     {
       icon: agents,
       iconActive: agentsActive,
-      title: "Find Agents",
+      title: "Find agent",
       link: "/agents",
     },
     {
@@ -429,16 +437,16 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     {
       icon: wallet,
       iconActive: walletActive,
-      title: "My Wallet",
+      title: "My wallet",
       link: "/wallet",
     },
   ];
 
   // ── TABLET LINKS ──
   const tabletUserLinks = [
-    { title: "Dashboard", link: "/dashboard" },
-    { title: "Find Agents", link: "/agents" },
-    { title: "Chats", link: "/chats" },
+    { title: "Home", link: "/" },
+    { title: "Find agent", link: "/agents" },
+    { title: "Chats", link: "/messages" },
     { title: "Recent Activities", link: "/recent-activities" },
     { title: "My Wallet", link: "/wallet" },
   ];
@@ -454,6 +462,8 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     { title: "About Us", link: "/about" },
     { title: "Properties", link: "/properties" },
     { title: "FAQs", link: "/faqs" },
+    { title: "Log in", link: "/login" },
+    { title: "Create account", link: "/signup" },
   ];
 
   // pick correct sets based on auth + role
@@ -497,6 +507,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
   const handleLogout = () => {
     logout();
     closeMenu();
+    navigate("/login", { replace: true });
   };
 
   const isLight = variant === "light";
@@ -509,27 +520,30 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
       initial={{ y: 0 }}
       animate={{ y: hidden ? -72 : 0 }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`px-6 font-ssPro fixed top-0 left-0 w-full py-6 h-18 z-50 transition-colors duration-300 ${navBgClass}`}
+      className={`px-6 font-ssPro fixed top-0 left-0 w-full h-18 z-50 transition-colors duration-300 md:h-16.5 ${navBgClass}`}
     >
       <div className="flex items-center justify-between h-full">
         {/* Logo */}
         <Link
           to="/"
-          className={`font-raleway text-[24px] font-bold leading-6 ${logoTextClass}`}
+          className={`font-raleway text-[24px] font-bold leading-6 flex items-center gap-2 ${logoTextClass}`}
         >
-          Finda<span className="font-ssPro">Home</span>
+          <img src={logoIcon} alt="" />
+          <p>
+            Finda<span className="font-ssPro">Home</span>
+          </p>
         </Link>
 
         {/* ── TABLET NAV (md+) ── */}
-        <div className="hidden md:flex items-center gap-8">
-          <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-2">
+          <div className="flex items-center gap-2">
             {tabletLinks.map((link, index) => {
               const isActive = location.pathname === link.link;
               return (
                 <Link
                   key={index}
                   to={link.link}
-                  className={`text-[14px] font-medium px-3 py-1 rounded-full transition-colors duration-200
+                  className={`text-[14px] px-2 py-1 rounded-lg transition-colors duration-200
                     ${
                       isActive
                         ? "bg-button-bg text-white"
@@ -541,44 +555,6 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
               );
             })}
           </div>
-
-          {/* auth buttons or user info */}
-          {isAuthenticated ? (
-            <div className="flex items-center gap-3">
-              <img
-                src={avatar}
-                className="w-8 h-8 rounded-full object-cover"
-                alt="profile"
-              />
-              <button
-                onClick={handleLogout}
-                className={`text-[13px] border rounded-lg px-3 py-1 cursor-pointer
-                  ${isLight ? "text-white border-white" : "text-text-primary border-button-bg"}`}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-3">
-              <Link
-                to="/login"
-                className={`text-[13px] rounded-lg px-4 py-1.5
-                  ${
-                    isLight
-                      ? "text-white border border-white"
-                      : "text-text-primary border border-button-bg bg-button-disabled"
-                  }`}
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="text-[13px] text-white bg-button-bg rounded-lg px-4 py-1.5"
-              >
-                Create Account
-              </Link>
-            </div>
-          )}
         </div>
 
         {/* ── MOBILE HAMBURGER (below md) ── */}
@@ -619,7 +595,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
                     {isAuthenticated && (
                       <Link to="/profile" className="flex items-center gap-1">
                         <img
-                          src={avatar}
+                          src={user?.profilePicture ?? avatar}
                           className="w-7.5 h-7.5 rounded-full object-cover shrink-0"
                           alt="profile"
                         />

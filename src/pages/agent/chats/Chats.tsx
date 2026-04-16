@@ -9,7 +9,7 @@ import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg";
 import iconCompleted from "@/assets/images/icon-chats-completed.svg";
 import imgMessages from "@/assets/images/img-chats-messages.png";
 
-export default function Chats() {
+export default function AgentChats() {
   const navigate = useNavigate();
 
   const messages = [

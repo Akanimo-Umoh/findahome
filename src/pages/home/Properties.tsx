@@ -11,13 +11,13 @@ export default function Properties() {
   const skeletons = Array(3).fill(null);
 
   return (
-    <div className="font-ssPro mx-6">
-      <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary">
+    <div className="font-ssPro mx-6 md:mx-8">
+      <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary md:text-[36px] text-center">
         Available Properties
       </p>
 
       {/* main properties ctn */}
-      <div className="mt-6 space-y-8">
+      <div className="mt-6 space-y-8 md:mt-12">
         {loading ? (
           // show skeletons
           skeletons.map((_, index) => <PropertyCardSkeleton key={index} />)
@@ -26,15 +26,23 @@ export default function Properties() {
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
           // show properties
-          previewProperties.map((property) => (
-            <PropertyCard key={property._id} property={property} />
-          ))
+          <div className="grid justify-center">
+            {previewProperties.map((property) => (
+              <Link
+                key={property._id}
+                to={`/property/${property._id}`}
+                className="block md:hover:shadow-lg md:transition"
+              >
+                <PropertyCard property={property} />
+              </Link>
+            ))}
+          </div>
         )}
       </div>
 
       {!loading && !error && (
-        <div className="text-center mt-2">
-          <Link to="/properties" className="text-text-secondary text-center">
+        <div className="text-center mt-2 md:mt-10">
+          <Link to="/properties" className="text-text-secondary text-center md:text-[18px]">
             See More
           </Link>
         </div>

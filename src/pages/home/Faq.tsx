@@ -40,21 +40,21 @@ export default function Faq() {
   ];
 
   return (
-    <div className="px-6 space-y-4 font-ssPro text-text-primary">
+    <div className="px-6 space-y-4 font-ssPro text-text-primary md:space-y-12 md:px-8">
       <div className="flex flex-col gap-1 items-center justify-center">
-        <p className="text-[24px] font-raleway font-medium tracking-[1px] text-text-primary text-center">
+        <p className="text-[24px] font-raleway font-medium tracking-[1px] text-text-primary text-center md:text-[36px] md:font-semibold">
           Frequently asked questions
         </p>
-        <p className="text-[12px] text-text-secondary">
+        <p className="text-[12px] text-text-secondary md:text-[16px]">
           You've got questions? We have answers!
         </p>
       </div>
 
-      <div>
+      <div className="">
         <Accordion
           type="single"
           collapsible
-          className="max-w-lg space-y-2 rounded-xl border-b border-bg-accent mx-auto"
+          className="max-w-lg space-y-2 rounded-xl border-b border-bg-accent mx-auto md:space-y-8"
           // defaultValue="billing"
         >
           {items.map((item) => (
@@ -63,10 +63,10 @@ export default function Faq() {
               value={item.value}
               className="border rounded-xl border-bg-accent"
             >
-              <AccordionTrigger className="p-2">
+              <AccordionTrigger className="p-2 cursor-pointer md:text-[18px] md:py-6">
                 {item.trigger}
               </AccordionTrigger>
-              <AccordionContent className="text-text-secondary px-2">
+              <AccordionContent className="text-text-secondary px-2 md:text-[16px]">
                 {item.content}
               </AccordionContent>
             </AccordionItem>

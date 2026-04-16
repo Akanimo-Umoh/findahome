@@ -21,7 +21,7 @@ export default function Profile() {
 
   const handleLogout = () => {
     logout();
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

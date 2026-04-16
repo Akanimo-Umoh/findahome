@@ -8,11 +8,11 @@ import RecentActivities from "./RecentActivities";
 export default function Dashboard() {
   return (
     <div className="text-text-primary mb-10">
-      <div className="flex items-center gap-2 mx-6">
+      <div className="flex items-center gap-2 mx-6 mt-0.5">
         <img
           src={agentAVatar}
           alt=""
-          className="w-12.5 h-12.5 object-cover rounded-full"
+          className="w-12.5 h-12.5 object-cover rounded-full shrink-0"
         />
 
         <div>
@@ -28,8 +28,11 @@ export default function Dashboard() {
       {/* available balance */}
       <div className="bg-button-bg p-3 rounded-2xl space-y-4 mt-[25px] mx-6">
         <div className="flex justify-between">
-          <div className="space-y-2">
-            <p className="text-[14px] text-bg-accent">Available Balance</p>
+          <div className="space-y-2 w-full">
+            <div className="flex items-center justify-between">
+              <p className="text-[14px] text-bg-accent">Available Balance</p>
+              <p className="text-[14px] text-[#F8B400]">See Escrow Wallet</p>
+            </div>
             <div className="flex items-center">
               <img src={whiteNairaIcon} alt="" />
               <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-bg-tertiary">
@@ -40,8 +43,6 @@ export default function Dashboard() {
               Funds are available for withdrawal
             </p>
           </div>
-
-          <p className="text-[14px] text-[#F8B400]">See Escrow Wallet</p>
         </div>
 
         <button className="h-[45px] rounded-lg bg-bg-tertiary flex items-center justify-center w-full gap-2">

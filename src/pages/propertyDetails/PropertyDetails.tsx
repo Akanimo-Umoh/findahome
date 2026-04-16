@@ -17,7 +17,7 @@ import ImageCarousel from "./ImageCarousel";
 import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import Spinner from "@/components/Spinner";
 import { useFavorite } from "@/hooks/useFavorite";
-
+ 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -51,13 +51,13 @@ export default function PropertyDetails() {
   const isLand = property.propertyType === "land";
 
   return (
-    <div className="mx-6 font-ssPro">
+    <div className="mx-6 font-ssPro md:mx-8">
       <div className="flex items-center justify-between">
         <button onClick={() => navigate(-1)} className="cursor-pointer">
           <img src={goBackIcon} alt="" />
         </button>
 
-        <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center">
+        <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center md:text-[22px]">
           Property Details
         </p>
 
@@ -75,7 +75,7 @@ export default function PropertyDetails() {
       </div>
 
       {/* property image carousel */}
-      <div className="mt-6">
+      <div className="mt-6 md:mt-12">
         <ImageCarousel
           images={property.images}
           video={property.video ?? undefined}

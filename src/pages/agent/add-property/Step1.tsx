@@ -13,11 +13,11 @@ export default function Step1() {
       <form action="">
         {/* property details */}
         <div className="flex flex-col gap-2">
-          <label htmlFor="property title">Property Title</label>
+          <label htmlFor="propertyName">Property Name</label>
 
           <input
             type="text"
-            id="property title"
+            id="propertyName"
             className="text-[14px] w-full rounded-lg h-[45px] border border-text-secondary px-2"
             placeholder="3-Bedroom Apartment"
           />
@@ -30,7 +30,10 @@ export default function Step1() {
           {/* property type */}
           <Select>
             <SelectTrigger className="addPropType">
-              <SelectValue placeholder="Property Type" />
+              <SelectValue
+                placeholder="Property Type"
+                defaultValue="apartment"
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="apartment">Apartment</SelectItem>
@@ -70,7 +73,60 @@ export default function Step1() {
           </div>
         </div>
 
-        {/* price */}
+        {/* if it is land */}
+        <div className="flex items-center justify-between gap-6 mt-6">
+          <div>
+            <label htmlFor="plotSize" className="text-[14px]">
+              Plot Size
+            </label>
+            <input
+              type="text"
+              id="plotSize"
+              className="text-[14px] w-full rounded-lg h-[45px] border border-text-secondary px-2"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="unit">Unit</label>
+            <Select>
+              <SelectTrigger className="addPropType">
+                <SelectValue placeholder="Property Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="sqm">Sqm</SelectItem>
+                <SelectItem value="land">Land</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <Select>
+            <SelectTrigger className="addPropType">
+              <SelectValue placeholder="Land Condition" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sqm">Sqm</SelectItem>
+              <SelectItem value="land">Land</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="mt-6">
+          <Select>
+            <SelectTrigger className="addPropType">
+              <SelectValue placeholder="Document Title" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sqm">Sqm</SelectItem>
+              <SelectItem value="land">Land</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* land stops here */}
+
+        {/* price: the price shows for both */}
         <div className="mt-6">
           <input
             type="text"

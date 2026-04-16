@@ -71,6 +71,21 @@ export default function Step2() {
           </p>
         </button>
 
+        {/* everything in here is the same with that of the land but the land has this as well. apartment does not have this */}
+        <div className="flex flex-col gap-2 mt-6">
+          <label htmlFor="landDescription" className="text-[14px]">
+            Description
+          </label>
+
+          <div className="p-3 border border-text-disabled rounded-xl h-25">
+            <textarea
+              id="landDescription"
+              placeholder="Start typing..."
+              className="outline-none text-[12px] w-full h-full"
+            ></textarea>
+          </div>
+        </div>
+
         {/* next button */}
         <button className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-6 ml-auto">
           <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white">

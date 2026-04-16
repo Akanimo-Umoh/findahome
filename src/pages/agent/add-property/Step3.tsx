@@ -54,26 +54,26 @@ export default function Step3() {
         </div>
 
         {/* description */}
-        <div className="mt-6">
-          <label htmlFor="description" className="text-[14px]">
+        <div className="flex flex-col gap-2 mt-6">
+          <label htmlFor="apartmentDescription" className="text-[14px]">
             Description
           </label>
-          <div className="py-1 px-2 border border-bg-accent rounded-lg mt-2">
+
+          <div className="p-3 border border-text-disabled rounded-xl h-25">
             <textarea
-              name=""
-              id="description"
-              rows={5}
-              className="text-[12px] leading-4 w-full outline-none hideScroll"
+              id="apartmentDescription"
               placeholder="Start typing..."
-            />
+              className="outline-none text-[12px] w-full h-full"
+            ></textarea>
           </div>
         </div>
 
         {/* upload images */}
+        {/* for the land, step 3 would only have upload and videos */}
         <div className="mt-6">
           <p>Upload Photos $ Videos</p>
 
-          <div className="mt-5">
+          <div className="mt-5 mx-4">
             {/* images */}
             <div>
               <UploadImages />

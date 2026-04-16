@@ -46,7 +46,7 @@ export default function ChatAgentModal({
 
   const handleContinueToChat = () => {
     onClose();
-    navigate(`/chat?propertyId=${propertyId}&agentId=${agentId}`, {
+    navigate(`/messages/chat`, {
       state: {
         propertyId,
         propertyTitle,

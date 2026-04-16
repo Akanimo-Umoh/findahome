@@ -11,7 +11,7 @@ export function useProfilePicture() {
     setIsUploading(true);
     try {
       const formData = new FormData();
-      formData.append("profilePicture", file);
+      formData.append("images", file);
 
       const response = await api.post(
         "/user/change-profile-picture",
@@ -22,7 +22,10 @@ export function useProfilePicture() {
       );
 
       // update user in context and localStorage with new picture
-      const updatedPicture = response.data.profilePicture;
+      const updatedPicture = Array.isArray(response.data.profilePicture)
+        ? response.data.profilePicture[0]
+        : response.data.profilePicture;
+
       if (user) {
         updateUser({ ...user, profilePicture: updatedPicture });
       }

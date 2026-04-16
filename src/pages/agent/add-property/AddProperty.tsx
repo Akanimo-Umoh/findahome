@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import goBack from "@/assets/images/icon-back.svg";
-// import Step1 from "./Step1";
-// import Step2 from "./Step2";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
 import Step3 from "./Step3";
 
 export default function AddProperty() {
@@ -35,19 +35,22 @@ export default function AddProperty() {
       </p>
 
       {/* form for step 1 */}
-      {/* <section className="mt-6">
+      <section className="mt-6">
         <Step1 />
-      </section> */}
+      </section>
 
       {/* form for step 2 */}
-      {/* <section className="mt-6">
+      <section className="mt-6">
         <Step2 />
-      </section> */}
+      </section>
 
       {/* form for step 3 */}
       <section className="mt-6">
         <Step3 />
       </section>
+      
+
+
     </div>
   );
 }
