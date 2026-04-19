@@ -1,4 +1,4 @@
-import avatar from "@/assets/images/agentAvatar.jpg";
+// import avatar from "@/assets/images/agentAvatar.jpg";
 import addPicture from "@/assets/images/icon-picture.svg";
 import changePasswordIcon from "@/assets/images/icon-change-password.svg";
 import rightArrowIcon from "@/assets/images/icon-right-arrow.svg";
