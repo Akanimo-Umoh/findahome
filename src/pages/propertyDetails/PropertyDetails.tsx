@@ -17,7 +17,7 @@ import ImageCarousel from "./ImageCarousel";
 import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import Spinner from "@/components/Spinner";
 import { useFavorite } from "@/hooks/useFavorite";
- 
+
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -250,17 +250,7 @@ export default function PropertyDetails() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         propertyId={property._id}
-        propertyTitle={property.title}
-        propertyImage={property.images?.[0]}
-        propertyPrice={property.price}
-        propertyAddress={property.address}
         agentId={property.owner._id}
-        agentName={property.owner.name}
-        agentAvatar={
-          Array.isArray(property.owner.profilePicture)
-            ? (property.owner.profilePicture[0] ?? null)
-            : property.owner.profilePicture
-        }
         agentIsVerified={property.owner.isVerified}
       />
     </div>

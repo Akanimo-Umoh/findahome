@@ -5,13 +5,7 @@ type ChatAgentModalProps = {
   isOpen: boolean;
   onClose: () => void;
   propertyId: string;
-  propertyTitle: string;
-  propertyImage?: string;
-  propertyPrice?: number;
-  propertyAddress?: string;
   agentId: string;
-  agentName: string;
-  agentAvatar?: string | null;
   agentIsVerified?: boolean;
 };
 
@@ -19,13 +13,7 @@ export default function ChatAgentModal({
   isOpen,
   onClose,
   propertyId,
-  propertyTitle,
-  propertyImage,
-  propertyPrice,
-  propertyAddress,
   agentId,
-  agentName,
-  agentAvatar,
   agentIsVerified,
 }: ChatAgentModalProps) {
   const navigate = useNavigate();
@@ -49,13 +37,7 @@ export default function ChatAgentModal({
     navigate(`/messages/chat`, {
       state: {
         propertyId,
-        propertyTitle,
-        propertyImage,
-        propertyPrice,
-        propertyAddress,
         agentId,
-        agentName,
-        agentAvatar,
         agentIsVerified,
       },
     });

@@ -1,4 +1,4 @@
-import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import iconVerified from "@/assets/images/icon-verified-green.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import iconOptions from "@/assets/images/icon-chat-options.svg";
@@ -11,30 +11,19 @@ import iconEmoji from "@/assets/images/icon-chat-emoji.svg";
 import iconAttach from "@/assets/images/icon-chat-attach-files.svg";
 import iconSend from "@/assets/images/icon-chat-sendMessage.svg";
 import PayInspectionModal from "./PayInspectionModal";
-import agentAvatarFallback from "@/assets/images/agentAvatar.jpg";
+// import agentAvatarFallback from "@/assets/images/agentAvatar.jpg";
 import { useEffect, useRef, useState } from "react";
 import EscrowProtectionTerms from "@/components/EscrowProtectionTerms";
 import { useChatMessages } from "@/hooks/useChat";
 import Spinner from "@/components/Spinner";
 import { useAuthContext } from "@/context/AuthContext";
+import Avatar from "./Avatar";
 
 // state passed via navigate() from both ChatAgentModal and Chats
 type ChatRouteState = {
-  chatId?: string; // present when navigating from chat list
   propertyId: string;
-  propertyTitle: string;
-  propertyImage?: string;
-  propertyPrice?: number;
-  propertyAddress?: string;
-  // user flow — from ChatAgentModal
   agentId?: string;
-  agentName?: string;
-  agentAvatar?: string | null;
   agentIsVerified?: boolean;
-  // shared — the other party's email (from chat list)
-  otherPartyEmail?: string;
-  otherPartyName?: string;
-  otherPartyAvatar?: string | null;
 };
 
 const formatTime = (dateStr: string) =>
@@ -48,7 +37,7 @@ export default function ChatMessages() {
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
   const [isEscrowOpen, setIsEscrowOpen] = useState(false);
 
-  const [searchParams] = useSearchParams();
+  const { chatId } = useParams<{ chatId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -58,21 +47,47 @@ export default function ChatMessages() {
 
   const state = location.state as ChatRouteState | null;
 
-  const propertyId = state?.propertyId || searchParams.get("propertyId") || "";
+  // - agent: always has a real chatId in the URL
+  // - user from chat list: has a real chatId in the URL (/messages/:chatId)
+  // - user from ChatAgentModal: lands on /messages/chat with propertyId+agentId in state
 
-  // agent always has chatId; user may have chatId (from list) or agentId (from modal)
   const chatOptions = isAgent
-    ? { mode: "agent" as const, chatId: state?.chatId ?? "" }
-    : state?.chatId
-      ? { mode: "agent" as const, chatId: state.chatId } // user tapped chat list
+    ? { mode: "agent" as const, chatId: chatId ?? "" }
+    : chatId && chatId !== "chat"
+      ? { mode: "agent" as const, chatId } //user opened from chat list
       : {
           mode: "user" as const,
           propertyId: state?.propertyId ?? "",
           agentId: state?.agentId ?? "",
         };
 
-  const { messages, isLoading, isSending, error, sendMessage, currentUserId } =
-    useChatMessages(chatOptions);
+  const {
+    chatDetail,
+    messages,
+    isLoading,
+    isSending,
+    error,
+    sendMessage,
+    currentUserId,
+  } = useChatMessages(chatOptions);
+
+  // derive display data from chatDetail
+  const otherParty = chatDetail?.participants.find(
+    (p) => p._id !== currentUserId,
+  );
+  const property = chatDetail?.property;
+
+  // header display
+  const headerName = isAgent
+    ? (otherParty?.name ?? otherParty?.email ?? "Buyer")
+    : (otherParty?.name ?? otherParty?.email ?? "Agent");
+
+  // header avatar
+  // const headerAvatar = !isAgent
+  //   ? (otherParty?.profilePicture ?? agentAvatarFallback)
+  //   : undefined;
+
+  const refId = property?._id?.slice(-4).toUpperCase();
 
   // quick action buttons — users get all three, agents skip "Pay inspection fee"
   const miniLinks = [
@@ -119,19 +134,20 @@ export default function ChatMessages() {
     if (e.key === "Enter") handleSend();
   };
 
-  const hasRequiredState = isAgent
-    ? !!state?.chatId
-    : !!(state?.propertyId && (state.agentId || state.chatId));
+  const hasRequiredParams = isAgent
+    ? !!chatId
+    : !!(chatId && chatId !== "chat") ||
+      !!(state?.propertyId && state?.agentId);
 
   // if neither state nor URL params exist, something went wrong
-  if (!hasRequiredState) {
+  if (!hasRequiredParams) {
     return (
       <div className="flex items-center justify-center h-screen font-ssPro">
         <div className="text-center">
           <p className="text-text-secondary text-[14px]">Chat not found</p>
           <button
             onClick={() => navigate(-1)}
-            className="mt-4 text-[#274AD0] underline text-[14px]"
+            className="mt-4 text-[#274AD0] underline text-[14px] cursor-pointer"
           >
             Go back
           </button>
@@ -158,17 +174,6 @@ export default function ChatMessages() {
     );
   }
 
-  // header display - agent sees buyers email, user sees agent name/avatar
-  const headerName = isAgent
-    ? (state?.otherPartyName ?? "Buyer")
-    : (state?.agentName ?? state?.otherPartyName ?? "Agent");
-
-  const headerAvatar = !isAgent
-    ? (state?.agentAvatar ?? agentAvatarFallback)
-    : undefined;
-
-  const refId = state?.propertyId?.slice(-4).toUpperCase();
-
   return (
     <div className="font-ssPro h-[calc(100vh-72px)] flex flex-col justify-between">
       {/* chat header */}
@@ -179,10 +184,10 @@ export default function ChatMessages() {
           </button>
 
           <div className="flex items-center justify-start gap-1 flex-1">
-            <img
-              src={headerAvatar}
-              alt={headerName}
-              className="w-10 h-10 rounded-full object-cover"
+            <Avatar
+              name={headerName}
+              src={otherParty?.profilePicture}
+              size="md"
             />
 
             <div className="flex flex-col items-start justify-center gap-1 flex-1">
@@ -213,10 +218,10 @@ export default function ChatMessages() {
 
       {/* property info bar */}
       <div className="px-[21.5px] py-4 flex items-center gap-2">
-        {state?.propertyImage ? (
+        {property?.images?.[0] ? (
           <img
-            src={state.propertyImage}
-            alt={state.propertyTitle}
+            src={property.images[0]}
+            alt={property.title}
             className="w-10 h-10 object-cover rounded-lg shrink-0"
           />
         ) : (
@@ -225,14 +230,14 @@ export default function ChatMessages() {
 
         <div className="flex flex-col min-w-0">
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary line-clamp-1">
-            {state?.propertyTitle}
+            {property?.title}
           </p>
           <div className="text-[12px] text-text-secondary flex items-center gap-0.5">
-            <p className="line-clamp-1">{state?.propertyAddress}</p>
-            {state?.propertyPrice && (
+            <p className="line-clamp-1">{property?.address}</p>
+            {property?.price && (
               <p className="flex items-center shrink-0">
                 <img src={iconNaira} alt="" />
-                <span>{state.propertyPrice.toLocaleString()}</span>
+                <span>{property.price.toLocaleString()}</span>
               </p>
             )}
           </div>
@@ -240,7 +245,7 @@ export default function ChatMessages() {
       </div>
 
       {/* messages area */}
-      <section className="px-[21.5px] py-4 space-y-3 flex flex-col flex-1 overflow-y-auto">
+      <section className="px-[21.5px] py-4 space-y-3 flex flex-col flex-1 overflow-y-auto scrollbar-hide">
         {/* messages */}
         <p className="text-[14px] text-text-secondary text-center font-raleway font-semibold tracking-[1px] mb-2">
           Today
@@ -316,9 +321,9 @@ export default function ChatMessages() {
                 if (link.action === "visit")
                   navigate("/inspection", {
                     state: {
-                      propertyId,
-                      propertyTitle: state?.propertyTitle,
-                      agentId: state?.agentId,
+                      propertyId: property?._id,
+                      propertyTitle: property?.title,
+                      agentId: isAgent ? user?.id : otherParty?._id,
                     },
                   });
               }}
@@ -336,10 +341,10 @@ export default function ChatMessages() {
           <PayInspectionModal
             isOpen={isPayModalOpen}
             onClose={() => setIsPayModalOpen(false)}
-            propertyTitle={state?.propertyTitle ?? ""}
-            propertyAddress={state?.propertyAddress ?? ""}
-            propertyPrice={state?.propertyPrice ?? 0}
-            propertyImage={state?.propertyImage ?? ""}
+            propertyTitle={property?.title ?? ""}
+            propertyAddress={property?.address ?? ""}
+            propertyPrice={property?.price ?? 0}
+            propertyImage={property?.images?.[0] ?? ""}
           />
         )}
 

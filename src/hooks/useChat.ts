@@ -45,6 +45,15 @@ type Chat = {
   property: string;
 };
 
+export type ChatDetail = {
+  _id: string;
+  participants: ChatParticipant[];
+  property: ChatProperty;
+  lastMessage?: ChatMessage;
+  createdAt: string;
+  updatedAt: string;
+};
+
 // ---- chat list ----
 export function useChatList() {
   const { user } = useAuthContext();
@@ -79,7 +88,7 @@ type UseChatOptions =
 
 export function useChatMessages(options: UseChatOptions) {
   const { user } = useAuthContext();
-  const [chat, setChat] = useState<Chat | null>(null);
+  const [chatDetail, setChatDetail] = useState<ChatDetail | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
@@ -115,13 +124,16 @@ export function useChatMessages(options: UseChatOptions) {
             agentId: options.agentId,
             propertyId: options.propertyId,
           });
+          const detailRes = await api.get(`/chat/${res.data._id}`);
+          setChatDetail(detailRes.data);
           chatData = res.data;
         } else {
           const res = await api.get(`/chat/${options.chatId}`);
+          setChatDetail(res.data);
           chatData = res.data;
         }
 
-        setChat(chatData);
+        // setChat(chatData);
 
         // fetch messages for this chat
         const messagesResponse = await api.get(`/message/${chatData._id}`);
@@ -147,12 +159,12 @@ export function useChatMessages(options: UseChatOptions) {
   ]);
 
   async function sendMessage(text: string) {
-    if (!chat || !text.trim() || !user?.id) return;
+    if (!chatDetail || !text.trim() || !user?.id) return;
 
     setIsSending(true);
     try {
       const response = await api.post("/message/send", {
-        chatId: chat._id,
+        chatId: chatDetail._id,
         text: text.trim(),
       });
 
@@ -165,7 +177,7 @@ export function useChatMessages(options: UseChatOptions) {
       const socket = getSocket();
       socket.emit("send_message", {
         from: user.id,
-        to: chat.participants.find((p) => p._id !== user.id)?._id,
+        to: chatDetail.participants.find((p) => p._id !== user.id)?._id,
         text: text.trim(),
         attachments: [],
       });
@@ -177,7 +189,7 @@ export function useChatMessages(options: UseChatOptions) {
   }
 
   return {
-    chat,
+    chatDetail,
     messages,
     isLoading,
     isSending,
