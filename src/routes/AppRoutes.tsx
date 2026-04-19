@@ -24,6 +24,7 @@ import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard";
 import { Properties as AgentProperties } from "@/pages/agent/properties";
 import { AddProperty, PropertyPreview } from "@/pages/agent/add-property";
 import { Clients as AgentClients } from "@/pages/agent/clients";
+import { Profile as MyAgentProfile } from "@/pages/agent/profile";
 
 // Admin Pages
 import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard";
@@ -184,6 +185,7 @@ export default function AppRoutes() {
         <Route element={<NormalLayout />}>
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
           <Route path="/agent/add-property" element={<AddProperty />} />
+          <Route path="/agent/profile" element={<MyAgentProfile />} />
         </Route>
       </Route>
 

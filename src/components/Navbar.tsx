@@ -322,7 +322,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import menu from "@/assets/images/icon-menu.svg";
 import close from "@/assets/images/closeMenu.svg";
-import avatar from "@/assets/images/avatar.jpg";
+// import avatar from "@/assets/images/avatar.jpg";
 import dashboard from "@/assets/images/icon-nav-dashboard.svg";
 import agents from "@/assets/images/icon-agents.svg";
 import chats from "@/assets/images/icon-nav-chat.svg";
@@ -511,6 +511,8 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     navigate("/login", { replace: true });
   };
 
+  const profileLink = user?.role === "agent" ? "/agent/profile" : "/profile";
+
   const isLight = variant === "light";
   const linkTextClass = isLight ? "text-white" : "text-text-primary";
   const logoTextClass = isLight ? "text-white" : "text-[#274AD0]";
@@ -556,7 +558,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
               );
             })}
           </div>
-          <Link to="/profile">
+          <Link to={profileLink}>
             <Avatar
               name={user?.name ?? "?"}
               src={user?.profilePicture}
@@ -601,7 +603,10 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
                 <div>
                   <div className="flex items-center justify-between">
                     {isAuthenticated && (
-                      <Link to="/profile" className="flex items-center gap-1">
+                      <Link
+                        to={profileLink}
+                        className="flex items-center gap-1"
+                      >
                         <Avatar
                           name={user?.name ?? "?"}
                           src={user?.profilePicture}
