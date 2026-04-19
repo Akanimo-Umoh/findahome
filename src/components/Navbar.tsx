@@ -339,6 +339,7 @@ import logoIcon from "@/assets/images/icon-logo-tablet.svg";
 import activeRightArrowIcon from "@/assets/images/icon-white-right-arrow.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuthContext } from "@/context/AuthContext";
+import Avatar from "./Avatar";
 
 type NavbarProps = {
   variant?: "light" | "dark";
@@ -493,7 +494,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrollY]);
- 
+
   // lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "unset";
@@ -555,6 +556,13 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
               );
             })}
           </div>
+          <Link to="/profile">
+            <Avatar
+              name={user?.name ?? "?"}
+              src={user?.profilePicture}
+              size="sm"
+            />
+          </Link>
         </div>
 
         {/* ── MOBILE HAMBURGER (below md) ── */}
@@ -594,10 +602,10 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
                   <div className="flex items-center justify-between">
                     {isAuthenticated && (
                       <Link to="/profile" className="flex items-center gap-1">
-                        <img
-                          src={user?.profilePicture ?? avatar}
-                          className="w-7.5 h-7.5 rounded-full object-cover shrink-0"
-                          alt="profile"
+                        <Avatar
+                          name={user?.name ?? "?"}
+                          src={user?.profilePicture}
+                          size="sm"
                         />
                         <p className="text-sm line-clamp-1">{user?.name}</p>
                       </Link>

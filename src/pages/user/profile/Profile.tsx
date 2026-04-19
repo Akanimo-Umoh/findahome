@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/context/AuthContext";
 import { useProfilePicture } from "@/hooks/useProfilePicture";
 import { useRef } from "react";
+import Avatar from "@/components/Avatar";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -36,10 +37,10 @@ export default function Profile() {
       {/* header */}
       <div className="flex items-center gap-4 mt-0.5">
         <div className="relative shrink-0">
-          <img
-            src={user?.profilePicture ?? avatar}
-            alt=""
-            className="w-17.5 h-17.5 object-cover rounded-full"
+          <Avatar
+            name={user?.name ?? "?"}
+            src={user?.profilePicture}
+            size="lg"
           />
 
           {/* file input */}
