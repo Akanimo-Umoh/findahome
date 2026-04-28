@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import api from "@/services/api";
 // import SubmissionSuccessful from "./SubmissionSuccessful";
-
+ 
 export type PropertyType = "apartment" | "land";
 export type ListingType = "sale" | "rent";
 
