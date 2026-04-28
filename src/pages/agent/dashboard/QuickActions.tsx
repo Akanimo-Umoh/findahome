@@ -87,21 +87,23 @@ const actions: Action[] = [
 
 export default function QuickActions() {
   return (
-    <div className="mx-6">
+    <div className="mx-6 md:mx-8">
       <p>Quick Actions</p>
 
-      <div className="flex flex-wrap items-center justify-between mt-4">
+      <div className="flex flex-wrap items-center justify-between mt-4 md:mt-6">
         {actions.map((action) => (
           <Link
             to={action.link}
             key={action.link}
-            className="flex flex-col gap-2 p-1 items-center justify-center transition-transform active:scale-95"
+            className="flex flex-col gap-2 p-1 items-center justify-center transition-transform active:scale-95 md:gap-4 sm:w-24.25"
           >
-            <div className={`${action.bg} p-2 rounded-lg w-10 h-10`}>
+            <div
+              className={`${action.bg} rounded-lg w-10 h-10 md:w-15 md:h-15 flex items-center justify-center`}
+            >
               <img src={action.icon} alt={action.label} />
             </div>
 
-            <p className="text-[12px] leading-4 text-center whitespace-nowrap">
+            <p className="text-[12px] leading-4 text-center whitespace-nowrap md:text-[16px]">
               {action.label}
             </p>
           </Link>

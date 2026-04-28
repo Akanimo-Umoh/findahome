@@ -103,7 +103,7 @@ export default function RecentActivities() {
   };
 
   return (
-    <div className="mx-6">
+    <div className="mx-6 md:mx-8">
       <p>Recent Activities</p>
 
       {/* ✅ MODIFIED: Dynamic activities rendering */}
@@ -117,12 +117,12 @@ export default function RecentActivities() {
               className="flex items-center gap-2 p-2 border-b border-bg-accent"
             >
               <div
-                className={`${config.bgColor} w-7.5 h-7.5 p-2 rounded-lg shrink-0`}
+                className={`${config.bgColor} w-7.5 h-7.5 flex items-center justify-center rounded-lg shrink-0 md:w-10 md:h-10`}
               >
                 <img src={config.icon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4">
+              <div className="text-[12px] leading-4 md:text-[14px]">
                 <p>{activity.title}</p>
                 {renderDescription(activity)}
                 <p className="text-text-secondary">{activity.timestamp}</p>
