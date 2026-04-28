@@ -178,7 +178,6 @@ export default function AppRoutes() {
             element={<div>Agent Appointments</div>}
           />
           <Route path="/agent/analytics" element={<div>Agent Analytics</div>} />
-          <Route path="/agent/profile" element={<div>Agent Profile</div>} />
           <Route path="/agent/settings" element={<div>Agent Settings</div>} />
         </Route>
 
