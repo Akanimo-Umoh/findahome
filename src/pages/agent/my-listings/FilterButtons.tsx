@@ -18,12 +18,12 @@ export default function FilterButtons({
   onFilterChange,
 }: FilterButtonsProps) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between sm:justify-center sm:gap-4">
       {filters.map(({ label, value }) => (
         <button
           key={value}
           onClick={() => onFilterChange(value)}
-          className={`rounded-lg py-1 px-2 transition-colors duration-500 ${activeFilter === value ? "text-white bg-button-bg" : "bg-button-sec text-text-primary"}`}
+          className={`rounded-lg py-1 px-2 transition-colors duration-500 cursor-pointer ${activeFilter === value ? "text-white bg-button-bg" : "bg-button-sec text-text-primary"}`}
         >
           {label}
         </button>

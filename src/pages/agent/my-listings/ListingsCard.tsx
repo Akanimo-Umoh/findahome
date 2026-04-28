@@ -2,7 +2,7 @@ import propertyImg from "@/assets/images/property.jpg";
 import locationIcon from "@/assets/images/icon-location.svg";
 import bedIcon from "@/assets/images/bed.svg";
 import tubIcon from "@/assets/images/tubs.svg";
-import verifiedIcon from "@/assets/images/icon-verified.svg";
+import activeIcon from "@/assets/agentImages/icon-active-white.svg";
 import visibilityIcon from "@/assets/agentImages/icon-visibility.svg";
 import chatIcon from "@/assets/agentImages/icon-chats.svg";
 import editIcon from "@/assets/agentImages/icon-edit.svg";
@@ -19,11 +19,13 @@ import type { FilterStatus, ListingStatus } from "./MyListings";
 
 interface ListingsCardProps {
   activeFilter: FilterStatus;
+  activeTab: "apartment" | "land";
 }
 
 const listings = [
   {
     id: 1,
+    propertyType: "apartment",
     status: "active" as ListingStatus,
     title: "4 Bedroom Apartment",
     price: "800k",
@@ -36,6 +38,7 @@ const listings = [
   },
   {
     id: 2,
+    propertyType: "apartment",
     status: "pending" as ListingStatus,
     title: "3 Bedroom Flat",
     price: "500k",
@@ -48,6 +51,7 @@ const listings = [
   },
   {
     id: 3,
+    propertyType: "land",
     status: "sold" as ListingStatus,
     title: "2 Bedroom Bungalow",
     price: "1.2M",
@@ -60,6 +64,7 @@ const listings = [
   },
   {
     id: 4,
+    propertyType: "apartment",
     status: "rejected" as ListingStatus,
     title: "Studio Apartment",
     price: "200k",
@@ -76,7 +81,7 @@ const statusConfig = {
   active: {
     label: "Active",
     bg: "bg-[#10B981]",
-    icon: verifiedIcon,
+    icon: activeIcon,
     messageBg: null,
   },
   pending: {
@@ -98,39 +103,53 @@ function StatusBanner({ status }: { status: ListingStatus }) {
   if (status === "active") return null; // active has no bottom banner
   if (status === "pending")
     return (
-      <div className="bg-[#F39C12] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto">
-        <img src={pendingApprovalIcon} alt="" />
-        <p className="text-[12px] leading-4 text-white">
+      <div className="bg-[#F39C12] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto md:mt-4 md:ml-0">
+        <img
+          src={pendingApprovalIcon}
+          alt=""
+          className="w-4 h-4 md:w-6 md:h-6"
+        />
+        <p className="text-[12px] leading-4 text-white md:text-[14px] md:leading-5.25">
           Your property is pending approval
         </p>
       </div>
     );
+
   if (status === "sold")
     return (
-      <div className="bg-[#E2EEFF] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto">
-        <img src={checkboxIcon} alt="" />
-        <p className="text-[12px] leading-4 text-button-bg">
+      <div className="bg-[#E2EEFF] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto md:mt-4 md:ml-0">
+        <img src={checkboxIcon} alt="" className="w-4 h-4 md:w-6 md:h-6" />
+        <p className="text-[12px] leading-4 text-button-bg md:text-[14px] md:leading-5.25">
           Congratulations! This property has been sold
         </p>
       </div>
     );
+
   if (status === "rejected")
     return (
-      <div className="bg-[#D0272733] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto">
-        <img src={cancelIcon} alt="" />
-        <p className="text-[12px] leading-4 text-[#D02727]">
+      <div className="bg-[#D0272733] p-2 rounded-lg flex items-center justify-center gap-1 mt-2 w-fit mx-auto md:mt-4 md:ml-0">
+        <img src={cancelIcon} alt="" className="w-4 h-4 md:w-6 md:h-6" />
+        <p className="text-[12px] leading-4 text-[#D02727] md:text-[14px] md:leading-5.25">
           This listing was rejected. Please review and resubmit.
         </p>
       </div>
     );
+
   return null;
 }
 
-export default function ListingsCard({ activeFilter }: ListingsCardProps) {
-  const filtered =
-    activeFilter === "all"
-      ? listings
-      : listings.filter((l) => l.status === activeFilter);
+export default function ListingsCard({
+  activeFilter,
+  activeTab,
+}: ListingsCardProps) {
+  const filtered = listings.filter((listing) => {
+    const matchesStatus =
+      activeFilter === "all" || listing.status === activeFilter;
+
+    const matchesType = listing.propertyType === activeTab;
+
+    return matchesStatus && matchesType;
+  });
 
   if (filtered.length === 0) {
     return (
@@ -150,99 +169,143 @@ export default function ListingsCard({ activeFilter }: ListingsCardProps) {
             className="rounded-t-2xl shadow-[4px_4px_4px_rgba(0,0,0,0.25)]"
           >
             <div className="relative">
+              {/* status */}
               <div
                 className={`rounded-lg p-2 flex items-center gap-1 ${bg} absolute top-[11px] left-[11px]`}
               >
-                <img src={icon} alt="" />
-                <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white">
+                <img src={icon} alt="" className="w-4 h-4 md:h-6 md:w-6" />
+                <p className="text-[12px] md:text-[14px] tracking-[1px] text-white leading-4 md:leading-5.25">
                   {label}
                 </p>
               </div>
 
+              {/* property image */}
               <img
                 src={propertyImg}
                 alt=""
-                className="h-50.5 w-full object-cover rounded-t-2xl"
+                className="h-50.5 w-full object-cover rounded-t-2xl md:h-67.5"
               />
             </div>
 
             <div className="p-3">
               <div className="space-y-2">
                 <div className="flex flex-col justify-center">
-                  <div className="flex items-center justify-between gap-2 h-10">
-                    <p className="font-raleway font-semibold text-[18px] tracking-[1px] flex-1 line-clamp-2 leading-5">
+                  <div className="flex items-center justify-between gap-2 h-10 md:h-12">
+                    {/* title */}
+                    <p className="font-raleway font-semibold tracking-[1px] flex-1 line-clamp-2 md:text-[16px] text-[12px]">
                       {listing.title}
                     </p>
+
+                    {/* price */}
                     <p className="flex items-center">
-                      <img src={nairaIcon} alt="" />
-                      <span className="font-raleway font-semibold text-[18px] tracking-[1px] text-button-bg">
+                      <img src={nairaIcon} alt="" className="w-4 h-4" />
+                      <span className="font-raleway font-semibold tracking-[1px] text-button-bg text-[12px] md:text-[16px]">
                         {listing.price}
                       </span>
                     </p>
                   </div>
 
-                  <p className="text-[12px] leading-4 text-[#10B98199]">
+                  {/* listing type */}
+                  <p className="text-[12px] leading-4 text-[#10B98199] md:text-[14px] md:leading-5.25">
                     {listing.type}
                   </p>
                 </div>
 
                 <div className="space-y-2">
+                  {/* location */}
                   <div className="flex items-center gap-1">
-                    <img src={locationIcon} alt="" className="w-6 h-6" />
-                    <p className="text-[14px] text-text-secondary line-clamp-1">
+                    <img
+                      src={locationIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
+                    <p className="text-text-secondary line-clamp-1 text-[12px] leading-4.25 md:text-[14px]">
                       {listing.location}
                     </p>
                   </div>
 
-                  <div className="text-[12px] text-text-secondary leading-4 flex items-center gap-6">
+                  <div className="text-[12px] text-text-secondary leading-4 flex items-center gap-2 md:text-[14px] md:leading-5.25">
                     {/* bedrooms */}
                     <div className="flex items-center gap-1">
-                      <img src={bedIcon} alt="" className="w-6 h-6" />
+                      <img
+                        src={bedIcon}
+                        alt=""
+                        className="w-4 h-4 md:w-6 md:h-6"
+                      />
                       <p className="">{listing.beds} Beds</p>
                     </div>
 
                     {/* bathrooms */}
                     <div className="flex items-center gap-1">
-                      <img src={tubIcon} alt="" className="w-6 h-6" />
+                      <img
+                        src={tubIcon}
+                        alt=""
+                        className="w-4 h-4 md:w-6 md:h-6"
+                      />
                       <p className="">{listing.baths} Baths</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <hr className="mt-2" />
+              <hr className="mt-2 md:mt-4" />
 
-              <div className="flex items-center justify-between mt-1">
+              <div className="flex items-center justify-between mt-1 md:mt-2.5">
                 <div className="flex items-center justify-center gap-2">
                   {/* number of views */}
                   <div className="flex items-center gap-0.5">
-                    <img src={visibilityIcon} alt="" className="" />
-                    <p className="text-[12px] leading-4 text-text-secondary">
+                    <img
+                      src={visibilityIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
+                    <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] msd:leading-5.25">
                       {listing.views}
                     </p>
                   </div>
 
                   {/* number of chats for that property */}
                   <div className="flex items-center justify-center gap-0.5">
-                    <img src={chatIcon} alt="" className="" />
-                    <p className="text-[12px] leading-4 text-text-secondary">
+                    <img
+                      src={chatIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
+                    <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] msd:leading-5.25">
                       {listing.chats}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-center gap-4">
-                  <button className="py-1 px-0.5">
-                    <img src={editIcon} alt="" />
+                  {/* edit icon */}
+                  <button className="py-1 px-0.5 cursor-pointer">
+                    <img
+                      src={editIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
                   </button>
-                  <button className="py-1 px-0.5">
-                    <img src={deleteIcon} alt="" />
+
+                  {/* delete icon */}
+                  <button className="py-1 px-0.5 cursor-pointer">
+                    <img
+                      src={deleteIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
                   </button>
+
+                  {/* share icon */}
                   <button
-                    className="py-1 px-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="py-1 px-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     disabled={listing.status === "rejected"}
                   >
-                    <img src={shareIcon} alt="" />
+                    <img
+                      src={shareIcon}
+                      alt=""
+                      className="w-4 h-4 md:w-6 md:h-6"
+                    />
                   </button>
                 </div>
               </div>
