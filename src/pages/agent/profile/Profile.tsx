@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import goBack from "@/assets/images/icon-back.svg";
-import avatarImg from "@/assets/images/avatar.jpg";
 import verifiedIcon from "@/assets/images/icon-verified-green.svg";
 import checkIcon from "@/assets/agentImages/icon-check-green-circle.svg";
 import pendingIcon from "@/assets/agentImages/icon-pending-review.svg";
@@ -10,9 +9,12 @@ import infoIcon from "@/assets/agentImages/icon-grey-info.svg";
 import lockIcon from "@/assets/agentImages/icon-blue-lock.svg";
 import rightIcon from "@/assets/agentImages/icon-grey-arrow.svg";
 import activeIcon from "@/assets/agentImages/icon-active-sessions.svg";
+import { useAuthContext } from "@/context/AuthContext";
+import Avatar from "@/components/Avatar";
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
   return (
     <div className="font-ssPro flex flex-col mb-10 mx-6">
@@ -33,9 +35,9 @@ export default function Profile() {
         <div className="agent-profile py-5 px-6 rounded-lg">
           <div className="flex flex-col items-center justify-center gap-1">
             <div className="relative pb-2">
-              <img
-                src={avatarImg}
-                alt=""
+              <Avatar
+                name={user?.name ?? "?"}
+                src={user?.profilePicture}
                 className="w-17.5 h-17.5 rounded-full object-cover"
               />
               <img
@@ -46,9 +48,9 @@ export default function Profile() {
             </div>
 
             <div>
-              <p className="text-center">Ntekim Victoria</p>
+              <p className="text-center">{user?.name}</p>
               <p className="text-[12px] leading-4 text-text-secondary text-center">
-                VEE & M HOMES
+                {user?.role}
               </p>
             </div>
           </div>
@@ -70,17 +72,17 @@ export default function Profile() {
           <div className="mt-4 space-y-3">
             <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
               <p>Full Name:</p>
-              <p className="text-text-secondary">Victoria Ntekim</p>
+              <p className="text-text-secondary">{user?.name}</p>
             </div>
 
             <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
               <p>Email</p>
-              <p className="text-text-secondary">etimvictoria62@gmail.com</p>
+              <p className="text-text-secondary">{user?.email}</p>
             </div>
 
             <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
               <p>Phone Number</p>
-              <p className="text-text-secondary">+2348167288115</p>
+              <p className="text-text-secondary">{user?.phoneNumber}</p>
             </div>
 
             <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
