@@ -9,6 +9,7 @@ export type User = {
   isVerified: boolean;
   role: UserRole;
   profilePicture?: string | null;
+  phoneNumber?: string;
 };
 
 type AuthContextType = {
