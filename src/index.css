@@ -263,6 +263,10 @@
   @apply border-none outline-none shadow-none;
 }
 
+.app-property-label {
+  @apply text-[14px] md:text-[16px];
+}
+
 /* .step3-slider [data-slot="slider-track"] {
   @apply bg-text-disabled;
 }
