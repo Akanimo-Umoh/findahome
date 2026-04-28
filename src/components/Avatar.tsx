@@ -1,6 +1,5 @@
 const COLOR_PALETTE = [
   { bg: "#DCFBE9", text: "#237142" },
-  { bg: "#E2EEFF", text: "#274AD0" },
   { bg: "#F8E8FE", text: "#8453A9" },
   { bg: "#FEF3E2", text: "#B45309" },
   { bg: "#FFE4E4", text: "#B91C1C" },
