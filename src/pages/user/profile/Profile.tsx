@@ -146,7 +146,7 @@ export default function Profile() {
 
       <button
         onClick={handleLogout}
-        className="mt-6 flex items-center border border-button-bg rounded-lg py-1 px-2 gap-1 mx-auto"
+        className="mt-6 flex items-center border border-button-bg rounded-lg py-1 px-2 gap-1 mx-auto cursor-pointer"
       >
         <img src={userSwitchIcon} alt="" />
         <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
