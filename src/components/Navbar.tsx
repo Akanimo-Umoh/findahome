@@ -516,7 +516,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
   const isLight = variant === "light";
   const linkTextClass = isLight ? "text-white" : "text-text-primary";
   const logoTextClass = isLight ? "text-white" : "text-[#274AD0]";
-  const navBgClass = isLight ? "bg-transparent" : "bg-white";
+  const navBgClass = isLight ? "bg-transparent" : "bg-white md:bg-bg-accent";
 
   return (
     <motion.nav
@@ -558,13 +558,18 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
               );
             })}
           </div>
-          <Link to={profileLink}>
-            <Avatar
-              name={user?.name ?? "?"}
-              src={user?.profilePicture}
-              size="sm"
-            />
-          </Link>
+          {isAuthenticated && (
+            <Link
+              to={profileLink}
+              className="border border-button-bg rounded-full"
+            >
+              <Avatar
+                name={user?.name ?? "?"}
+                src={user?.profilePicture}
+                size="sm"
+              />
+            </Link>
+          )}
         </div>
 
         {/* ── MOBILE HAMBURGER (below md) ── */}
@@ -605,6 +610,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
                     {isAuthenticated && (
                       <Link
                         to={profileLink}
+                        onClick={closeMenu}
                         className="flex items-center gap-1"
                       >
                         <Avatar
