@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import api from "@/services/api";
 // import SubmissionSuccessful from "./SubmissionSuccessful";
- 
+
 export type PropertyType = "apartment" | "land";
 export type ListingType = "sale" | "rent";
 
@@ -84,6 +84,7 @@ export default function AddProperty() {
       formDataToSend.append("listingType", formData.listingType); // now supported
       formDataToSend.append("inspectionFee", "5000");
       formDataToSend.append("serviceCharge", formData.serviceCharge);
+      formDataToSend.append("price", formData.price);
       formDataToSend.append("address", `${formData.city}, ${formData.state}`);
 
       // description
@@ -106,12 +107,23 @@ export default function AddProperty() {
         formDataToSend.append("landUnit", formData.plotUnit);
         formDataToSend.append("landCondition", formData.landCondition);
         formDataToSend.append("landDocTitle", formData.documentTitle);
+
+        // land documents
+        formData.documents.forEach((file) => {
+          formDataToSend.append("landDocuments", file);
+        });
       }
 
       // apartment-only fields
       if (formData.propertyType === "apartment") {
         formDataToSend.append("bedroom", formData.bedrooms);
         formDataToSend.append("bathroom", formData.bathrooms);
+
+        // TEMP: satisfy backend required fields until BE makes them optional
+        formDataToSend.append("landSize", "");
+        formDataToSend.append("landUnit", "");
+        formDataToSend.append("landCondition", "");
+        formDataToSend.append("landDocTitle", "");
       }
 
       // images
@@ -121,7 +133,7 @@ export default function AddProperty() {
 
       // video
       if (formData.video) {
-        formDataToSend.append("video", formData.video);
+        formDataToSend.append("videos", formData.video);
       }
 
       // add this just before the api.post() call
