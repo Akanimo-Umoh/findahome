@@ -124,7 +124,7 @@ export default function ChatMessages() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isSending) return;
     const text = inputText;
     setInputText("");
     await sendMessage(text);
@@ -186,7 +186,11 @@ export default function ChatMessages() {
           <div className="flex items-center justify-start gap-1 flex-1">
             <Avatar
               name={headerName}
-              src={otherParty?.profilePicture}
+              src={
+                Array.isArray(otherParty?.profilePicture)
+                  ? otherParty?.profilePicture[0]
+                  : otherParty?.profilePicture
+              }
               size="md"
             />
 
@@ -293,13 +297,13 @@ export default function ChatMessages() {
                       ))}
                     </div>
                   )}
-                </div>
 
-                <p
-                  className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
-                >
-                  {formatTime(message.createdAt)}
-                </p>
+                  <p
+                    className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
+                  >
+                    {formatTime(message.createdAt)}
+                  </p>
+                </div>
               </div>
             );
           })
@@ -312,9 +316,9 @@ export default function ChatMessages() {
       {/* bottom actions */}
       <div className="space-y-6 pb-2 shrink-0">
         <div className="flex items-center justify-center gap-1">
-          {miniLinks.map((link, index) => (
+          {miniLinks.map((link) => (
             <button
-              key={index}
+              key={link.title}
               onClick={() => {
                 if (link.action === "pay") setIsPayModalOpen(true);
                 if (link.action === "escrow") setIsEscrowOpen(true);
