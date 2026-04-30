@@ -114,7 +114,7 @@ export default function Step2({
           </p>
         </button>
 
-        {/* everything in here is the same with that of the land but the land has this as well. apartment does not have this */}
+        {/* the design in here is the same with that of the description for land. apartment does not have this here */}
         {!isApartment && (
           <div className="flex flex-col gap-2 mt-6">
             <label htmlFor="description" className="app-property-label">
@@ -138,7 +138,7 @@ export default function Step2({
         {/* next button */}
         <button
           type="submit"
-          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-6 ml-auto"
+          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-6 ml-auto cursor-pointer"
         >
           <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white md:text-[16px]">
             Next

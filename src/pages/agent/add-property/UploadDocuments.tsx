@@ -24,7 +24,7 @@ export default function UploadDocuments({
       <div className="flex flex-col justify-center gap-2">
         <label
           htmlFor="upload-documents"
-          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary"
+          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary cursor-pointer"
         >
           <div className="flex flex-col items-center justify-center gap-2 rounded-lg py-6">
             <input

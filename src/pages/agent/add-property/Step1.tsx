@@ -225,7 +225,7 @@ export default function Step1({
 
         <button
           type="submit"
-          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-[37px] ml-auto"
+          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-[37px] ml-auto cursor-pointer"
         >
           <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white md:text-[16px]">
             Next

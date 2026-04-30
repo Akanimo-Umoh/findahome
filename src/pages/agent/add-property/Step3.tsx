@@ -12,12 +12,13 @@ import UploadDocuments from "./UploadDocuments";
 import UploadVideo from "./UploadVideo";
 import type { AddPropertyFormData } from "./AddProperty";
 import { toast } from "sonner";
+import { useState } from "react";
 // import SubmissionSuccessful from "./SubmissionSuccessful";
 
 type Step3Props = {
   formData: AddPropertyFormData;
   updateFormData: (fields: Partial<AddPropertyFormData>) => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 };
 
 export default function Step3({
@@ -25,20 +26,28 @@ export default function Step3({
   updateFormData,
   onSubmit,
 }: Step3Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const isApartment = formData.propertyType === "apartment";
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.video) {
+      toast.error("Please upload a video tour before submitting.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await onSubmit();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (!formData.video) {
-            toast.error("Please upload a video tour before submitting.");
-            return;
-          }
-          onSubmit();
-        }}
-      >
+      <form onSubmit={handleSubmit}>
         {/* apartment only */}
         {isApartment && (
           <>
@@ -151,12 +160,13 @@ export default function Step3({
         <div className="text-[14px] font-raleway font-semibold tracking-[1px] space-y-4 mt-11">
           <button
             type="submit"
-            className="rounded-lg h-[45px] button-style text-white w-full"
+            disabled={isSubmitting}
+            className="rounded-lg h-[45px] button-style text-white w-full "
           >
-            Submit
+            {isSubmitting ? "Submitting..." : "Submit"}
           </button>
 
-          <button className="rounded-lg border border-text-secondary bg-button-disabled h-[45px] w-full">
+          <button className="rounded-lg border border-text-secondary bg-button-disabled h-[45px] w-full cursor-pointer">
             Save as draft
           </button>
         </div>

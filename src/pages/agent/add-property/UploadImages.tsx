@@ -22,7 +22,7 @@ export default function UploadImages({ value, onChange }: UploadImagesProps) {
       <div className="flex flex-col justify-center gap-2">
         <label
           htmlFor="upload-images"
-          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary"
+          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary cursor-pointer"
         >
           <div className="flex flex-col items-center justify-center gap-2 py-6 rounded-lg">
             <input
