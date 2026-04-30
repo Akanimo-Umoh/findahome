@@ -69,6 +69,7 @@ import { MyTransactions } from "@/pages/agent/my-transaction";
 import { SavedProperties } from "@/pages/user/saved-properties";
 import Chats from "@/components/Chats";
 import ChatMessages from "@/components/ChatMessages";
+import { TransactionDetails } from "@/pages/agent/transaction-details";
 
 export default function AppRoutes() {
   return (
@@ -183,17 +184,21 @@ export default function AppRoutes() {
 
         <Route element={<NormalLayout />}>
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
-          <Route path="/agent/add-property" element={<AddProperty />} />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
+          <Route path="/agent/add-property" element={<AddProperty />} />
+          <Route path="/agent/my-transactions" element={<MyTransactions />} />
+          <Route
+            path="/agent/my-transactions/1"
+            element={<TransactionDetails />}
+          />
         </Route>
       </Route>
 
       <Route element={<NormalLayout />}>
         {/* don't forget to add the links for the different dashboards route */}
-        <Route path="/agent/mis" element={<Miscellaneous />} />
         <Route path="/agent/my-listings" element={<MyListings />} />
+        <Route path="/agent/mis" element={<Miscellaneous />} />
         <Route path="/agent/preview" element={<PropertyPreview />} />
-        <Route path="/agent/my-transactions" element={<MyTransactions />} />
       </Route>
 
       {/* ==================== ADMIN ROUTES ==================== */}

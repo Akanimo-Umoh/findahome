@@ -4,8 +4,9 @@ import bed from "@/assets/images/bed.svg";
 import tubs from "@/assets/images/tubs.svg";
 import verified from "@/assets/images/icon-verified.svg";
 import type { Property } from "@/types/property";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
+// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg";
+import Avatar from "./Avatar";
 // import heartIcon from "@/assets/images/icon-heart.svg";
 
 type PropertyCardProps = {
@@ -87,14 +88,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
             <div className="md:flex md:items-end md:justify-between">
               <div className="flex items-center gap-1 md:flex-col md:items-start">
                 <div>
-                  <img
+                  <Avatar
+                    name={property.owner.name ?? "?"}
                     src={
                       Array.isArray(property.owner.profilePicture)
-                        ? (property.owner.profilePicture[0] ?? agentAvatar)
-                        : (property.owner.profilePicture ?? agentAvatar)
+                        ? property.owner.profilePicture[0]
+                        : property.owner.profilePicture
                     }
-                    alt={property.owner.name}
-                    className="w-5 h-5 rounded-full object-cover md:w-12.5 md:h-12.5"
+                    size="xs"
                   />
                 </div>
 

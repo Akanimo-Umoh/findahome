@@ -2,6 +2,7 @@ import modelHouse from "@/assets/agentImages/img-model-house.jpg";
 import apartmentImg from "@/assets/images/img-apartment.png";
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 type FilterTab = "all" | "pending" | "completed" | "dispute";
 
@@ -125,7 +126,8 @@ export default function Transactions() {
             const badgeStyle = statusStyles[statusKey] ?? "bg-[#FF6B6B]";
 
             return (
-              <div
+              <Link
+                to="/agent/my-transactions/1"
                 key={transaction.id}
                 className="border border-bg-accent rounded-xl p-2 flex items-center gap-3"
               >
@@ -167,7 +169,7 @@ export default function Transactions() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })
         )}

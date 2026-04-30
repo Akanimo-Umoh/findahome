@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const COLOR_PALETTE = [
   { bg: "#DCFBE9", text: "#237142" },
   { bg: "#F8E8FE", text: "#8453A9" },
@@ -25,6 +27,7 @@ function getInitials(name: string) {
 }
 
 const sizeMap = {
+  xs: { container: "w-5 h-5 md:w-12.5 md:h-12.5", text: "text-[10px]" },
   sm: { container: "w-8 h-8", text: "text-[11px]" },
   md: { container: "w-10 h-10", text: "text-[13px]" },
   lg: { container: "w-[70px] h-[70px]", text: "text-[24px]" },
@@ -33,7 +36,7 @@ const sizeMap = {
 type AvatarProps = {
   name: string;
   src?: string | null;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
 };
 
@@ -47,19 +50,22 @@ export default function Avatar({
   const { bg, text: textColor } = getColorFromName(name || "?");
   const initials = getInitials(name || "?");
 
-  if (src) {
+  const [imgError, setImgError] = useState(false);
+
+  if (src && !imgError) {
     return (
       <img
         src={src}
         alt={name}
-        className={`${container} rounded-full object-cover shrink-0 ${className}`}
+        onError={() => setImgError(true)}
+        className={`rounded-full object-cover shrink-0 ${container} ${className}`}
       />
     );
   }
 
   return (
     <div
-      className={`${container} rounded-full shrink-0 flex items-center justify-center font-semibold ${text} ${className}`}
+      className={`rounded-full shrink-0 flex items-center justify-center font-semibold ${text} ${container} ${className}`}
       style={{ backgroundColor: bg, color: textColor }}
     >
       {initials}

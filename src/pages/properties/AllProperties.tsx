@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
@@ -77,7 +77,13 @@ export default function AllProperties() {
     );
   } else {
     content = currentProperties.map((property) => (
-      <PropertyCard key={property._id} property={property} />
+      <Link
+        key={property._id}
+        to={`/property/${property._id}`}
+        className="block hover:shadow-lg transition"
+      >
+        <PropertyCard key={property._id} property={property} />
+      </Link>
     ));
   }
 

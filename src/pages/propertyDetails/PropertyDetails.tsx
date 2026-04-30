@@ -14,9 +14,10 @@ import { useProperty } from "@/hooks/useProperties";
 import { useState } from "react";
 import ChatAgentModal from "./ChatAgentModal";
 import ImageCarousel from "./ImageCarousel";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
+// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import Spinner from "@/components/Spinner";
 import { useFavorite } from "@/hooks/useFavorite";
+import Avatar from "@/components/Avatar";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
@@ -177,13 +178,13 @@ export default function PropertyDetails() {
 
         <div className="bg-bg-accent py-2 px-3 flex items-center gap-2 rounded-xl">
           <div>
-            <img
+            <Avatar
+              name={property.owner.name ?? "?"}
               src={
                 Array.isArray(property.owner.profilePicture)
-                  ? (property.owner.profilePicture[0] ?? agentAvatar)
-                  : (property.owner.profilePicture ?? agentAvatar)
+                  ? property.owner.profilePicture[0]
+                  : property.owner.profilePicture
               }
-              alt={property.owner.name}
               className="w-12.5 h-12.5 object-cover rounded-full"
             />
           </div>

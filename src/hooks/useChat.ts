@@ -20,6 +20,7 @@ export type ChatParticipant = {
   email: string;
   name?: string;
   profilePicture?: string | null;
+  isVerified?: boolean;
 };
 
 export type ChatProperty = {

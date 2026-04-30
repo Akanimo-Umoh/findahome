@@ -75,6 +75,8 @@ export default function ChatMessages() {
   const otherParty = chatDetail?.participants.find(
     (p) => p._id !== currentUserId,
   );
+  console.log("chat detail: ", chatDetail?.participants);
+
   const property = chatDetail?.property;
 
   // header display
@@ -199,7 +201,7 @@ export default function ChatMessages() {
                 <p className="text-[12px] text-text-primary font-semibold">
                   {headerName}
                 </p>
-                {!isAgent && state?.agentIsVerified && (
+                {!isAgent && otherParty?.isVerified && (
                   <div className="flex items-center justify-start gap-0.5 flex-1">
                     <img src={iconVerified} alt="" className="w-4 h-4" />
                     <p className="text-[12px] text-text-secondary line-clamp-1">
@@ -208,6 +210,7 @@ export default function ChatMessages() {
                   </div>
                 )}
               </div>
+
               <p className="text-text-secondary text-[12px]">
                 Ref: FH - {refId}
               </p>

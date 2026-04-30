@@ -31,7 +31,7 @@ export default function Properties() {
               <Link
                 key={property._id}
                 to={`/property/${property._id}`}
-                className="block md:hover:shadow-lg md:transition"
+                className="block hover:shadow-lg transition"
               >
                 <PropertyCard property={property} />
               </Link>
@@ -42,7 +42,10 @@ export default function Properties() {
 
       {!loading && !error && (
         <div className="text-center mt-2 md:mt-10">
-          <Link to="/properties" className="text-text-secondary text-center md:text-[18px]">
+          <Link
+            to="/properties"
+            className="text-text-secondary text-center md:text-[18px]"
+          >
             See More
           </Link>
         </div>
