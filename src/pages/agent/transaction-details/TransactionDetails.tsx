@@ -31,7 +31,7 @@ export default function TransactionDetails() {
             alt=""
             className="w-15 h-15 rounded-lg object-cover"
           />
-
+ 
           <div className="space-y-2">
             <div className="space-y-1">
               <p className="font-raleway font-semibold text-[12px] tracking-[1px] line-clamp-1">

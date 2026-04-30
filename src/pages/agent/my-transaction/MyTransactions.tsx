@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import goBack from "@/assets/images/icon-back.svg";
-import pendingIcon from "@/assets/agentImages/icon-pending-transaction.svg";
-import greenNairaIcon from "@/assets/agentImages/icon-green-naira.svg";
-import paidOutIcon from "@/assets/agentImages/icon-paid-out.svg";
-import warningIcon from "@/assets/agentImages/icon-warning.svg";
+// import pendingIcon from "@/assets/agentImages/icon-pending-transaction.svg";
+// import greenNairaIcon from "@/assets/agentImages/icon-green-naira.svg";
+// import paidOutIcon from "@/assets/agentImages/icon-paid-out.svg";
+// import warningIcon from "@/assets/agentImages/icon-warning.svg";
 import Transactions from "./Transactions";
 
 export default function MyTransactions() {
@@ -22,7 +22,7 @@ export default function MyTransactions() {
         </p>
       </div>
 
-      <section className="mt-6">
+      {/* <section className="mt-6">
         <div className="grid gap-2 grid-cols-[repeat(auto-fit,min(98px,104px))] justify-center sm:gap-[15px]">
           <div className="space-y-4 py-2 pl-4 bg-white rounded-lg performance-shadow">
             <div className="bg-[#FF6B6B33] rounded-lg p-2 w-7.5 h-7.5">
@@ -60,9 +60,9 @@ export default function MyTransactions() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="mt-8">
+      <section className="mt-6">
         <Transactions />
       </section>
     </div>
