@@ -1,6 +1,17 @@
 import successImg from "@/assets/images/img-inspection-fee-successful.png";
+import { useNavigate } from "react-router-dom";
 
-export default function SubmissionSuccessful() {
+type Props = {
+  propertyId: string;
+  onDashboard?: () => void;
+};
+
+export default function SubmissionSuccessful({
+  propertyId,
+  onDashboard,
+}: Props) {
+  const navigate = useNavigate();
+
   return (
     <div className="fixed inset-0 z-50 modal-enter font-ssPro text-text-primary">
       {/* modal */}
@@ -28,11 +39,17 @@ export default function SubmissionSuccessful() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-11.25 rounded-lg text-white">
+            <button
+              onClick={() => navigate(`/agent/property-preview/${propertyId}`)}
+              className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-11.25 rounded-lg text-white"
+            >
               View Listing Preview
             </button>
 
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] w-full h-11.25 rounded-lg border border-text-secondary">
+            <button
+              onClick={onDashboard}
+              className="font-raleway font-semibold text-[14px] tracking-[1px] w-full h-11.25 rounded-lg border border-text-secondary"
+            >
               Go to Dashboard
             </button>
           </div>
