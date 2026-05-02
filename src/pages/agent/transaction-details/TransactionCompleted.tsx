@@ -84,7 +84,7 @@ export default function TransactionCompleted() {
         </div>
 
         <div className="mt-6">
-          <Timeline />
+          <Timeline stage="completed" />
         </div>
 
         <div>
