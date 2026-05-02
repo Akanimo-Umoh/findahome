@@ -191,6 +191,10 @@ export default function AppRoutes() {
             path="/agent/my-transactions/1"
             element={<TransactionDetails />}
           />
+          <Route
+            path="/agent/property-preview/:id"
+            element={<PropertyPreview />}
+          />
         </Route>
       </Route>
 
@@ -198,7 +202,6 @@ export default function AppRoutes() {
         {/* don't forget to add the links for the different dashboards route */}
         <Route path="/agent/my-listings" element={<MyListings />} />
         <Route path="/agent/mis" element={<Miscellaneous />} />
-        <Route path="/agent/preview" element={<PropertyPreview />} />
       </Route>
 
       {/* ==================== ADMIN ROUTES ==================== */}
