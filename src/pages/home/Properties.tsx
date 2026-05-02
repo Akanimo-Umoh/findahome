@@ -26,7 +26,7 @@ export default function Properties() {
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
           // show properties
-          <div className="grid justify-center">
+          <div className="grid justify-center space-y-8">
             {previewProperties.map((property) => (
               <Link
                 key={property._id}

@@ -17,7 +17,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
   const isLand = property.propertyType === "land";
 
   return (
-    <div className="rounded-2xl overflow-hidden max-w-105">
+    <div className="rounded-2xl overflow-hidden max-w-105 hover:shadow-lg transition">
       <div className="relative">
         <img
           src={property.images[0]}
