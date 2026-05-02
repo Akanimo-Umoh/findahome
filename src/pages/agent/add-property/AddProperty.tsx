@@ -6,6 +6,7 @@ import Step3 from "./Step3";
 import { useState } from "react";
 import { toast } from "sonner";
 import api from "@/services/api";
+import SubmissionSuccessful from "./SubmissionSuccessful";
 // import SubmissionSuccessful from "./SubmissionSuccessful";
 
 export type PropertyType = "apartment" | "land";
@@ -22,7 +23,7 @@ export type AddPropertyFormData = {
   plotSize: string;
   plotUnit: string;
   landCondition: string;
-  documentTitle: string;
+  landDocType: string;
   // Step 2
   state: string;
   city: string;
@@ -48,7 +49,7 @@ const initialFormData: AddPropertyFormData = {
   plotSize: "",
   plotUnit: "",
   landCondition: "",
-  documentTitle: "",
+  landDocType: "",
   state: "",
   city: "",
   landmarks: [""],
@@ -64,6 +65,8 @@ const initialFormData: AddPropertyFormData = {
 export default function AddProperty() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
+  const [propertyId, setPropertyId] = useState<string | null>(null);
   const [formData, setFormData] =
     useState<AddPropertyFormData>(initialFormData);
 
@@ -106,7 +109,7 @@ export default function AddProperty() {
         formDataToSend.append("landSize", formData.plotSize); // CHANGED: landType → landSize
         formDataToSend.append("landUnit", formData.plotUnit);
         formDataToSend.append("landCondition", formData.landCondition);
-        formDataToSend.append("landDocTitle", formData.documentTitle);
+        formDataToSend.append("landDocType", formData.landDocType);
 
         // land documents
         formData.documents.forEach((file) => {
@@ -118,12 +121,6 @@ export default function AddProperty() {
       if (formData.propertyType === "apartment") {
         formDataToSend.append("bedroom", formData.bedrooms);
         formDataToSend.append("bathroom", formData.bathrooms);
-
-        // TEMP: satisfy backend required fields until BE makes them optional
-        formDataToSend.append("landSize", "");
-        formDataToSend.append("landUnit", "");
-        formDataToSend.append("landCondition", "");
-        formDataToSend.append("landDocTitle", "");
       }
 
       // images
@@ -146,8 +143,10 @@ export default function AddProperty() {
       });
 
       if (response.data.success) {
-        toast.success("Property listed successfully!");
-        navigate("/agent/my-listings");
+        setPropertyId(response.data.property._id);
+        setIsSuccessOpen(true);
+        // toast.success("Property listed successfully!");
+        // navigate("/agent/my-listings");
       }
     } catch (err) {
       toast.error("Failed to create property. Please try again.");
@@ -222,6 +221,13 @@ export default function AddProperty() {
           />
         )}
       </section>
+
+      {isSuccessOpen && propertyId && (
+        <SubmissionSuccessful
+          propertyId={propertyId}
+          onDashboard={() => navigate("/agent/dashboard")}
+        />
+      )}
     </div>
   );
 }
