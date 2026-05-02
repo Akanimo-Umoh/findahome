@@ -31,7 +31,7 @@ export default function Properties() {
               <Link
                 key={property._id}
                 to={`/property/${property._id}`}
-                className="block hover:shadow-lg transition"
+                className="block"
               >
                 <PropertyCard property={property} />
               </Link>

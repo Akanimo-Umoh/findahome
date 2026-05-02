@@ -13,11 +13,10 @@ import chatIcon from "@/assets/images/icon-chat.svg";
 import { useProperty } from "@/hooks/useProperties";
 import { useState } from "react";
 import ChatAgentModal from "./ChatAgentModal";
-import ImageCarousel from "./ImageCarousel";
-// import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import Spinner from "@/components/Spinner";
 import { useFavorite } from "@/hooks/useFavorite";
 import Avatar from "@/components/Avatar";
+import ImageCarousel from "@/components/ImageCarousel";
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>();
@@ -79,7 +78,7 @@ export default function PropertyDetails() {
       <div className="mt-6 md:mt-12">
         <ImageCarousel
           images={property.images}
-          video={property.video ?? undefined}
+          video={property.videos?.[0] ?? undefined}
         />
       </div>
 

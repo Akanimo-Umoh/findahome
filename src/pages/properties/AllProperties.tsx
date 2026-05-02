@@ -80,7 +80,7 @@ export default function AllProperties() {
       <Link
         key={property._id}
         to={`/property/${property._id}`}
-        className="block hover:shadow-lg transition"
+        className="block"
       >
         <PropertyCard key={property._id} property={property} />
       </Link>
@@ -108,7 +108,7 @@ export default function AllProperties() {
         </div>
 
         {/* main properties ctn */}
-        <div className="mt-6 space-y-8">{content}</div>
+        <div className="mt-6 space-y-8 grid justify-center">{content}</div>
       </main>
 
       {/* Pagination */}

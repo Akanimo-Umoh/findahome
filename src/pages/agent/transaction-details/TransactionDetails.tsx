@@ -7,49 +7,35 @@ import PaymentSummary from "./PaymentSummary";
 import InspectionDetails from "./InspectionDetails";
 import Timeline from "./Timeline";
 import { useState } from "react";
-
-// Each stage maps to a scenario
-// in_escrow            → Scenario 1: payment made, funds held, show Schedule Inspection button
-// inspection_scheduled → Scenario 2a: agent scheduled, waiting for buyer to confirm
-// inspection_confirmed → Scenario 2b: buyer confirmed schedule
-// inspection_completing → Scenario 3: code input, confirm inspection completed
-// completed            → Scenario 4: all done, payment released
+import checkIcon from "@/assets/agentImages/icon-white-filled-icon.svg";
+import ConfirmBuyersCode from "./ConfirmBuyersCode";
+import InspectionConfirmedModal from "./InspectionConfirmedModal";
 
 export type TransactionStage =
-  | "in_escrow"
-  | "inspection_scheduled"
-  | "inspection_confirmed"
-  | "inspection_completing"
-  | "completed";
+  | "in_escrow" // Scenario 1: payment made, schedule inspection button
+  | "inspection_scheduled" // Scenario 2a: agent scheduled, waiting for buyer
+  | "inspection_confirmed" // Scenario 2b: buyer confirmed — banner shows
+  | "inspection_completing" // Scenario 3: code input shown
+  | "inspection_done" // Scenario 3 confirmed: modal shows
+  | "completed"; // Scenario 4: payment released
 
-// Header title changes based on stage
-const headerTitle: Record<TransactionStage, string> = {
-  in_escrow: "Transaction Details",
-  inspection_scheduled: "Inspection Details",
-  inspection_confirmed: "Inspection Details",
-  inspection_completing: "Inspection Details",
-  completed: "Transaction Details",
-};
-
-// Top message changes based on stage
-const stageMessage: Partial<Record<TransactionStage, string>> = {
-  inspection_scheduled: "Waiting for the buyer to confirm schedule",
-  inspection_confirmed: "Inspection schedule confirmed",
-};
+// header title — only changes after inspection is scheduled
+const headerTitle = (stage: TransactionStage) =>
+  stage === "in_escrow" ? "Transaction Details" : "Inspection Details";
 
 export default function TransactionDetails() {
   const navigate = useNavigate();
 
-  // In a real app, this comes from the API response
-  // We use local state here so you can test all scenarios
+  // In a real app this comes from the API based on transaction ID from URL params
   const [stage, setStage] = useState<TransactionStage>("in_escrow");
-  const [inspectionCode, setInspectionCode] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
-  const isScenario1 = stage === "in_escrow";
-  const isScenario2 =
-    stage === "inspection_scheduled" || stage === "inspection_confirmed";
-  const isScenario3 = stage === "inspection_completing";
-  const isScenario4 = stage === "completed";
+  const showInspectionConfirmedBanner =
+    stage === "inspection_confirmed" || stage === "inspection_completing";
+  const showInspectionDetails = stage !== "in_escrow";
+  const showTimeline =
+    stage !== "inspection_completing" && stage !== "inspection_done";
+  const showConfirmBuyersCode = stage === "inspection_completing";
 
   return (
     // transaction details for inspection
@@ -61,20 +47,29 @@ export default function TransactionDetails() {
         </button>
 
         <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
-          {headerTitle[stage]}
+          {headerTitle(stage)}
         </p>
       </div>
 
-      <section className="mt-6">
-        {/* top message — only shows in scenario 2 */}
-        {stageMessage[stage] && (
-          <div className="mb-4 px-3 py-2 bg-bg-accent rounded-lg">
-            <p className="text-[12px] text-text-secondary text-center">
-              {stageMessage[stage]}
+      {/* Scenario 2b + 3: inspection confirmed banner */}
+      {showInspectionConfirmedBanner && (
+        <div className="flex items-center rounded-lg border border-bg-accent bg-bg-accent py-2 px-3 gap-1 mt-6">
+          <div className="w-7.5 h-7.5 bg-[#10B981] flex items-center justify-center rounded-full shrink-0">
+            <img src={checkIcon} alt="" />
+          </div>
+          <div>
+            <p className="text-[14px]">Inspection Schedule Confirmed.</p>
+            <p className="text-[12px] leading-4 text-text-secondary">
+              {stage === "inspection_confirmed"
+                ? "The inspection is scheduled. No further action is required until the inspection takes place."
+                : "Both you and the buyer must confirm that the inspection was carried out."}
             </p>
           </div>
-        )}
+        </div>
+      )}
 
+      <section className="mt-6">
+        {/* property card — always visible */}
         <div className="border border-bg-accent rounded-xl p-2 flex items-center gap-3">
           <img
             src={apartmentImg}
@@ -114,36 +109,122 @@ export default function TransactionDetails() {
           </div>
         </div>
 
-        {/* buyer details — hidden in scenario 3 */}
-        {!isScenario3 && (
+        {/* buyer details — hidden when payment is released (completed) */}
+        {stage !== "completed" && (
           <div className="mt-6">
             <BuyerInfo />
           </div>
         )}
 
-        {/* payment summary — hidden in scenario 3 */}
-        {!isScenario3 && (
+        {/* payment summary — hidden in scenario 3 (code input) */}
+        {stage !== "inspection_completing" && (
           <div className="mt-6">
             <PaymentSummary />
           </div>
         )}
 
-        {/* inspection details — only visible in scenario 2 */}
-        {isScenario2 && (
+        {/* inspection details — hidden when payment is released */}
+        {showInspectionDetails && stage !== "completed" && (
           <div className="mt-6">
             <InspectionDetails />
           </div>
         )}
 
-        <div className="mt-6">
-          <Timeline />
-        </div>
+        {/* timeline — hidden only in scenario 3 */}
+        {showTimeline && (
+          <div className="mt-6">
+            <Timeline stage={stage} />
+          </div>
+        )}
 
-        <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white mt-12.5">
-          Schedule Inspection
-        </button>
+        {/* scenario 1 button */}
+        {stage === "in_escrow" && (
+          <div className="mt-8 space-y-3">
+            <button
+              onClick={() => setStage("inspection_scheduled")}
+              className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white"
+            >
+              Schedule Inspection
+            </button>
+          </div>
+        )}
+
+        {/* scenario 2 buttons */}
+        {(stage === "inspection_scheduled" ||
+          stage === "inspection_confirmed") && (
+          <div className="mt-8 space-y-3">
+            <button
+              onClick={() => setStage("inspection_completing")}
+              className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white"
+            >
+              Confirm Inspection Completed
+            </button>
+            <button
+              onClick={() => navigate("/agent/dashboard")}
+              className="h-[45px] font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg border border-text-secondary bg-button-disabled w-full"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        )}
+
+        {/* scenario 4 buttons */}
+        {stage === "completed" && (
+          <div className="mt-8 space-y-3">
+            <button
+              onClick={() => navigate("/agent/wallet")}
+              className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white"
+            >
+              View Wallet
+            </button>
+            <button
+              onClick={() => navigate("/agent/dashboard")}
+              className="h-[45px] font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg border border-button-bg text-button-bg w-full"
+            >
+              Go to Dashboard
+            </button>
+            <button className="h-[45px] font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg border border-text-secondary bg-button-disabled w-full">
+              Download Receipt
+            </button>
+          </div>
+        )}
+
+        {/* open a dispute — hidden in scenario 3 and 4 */}
+        {stage !== "inspection_completing" &&
+          stage !== "inspection_done" &&
+          stage !== "completed" &&
+          stage !== "in_escrow" && (
+            <p className="text-[12px] leading-4 text-text-secondary text-center mt-3">
+              Having issues?{" "}
+              <span className="text-button-bg cursor-pointer">
+                Open a dispute
+              </span>
+            </p>
+          )}
+
+        {/* Scenario 3: code input */}
+        {showConfirmBuyersCode && (
+          <div className="mt-6">
+            <ConfirmBuyersCode
+              onConfirm={() => {
+                setStage("inspection_done");
+                setShowModal(true);
+              }}
+            />
+          </div>
+        )}
       </section>
-      {/* quick note, i have another component that would show the transaction details when every thing has been checked */}
+
+      {/* Scenario 3 success modal */}
+      {showModal && (
+        <InspectionConfirmedModal
+          onViewTransaction={() => {
+            setShowModal(false);
+            setStage("completed");
+          }}
+          onBackToDashboard={() => navigate("/agent/dashboard")}
+        />
+      )}
     </div>
   );
 }

@@ -32,11 +32,12 @@ type BaseProperty = {
   price: number;
   address: string;
   images: string[];
-  video: string | string[];
+  videos: string[];
   description: string;
   inspectionFee: number;
   serviceCharge: number;
   nearbyPlaces: string[];
+  listingType: string;
   owner: {
     _id: string;
     name: string;
@@ -52,6 +53,10 @@ type BaseProperty = {
 export type LandProperty = BaseProperty & {
   propertyType: "land";
   landType: string;
+  landSize?: string;
+  landUnit?: string;
+  landCondition?: string;
+  landDocTitle?: string;
 };
 
 export type BuildingProperty = BaseProperty & {
