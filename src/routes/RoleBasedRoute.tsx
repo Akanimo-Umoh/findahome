@@ -11,26 +11,32 @@ interface RoleBasedRouteProps {
 }
 
 export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
-  const { user, token, isLoading } = useAuthContext();
+  const { user, token, isLoading, isLoggingOut } = useAuthContext();
   const location = useLocation();
   const navigate = useNavigate();
   const hasShownToast = useRef(false);
 
+  const isIntentionalLogout = location.state?.loggedOut === true;
+
   useEffect(() => {
     if (isLoading || hasShownToast.current) return;
 
+    if (isLoggingOut) return;
+
     // Not authenticated at all
     if (!user || !token) {
-      hasShownToast.current = true;
-      toast.error("Please login to access this page");
+      if (!isIntentionalLogout) {
+        hasShownToast.current = true;
+        toast.error("Please login to access this page");
 
-      // delay navigation
-      setTimeout(() => {
-        navigate("/login", {
-          replace: true,
-          state: { from: location.pathname },
-        });
-      }, 3000);
+        // delay navigation
+        setTimeout(() => {
+          navigate("/login", {
+            replace: true,
+            state: { from: location.pathname },
+          });
+        }, 3000);
+      }
       return;
     }
 
@@ -71,9 +77,18 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
       }, 3000);
       return;
     }
-  }, [user, token, isLoading, navigate, location.pathname, allowedRoles]);
+  }, [
+    user,
+    token,
+    isLoading,
+    isLoggingOut,
+    navigate,
+    location.pathname,
+    allowedRoles,
+    isIntentionalLogout,
+  ]);
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isLoggingOut) return <Loading />;
 
   // Don't render if redirecting
   if (
@@ -82,7 +97,7 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
     !user.isVerified ||
     !allowedRoles.includes(user.role as UserRole)
   ) {
-    return <Loading />;
+    return null;
   }
 
   return <Outlet />;

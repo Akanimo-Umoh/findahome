@@ -319,10 +319,9 @@
 // }
 
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import menu from "@/assets/images/icon-menu.svg";
 import close from "@/assets/images/closeMenu.svg";
-// import avatar from "@/assets/images/avatar.jpg";
 import dashboard from "@/assets/images/icon-nav-dashboard.svg";
 import agents from "@/assets/images/icon-agents.svg";
 import chats from "@/assets/images/icon-nav-chat.svg";
@@ -340,6 +339,7 @@ import activeRightArrowIcon from "@/assets/images/icon-white-right-arrow.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import { useAuthContext } from "@/context/AuthContext";
 import Avatar from "./Avatar";
+import { useLogout } from "@/hooks/useLogout";
 
 type NavbarProps = {
   variant?: "light" | "dark";
@@ -350,8 +350,8 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
   const [scrollY, setScrollY] = useState(0);
   const [hidden, setHidden] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuthContext();
-  const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuthContext();
+  const { handleLogout } = useLogout();
 
   // ── MOBILE LINKS ──
   const mobileUserLinks = [
@@ -505,11 +505,6 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
 
   const handleMenu = () => setOpenMenu((prev) => !prev);
   const closeMenu = () => setOpenMenu(false);
-  const handleLogout = () => {
-    logout();
-    closeMenu();
-    navigate("/login", { replace: true });
-  };
 
   const profileLink = user?.role === "agent" ? "/agent/profile" : "/profile";
 
@@ -712,7 +707,10 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
 
                 {isAuthenticated && (
                   <button
-                    onClick={handleLogout}
+                    onClick={() => {
+                      closeMenu();
+                      handleLogout();
+                    }}
                     className="flex gap-1 border border-button-bg rounded-lg p-1 cursor-pointer"
                   >
                     <img src={logoutIcon} alt="" />

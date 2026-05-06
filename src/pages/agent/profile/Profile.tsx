@@ -11,10 +11,13 @@ import rightIcon from "@/assets/agentImages/icon-grey-arrow.svg";
 import activeIcon from "@/assets/agentImages/icon-active-sessions.svg";
 import { useAuthContext } from "@/context/AuthContext";
 import Avatar from "@/components/Avatar";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function Profile() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
+
+  const { handleLogout } = useLogout();
 
   return (
     <div className="font-ssPro flex flex-col mb-10 mx-6">
@@ -218,7 +221,10 @@ export default function Profile() {
         </div>
 
         {/* log out */}
-        <button className="border border-text-secondary h-[45px] rounded-lg bg-button-disabled font-raleway font-semibold text-[14px] tracking-[1px] mt-8 w-full">
+        <button
+          onClick={handleLogout}
+          className="border border-text-secondary h-[45px] rounded-lg bg-button-disabled font-raleway font-semibold text-[14px] tracking-[1px] mt-8 w-full cursor-pointer"
+        >
           Log out
         </button>
       </main>

@@ -16,6 +16,7 @@ type AuthContextType = {
   user: User | null;
   token: string | null;
   isLoading: boolean;
+  isLoggingOut: boolean;
   isAuthenticated: boolean;
   login: (user: User, token: string) => void;
   logout: () => void;
@@ -28,6 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   // user is authenticated if both user and token exist
   const isAuthenticated = !!(user && token);
@@ -51,6 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (user: User, token: string) => {
+    setIsLoggingOut(false);
     setUser(user);
     setToken(token);
     localStorage.setItem("token", token);
@@ -63,6 +66,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    setIsLoggingOut(true);
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
@@ -75,6 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         token,
         isLoading,
+        isLoggingOut,
         isAuthenticated,
         login,
         logout,
@@ -86,6 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = () => {
   const context = useContext(AuthContext);
   if (!context) {

@@ -25,7 +25,7 @@ export default function PublicOnlyRoute() {
     // No return URL, redirect to role-based dashboard
     switch (user.role) {
       case "user":
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/" replace />;
       case "agent":
         return <Navigate to="/agent/dashboard" replace />;
       case "admin":

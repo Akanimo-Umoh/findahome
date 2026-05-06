@@ -76,13 +76,13 @@ export default function Login() {
         (() => {
           switch (response.user.role) {
             case "user":
-              return "/dashboard";
+              return "/";
             case "agent":
               return "/agent/dashboard";
             case "admin":
               return "/admin/dashboard";
             default:
-              return "/dashboard";
+              return "/";
           }
         })();
 
