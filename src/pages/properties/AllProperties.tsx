@@ -1,11 +1,11 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
 import rightArrow from "@/assets/images/icon-right-arrow.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import PropertyCard from "@/components/PropertyCard";
 import { useProperties } from "@/hooks/useProperties";
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
+import Search from "../home/Search";
 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -89,12 +89,9 @@ export default function AllProperties() {
 
   return (
     <div className="flex min-h-screen flex-col font-ssPro">
-      {/* navbar */}
-      <Navbar />
-
       {/* main contents */}
-      <main className="mt-18 mx-6">
-        <div className="relative flex items-center justify-center">
+      <main className="mx-6">
+        <div className="relative flex items-center justify-center md:hidden">
           <button
             onClick={() => navigate(-1)}
             className="absolute left-0 cursor-pointer"
@@ -105,6 +102,11 @@ export default function AllProperties() {
           <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center">
             Available Properties
           </p>
+        </div>
+
+        {/* search */}
+        <div className="hidden md:block mt-8 max-w-[554px] w-full mx-auto">
+          <Search />
         </div>
 
         {/* main properties ctn */}

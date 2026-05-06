@@ -26,12 +26,12 @@ export default function Properties() {
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
           // show properties
-          <div className="grid justify-center space-y-8">
+          <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-[25px]">
             {previewProperties.map((property) => (
               <Link
                 key={property._id}
                 to={`/property/${property._id}`}
-                className="block"
+                className="block md:max-w-[340px]"
               >
                 <PropertyCard property={property} />
               </Link>
