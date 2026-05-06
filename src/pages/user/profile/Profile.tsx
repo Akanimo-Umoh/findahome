@@ -8,22 +8,18 @@ import userSwitchIcon from "@/assets/images/icon-user-switch.svg";
 // import editProfile from "@/assets/images/icon-edit-profile.svg";
 import Summary from "./Summary";
 import PersonalInformation from "./PersonalInformation";
-import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "@/context/AuthContext";
 import { useProfilePicture } from "@/hooks/useProfilePicture";
 import { useRef } from "react";
 import Avatar from "@/components/Avatar";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function Profile() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuthContext();
+  const { user } = useAuthContext();
   const { changeProfilePicture, isUploading } = useProfilePicture();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login", { replace: true });
-  };
+  const { handleLogout } = useLogout();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
