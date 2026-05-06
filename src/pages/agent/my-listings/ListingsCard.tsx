@@ -1,4 +1,3 @@
-import propertyImg from "@/assets/images/property.jpg";
 import locationIcon from "@/assets/images/icon-location.svg";
 import bedIcon from "@/assets/images/bed.svg";
 import tubIcon from "@/assets/images/tubs.svg";
@@ -16,87 +15,26 @@ import checkboxIcon from "@/assets/agentImages/icon-filled-checkbox.svg";
 import cancelIcon from "@/assets/agentImages/icon-filled-cancel.svg";
 import rejectedIcon from "@/assets/agentImages/icon-cancel.svg";
 import type { FilterStatus, ListingStatus } from "./MyListings";
+import type { AgentListing } from "@/hooks/useAgentListings";
+import Spinner from "@/components/Spinner";
+import { toast } from "sonner";
 
 interface ListingsCardProps {
   activeFilter: FilterStatus;
   activeTab: "apartment" | "land";
+  listings: AgentListing[];
+  isLoading: boolean;
+  error: string | null;
 }
 
-const listings = [
-  {
-    id: 1,
-    propertyType: "apartment",
-    status: "active" as ListingStatus,
-    title: "4 Bedroom Apartment",
-    price: "800k",
-    type: "For Sale",
-    location: "Lekki Phase 1, Lagos",
-    beds: 4,
-    baths: 2,
-    views: 123,
-    chats: 5,
-  },
-  {
-    id: 2,
-    propertyType: "apartment",
-    status: "pending" as ListingStatus,
-    title: "3 Bedroom Flat",
-    price: "500k",
-    type: "For Rent",
-    location: "Ikeja, Lagos",
-    beds: 3,
-    baths: 2,
-    views: 45,
-    chats: 2,
-  },
-  {
-    id: 3,
-    propertyType: "land",
-    status: "sold" as ListingStatus,
-    title: "2 Bedroom Bungalow",
-    price: "1.2M",
-    type: "For Sale",
-    location: "Abuja, FCT",
-    beds: 2,
-    baths: 1,
-    views: 210,
-    chats: 8,
-  },
-  {
-    id: 4,
-    propertyType: "apartment",
-    status: "rejected" as ListingStatus,
-    title: "Studio Apartment",
-    price: "200k",
-    type: "For Rent",
-    location: "Surulere, Lagos",
-    beds: 1,
-    baths: 1,
-    views: 30,
-    chats: 0,
-  },
-];
-
-const statusConfig = {
-  active: {
-    label: "Active",
-    bg: "bg-[#10B981]",
-    icon: activeIcon,
-    messageBg: null,
-  },
-  pending: {
-    label: "Pending",
-    bg: "bg-[#F39C12]",
-    icon: pendingIcon,
-    messageBg: null,
-  },
-  sold: { label: "Sold", bg: "bg-button-bg", icon: soldIcon, messageBg: null },
-  rejected: {
-    label: "Rejected",
-    bg: "bg-[#D02727]",
-    icon: rejectedIcon,
-    messageBg: null,
-  },
+const statusConfig: Record<
+  ListingStatus,
+  { label: string; bg: string; icon: string }
+> = {
+  active: { label: "Active", bg: "bg-[#10B981]", icon: activeIcon },
+  pending: { label: "Pending", bg: "bg-[#F39C12]", icon: pendingIcon },
+  sold: { label: "Sold", bg: "bg-button-bg", icon: soldIcon },
+  rejected: { label: "Rejected", bg: "bg-[#D02727]", icon: rejectedIcon },
 };
 
 function StatusBanner({ status }: { status: ListingStatus }) {
@@ -138,23 +76,60 @@ function StatusBanner({ status }: { status: ListingStatus }) {
   return null;
 }
 
+const handleShare = async (listing: AgentListing) => {
+  const url = `${window.location.origin}/properties/${listing._id}`;
+
+  if (navigator.share) {
+    // native share sheet on mobile
+    try {
+      await navigator.share({
+        title: listing.title,
+        text: `Check out this property on FindaHome: ${listing.title} - ₦${listing.price.toLocaleString()}`,
+        url,
+      });
+    } catch {
+      // user cancelled — do nothing
+    }
+  } else {
+    // fallback for desktop: copy link to clipboard
+    await navigator.clipboard.writeText(url);
+    toast.success("Link copied to clipboard!");
+  }
+};
+
 export default function ListingsCard({
   activeFilter,
   activeTab,
+  listings,
+  isLoading,
+  error,
 }: ListingsCardProps) {
+  if (isLoading)
+    return (
+      <div className="-mt-20">
+        <Spinner />
+      </div>
+    );
+
+  if (error)
+    return (
+      <p className="text-center text-text-secondary text-[14px] mt-10">
+        {error}
+      </p>
+    );
+
   const filtered = listings.filter((listing) => {
     const matchesStatus =
       activeFilter === "all" || listing.status === activeFilter;
-
     const matchesType = listing.propertyType === activeTab;
-
     return matchesStatus && matchesType;
   });
 
   if (filtered.length === 0) {
     return (
       <p className="text-center text-text-secondary text-[14px] mt-10">
-        No listings found.
+        No {activeFilter === "all" ? "" : activeFilter} {activeTab} listings
+        found.
       </p>
     );
   }
@@ -162,10 +137,13 @@ export default function ListingsCard({
   return (
     <div className="space-y-6">
       {filtered.map((listing) => {
+        const status = listing.status as ListingStatus;
         const { label, bg, icon } = statusConfig[listing.status];
+        const isLand = listing.propertyType === "land";
+
         return (
           <div
-            key={listing.id}
+            key={listing._id}
             className="rounded-t-2xl shadow-[4px_4px_4px_rgba(0,0,0,0.25)]"
           >
             <div className="relative">
@@ -180,11 +158,15 @@ export default function ListingsCard({
               </div>
 
               {/* property image */}
-              <img
-                src={propertyImg}
-                alt=""
-                className="h-50.5 w-full object-cover rounded-t-2xl md:h-67.5"
-              />
+              {listing.images?.[0] ? (
+                <img
+                  src={listing.images[0]}
+                  alt={listing.title}
+                  className="h-50.5 w-full object-cover rounded-t-2xl md:h-67.5"
+                />
+              ) : (
+                <div className="h-50.5 w-full bg-bg-accent rounded-t-2xl md:h-67.5" />
+              )}
             </div>
 
             <div className="p-3">
@@ -200,14 +182,14 @@ export default function ListingsCard({
                     <p className="flex items-center">
                       <img src={nairaIcon} alt="" className="w-4 h-4" />
                       <span className="font-raleway font-semibold tracking-[1px] text-button-bg text-[12px] md:text-[16px]">
-                        {listing.price}
+                        {listing.price.toLocaleString()}
                       </span>
                     </p>
                   </div>
 
                   {/* listing type */}
                   <p className="text-[12px] leading-4 text-[#10B98199] md:text-[14px] md:leading-5.25">
-                    {listing.type}
+                    For {listing.listingType}
                   </p>
                 </div>
 
@@ -220,31 +202,42 @@ export default function ListingsCard({
                       className="w-4 h-4 md:w-6 md:h-6"
                     />
                     <p className="text-text-secondary line-clamp-1 text-[12px] leading-4.25 md:text-[14px]">
-                      {listing.location}
+                      {listing.address}
                     </p>
                   </div>
 
-                  <div className="text-[12px] text-text-secondary leading-4 flex items-center gap-2 md:text-[14px] md:leading-5.25">
-                    {/* bedrooms */}
-                    <div className="flex items-center gap-1">
-                      <img
-                        src={bedIcon}
-                        alt=""
-                        className="w-4 h-4 md:w-6 md:h-6"
-                      />
-                      <p className="">{listing.beds} Beds</p>
+                  {/* bed/bath for apartment only */}
+                  {!isLand && (
+                    <div className="text-[12px] text-text-secondary leading-4 flex items-center gap-2 md:text-[14px] md:leading-5.25">
+                      {listing.bedroom != null && (
+                        <div className="flex items-center gap-1">
+                          <img
+                            src={bedIcon}
+                            alt=""
+                            className="w-4 h-4 md:w-6 md:h-6"
+                          />
+                          <p>{listing.bedroom} Beds</p>
+                        </div>
+                      )}
+                      {listing.bathroom != null && (
+                        <div className="flex items-center gap-1">
+                          <img
+                            src={tubIcon}
+                            alt=""
+                            className="w-4 h-4 md:w-6 md:h-6"
+                          />
+                          <p>{listing.bathroom} Baths</p>
+                        </div>
+                      )}
                     </div>
+                  )}
 
-                    {/* bathrooms */}
-                    <div className="flex items-center gap-1">
-                      <img
-                        src={tubIcon}
-                        alt=""
-                        className="w-4 h-4 md:w-6 md:h-6"
-                      />
-                      <p className="">{listing.baths} Baths</p>
-                    </div>
-                  </div>
+                  {/* land size for land only */}
+                  {isLand && listing.landSize && (
+                    <p className="text-[12px] text-text-secondary md:text-[14px]">
+                      {listing.landSize} {listing.landUnit}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -260,7 +253,7 @@ export default function ListingsCard({
                       className="w-4 h-4 md:w-6 md:h-6"
                     />
                     <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] msd:leading-5.25">
-                      {listing.views}
+                      0
                     </p>
                   </div>
 
@@ -272,7 +265,7 @@ export default function ListingsCard({
                       className="w-4 h-4 md:w-6 md:h-6"
                     />
                     <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] msd:leading-5.25">
-                      {listing.chats}
+                      0
                     </p>
                   </div>
                 </div>
@@ -296,8 +289,9 @@ export default function ListingsCard({
                     />
                   </button>
 
-                  {/* share icon */}
+                  {/* share button */}
                   <button
+                    onClick={() => handleShare(listing)}
                     className="py-1 px-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                     disabled={listing.status === "rejected"}
                   >
@@ -310,7 +304,7 @@ export default function ListingsCard({
                 </div>
               </div>
 
-              <StatusBanner status={listing.status} />
+              <StatusBanner status={status} />
             </div>
           </div>
         );

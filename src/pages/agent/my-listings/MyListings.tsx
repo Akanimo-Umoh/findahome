@@ -5,6 +5,7 @@ import FilterButtons from "./FilterButtons";
 // import SearchListings from "./SearchListings";
 import ListingsCard from "./ListingsCard";
 import { useState } from "react";
+import { useAgentListings } from "@/hooks/useAgentListings";
 
 type Tab = "apartment" | "land";
 
@@ -15,6 +16,8 @@ export default function MyListings() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>("apartment");
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all");
+
+  const { listings, isLoading, error } = useAgentListings();
 
   const tabs: Tab[] = ["apartment", "land"];
   const tabLabels = {
@@ -67,7 +70,13 @@ export default function MyListings() {
 
       {/* listings card */}
       <div className="mt-6 md:mt-12">
-        <ListingsCard activeFilter={activeFilter} activeTab={activeTab} />
+        <ListingsCard
+          activeFilter={activeFilter}
+          activeTab={activeTab}
+          listings={listings}
+          isLoading={isLoading}
+          error={error}
+        />
       </div>
     </div>
   );
