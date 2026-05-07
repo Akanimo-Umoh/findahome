@@ -81,7 +81,7 @@ export default function AppRoutes() {
 
       {/* public routes without the footer */}
       <Route element={<NormalLayout />}>
-        <Route path="/properties" element={<AllProperties />} />
+        <Route path="/available-properties" element={<AllProperties />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/property/:id" element={<PropertyDetails />} />
       </Route>

@@ -76,15 +76,19 @@ export default function AllProperties() {
       <div className="text-center text-red-500 mt-6">Error: {error}</div>
     );
   } else {
-    content = currentProperties.map((property) => (
-      <Link
-        key={property._id}
-        to={`/property/${property._id}`}
-        className="block"
-      >
-        <PropertyCard key={property._id} property={property} />
-      </Link>
-    ));
+    content = (
+      <div className="grid justify-center gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+        {currentProperties.map((property) => (
+          <Link
+            key={property._id}
+            to={`/property/${property._id}`}
+            className="max-w-[340px]"
+          >
+            <PropertyCard key={property._id} property={property} />
+          </Link>
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -105,12 +109,12 @@ export default function AllProperties() {
         </div>
 
         {/* search */}
-        <div className="hidden md:block mt-8 max-w-[554px] w-full mx-auto">
+        <div className="mt-6 max-w-[340px] md:max-w-[554px] w-full mx-auto">
           <Search />
         </div>
 
         {/* main properties ctn */}
-        <div className="mt-6 space-y-8 grid justify-center">{content}</div>
+        <div className="mt-6">{content}</div>
       </main>
 
       {/* Pagination */}

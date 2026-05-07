@@ -84,7 +84,7 @@ export default function FeaturedProps() {
 
       {/* featured container */}
       <div className="mt-6 md:mt-12">
-        <div className="flex gap-8 w-full px-6 overflow-x-auto overscroll-x-contain hideScroll md:overflow-hidden md:grid md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:px-8 md:justify-center">
+        <div className="flex gap-6 w-full px-6 overflow-x-auto overscroll-x-contain hideScroll md:overflow-hidden md:grid md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:px-8 md:justify-center">
           {featured.map((feature, index) => (
             <div key={index} className="min-w-36.5 md:max-w-85 md:w-full">
               <div className="w-full h-32.5 overflow-hidden rounded-t-2xl md:h-62.5">
