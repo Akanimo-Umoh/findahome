@@ -7,13 +7,15 @@ import type { Property } from "@/types/property";
 // import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg";
 import Avatar from "./Avatar";
-// import heartIcon from "@/assets/images/icon-heart.svg";
+import { useFavorite } from "@/hooks/useFavorite";
+import heartIcon from "@/assets/images/icon-heart.svg";
 
 type PropertyCardProps = {
   property: Property;
 };
 
 export default function PropertyCard({ property }: PropertyCardProps) {
+  const { isSaved, isLoading, toggleFavorite } = useFavorite(property._id);
   const isLand = property.propertyType === "land";
 
   return (
@@ -110,11 +112,21 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 </div>
               </div>
 
-              <img
-                src={favoriteIcon}
-                alt=""
-                className="hidden md:flex cursor-pointer"
-              />
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleFavorite();
+                }}
+                className="hidden md:flex cursor-pointer disabled:opacity-50"
+              >
+                <img
+                  src={isSaved ? heartIcon : favoriteIcon}
+                  alt={isSaved ? "Remove from favorites" : "Add to favorites"}
+                />
+              </button>
             </div>
           </div>
         </div>

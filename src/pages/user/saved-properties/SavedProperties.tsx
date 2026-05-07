@@ -1,6 +1,6 @@
 import saveIcon from "@/assets/images/icon-heart.svg";
 import goBack from "@/assets/images/icon-back.svg";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSavedProperties } from "@/hooks/useSavedProperties";
 import { useState } from "react";
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
@@ -44,8 +44,10 @@ export default function SavedProperties() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`rounded-xl py-2 w-26 transition-colors font-raleway text-[14px] tracking-[1px] ${
-                activeTab === tab ? "border border-bg-accent font-semibold" : ""
+              className={`rounded-xl py-2 w-26 transition-colors font-raleway text-[14px] tracking-[1px] cursor-pointer ${
+                activeTab === tab
+                  ? "border border-bg-accent font-semibold"
+                  : "hover:font-semibold"
               }`}
             >
               {tab === "apartment" ? "Apartments" : "Lands"}
@@ -60,13 +62,20 @@ export default function SavedProperties() {
           ) : error ? (
             <p>{error}</p>
           ) : filtered.length === 0 ? (
-            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-secondary flex items-center justify-center text-center max-w-[343px] mx-auto mt-30">
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-secondary flex items-center justify-center text-center max-w-[297px] mx-auto mt-30">
               You don't have any saved properties yet.
             </p>
           ) : (
-            filtered.map((fav) => (
-              <PropertyCard key={fav._id} property={fav.property} />
-            ))
+            <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
+              {filtered.map((fav) => (
+                <Link
+                  to={`/property/${fav.property._id}`}
+                  className="max-w-85 mx-auto"
+                >
+                  <PropertyCard key={fav._id} property={fav.property} />
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </main>

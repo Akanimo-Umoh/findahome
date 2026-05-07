@@ -82,7 +82,7 @@ export default function AllProperties() {
           <Link
             key={property._id}
             to={`/property/${property._id}`}
-            className="max-w-[340px]"
+            className="max-w-[340px] mx-auto"
           >
             <PropertyCard key={property._id} property={property} />
           </Link>
@@ -95,7 +95,7 @@ export default function AllProperties() {
     <div className="flex min-h-screen flex-col font-ssPro">
       {/* main contents */}
       <main className="mx-6">
-        <div className="relative flex items-center justify-center md:hidden">
+        <div className="relative flex items-center justify-center md:mt-6 md:hidden">
           <button
             onClick={() => navigate(-1)}
             className="absolute left-0 cursor-pointer"
@@ -109,7 +109,7 @@ export default function AllProperties() {
         </div>
 
         {/* search */}
-        <div className="mt-6 max-w-[340px] md:max-w-[554px] w-full mx-auto">
+        <div className="mt-6 max-w-85 md:max-w-[554px] w-full mx-auto md:mt-7">
           <Search />
         </div>
 

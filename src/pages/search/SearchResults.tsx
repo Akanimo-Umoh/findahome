@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo, useRef, useState } from "react";
 import PropertyCard from "@/components/PropertyCard";
 import leftArrow from "@/assets/images/icon-left-arrow.svg";
@@ -136,7 +136,7 @@ export default function SearchResults() {
         </p>
 
         {/* search */}
-        <div className="flex items-center justify-center mt-4">
+        <div className="flex items-center justify-center mt-4 max-w-85 mx-auto">
           <Search
             defaultValue={query}
             onChange={(value) => {
@@ -233,9 +233,17 @@ export default function SearchResults() {
             </div>
           ) : currentProperties.length > 0 ? (
             // results
-            currentProperties.map((property) => (
-              <PropertyCard key={property._id} property={property} />
-            ))
+            <div className="grid justify-center gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+              {currentProperties.map((property) => (
+                <Link
+                  to={`/property/${property._id}`}
+                  key={property._id}
+                  className="max-w-85 mx-auto"
+                >
+                  <PropertyCard property={property} />
+                </Link>
+              ))}
+            </div>
           ) : (
             // no results
             <div className="text-center py-12">
