@@ -37,7 +37,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         )}
       </div>
 
-      <div className="px-4 py-3 space-y-6 border rounded-b-2xl border-bg-accent md:p-3">
+      <div className="px-4 py-3 space-y-6 border rounded-b-2xl border-bg-accent md:p-3 md:space-y-0">
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <p className="font-raleway font-semibold text-[12px] tracking-[1px] text-black line-clamp-1 flex-1 md:text-[16px]">
