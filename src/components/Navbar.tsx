@@ -520,7 +520,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
       transition={{ duration: 0.3, ease: "easeInOut" }}
       className={`px-6 font-ssPro fixed top-0 left-0 w-full h-18 z-50 transition-colors duration-300 md:h-16.5 ${navBgClass}`}
     >
-      <div className="flex items-center justify-between h-full">
+      <div className="flex items-center justify-between h-full max-w-7xl mx-auto">
         {/* Logo */}
         <Link
           to="/"

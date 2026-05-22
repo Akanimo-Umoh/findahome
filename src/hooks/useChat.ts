@@ -40,12 +40,6 @@ export type ChatItem = {
   updatedAt: string;
 };
 
-type Chat = {
-  _id: string;
-  participants: ChatParticipant[];
-  property: string;
-};
-
 export type ChatDetail = {
   _id: string;
   participants: ChatParticipant[];
@@ -83,11 +77,11 @@ export function useChatList() {
   return { chats, isLoading, error };
 }
 
-type UseChatOptions =
-  | { mode: "user"; propertyId: string; agentId: string }
-  | { mode: "agent"; chatId: string };
+type UseChatOptions = {
+  chatId: string;
+};
 
-export function useChatMessages(options: UseChatOptions) {
+export function useChatMessages({ chatId }: UseChatOptions) {
   const { user } = useAuthContext();
   const [chatDetail, setChatDetail] = useState<ChatDetail | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -114,31 +108,17 @@ export function useChatMessages(options: UseChatOptions) {
 
   // create or fetch chat on mount
   useEffect(() => {
+    if (!chatId) return;
+
     async function initChat() {
       setIsLoading(true);
       try {
-        let chatData: Chat;
-
-        // create or get the chat
-        if (options.mode === "user") {
-          const res = await api.post("/chat/create-or-get", {
-            agentId: options.agentId,
-            propertyId: options.propertyId,
-          });
-          const detailRes = await api.get(`/chat/${res.data._id}`);
-          setChatDetail(detailRes.data);
-          chatData = res.data;
-        } else {
-          const res = await api.get(`/chat/${options.chatId}`);
-          setChatDetail(res.data);
-          chatData = res.data;
-        }
-
-        // setChat(chatData);
+        const res = await api.get(`/chat/${chatId}`);
+        setChatDetail(res.data);
 
         // fetch messages for this chat
-        const messagesResponse = await api.get(`/message/${chatData._id}`);
-        setMessages(messagesResponse.data);
+        const messagesRes = await api.get(`/message/${chatId}`);
+        setMessages(messagesRes.data);
       } catch {
         setError("Failed to load chat");
       } finally {
@@ -146,18 +126,8 @@ export function useChatMessages(options: UseChatOptions) {
       }
     }
 
-    const hasRequiredParams =
-      options.mode === "user"
-        ? !!(options.propertyId && options.agentId)
-        : !!options.chatId;
-
-    if (hasRequiredParams) initChat();
-  }, [
-    options.mode,
-    options.mode === "user" ? options.propertyId : "",
-    options.mode === "user" ? options.agentId : "",
-    options.mode === "agent" ? options.chatId : "",
-  ]);
+    initChat();
+  }, [chatId]);
 
   async function sendMessage(text: string) {
     if (!chatDetail || !text.trim() || !user?.id) return;
@@ -170,7 +140,6 @@ export function useChatMessages(options: UseChatOptions) {
       });
 
       const newMessage: ChatMessage = response.data.data;
-
       // append the new message to the list
       setMessages((prev) => [...prev, newMessage]);
 

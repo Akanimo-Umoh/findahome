@@ -44,7 +44,7 @@ export default function Chats() {
   const isAgent = user?.role === "agent" || user?.role === "admin";
 
   return (
-    <div className="font-ssPro flex flex-col mb-10">
+    <div className="font-ssPro flex flex-col mb-10 max-w-7xl mx-auto">
       <header className="px-6">
         {/* header */}
         <div className="flex items-center justify-between">
@@ -54,7 +54,7 @@ export default function Chats() {
 
           <p className="text-[18px] font-raleway font-semibold">Messages</p>
 
-          <button>
+          <button className="cursor-pointer">
             <img src={iconOptions} alt="" />
           </button>
         </div>
@@ -151,16 +151,6 @@ export default function Chats() {
                         </div>
 
                         <div className="flex items-center gap-[61px]">
-                          {/* <div
-                          className={`${message.status_bg} rounded-2xl px-2 py-1 flex items-center justify-center gap-1`}
-                        >
-                          <img src={message.current_status_icon} alt="" />
-                          <p
-                            className={`${message.status_color} text-[12px] leading-4`}
-                          >
-                            {message.current_status}
-                          </p>
-                        </div> */}
                           <p className="text-[10px] text-white w-3.75 h-3.75 rounded-full bg-[#149D18] flex items-center justify-center">
                             1
                           </p>

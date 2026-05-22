@@ -52,7 +52,7 @@ export default function PropertyDetails() {
 
   return (
     <div className="mx-6 font-ssPro md:mx-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between md:mt-6">
         <button onClick={() => navigate(-1)} className="cursor-pointer">
           <img src={goBackIcon} alt="" />
         </button>
@@ -75,7 +75,7 @@ export default function PropertyDetails() {
       </div>
 
       {/* property image carousel */}
-      <div className="mt-6 md:mt-12">
+      <div className="mt-6">
         <ImageCarousel
           images={property.images}
           video={property.videos?.[0] ?? undefined}
@@ -83,25 +83,27 @@ export default function PropertyDetails() {
       </div>
 
       {/* details */}
-      <section className="mt-3">
-        {/* name */}
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px] text-black">
-          {property.title}
-        </p>
-
-        {/* price */}
-        <div className="flex items-center mt-3">
-          <img src={nairaIcon} alt="naira" />
-          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-[#274AD0]">
-            {property.price.toLocaleString()}
+      <section className="mt-3 md:mt-6">
+        <div className="md:flex md:items-start md:justify-between md:gap-6">
+          {/* name */}
+          <p className="text-[18px] font-raleway font-semibold tracking-[1px] text-black md:flex-1">
+            {property.title}
           </p>
+
+          {/* price */}
+          <div className="flex items-center mt-3 md:mt-0">
+            <img src={nairaIcon} alt="naira" />
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-[#274AD0]">
+              {property.price.toLocaleString()}
+            </p>
+          </div>
         </div>
 
-        <div className="mt-2 space-y-3">
+        <div className="mt-2 space-y-3 md:mt-6">
           {/* address */}
           <div className="flex items-center gap-1">
             <img src={location} alt="" className="w-6 h-6" />
-            <p className="line-clamp-1 text-[14px] text-text-secondary">
+            <p className="line-clamp-1 text-[14px] text-text-secondary md:text-[16px]">
               {property.address}
             </p>
           </div>

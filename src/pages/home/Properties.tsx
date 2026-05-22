@@ -11,7 +11,7 @@ export default function Properties() {
   const skeletons = Array(3).fill(null);
 
   return (
-    <div className="font-ssPro mx-6 md:mx-8">
+    <div className="font-ssPro mx-6 md:mx-8 max-w-7xl">
       <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary md:text-[36px] text-center">
         Available Properties
       </p>
@@ -26,12 +26,12 @@ export default function Properties() {
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
           // show properties
-          <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-[25px]">
+          <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:grid-cols-2 lg:grid-cols-3 gap-6">
             {previewProperties.map((property) => (
               <Link
                 key={property._id}
                 to={`/property/${property._id}`}
-                className="mx-auto md:max-w-[340px]"
+                className="mx-auto w-full"
               >
                 <PropertyCard property={property} />
               </Link>

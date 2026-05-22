@@ -42,7 +42,7 @@ export default function HowItWorks() {
   };
 
   return (
-    <div className="px-6 md:px-8">
+    <div className="px-6 md:px-8 max-w-7xl">
       <div className="text-center text-text-primary md:flex md:flex-col md:gap-1">
         <p className="font-raleway font-semibold text-[24px] tracking-[1px] md:text-[36px]">
           How it works

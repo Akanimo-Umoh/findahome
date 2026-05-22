@@ -24,7 +24,7 @@ export default function Home() {
         {/* black overlay */}
         <div className="absolute inset-0 bg-black/20 md:bg-[#00000099]" />
 
-        <div className="relative z-10">
+        <div className="relative z-10 max-w-7xl">
           <div className="flex flex-col items-center justify-center text-center gap-1 max-w-85.5 mx-auto text-white md:max-w-full md:gap-2">
             <p className="font-raleway text-[18px] font-semibold tracking-[1px] leading-7.5 md:text-[40px] md:leading-15 md:font-metamorphous md:font-normal">
               <span className="md:hidden">

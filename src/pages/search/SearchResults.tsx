@@ -114,7 +114,7 @@ export default function SearchResults() {
   return (
     <div className="">
       <main className="flex-1 mx-6 mb-10">
-        <div className="relative flex items-center justify-center">
+        <div className="relative flex items-center justify-center md:mt-6">
           <button
             onClick={() => navigate(-1)}
             className="absolute left-0 cursor-pointer"

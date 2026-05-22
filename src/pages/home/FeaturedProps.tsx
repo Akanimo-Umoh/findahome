@@ -72,7 +72,7 @@ export default function FeaturedProps() {
   ];
 
   return (
-    <div className="text-text-100">
+    <div className="text-text-100 max-w-7xl mx-auto">
       <div className="flex flex-col items-center justify-center">
         <p className="font-raleway font-semibold text-[18px] tracking-[1px] md:text-[36px]">
           Featured Properties
@@ -83,10 +83,13 @@ export default function FeaturedProps() {
       </div>
 
       {/* featured container */}
-      <div className="mt-6 md:mt-12">
-        <div className="flex gap-6 w-full px-6 overflow-x-auto overscroll-x-contain hideScroll md:overflow-hidden md:grid md:grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:px-8 md:justify-center">
+      <div className="mt-6 md:mt-12 flex items-center justify-center md:mx-8">
+        <div className="flex gap-6 overflow-x-auto overscroll-x-contain hideScroll md:overflow-hidden md:grid md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:grid-cols-3 md:justify-between md:items-center w-full px-6 md:px-0">
           {featured.map((feature, index) => (
-            <div key={index} className="min-w-36.5 md:max-w-85 md:w-full">
+            <div
+              key={index}
+              className="max-w-112.5 w-36.5 md:min-w-0 md:w-full mx-auto shrink-0"
+            >
               <div className="w-full h-32.5 overflow-hidden rounded-t-2xl md:h-62.5">
                 <img
                   src={feature.property_image}

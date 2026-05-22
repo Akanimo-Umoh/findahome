@@ -39,7 +39,7 @@ export default function Reviews() {
   // };
 
   return (
-    <div className="px-6 md:px-8">
+    <div className="px-6 md:px-8 max-w-7xl">
       <div className="flex flex-col gap-1 items-center justify-center">
         <p className="text-[24px] font-raleway font-medium tracking-[1px] text-text-primary md:text-[36px] md:font-semibold text-center">
           What our users are saying

@@ -1,3 +1,4 @@
+import { useCreateOrGetChat } from "@/hooks/useCreateOrGetChat";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,10 +15,10 @@ export default function ChatAgentModal({
   onClose,
   propertyId,
   agentId,
-  agentIsVerified,
 }: ChatAgentModalProps) {
   const navigate = useNavigate();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const { createOrGetChat, isCreating } = useCreateOrGetChat();
 
   useEffect(() => {
     if (isOpen) {
@@ -32,28 +33,24 @@ export default function ChatAgentModal({
 
   if (!isOpen) return null;
 
-  const handleContinueToChat = () => {
+  const handleContinueToChat = async () => {
+    const chatId = await createOrGetChat(propertyId, agentId);
+    if (!chatId) return;
     onClose();
-    navigate(`/messages/chat`, {
-      state: {
-        propertyId,
-        agentId,
-        agentIsVerified,
-      },
-    });
+    navigate(`/messages/${chatId}`);
   };
 
   return (
-    <div className="fixed inset-0 z-50 modal-enter">
+    <div className="fixed inset-0 z-50 modal-enter md:flex md:items-center md:justify-center">
       {/* overlay */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* modal — everything lives inside here */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] max-h-[90vh] flex flex-col">
+      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] max-h-[90vh] flex flex-col md:relative md:max-w-200 md:w-full md:rounded-2xl md:mx-8">
         {/* scrollable content */}
-        <div className="overflow-y-auto flex-1 mx-6 mt-6">
-          <div className="font-raleway max-w-[281px] text-center mx-auto">
-            <p className="text-[14px] font-semibold text-text-primary">
+        <div className="overflow-y-auto flex-1 mx-6 mt-6 md:max-w-124.5 md:mx-auto">
+          <div className="font-raleway max-w-70.25 text-center mx-auto md:space-y-1 md:max-w-108">
+            <p className="text-[14px] font-semibold text-text-primary md:text-[22px] md:tracking-[1px]">
               Before you chat with an agent
             </p>
             <p className="text-[12px] text-black">
@@ -62,8 +59,8 @@ export default function ChatAgentModal({
             </p>
           </div>
 
-          <div className="mt-4">
-            <ul className="list-disc text-[12px] text-text-secondary mx-6 flex flex-col gap-3 justify-center">
+          <div className="mt-4 md:mt-10">
+            <ul className="list-disc text-[12px] text-text-secondary mx-6 flex flex-col gap-3 justify-center md:text-[16px]">
               <li>
                 FindaHome will never ask for your personal banking details in
                 the chat.
@@ -94,7 +91,7 @@ export default function ChatAgentModal({
               </li>
             </ul>
 
-            <div className="mt-4 flex items-center justify-center py-1 px-4 gap-4">
+            <div className="mt-4 flex items-center justify-center py-1 px-4 gap-4 md:mt-6">
               <input
                 type="checkbox"
                 id="terms"
@@ -104,7 +101,7 @@ export default function ChatAgentModal({
               />
               <label
                 htmlFor="terms"
-                className="text-[14px] text-black font-semibold cursor-pointer"
+                className="text-[14px] text-black font-semibold cursor-pointer md:text-[16px]"
               >
                 I have read and understand these tips
               </label>
@@ -117,10 +114,10 @@ export default function ChatAgentModal({
           <button
             type="button"
             onClick={handleContinueToChat}
-            disabled={!acceptedTerms}
-            className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-[45px] rounded-lg flex items-center justify-center w-full button-style disabled:opacity-50"
+            disabled={!acceptedTerms || isCreating}
+            className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-[45px] rounded-lg flex items-center justify-center w-full button-style disabled:opacity-50 md:w-85.5 md:mx-auto"
           >
-            Continue to chat
+            {isCreating ? "Starting chat..." : "Continue to chat"}
           </button>
         </div>
       </div>

@@ -40,7 +40,7 @@ export default function Faq() {
   ];
 
   return (
-    <div className="px-6 space-y-4 font-ssPro text-text-primary md:space-y-12 md:px-8">
+    <div className="px-6 space-y-4 font-ssPro text-text-primary md:space-y-12 md:px-8 max-w-7xl">
       <div className="flex flex-col gap-1 items-center justify-center">
         <p className="text-[24px] font-raleway font-medium tracking-[1px] text-text-primary text-center md:text-[36px] md:font-semibold">
           Frequently asked questions

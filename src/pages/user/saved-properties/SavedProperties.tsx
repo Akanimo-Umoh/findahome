@@ -22,7 +22,7 @@ export default function SavedProperties() {
   return (
     <div className="text-text-primary px-6 mb-10">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="flex items-center justify-center relative md:hidden">
         <button onClick={() => navigate(-1)} className="absolute left-0">
           <img src={goBack} alt="" className="w-6 h-6" />
         </button>

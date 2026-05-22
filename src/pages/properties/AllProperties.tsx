@@ -77,12 +77,12 @@ export default function AllProperties() {
     );
   } else {
     content = (
-      <div className="grid justify-center gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
+      <div className="grid justify-center gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:grid-cols-2 lg:grid-cols-3">
         {currentProperties.map((property) => (
           <Link
             key={property._id}
             to={`/property/${property._id}`}
-            className="max-w-[340px] mx-auto"
+            className="w-full mx-auto"
           >
             <PropertyCard key={property._id} property={property} />
           </Link>
@@ -92,82 +92,84 @@ export default function AllProperties() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col font-ssPro">
-      {/* main contents */}
-      <main className="mx-6">
-        <div className="relative flex items-center justify-center md:mt-6 md:hidden">
-          <button
-            onClick={() => navigate(-1)}
-            className="absolute left-0 cursor-pointer"
-          >
-            <img src={goBack} alt="" />
-          </button>
-
-          <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center">
-            Available Properties
-          </p>
-        </div>
-
-        {/* search */}
-        <div className="mt-6 max-w-85 md:max-w-[554px] w-full mx-auto md:mt-7">
-          <Search />
-        </div>
-
-        {/* main properties ctn */}
-        <div className="mt-6">{content}</div>
-      </main>
-
-      {/* Pagination */}
-      {!loading && !error && totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-6 mb-10">
-          <div className="flex items-center justify-center gap-2 border border-bg-accent rounded-xl h-10">
+    <div className="flex justify-center">
+      <div className="flex min-h-screen flex-col font-ssPro max-w-7xl mx-6">
+        {/* main contents */}
+        <main className="">
+          <div className="relative flex items-center justify-center md:mt-6">
             <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`p-2 ${
-                currentPage === 1
-                  ? "opacity-40 cursor-not-allowed"
-                  : "cursor-pointer"
-              }`}
+              onClick={() => navigate(-1)}
+              className="absolute left-0 cursor-pointer"
             >
-              <img src={leftArrow} alt="Previous" className="w-4 h-4" />
+              <img src={goBack} alt="" className="lg:w-8 lg:h-8" />
             </button>
 
-            <div className="flex items-center">
-              {getPageNumbers().map((pageNum, index) => (
-                <button
-                  key={index}
-                  onClick={() =>
-                    typeof pageNum === "number" && goToPage(pageNum)
-                  }
-                  disabled={pageNum === "..."}
-                  className={`min-w-8 h-8 flex items-center justify-center rounded-md text-[14px] font-medium transition-colors ${
-                    pageNum === currentPage
-                      ? "bg-state-info text-white"
-                      : pageNum === "..."
-                        ? "cursor-default text-text-secondary"
-                        : "hover:bg-gray-100 text-text-primary cursor-pointer"
-                  }`}
-                >
-                  {pageNum}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`p-2 ${
-                currentPage === totalPages
-                  ? "opacity-40 cursor-not-allowed"
-                  : "cursor-pointer"
-              }`}
-            >
-              <img src={rightArrow} alt="Next" className="w-4 h-4" />
-            </button>
+            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary text-center lg:text-[36px]">
+              Available Properties
+            </p>
           </div>
-        </div>
-      )}
+
+          {/* search */}
+          <div className="mt-6 max-w-85 md:max-w-[554px] w-full mx-auto md:mt-7">
+            <Search />
+          </div>
+
+          {/* main properties ctn */}
+          <div className="mt-6">{content}</div>
+        </main>
+
+        {/* Pagination */}
+        {!loading && !error && totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6 mb-10">
+            <div className="flex items-center justify-center gap-2 border border-bg-accent rounded-xl h-10">
+              <button
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`p-2 ${
+                  currentPage === 1
+                    ? "opacity-40 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+              >
+                <img src={leftArrow} alt="Previous" className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center">
+                {getPageNumbers().map((pageNum, index) => (
+                  <button
+                    key={index}
+                    onClick={() =>
+                      typeof pageNum === "number" && goToPage(pageNum)
+                    }
+                    disabled={pageNum === "..."}
+                    className={`min-w-8 h-8 flex items-center justify-center rounded-md text-[14px] font-medium transition-colors ${
+                      pageNum === currentPage
+                        ? "bg-state-info text-white"
+                        : pageNum === "..."
+                          ? "cursor-default text-text-secondary"
+                          : "hover:bg-gray-100 text-text-primary cursor-pointer"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`p-2 ${
+                  currentPage === totalPages
+                    ? "opacity-40 cursor-not-allowed"
+                    : "cursor-pointer"
+                }`}
+              >
+                <img src={rightArrow} alt="Next" className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import iconVerified from "@/assets/images/icon-verified-green.svg";
 import goBack from "@/assets/images/icon-back.svg";
 import iconOptions from "@/assets/images/icon-chat-options.svg";
@@ -19,13 +19,6 @@ import Spinner from "@/components/Spinner";
 import { useAuthContext } from "@/context/AuthContext";
 import Avatar from "./Avatar";
 
-// state passed via navigate() from both ChatAgentModal and Chats
-type ChatRouteState = {
-  propertyId: string;
-  agentId?: string;
-  agentIsVerified?: boolean;
-};
-
 const formatTime = (dateStr: string) =>
   new Date(dateStr).toLocaleTimeString([], {
     hour: "2-digit",
@@ -38,28 +31,15 @@ export default function ChatMessages() {
   const [isEscrowOpen, setIsEscrowOpen] = useState(false);
 
   const { chatId } = useParams<{ chatId: string }>();
-  const location = useLocation();
   const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuthContext();
   const isAgent = user?.role === "agent" || user?.role === "admin";
 
-  const state = location.state as ChatRouteState | null;
-
   // - agent: always has a real chatId in the URL
   // - user from chat list: has a real chatId in the URL (/messages/:chatId)
   // - user from ChatAgentModal: lands on /messages/chat with propertyId+agentId in state
-
-  const chatOptions = isAgent
-    ? { mode: "agent" as const, chatId: chatId ?? "" }
-    : chatId && chatId !== "chat"
-      ? { mode: "agent" as const, chatId } //user opened from chat list
-      : {
-          mode: "user" as const,
-          propertyId: state?.propertyId ?? "",
-          agentId: state?.agentId ?? "",
-        };
 
   const {
     chatDetail,
@@ -69,13 +49,13 @@ export default function ChatMessages() {
     error,
     sendMessage,
     currentUserId,
-  } = useChatMessages(chatOptions);
+  } = useChatMessages({ chatId: chatId ?? "" });
 
   // derive display data from chatDetail
   const otherParty = chatDetail?.participants.find(
     (p) => p._id !== currentUserId,
   );
-  console.log("chat detail: ", chatDetail?.participants);
+  // console.log("chat detail: ", chatDetail?.participants);
 
   const property = chatDetail?.property;
 
@@ -136,13 +116,8 @@ export default function ChatMessages() {
     if (e.key === "Enter") handleSend();
   };
 
-  const hasRequiredParams = isAgent
-    ? !!chatId
-    : !!(chatId && chatId !== "chat") ||
-      !!(state?.propertyId && state?.agentId);
-
   // if neither state nor URL params exist, something went wrong
-  if (!hasRequiredParams) {
+  if (!chatId) {
     return (
       <div className="flex items-center justify-center h-screen font-ssPro">
         <div className="text-center">
@@ -179,8 +154,8 @@ export default function ChatMessages() {
   return (
     <div className="font-ssPro h-[calc(100vh-72px)] flex flex-col justify-between">
       {/* chat header */}
-      <div className="flex py-2 px-4 items-center justify-between chat-header h-[56px] gap-1 shrink-0">
-        <div className="flex items-center justify-start gap-1 w-full">
+      <div className="flex py-2 px-5.5 items-center justify-between chat-header h-14 gap-1 shrink-0 md:px-8">
+        <div className="flex items-center justify-start gap-1 w-full max-w-7xl mx-auto">
           <button onClick={() => navigate(-1)} className="cursor-pointer">
             <img src={goBack} alt="" />
           </button>
@@ -216,179 +191,186 @@ export default function ChatMessages() {
               </p>
             </div>
           </div>
+          <button className="cursor-pointer">
+            <img src={iconOptions} alt="" />
+          </button>
         </div>
-
-        <button className="cursor-pointer">
-          <img src={iconOptions} alt="" />
-        </button>
       </div>
 
-      {/* property info bar */}
-      <div className="px-[21.5px] py-4 flex items-center gap-2">
-        {property?.images?.[0] ? (
-          <img
-            src={property.images[0]}
-            alt={property.title}
-            className="w-10 h-10 object-cover rounded-lg shrink-0"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-lg bg-bg-accent shrink-0" />
-        )}
-
-        <div className="flex flex-col min-w-0">
-          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary line-clamp-1">
-            {property?.title}
-          </p>
-          <div className="text-[12px] text-text-secondary flex items-center gap-0.5">
-            <p className="line-clamp-1">{property?.address}</p>
-            {property?.price && (
-              <p className="flex items-center shrink-0">
-                <img src={iconNaira} alt="" />
-                <span>{property.price.toLocaleString()}</span>
-              </p>
+      <div className="flex-1 flex flex-col justify-between overflow-hidden">
+        {/* property info bar */}
+        <div className="px-5.5 mx-auto w-full md:px-8">
+          <div className="flex items-center max-w-7xl py-4 mx-auto gap-2">
+            {property?.images?.[0] ? (
+              <img
+                src={property.images[0]}
+                alt={property.title}
+                className="w-10 h-10 object-cover rounded-lg shrink-0"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-lg bg-bg-accent shrink-0" />
             )}
+
+            <div className="flex flex-col min-w-0">
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary line-clamp-1">
+                {property?.title}
+              </p>
+              <div className="text-[12px] text-text-secondary flex items-center gap-0.5">
+                <p className="line-clamp-1">{property?.address}</p>
+                {property?.price && (
+                  <p className="flex items-center shrink-0">
+                    <img src={iconNaira} alt="" />
+                    <span>{property.price.toLocaleString()}</span>
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* messages area */}
-      <section className="px-[21.5px] py-4 space-y-3 flex flex-col flex-1 overflow-y-auto scrollbar-hide">
-        {/* messages */}
-        <p className="text-[14px] text-text-secondary text-center font-raleway font-semibold tracking-[1px] mb-2">
-          Today
-        </p>
+        {/* messages area */}
+        <section className="px-5.5 space-y-3 mx-auto md:px-8 overflow-hidden flex flex-col">
+          <div className="overflow-y-auto flex flex-col py-4 max-w-7xl flex-1 px-2">
+            {/* messages */}
+            <p className="text-[14px] text-text-secondary text-center font-raleway font-semibold tracking-[1px] mb-2">
+              Today
+            </p>
 
-        {messages.length === 0 ? (
-          <p className="text-center text-text-secondary text-[12px]">
-            No messages yet. Start the conversation!
-          </p>
-        ) : (
-          messages.map((message) => {
-            const isOwn = message.sender._id === currentUserId;
-            return (
-              <div
-                key={message._id}
-                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-              >
-                <div className="max-w-[75%]">
+            {messages.length === 0 ? (
+              <p className="text-center text-text-secondary text-[12px]">
+                No messages yet. Start the conversation!
+              </p>
+            ) : (
+              messages.map((message) => {
+                const isOwn = message.sender._id === currentUserId;
+                return (
                   <div
-                    className={`px-3 py-2 rounded-2xl ${
-                      isOwn
-                        ? "bg-button-bg rounded-tr-sm"
-                        : "bg-bg-accent rounded-tl-sm"
-                    }`}
+                    key={message._id}
+                    className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
                   >
-                    <p
-                      className={`text-[12px] leading-5 wrap-break-word ${
-                        isOwn ? "text-white" : "text-text-primary"
-                      }`}
-                    >
-                      {message.text}
-                    </p>
-                  </div>
+                    <div className="max-w-[75%]">
+                      <div
+                        className={`px-3 py-2 rounded-2xl ${
+                          isOwn
+                            ? "bg-button-bg rounded-tr-sm"
+                            : "bg-bg-accent rounded-tl-sm"
+                        }`}
+                      >
+                        <p
+                          className={`text-[12px] leading-5 wrap-break-word md:text-[16px] md:leading-6 ${
+                            isOwn ? "text-white" : "text-text-primary"
+                          }`}
+                        >
+                          {message.text}
+                        </p>
+                      </div>
 
-                  {/* attachments */}
-                  {message.attachments?.length > 0 && (
-                    <div>
-                      {message.attachments.map((url, i) => (
-                        <img
-                          key={i}
-                          src={url}
-                          alt="attachment"
-                          className="rounded-lg max-w-full"
-                        />
-                      ))}
+                      {/* attachments */}
+                      {message.attachments?.length > 0 && (
+                        <div>
+                          {message.attachments.map((url, i) => (
+                            <img
+                              key={i}
+                              src={url}
+                              alt="attachment"
+                              className="rounded-lg max-w-full"
+                            />
+                          ))}
+                        </div>
+                      )}
+
+                      <p
+                        className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
+                      >
+                        {formatTime(message.createdAt)}
+                      </p>
                     </div>
-                  )}
+                  </div>
+                );
+              })
+            )}
 
-                  <p
-                    className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
-                  >
-                    {formatTime(message.createdAt)}
+            {/* scroll anchor */}
+            <div ref={messagesEndRef} />
+          </div>
+        </section>
+
+        {/* bottom actions */}
+        <div className="mx-auto w-full px-5.5 md:px-8">
+          <div className="max-w-7xl space-y-6 pb-2 shrink-0">
+            <div className="flex items-center justify-center gap-1 sm:gap-10 md:gap-20">
+              {miniLinks.map((link) => (
+                <button
+                  key={link.title}
+                  onClick={() => {
+                    if (link.action === "pay") setIsPayModalOpen(true);
+                    if (link.action === "escrow") setIsEscrowOpen(true);
+                    if (link.action === "visit")
+                      navigate("/inspection", {
+                        state: {
+                          propertyId: property?._id,
+                          propertyTitle: property?.title,
+                          agentId: isAgent ? user?.id : otherParty?._id,
+                        },
+                      });
+                  }}
+                  className={`flex items-center justify-center gap-1 py-1 px-1 opacity-90 ${link.bg} cursor-pointer`}
+                >
+                  <img src={link.icon} alt="" />
+                  <p className={`${link.color} text-[12px] leading-4`}>
+                    {link.title}
                   </p>
+                </button>
+              ))}
+            </div>
+
+            {!isAgent && (
+              <PayInspectionModal
+                isOpen={isPayModalOpen}
+                onClose={() => setIsPayModalOpen(false)}
+                propertyTitle={property?.title ?? ""}
+                propertyAddress={property?.address ?? ""}
+                propertyPrice={property?.price ?? 0}
+                propertyImage={property?.images?.[0] ?? ""}
+              />
+            )}
+
+            <EscrowProtectionTerms
+              isOpen={isEscrowOpen}
+              onClose={() => setIsEscrowOpen(false)}
+            />
+
+            {/* message input */}
+            <div className="flex items-center justify-between gap-4 h-10 md:gap-6 max-w-247.5 mx-auto">
+              <div className="flex items-center flex-1 gap-2 h-full md:gap-6">
+                <img src={iconEmoji} alt="" className="shrink-0" />
+
+                <div className="relative flex-1 h-full">
+                  <input
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type your message..."
+                    disabled={isSending}
+                    className="w-full bg-[#F5F5F5] h-full rounded-2xl pl-2 pr-8 text-[12px] leading-4 placeholder:text-text-secondary outline-none disabled:opacity-50"
+                  />
+                  <button className="absolute top-1/2 -translate-y-1/2 right-3">
+                    <img src={iconAttach} alt="" />
+                  </button>
                 </div>
               </div>
-            );
-          })
-        )}
 
-        {/* scroll anchor */}
-        <div ref={messagesEndRef} />
-      </section>
-
-      {/* bottom actions */}
-      <div className="space-y-6 pb-2 shrink-0">
-        <div className="flex items-center justify-center gap-1">
-          {miniLinks.map((link) => (
-            <button
-              key={link.title}
-              onClick={() => {
-                if (link.action === "pay") setIsPayModalOpen(true);
-                if (link.action === "escrow") setIsEscrowOpen(true);
-                if (link.action === "visit")
-                  navigate("/inspection", {
-                    state: {
-                      propertyId: property?._id,
-                      propertyTitle: property?.title,
-                      agentId: isAgent ? user?.id : otherParty?._id,
-                    },
-                  });
-              }}
-              className={`flex items-center justify-center gap-1 py-1 px-1 opacity-90 ${link.bg} cursor-pointer`}
-            >
-              <img src={link.icon} alt="" />
-              <p className={`${link.color} text-[12px] leading-4`}>
-                {link.title}
-              </p>
-            </button>
-          ))}
-        </div>
-
-        {!isAgent && (
-          <PayInspectionModal
-            isOpen={isPayModalOpen}
-            onClose={() => setIsPayModalOpen(false)}
-            propertyTitle={property?.title ?? ""}
-            propertyAddress={property?.address ?? ""}
-            propertyPrice={property?.price ?? 0}
-            propertyImage={property?.images?.[0] ?? ""}
-          />
-        )}
-
-        <EscrowProtectionTerms
-          isOpen={isEscrowOpen}
-          onClose={() => setIsEscrowOpen(false)}
-        />
-
-        {/* message input */}
-        <div className="flex items-center justify-between gap-4 px-[21.5px] h-10">
-          <div className="flex items-center flex-1 gap-2 h-full">
-            <img src={iconEmoji} alt="" className="shrink-0" />
-
-            <div className="relative flex-1 h-full">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type your message..."
-                disabled={isSending}
-                className="w-full bg-[#F5F5F5] h-full rounded-2xl pl-2 pr-8 text-[12px] leading-4 placeholder:text-text-secondary outline-none disabled:opacity-50"
-              />
-              <button className="absolute top-1/2 -translate-y-1/2 right-3">
-                <img src={iconAttach} alt="" />
+              <button
+                type="button"
+                onClick={handleSend}
+                disabled={!inputText.trim() || isSending}
+                className="w-10 h-10 rounded-full bg-button-bg flex items-center justify-center disabled:opacity-50"
+              >
+                <img src={iconSend} alt="" />
               </button>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={handleSend}
-            disabled={!inputText.trim() || isSending}
-            className="w-10 h-10 rounded-full bg-button-bg flex items-center justify-center disabled:opacity-50"
-          >
-            <img src={iconSend} alt="" />
-          </button>
         </div>
       </div>
     </div>
