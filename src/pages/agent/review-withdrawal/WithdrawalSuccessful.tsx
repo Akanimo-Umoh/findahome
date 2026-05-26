@@ -1,36 +1,36 @@
-import successImg from "@/assets/images/img-pay-inspection-fee.png";
-import blackNaira from "@/assets/agentImages/icon-black-naira.svg";
+import successImg from "@/assets/images/img-pay-inspection-fee.png"
+import blackNaira from "@/assets/agentImages/icon-black-naira.svg"
 
 export default function WithdrawalSuccessful() {
   return (
-    <div className="fixed inset-0 z-50 modal-enter font-ssPro text-text-primary h-screen">
+    <div className="modal-enter fixed inset-0 z-50 h-screen font-ssPro text-text-primary">
       {/* modal */}
-      <div className="bg-black/40 h-full flex items-center justify-center">
-        <div className="text-text-primary py-10 flex flex-col items-center justify-center bg-white rounded-t-[24px] w-full absolute bottom-0">
+      <div className="flex h-full items-center justify-center bg-black/40">
+        <div className="absolute bottom-0 flex w-full flex-col items-center justify-center rounded-t-[24px] bg-white py-10 text-text-primary">
           <img src={successImg} alt="" />
 
-          <div className="flex flex-col items-center justify-center gap-2 mt-2 w-64.5">
-            <p className="font-raleway font-semibold tracking-[1px] text-[18px] text-center">
+          <div className="mt-2 flex w-64.5 flex-col items-center justify-center gap-2">
+            <p className="text-center font-raleway text-[18px] font-semibold tracking-[1px]">
               Withdrawal Successful!
             </p>
-            <p className="text-[14px] text-text-secondary text-center">
+            <p className="text-center text-[14px] text-text-secondary">
               Your funds have been transferred to your bank account.
             </p>
           </div>
 
           {/* withdrawal details */}
-          <div className="mt-6 border border-bg-accent rounded-lg p-2 w-85.5">
-            <div className="border-b border-text-secondary flex flex-col">
+          <div className="mt-6 w-85.5 rounded-lg border border-bg-accent p-2">
+            <div className="flex flex-col border-b border-text-secondary">
               <p className="text-[14px] text-text-secondary">
                 Amount Withdrawn
               </p>
-              <div className="flex items-center mt-1">
+              <div className="mt-1 flex items-center">
                 <img src={blackNaira} alt="" />
                 <p>3,000,000</p>
               </div>
             </div>
 
-            <div className="space-y-4 mt-4">
+            <div className="mt-4 space-y-4">
               {/* bank account */}
               <div className="flex items-center justify-between text-[12px] text-text-secondary">
                 <p className="leading-4">Bank Account</p>
@@ -55,17 +55,17 @@ export default function WithdrawalSuccessful() {
           </div>
 
           {/* buttons */}
-          <div className="w-85.5 mt-8.5 flex flex-col items-center justify-center gap-3">
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style h-11.25 rounded-lg text-white w-full">
+          <div className="mt-8.5 flex w-85.5 flex-col items-center justify-center gap-3">
+            <button className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               View Wallet
             </button>
 
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] h-11.25 rounded-lg bg-button-disabled border border-text-secondary w-full">
+            <button className="h-11.25 w-full rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
               Go to dashboard
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

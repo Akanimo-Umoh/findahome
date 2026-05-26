@@ -1,19 +1,19 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import DisputeCard from "./DisputeCard";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import DisputeCard from "./DisputeCard"
 
 export default function Disputes() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary mb-10 px-6">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           My Dispute
         </p>
       </div>
@@ -22,11 +22,11 @@ export default function Disputes() {
         {/* tabs */}
         <div className="flex items-center justify-center gap-2.5">
           {/* this is the active tab */}
-          <p className="border-b border-button-bg py-2 px-4 flex items-center justify-center">
+          <p className="flex items-center justify-center border-b border-button-bg px-4 py-2">
             Active Disputes
           </p>
           {/* this is the inactive tab */}
-          <p className="text-text-secondary py-2 px-4 flex items-center justify-center">
+          <p className="flex items-center justify-center px-4 py-2 text-text-secondary">
             Resolved Disputes
           </p>
         </div>
@@ -37,5 +37,5 @@ export default function Disputes() {
         </section>
       </main>
     </div>
-  );
+  )
 }

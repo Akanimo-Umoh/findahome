@@ -1,34 +1,34 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import accountIcon from "@/assets/agentImages/icon-white-bank-account.svg";
-import shieldIcon from "@/assets/agentImages/icon-shield.svg";
-import withdrawIcon from "@/assets/agentImages/icon-blue-withdraw.svg";
-import addIcon from "@/assets/agentImages/icon-add-property.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import accountIcon from "@/assets/agentImages/icon-white-bank-account.svg"
+import shieldIcon from "@/assets/agentImages/icon-shield.svg"
+import withdrawIcon from "@/assets/agentImages/icon-blue-withdraw.svg"
+import addIcon from "@/assets/agentImages/icon-add-property.svg"
 
 export default function WithdrawalAccount() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="font-ssPro text-text-primary px-6 mb-10">
+    <div className="mb-10 px-6 font-ssPro text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Withdrawal Account
         </p>
       </div>
 
-      <div className="flex flex-col items-center justify-center mt-6">
-        <div className="rounded-3xl bg-bg-accent w-15 h-15 flex items-center justify-center shrink-0">
+      <div className="mt-6 flex flex-col items-center justify-center">
+        <div className="flex h-15 w-15 shrink-0 items-center justify-center rounded-3xl bg-bg-accent">
           <img src={withdrawIcon} alt="" />
         </div>
 
-        <div className="mt-6 max-w-[247px] flex flex-col items-center justify-center gap-1">
+        <div className="mt-6 flex max-w-[247px] flex-col items-center justify-center gap-1">
           <p>Your withdrawal account</p>
-          <p className="text-[12px] leading-4 text-text-secondary text-center">
+          <p className="text-center text-[12px] leading-4 text-text-secondary">
             Funds released from escrow will be deposited into your default
             account.
           </p>
@@ -37,15 +37,15 @@ export default function WithdrawalAccount() {
 
       {/* accounts */}
       <div className="mt-[36px] space-y-4">
-        <div className="border border-bg-accent rounded-lg flex items-center gap-4 p-3">
-          <div className="w-12.5 h-12.5 bg-button-bg flex items-center justify-center shrink-0 rounded-3xl">
+        <div className="flex items-center gap-4 rounded-lg border border-bg-accent p-3">
+          <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-3xl bg-button-bg">
             <img src={accountIcon} alt="" />
           </div>
 
-          <div className="flex-1 flex flex-col gap-1">
+          <div className="flex flex-1 flex-col gap-1">
             <div className="flex items-center justify-between">
               <p className="text-[18px] tracking-[1px]">Access Bank</p>
-              <p className="rounded-2xl py-0.5 px-2 bg-button-bg text-[12px] leading-4 text-white w-fit">
+              <p className="w-fit rounded-2xl bg-button-bg px-2 py-0.5 text-[12px] leading-4 text-white">
                 Default
               </p>
             </div>
@@ -60,12 +60,12 @@ export default function WithdrawalAccount() {
           </div>
         </div>
 
-        <div className="border border-bg-accent rounded-lg flex items-center gap-4 p-3">
-          <div className="w-12.5 h-12.5 bg-button-bg flex items-center justify-center shrink-0 rounded-3xl">
+        <div className="flex items-center gap-4 rounded-lg border border-bg-accent p-3">
+          <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-3xl bg-button-bg">
             <img src={accountIcon} alt="" />
           </div>
 
-          <div className="flex-1 flex flex-col gap-1">
+          <div className="flex flex-1 flex-col gap-1">
             <div className="flex items-center justify-between">
               <p className="text-[18px] tracking-[1px]">GT Bank</p>
             </div>
@@ -81,7 +81,7 @@ export default function WithdrawalAccount() {
         </div>
       </div>
 
-      <div className="flex items-start w-67.5 mx-auto gap-2 p-2 bg-button-sec mt-4">
+      <div className="mx-auto mt-4 flex w-67.5 items-start gap-2 bg-button-sec p-2">
         <img src={shieldIcon} alt="" />
         <p className="text-[12px] leading-4 text-text-secondary">
           Your bank details are encrypted and stored securely. All payouts are
@@ -90,10 +90,10 @@ export default function WithdrawalAccount() {
       </div>
 
       {/* takes you to the add account page */}
-      <button className="h-[45px] bg-button-bg w-full flex items-center justify-center text-white font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg gap-2 mt-[47px]">
+      <button className="mt-[47px] flex h-[45px] w-full items-center justify-center gap-2 rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
         <img src={addIcon} alt="" />
         <p>Add New Account</p>
       </button>
     </div>
-  );
+  )
 }

@@ -1,25 +1,25 @@
-import paymentIcon from "@/assets/agentImages/icon-payment-released.svg";
-import inspectionIcon from "@/assets/agentImages/icon-inspection-scheduled.svg";
-import escrowIcon from "@/assets/agentImages/icon-funds-in-escrow.svg";
-import adsIcon from "@/assets/agentImages/icon-ads-performance-updates.svg";
-import uploadIcon from "@/assets/agentImages/icon-upload-successful.svg";
-import nairaIcon from "@/assets/agentImages/icon-grey-naira.svg";
+import paymentIcon from "@/assets/agentImages/icon-payment-released.svg"
+import inspectionIcon from "@/assets/agentImages/icon-inspection-scheduled.svg"
+import escrowIcon from "@/assets/agentImages/icon-funds-in-escrow.svg"
+import adsIcon from "@/assets/agentImages/icon-ads-performance-updates.svg"
+import uploadIcon from "@/assets/agentImages/icon-upload-successful.svg"
+import nairaIcon from "@/assets/agentImages/icon-grey-naira.svg"
 
 type ActivityType =
   | "payment_released"
   | "inspection_scheduled"
   | "funds_in_escrow"
   | "ads_performance"
-  | "property_uploaded";
+  | "property_uploaded"
 
 type Activity = {
-  id: string;
-  type: ActivityType;
-  title: string;
-  description: string;
-  timestamp: string;
-  amount?: string; // Optional: for payment/escrow activities
-};
+  id: string
+  type: ActivityType
+  title: string
+  description: string
+  timestamp: string
+  amount?: string // Optional: for payment/escrow activities
+}
 
 // Activity configuration by type
 const activityConfig: Record<ActivityType, { icon: string; bgColor: string }> =
@@ -44,7 +44,7 @@ const activityConfig: Record<ActivityType, { icon: string; bgColor: string }> =
       icon: uploadIcon,
       bgColor: "bg-[#149D1833]",
     },
-  };
+  }
 
 export default function RecentActivities() {
   const activities: Activity[] = [
@@ -85,39 +85,39 @@ export default function RecentActivities() {
       description: "Your Property in Ikoyi is now live",
       timestamp: "3 days ago",
     },
-  ];
+  ]
 
   // ✅ ADDED: Helper to render description with amount
   const renderDescription = (activity: Activity) => {
     if (activity.amount) {
       return (
-        <p className="text-text-secondary line-clamp-1">
+        <p className="line-clamp-1 text-text-secondary">
           <img src={nairaIcon} alt="" className="inline-block align-middle" />
           <span className="align-middle">{activity.description}</span>
         </p>
-      );
+      )
     }
     return (
-      <p className="text-text-secondary line-clamp-1">{activity.description}</p>
-    );
-  };
+      <p className="line-clamp-1 text-text-secondary">{activity.description}</p>
+    )
+  }
 
   return (
     <div className="mx-6 md:mx-8">
       <p>Recent Activities</p>
 
       {/* ✅ MODIFIED: Dynamic activities rendering */}
-      <div className="space-y-4 mt-2">
+      <div className="mt-2 space-y-4">
         {activities.map((activity) => {
-          const config = activityConfig[activity.type];
+          const config = activityConfig[activity.type]
 
           return (
             <div
               key={activity.id}
-              className="flex items-center gap-2 p-2 border-b border-bg-accent"
+              className="flex items-center gap-2 border-b border-bg-accent p-2"
             >
               <div
-                className={`${config.bgColor} w-7.5 h-7.5 flex items-center justify-center rounded-lg shrink-0 md:w-10 md:h-10`}
+                className={`${config.bgColor} flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg md:h-10 md:w-10`}
               >
                 <img src={config.icon} alt="" />
               </div>
@@ -128,9 +128,9 @@ export default function RecentActivities() {
                 <p className="text-text-secondary">{activity.timestamp}</p>
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }

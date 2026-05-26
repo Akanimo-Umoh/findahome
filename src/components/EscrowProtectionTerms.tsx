@@ -1,11 +1,11 @@
-import verifiedIcon from "@/assets/images/icon-verified-green.svg";
-import closeIcon from "@/assets/images/closeMenu.svg";
-import { useEffect } from "react";
+import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+import closeIcon from "@/assets/images/closeMenu.svg"
+import { useEffect } from "react"
 
 type EscrowProtectionTermsProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+  isOpen: boolean
+  onClose: () => void
+}
 
 export default function EscrowProtectionTerms({
   isOpen,
@@ -27,7 +27,7 @@ export default function EscrowProtectionTerms({
     {
       text: "Full refund if property conditions are not met",
     },
-  ];
+  ]
 
   const notes = [
     {
@@ -39,48 +39,48 @@ export default function EscrowProtectionTerms({
     {
       text: "Transaction cannot be cancelled after handover confirmation",
     },
-  ];
+  ]
 
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""
     }
 
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 modal-enter font-ssPro text-text-primary h-full flex items-center justify-center">
+    <div className="modal-enter fixed inset-0 z-50 flex h-full items-center justify-center font-ssPro text-text-primary">
       {/* backdrop */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* modal */}
-      <div className="text-text-primary py-10 flex flex-col items-center justify-center bg-white w-full max-w-83 max-h-[80vh] absolute rounded-2xl">
-        <div className="flex flex-col items-center justify-center gap-4 w-73.5">
+      <div className="absolute flex max-h-[80vh] w-full max-w-83 flex-col items-center justify-center rounded-2xl bg-white py-10 text-text-primary">
+        <div className="flex w-73.5 flex-col items-center justify-center gap-4">
           {/* header — ADD close button */}
-          <div className="flex items-center justify-between w-full">
-            <p className="font-raleway font-semibold text-[16px] tracking-[1px] text-text-primary">
+          <div className="flex w-full items-center justify-between">
+            <p className="font-raleway text-[16px] font-semibold tracking-[1px] text-text-primary">
               Escrow Protection Terms
             </p>
-            <button onClick={onClose} className="cursor-pointer shrink-0">
-              <img src={closeIcon} alt="close" className="w-5 h-5" />
+            <button onClick={onClose} className="shrink-0 cursor-pointer">
+              <img src={closeIcon} alt="close" className="h-5 w-5" />
             </button>
           </div>
 
-          <div className="overflow-y-auto flex flex-col gap-4">
-            <div className="bg-bg-accent rounded-xl p-2 flex flex-col gap-1">
+          <div className="flex flex-col gap-4 overflow-y-auto">
+            <div className="flex flex-col gap-1 rounded-xl bg-bg-accent p-2">
               <p className="text-[14px]">Your Protection</p>
 
               <div className="flex flex-col gap-2">
                 {terms.map((term, index) => (
                   <div key={index} className="flex items-center gap-1">
-                    <img src={verifiedIcon} alt="" className="w-4 h-4" />
+                    <img src={verifiedIcon} alt="" className="h-4 w-4" />
                     <p className="text-[12px] leading-4 text-text-secondary">
                       {term.text}
                     </p>
@@ -89,7 +89,7 @@ export default function EscrowProtectionTerms({
               </div>
             </div>
 
-            <div className="bg-[#FAF3E0] rounded-xl p-2 flex flex-col gap-1 border border-bg-accent">
+            <div className="flex flex-col gap-1 rounded-xl border border-bg-accent bg-[#FAF3E0] p-2">
               <p className="text-[14px]">Important Notes</p>
 
               <div className="flex flex-col gap-2">
@@ -108,5 +108,5 @@ export default function EscrowProtectionTerms({
         </div>
       </div>
     </div>
-  );
+  )
 }

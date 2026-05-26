@@ -45,18 +45,18 @@
 //   );
 // }
 
-import { Link } from "react-router-dom";
-import addIcon from "@/assets/agentImages/icon-add-property.svg";
-import createAdIcon from "@/assets/agentImages/icon-create-ad.svg";
-import transactionsIcon from "@/assets/agentImages/icon-transactions.svg";
-import messageIcon from "@/assets/agentImages/icon-messages.svg";
+import { Link } from "react-router-dom"
+import addIcon from "@/assets/agentImages/icon-add-property.svg"
+import createAdIcon from "@/assets/agentImages/icon-create-ad.svg"
+import transactionsIcon from "@/assets/agentImages/icon-transactions.svg"
+import messageIcon from "@/assets/agentImages/icon-messages.svg"
 
 type Action = {
-  icon: string;
-  label: string;
-  bg: string;
-  link: string;
-};
+  icon: string
+  label: string
+  bg: string
+  link: string
+}
 
 const actions: Action[] = [
   {
@@ -83,32 +83,32 @@ const actions: Action[] = [
     bg: "bg-error",
     link: "/agent/messages",
   },
-];
+]
 
 export default function QuickActions() {
   return (
     <div className="mx-6 md:mx-8">
       <p>Quick Actions</p>
 
-      <div className="flex flex-wrap items-center justify-between mt-4 md:mt-6">
+      <div className="mt-4 flex flex-wrap items-center justify-between md:mt-6">
         {actions.map((action) => (
           <Link
             to={action.link}
             key={action.link}
-            className="flex flex-col gap-2 p-1 items-center justify-center transition-transform active:scale-95 md:gap-4 sm:w-24.25"
+            className="flex flex-col items-center justify-center gap-2 p-1 transition-transform active:scale-95 sm:w-24.25 md:gap-4"
           >
             <div
-              className={`${action.bg} rounded-lg w-10 h-10 md:w-15 md:h-15 flex items-center justify-center`}
+              className={`${action.bg} flex h-10 w-10 items-center justify-center rounded-lg md:h-15 md:w-15`}
             >
               <img src={action.icon} alt={action.label} />
             </div>
 
-            <p className="text-[12px] leading-4 text-center whitespace-nowrap md:text-[16px]">
+            <p className="text-center text-[12px] leading-4 whitespace-nowrap md:text-[16px]">
               {action.label}
             </p>
           </Link>
         ))}
       </div>
     </div>
-  );
+  )
 }

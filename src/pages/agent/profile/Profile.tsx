@@ -1,68 +1,68 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import verifiedIcon from "@/assets/images/icon-verified-green.svg";
-import checkIcon from "@/assets/agentImages/icon-check-green-circle.svg";
-import pendingIcon from "@/assets/agentImages/icon-pending-review.svg";
-import creditIcon from "@/assets/agentImages/icon-white-credit-card.svg";
-import arrowIcon from "@/assets/agentImages/icon-blue-right-long-arrow.svg";
-import infoIcon from "@/assets/agentImages/icon-grey-info.svg";
-import lockIcon from "@/assets/agentImages/icon-blue-lock.svg";
-import rightIcon from "@/assets/agentImages/icon-grey-arrow.svg";
-import activeIcon from "@/assets/agentImages/icon-active-sessions.svg";
-import { useAuthContext } from "@/context/AuthContext";
-import Avatar from "@/components/Avatar";
-import { useLogout } from "@/hooks/useLogout";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+import checkIcon from "@/assets/agentImages/icon-check-green-circle.svg"
+import pendingIcon from "@/assets/agentImages/icon-pending-review.svg"
+import creditIcon from "@/assets/agentImages/icon-white-credit-card.svg"
+import arrowIcon from "@/assets/agentImages/icon-blue-right-long-arrow.svg"
+import infoIcon from "@/assets/agentImages/icon-grey-info.svg"
+import lockIcon from "@/assets/agentImages/icon-blue-lock.svg"
+import rightIcon from "@/assets/agentImages/icon-grey-arrow.svg"
+import activeIcon from "@/assets/agentImages/icon-active-sessions.svg"
+import { useAuthContext } from "@/context/AuthContext"
+import Avatar from "@/components/Avatar"
+import { useLogout } from "@/hooks/useLogout"
 
 export default function Profile() {
-  const navigate = useNavigate();
-  const { user } = useAuthContext();
+  const navigate = useNavigate()
+  const { user } = useAuthContext()
 
-  const { handleLogout } = useLogout();
+  const { handleLogout } = useLogout()
 
   return (
-    <div className="font-ssPro flex flex-col mb-10 mx-6">
+    <div className="mx-6 mb-10 flex flex-col font-ssPro">
       <header className="">
         {/* header */}
-        <div className="flex items-center justify-center relative">
+        <div className="relative flex items-center justify-center">
           <button className="absolute left-0" onClick={() => navigate(-1)}>
             <img src={goBack} alt="" />
           </button>
 
-          <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+          <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
             Profile & Settings
           </p>
         </div>
       </header>
 
       <main className="mt-6">
-        <div className="agent-profile py-5 px-6 rounded-lg">
+        <div className="agent-profile rounded-lg px-6 py-5">
           <div className="flex flex-col items-center justify-center gap-1">
             <div className="relative pb-2">
               <Avatar
                 name={user?.name ?? "?"}
                 src={user?.profilePicture}
-                className="w-17.5 h-17.5 rounded-full object-cover"
+                className="h-17.5 w-17.5 rounded-full object-cover"
               />
               <img
                 src={verifiedIcon}
                 alt=""
-                className="absolute bottom-[1.5px] right-[1.5px]"
+                className="absolute right-[1.5px] bottom-[1.5px]"
               />
             </div>
 
             <div>
               <p className="text-center">{user?.name}</p>
-              <p className="text-[12px] leading-4 text-text-secondary text-center">
+              <p className="text-center text-[12px] leading-4 text-text-secondary">
                 {user?.role}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-2">
-            <p className="text-[12px] leading-4 text-button-bg rounded-2xl py-0.5 px-2 text-center bg-bg-accent">
+          <div className="mt-2 flex items-center justify-center gap-4">
+            <p className="rounded-2xl bg-bg-accent px-2 py-0.5 text-center text-[12px] leading-4 text-button-bg">
               Licensed Agent
             </p>
-            <p className="text-[12px] leading-4 text-success bg-[#D8F3DC] py-0.5 px-2 rounded-2xl">
+            <p className="rounded-2xl bg-[#D8F3DC] px-2 py-0.5 text-[12px] leading-4 text-success">
               Verified
             </p>
           </div>
@@ -73,22 +73,22 @@ export default function Profile() {
           <p className="text-text-secondary">ACCOUNT INFORMATION</p>
 
           <div className="mt-4 space-y-3">
-            <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
+            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>Full Name:</p>
               <p className="text-text-secondary">{user?.name}</p>
             </div>
 
-            <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
+            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>Email</p>
               <p className="text-text-secondary">{user?.email}</p>
             </div>
 
-            <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
+            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>Phone Number</p>
               <p className="text-text-secondary">{user?.phoneNumber}</p>
             </div>
 
-            <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
+            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>ID Verification</p>
 
               <div className="flex items-center gap-1">
@@ -97,7 +97,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <div className="text-[12px] leading-4 flex items-center justify-between bg-bg-tertiary py-1 px-2 rounded-lg">
+            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>Business Registration</p>
 
               <div className="flex items-center gap-1">
@@ -113,37 +113,37 @@ export default function Profile() {
           <p className="text-text-secondary">BANK & PAYOUT SETTINGS</p>
 
           <div className="mt-4">
-            <div className="flex items-center justify-between gap-4 py-1 px-2 rounded-lg bg-bg-tertiary">
+            <div className="flex items-center justify-between gap-4 rounded-lg bg-bg-tertiary px-2 py-1">
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 bg-button-bg rounded-full flex items-center justify-center shrink-0">
+                <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-button-bg">
                   <img src={creditIcon} alt="" />
                 </div>
 
                 <div className="space-y-0.5">
-                  <p className="text-[12px] leading-4 line-clamp-1">
+                  <p className="line-clamp-1 text-[12px] leading-4">
                     Access Bank
                   </p>
-                  <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+                  <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                     ****4810
                   </p>
                 </div>
               </div>
 
               {/* takes you to the select account */}
-              <p className="text-[12px] leading-4 text-text-secondary bg-bg-accent py-1 px-2 rounded-lg">
+              <p className="rounded-lg bg-bg-accent px-2 py-1 text-[12px] leading-4 text-text-secondary">
                 Default
               </p>
             </div>
 
-            <div className="mt-3 flex items-center justify-between max-w-[319px] mx-auto px-3">
+            <div className="mx-auto mt-3 flex max-w-[319px] items-center justify-between px-3">
               <p className="text-[12px] leading-4 text-button-bg">
                 Add/Edit Bank Account
               </p>
-              <img src={arrowIcon} alt="" className="w-5 h-5" />
+              <img src={arrowIcon} alt="" className="h-5 w-5" />
             </div>
 
-            <div className="flex items-start gap-2 mt-4 mx-5">
-              <img src={infoIcon} alt="" className="w-6 h-6 shrink-0" />
+            <div className="mx-5 mt-4 flex items-start gap-2">
+              <img src={infoIcon} alt="" className="h-6 w-6 shrink-0" />
 
               <p className="text-[12px] leading-4 text-text-secondary">
                 Payouts are processed securely via Escrow services. Changes may
@@ -160,7 +160,7 @@ export default function Profile() {
           <div className="mt-4 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-bg-accent flex items-center justify-center shrink-0">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-bg-accent">
                   <img src={lockIcon} alt="" />
                 </div>
                 <p className="text-[14px]">Change Password</p>
@@ -171,14 +171,14 @@ export default function Profile() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-bg-accent flex items-center justify-center shrink-0">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-bg-accent">
                   <img src={lockIcon} alt="" />
                 </div>
                 <p className="text-[14px]">Two - Factor Authentications</p>
               </div>
 
               <div className="flex items-center gap-2">
-                <p className="text-[12px] leading-4 text-success rounded-lg p-1 bg-[#D8F3DC]">
+                <p className="rounded-lg bg-[#D8F3DC] p-1 text-[12px] leading-4 text-success">
                   Enabled
                 </p>
                 <img src={rightIcon} alt="" />
@@ -187,7 +187,7 @@ export default function Profile() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-bg-accent flex items-center justify-center shrink-0">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-bg-accent">
                   <img src={activeIcon} alt="" />
                 </div>
                 <p className="text-[14px]">Active Sessions</p>
@@ -223,11 +223,11 @@ export default function Profile() {
         {/* log out */}
         <button
           onClick={handleLogout}
-          className="border border-text-secondary h-[45px] rounded-lg bg-button-disabled font-raleway font-semibold text-[14px] tracking-[1px] mt-8 w-full cursor-pointer"
+          className="mt-8 h-[45px] w-full cursor-pointer rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]"
         >
           Log out
         </button>
       </main>
     </div>
-  );
+  )
 }

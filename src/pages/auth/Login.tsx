@@ -1,25 +1,25 @@
-import hide from "@/assets/images/icon-hide-password.svg";
-import show from "@/assets/images/icon-show-password.svg";
-import inputError from "@/assets/images/icon-email-error.svg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { type LoginFormData, LoginFormSchema } from "@/validation/auth/rules";
-import { useState } from "react";
-import { useAuthContext } from "@/context/AuthContext";
-import { login as loginApi } from "@/services/auth.service";
-import { AxiosError } from "axios";
-import { GoogleLogin } from "@react-oauth/google";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
-import Loading from "@/components/Loading";
+import hide from "@/assets/images/icon-hide-password.svg"
+import show from "@/assets/images/icon-show-password.svg"
+import inputError from "@/assets/images/icon-email-error.svg"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { type LoginFormData, LoginFormSchema } from "@/validation/auth/rules"
+import { useState } from "react"
+import { useAuthContext } from "@/context/AuthContext"
+import { login as loginApi } from "@/services/auth.service"
+import { AxiosError } from "axios"
+import { GoogleLogin } from "@react-oauth/google"
+import { useGoogleAuth } from "@/hooks/useGoogleAuth"
+import Loading from "@/components/Loading"
 
 type LocationState = {
-  from?: string;
-};
+  from?: string
+}
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   // use custom google auth hook
   const {
@@ -28,36 +28,36 @@ export default function Login() {
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  } = useGoogleAuth(setApiError);
+  } = useGoogleAuth(setApiError)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginFormData>({ resolver: zodResolver(LoginFormSchema) });
+  } = useForm<LoginFormData>({ resolver: zodResolver(LoginFormSchema) })
 
-  const { login } = useAuthContext();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = (location.state as LocationState)?.from || null;
+  const { login } = useAuthContext()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = (location.state as LocationState)?.from || null
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       // clear api errors
-      setApiError(null);
-      setGoogleApiError(null);
+      setApiError(null)
+      setGoogleApiError(null)
 
-      console.log("Data:", data);
+      console.log("Data:", data)
 
       const response = await loginApi({
         email: data.email.toLowerCase(),
         password: data.password,
-      });
+      })
 
-      console.log("Full Response:", response);
-      console.log("User Object:", response.user);
-      console.log("Is Verified:", response.user.isVerified);
-      console.log("User Keys:", Object.keys(response.user));
+      console.log("Full Response:", response)
+      console.log("User Object:", response.user)
+      console.log("Is Verified:", response.user.isVerified)
+      console.log("User Keys:", Object.keys(response.user))
 
       // check if user is verified before logging in
       if (!response.user.isVerified) {
@@ -65,8 +65,8 @@ export default function Login() {
         navigate("/verify-email", {
           state: { email: response.user.email, from: "login" },
           replace: true,
-        });
-        return;
+        })
+        return
       }
 
       // determine redirect path
@@ -76,32 +76,32 @@ export default function Login() {
         (() => {
           switch (response.user.role) {
             case "user":
-              return "/";
+              return "/"
             case "agent":
-              return "/agent/dashboard";
+              return "/agent/dashboard"
             case "admin":
-              return "/admin/dashboard";
+              return "/admin/dashboard"
             default:
-              return "/";
+              return "/"
           }
-        })();
+        })()
 
       // update context
-      login(response.user, response.token);
+      login(response.user, response.token)
 
       // redirect user to intended destination
       // Public route will handle the actual redirect
-      navigate(redirectPath, { replace: true });
+      navigate(redirectPath, { replace: true })
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Login error:", error)
 
       // added proper error handling
       if (error instanceof AxiosError) {
         const errorMessage =
-          error.response?.data?.message || "Login failed. Please try again.";
+          error.response?.data?.message || "Login failed. Please try again."
 
-        console.log("Error Message:", errorMessage); // Debug the error message
-        console.log("Error Status:", error.response?.status); // Debug the status code
+        console.log("Error Message:", errorMessage) // Debug the error message
+        console.log("Error Status:", error.response?.status) // Debug the status code
 
         // check if the error is about unverified email
         if (
@@ -114,25 +114,25 @@ export default function Login() {
           navigate("/verify-email", {
             state: { email: data.email.toLowerCase(), from: "login" },
             replace: true,
-          });
-          return;
+          })
+          return
         }
 
-        setApiError(errorMessage);
+        setApiError(errorMessage)
       } else {
-        setApiError("An unexpected error occurred. Please try again.");
+        setApiError("An unexpected error occurred. Please try again.")
       }
     }
-  };
+  }
 
   if (isGoogleLoading) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
-    <div className="flex flex-col gap-6 font-ssPro w-full mx-6 md:my-5 md:mx-7.5 md:gap-10">
+    <div className="mx-6 flex w-full flex-col gap-6 font-ssPro md:mx-7.5 md:my-5 md:gap-10">
       <div className="flex flex-col items-center justify-center gap-1">
-        <p className="text-text-primary text-[18px] tracking-[1px] font-semibold font-raleway md:text-[28px] md:font-medium">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary md:text-[28px] md:font-medium">
           Log in to your account
         </p>
         <p className="text-[14px] text-text-secondary md:text-[16px]">
@@ -148,7 +148,7 @@ export default function Login() {
             <p className="text-text-primary">Continue with Google</p>
           </div> */}
 
-          <div className="w-full flex items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleError}
@@ -169,7 +169,7 @@ export default function Login() {
 
         {(apiError || googleApiError) && (
           <div
-            className="flex items-center gap-2 p-3 bg-[#FFF0F0] border border-state-error rounded-lg"
+            className="flex items-center gap-2 rounded-lg border border-state-error bg-[#FFF0F0] p-3"
             role="alert"
           >
             <img src={inputError} alt="" aria-hidden="true" />
@@ -192,7 +192,7 @@ export default function Login() {
                   type="text"
                   id="email"
                   placeholder="Enter Email"
-                  className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] px-2 rounded-xl outline-none ${errors.email ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
+                  className={`h-[45px] w-full rounded-xl bg-white px-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${errors.email ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
                   {...register("email")}
@@ -222,7 +222,7 @@ export default function Login() {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     placeholder="Enter Password"
-                    className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] pl-2 pr-10 rounded-xl outline-none ${errors.password ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
+                    className={`h-[45px] w-full rounded-xl bg-white pr-10 pl-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${errors.password ? "border-2 border-state-error" : "md:border-2 md:border-text-disabled"}`}
                     aria-invalid={errors.password ? "true" : "false"}
                     aria-describedby={
                       errors.password ? "password-error" : undefined
@@ -232,7 +232,7 @@ export default function Login() {
 
                   <p
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -264,7 +264,7 @@ export default function Login() {
                 <input
                   type="checkbox"
                   id="remember-me"
-                  className="w-4 h-4 rounded-lg"
+                  className="h-4 w-4 rounded-lg"
                 />
                 <label htmlFor="remember-me" className="text-text-secondary">
                   Remember Me
@@ -276,11 +276,11 @@ export default function Login() {
               </Link>
             </div>
 
-            <div className="text-center space-y-2 mt-8 md:mt-10 md:space-y-6">
+            <div className="mt-8 space-y-2 text-center md:mt-10 md:space-y-6">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-sec-but h-[37px] w-full font-raleway text-component-primary font-semibold tracking-[1px] text-[14px] rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1e3aa8] transition-colors md:h-[45px] md:text-[16px]"
+                className="h-[37px] w-full cursor-pointer rounded-lg bg-sec-but font-raleway text-[14px] font-semibold tracking-[1px] text-component-primary transition-colors hover:bg-[#1e3aa8] disabled:cursor-not-allowed disabled:opacity-50 md:h-[45px] md:text-[16px]"
               >
                 {isSubmitting ? "Logging in..." : "Log in"}
               </button>
@@ -296,5 +296,5 @@ export default function Login() {
         </form>
       </div>
     </div>
-  );
+  )
 }

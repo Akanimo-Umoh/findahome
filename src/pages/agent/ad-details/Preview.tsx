@@ -1,6 +1,6 @@
-import apartmentImg from "@/assets/images/property.jpg";
-import agentImg from "@/assets/images/agentAvatar.jpg";
-import blueNaira from "@/assets/agentImages/icon-blue-naira.svg";
+import apartmentImg from "@/assets/images/property.jpg"
+import agentImg from "@/assets/images/agentAvatar.jpg"
+import blueNaira from "@/assets/agentImages/icon-blue-naira.svg"
 
 export default function Preview() {
   return (
@@ -9,41 +9,41 @@ export default function Preview() {
         <img
           src={apartmentImg}
           alt=""
-          className="h-75 object-cover rounded-xl"
+          className="h-75 rounded-xl object-cover"
         />
 
-        <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-xl py-1 px-2 bg-button-bg absolute top-0 left-0">
+        <p className="absolute top-0 left-0 rounded-xl bg-button-bg px-2 py-1 font-raleway text-[14px] font-semibold tracking-[1px] text-white">
           Sponsored
         </p>
 
         <img
           src={agentImg}
           alt=""
-          className="w-12.5 h-12.5 object-cover rounded-full absolute top-[269px] right-6"
+          className="absolute top-[269px] right-6 h-12.5 w-12.5 rounded-full object-cover"
         />
       </div>
 
       <div className="space-y-2">
-        <p className="font-raleway font-semibold tracking-[1px] line-clamp-2">
+        <p className="line-clamp-2 font-raleway font-semibold tracking-[1px]">
           3 Bed-room Apartment, Lekki phase 1
         </p>
-        <p className="text-[14px] font-raleway font-semibold tracking-[1px] text-text-secondary">
+        <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-secondary">
           Lekki, Lagos State
         </p>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <img src={blueNaira} alt="" />
-            <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
               3,000,000
             </p>
           </div>
 
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg p-2 border border-button-bg">
+          <button className="rounded-lg border border-button-bg p-2 font-raleway text-[14px] font-semibold tracking-[1px]">
             View Listing
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

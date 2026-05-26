@@ -1,28 +1,28 @@
-import modelHouse from "@/assets/agentImages/img-model-house.jpg";
-import apartmentImg from "@/assets/images/img-apartment.png";
-import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import modelHouse from "@/assets/agentImages/img-model-house.jpg"
+import apartmentImg from "@/assets/images/img-apartment.png"
+import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
+import { useState } from "react"
+import { Link } from "react-router-dom"
 
-type FilterTab = "all" | "pending" | "completed" | "dispute";
+type FilterTab = "all" | "pending" | "completed" | "dispute"
 
 type Transaction = {
-  id: string;
-  title: string;
-  price: string;
-  buyer: string;
-  status: string;
-  refId: string;
-  lastUpdated: string;
-  image: string;
-};
+  id: string
+  title: string
+  price: string
+  buyer: string
+  status: string
+  refId: string
+  lastUpdated: string
+  image: string
+}
 
 // derive filter category from status string
 function getCategory(status: string): "pending" | "completed" | "dispute" {
-  const s = status.toLowerCase();
-  if (s === "payment released") return "completed";
-  if (s === "dispute opened") return "dispute";
-  return "pending"; // in escrow, awaiting inspection, awaiting handover, etc.
+  const s = status.toLowerCase()
+  if (s === "payment released") return "completed"
+  if (s === "dispute opened") return "dispute"
+  return "pending" // in escrow, awaiting inspection, awaiting handover, etc.
 }
 
 // status badge styles
@@ -32,14 +32,14 @@ const statusStyles: Record<string, string> = {
   "in escrow": "bg-[#F39C12] text-white",
   "awaiting inspection completion": "bg-[#FF6B6B]",
   "awaiting property handover": "bg-[#FF6B6B]",
-};
+}
 
 const tabs: { label: string; value: FilterTab }[] = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Completed", value: "completed" },
   { label: "Dispute", value: "dispute" },
-];
+]
 
 // hardcoded for now — replace with API data later
 const transactions: Transaction[] = [
@@ -83,17 +83,17 @@ const transactions: Transaction[] = [
     lastUpdated: "9hrs ago",
     image: modelHouse,
   },
-];
+]
 
 export default function Transactions() {
-  const [activeTab, setActiveTab] = useState<FilterTab>("all");
+  const [activeTab, setActiveTab] = useState<FilterTab>("all")
 
   const filtered =
     activeTab === "all"
       ? transactions
       : transactions.filter(
-          (t) => getCategory(t.status.toLowerCase()) === activeTab,
-        );
+          (t) => getCategory(t.status.toLowerCase()) === activeTab
+        )
 
   return (
     <div>
@@ -103,7 +103,7 @@ export default function Transactions() {
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
-            className={`rounded-lg py-1 px-2 transition-colors duration-300 text-[14px] ${
+            className={`rounded-lg px-2 py-1 text-[14px] transition-colors duration-300 ${
               activeTab === tab.value
                 ? "bg-button-bg text-white"
                 : "bg-button-sec text-text-primary"
@@ -117,39 +117,39 @@ export default function Transactions() {
       {/* transactions */}
       <section className="mt-6 space-y-4">
         {filtered.length === 0 ? (
-          <p className="text-center text-text-secondary text-[12px] mt-10">
+          <p className="mt-10 text-center text-[12px] text-text-secondary">
             No {activeTab} transactions yet.
           </p>
         ) : (
           filtered.map((transaction) => {
-            const statusKey = transaction.status.toLowerCase();
-            const badgeStyle = statusStyles[statusKey] ?? "bg-[#FF6B6B]";
+            const statusKey = transaction.status.toLowerCase()
+            const badgeStyle = statusStyles[statusKey] ?? "bg-[#FF6B6B]"
 
             return (
               <Link
                 to="/agent/my-transactions/1"
                 key={transaction.id}
-                className="border border-bg-accent rounded-xl p-2 flex items-center gap-3"
+                className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
               >
                 <img
                   src={transaction.image}
                   alt=""
-                  className="w-15 h-15 rounded-lg object-cover shrink-0"
+                  className="h-15 w-15 shrink-0 rounded-lg object-cover"
                 />
 
                 <div className="space-y-2">
                   <div className="space-y-1">
-                    <p className="font-raleway font-semibold text-[12px] tracking-[1px] line-clamp-1">
+                    <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
                       {transaction.title}
                     </p>
                     <div className="flex items-center gap-2">
                       <div className="flex items-center">
-                        <img src={blueNairaIcon} alt="" className="w-4 h-4" />
-                        <p className="font-raleway font-semibold tracking-[1px] text-button-bg text-[14px]">
+                        <img src={blueNairaIcon} alt="" className="h-4 w-4" />
+                        <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
                           {transaction.price}
                         </p>
                       </div>
-                      <p className="text-[12px] leading-4 text-text-secondary line-clamp-1 flex-1">
+                      <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
                         Buyer: {transaction.buyer}
                       </p>
                     </div>
@@ -157,7 +157,7 @@ export default function Transactions() {
 
                   <div className="space-y-1">
                     <p
-                      className={`text-[12px] leading-4 py-1 px-2 rounded-2xl w-fit ${badgeStyle}`}
+                      className={`w-fit rounded-2xl px-2 py-1 text-[12px] leading-4 ${badgeStyle}`}
                     >
                       {transaction.status}
                     </p>
@@ -170,10 +170,10 @@ export default function Transactions() {
                   </div>
                 </div>
               </Link>
-            );
+            )
           })
         )}
       </section>
     </div>
-  );
+  )
 }

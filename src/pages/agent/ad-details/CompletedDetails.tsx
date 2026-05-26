@@ -1,31 +1,31 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import activeIcon from "@/assets/agentImages/icon-white-filled-icon.svg";
-import Preview from "./Preview";
-import PerformanceOverview from "./PerformanceOverview";
-import BudgetSpend from "./BudgetSpend";
-import CampaignDetails from "./CampaignDetails";
-import ManageAd from "./ManageAd";
-import Tips from "./Tips";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import activeIcon from "@/assets/agentImages/icon-white-filled-icon.svg"
+import Preview from "./Preview"
+import PerformanceOverview from "./PerformanceOverview"
+import BudgetSpend from "./BudgetSpend"
+import CampaignDetails from "./CampaignDetails"
+import ManageAd from "./ManageAd"
+import Tips from "./Tips"
 
 export default function CompletedDetails() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="font-ssPro flex flex-col mb-10 mx-6">
+    <div className="mx-6 mb-10 flex flex-col font-ssPro">
       <header className="">
         {/* header */}
-        <div className="flex items-center justify-center relative">
+        <div className="relative flex items-center justify-center">
           <button className="absolute left-0" onClick={() => navigate(-1)}>
             <img src={goBack} alt="" />
           </button>
 
-          <p className="text-[18px] font-raleway font-semibold">Ad Details</p>
+          <p className="font-raleway text-[18px] font-semibold">Ad Details</p>
         </div>
       </header>
 
-      <div className="bg-[#F8B40080] flex items-center rounded-lg py-2 px-3 gap-1 border border-bg-accent mt-6">
-        <div className="bg-[#F8B400] rounded-full w-7.5 h-7.5 flex items-center justify-center shrink-0">
+      <div className="mt-6 flex items-center gap-1 rounded-lg border border-bg-accent bg-[#F8B40080] px-3 py-2">
+        <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-[#F8B400]">
           <img src={activeIcon} alt="" />
         </div>
 
@@ -69,5 +69,5 @@ export default function CompletedDetails() {
         </div>
       </main>
     </div>
-  );
+  )
 }

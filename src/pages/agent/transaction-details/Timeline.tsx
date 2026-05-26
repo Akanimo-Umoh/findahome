@@ -1,15 +1,15 @@
-import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg";
-import type { TransactionStage } from "./TransactionDetails";
+import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg"
+import type { TransactionStage } from "./TransactionDetails"
 
 type TimelineProps = {
-  stage: TransactionStage;
-};
+  stage: TransactionStage
+}
 
 type TimelineItem = {
-  label: (stage: TransactionStage) => string;
-  subtext: (stage: TransactionStage) => string;
-  completedIn: TransactionStage[];
-};
+  label: (stage: TransactionStage) => string
+  subtext: (stage: TransactionStage) => string
+  completedIn: TransactionStage[]
+}
 
 const timelineItems: TimelineItem[] = [
   {
@@ -114,7 +114,7 @@ const timelineItems: TimelineItem[] = [
       s === "completed" ? "11 Nov · 3:22 PM" : "Pending completion",
     completedIn: ["completed"],
   },
-];
+]
 
 export default function Timeline({ stage }: TimelineProps) {
   return (
@@ -122,11 +122,11 @@ export default function Timeline({ stage }: TimelineProps) {
       <p>Escrow Timeline</p>
       <div className="mt-2 space-y-2">
         {timelineItems.map((item, index) => {
-          const isCompleted = item.completedIn.includes(stage);
+          const isCompleted = item.completedIn.includes(stage)
           return (
             <div key={index} className="flex items-center gap-2">
               <div
-                className={`w-7.5 h-7.5 rounded-full flex items-center justify-center shrink-0 ${
+                className={`flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full ${
                   isCompleted ? "bg-[#149D18]" : "bg-button-disabled"
                 }`}
               >
@@ -139,9 +139,9 @@ export default function Timeline({ stage }: TimelineProps) {
                 </p>
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }

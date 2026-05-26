@@ -1,39 +1,39 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
 // import addIcon from "@/assets/agentImages/icon-add-new-property.svg";
-import FilterButtons from "./FilterButtons";
+import FilterButtons from "./FilterButtons"
 // import SearchListings from "./SearchListings";
-import ListingsCard from "./ListingsCard";
-import { useState } from "react";
-import { useAgentListings } from "@/hooks/useAgentListings";
+import ListingsCard from "./ListingsCard"
+import { useState } from "react"
+import { useAgentListings } from "@/hooks/useAgentListings"
 
-type Tab = "apartment" | "land";
+type Tab = "apartment" | "land"
 
-export type ListingStatus = "active" | "sold" | "pending" | "rejected";
-export type FilterStatus = "all" | ListingStatus;
+export type ListingStatus = "active" | "sold" | "pending" | "rejected"
+export type FilterStatus = "all" | ListingStatus
 
 export default function MyListings() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<Tab>("apartment");
-  const [activeFilter, setActiveFilter] = useState<FilterStatus>("all");
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState<Tab>("apartment")
+  const [activeFilter, setActiveFilter] = useState<FilterStatus>("all")
 
-  const { listings, isLoading, error } = useAgentListings();
+  const { listings, isLoading, error } = useAgentListings()
 
-  const tabs: Tab[] = ["apartment", "land"];
+  const tabs: Tab[] = ["apartment", "land"]
   const tabLabels = {
     apartment: "Apartments",
     land: "Lands",
-  };
+  }
 
   return (
-    <div className="text-text-primary mb-10 mx-6 md:mt-6 md:mx-8">
+    <div className="mx-6 mb-10 text-text-primary md:mx-8 md:mt-6">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button
           onClick={() => navigate(-1)}
           className="absolute left-0 cursor-pointer"
         >
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
         <div className="flex items-center justify-center gap-8 md:gap-16">
@@ -41,7 +41,7 @@ export default function MyListings() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`rounded-xl flex items-center justify-center px-3 transition-colors font-raleway text-[14px] tracking-[1px] font-semibold h-10 md:text-[18px] md:font-normal md:font-ssPro md:h-10.75 cursor-pointer ${
+              className={`flex h-10 cursor-pointer items-center justify-center rounded-xl px-3 font-raleway text-[14px] font-semibold tracking-[1px] transition-colors md:h-10.75 md:font-ssPro md:text-[18px] md:font-normal ${
                 activeTab === tab ? "border border-bg-accent" : ""
               }`}
             >
@@ -79,5 +79,5 @@ export default function MyListings() {
         />
       </div>
     </div>
-  );
+  )
 }

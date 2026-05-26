@@ -1,43 +1,43 @@
-import successImg from "@/assets/images/img-pay-inspection-fee.png";
+import successImg from "@/assets/images/img-pay-inspection-fee.png"
 
 export default function PropertyPaymentSuccessful() {
   return (
-    <div className="fixed inset-0 z-50 modal-enter font-ssPro text-text-primary h-screen">
+    <div className="modal-enter fixed inset-0 z-50 h-screen font-ssPro text-text-primary">
       {/* modal */}
-      <div className="bg-black/40 h-full flex items-center justify-center">
-        <div className="text-text-primary py-14.5 flex flex-col items-center justify-center bg-white rounded-t-[24px] w-full absolute bottom-0">
+      <div className="flex h-full items-center justify-center bg-black/40">
+        <div className="absolute bottom-0 flex w-full flex-col items-center justify-center rounded-t-[24px] bg-white py-14.5 text-text-primary">
           <img src={successImg} alt="" />
 
-          <div className="flex flex-col items-center justify-center gap-2 mt-4 w-[300px]">
-            <p className="font-raleway font-medium tracking-[1px] text-[24px] text-center">
+          <div className="mt-4 flex w-[300px] flex-col items-center justify-center gap-2">
+            <p className="text-center font-raleway text-[24px] font-medium tracking-[1px]">
               Payment Successful!
             </p>
-            <p className="text-[12px] leading-4 text-text-secondary text-center">
+            <p className="text-center text-[12px] leading-4 text-text-secondary">
               Your payment of ₦3,060,000 has been securely placed in escrow.
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center bg-bg-accent mt-7 rounded-xl p-2">
+          <div className="mt-7 flex flex-col items-center justify-center rounded-xl bg-bg-accent p-2">
             <p className="text-[12px] text-text-secondary">
               Escrow ID Reference
             </p>
-            <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
               ESC-45892024
             </p>
           </div>
 
           {/* buttons */}
-          <div className="flex flex-col gap-3 mt-6.5 w-[343px]">
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-11.25 rounded-lg text-white">
+          <div className="mt-6.5 flex w-[343px] flex-col gap-3">
+            <button className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               View Escrow Details
             </button>
 
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] w-full h-11.25 rounded-lg border border-text-secondary">
+            <button className="h-11.25 w-full rounded-lg border border-text-secondary font-raleway text-[14px] font-semibold tracking-[1px]">
               Go to dashboard
             </button>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

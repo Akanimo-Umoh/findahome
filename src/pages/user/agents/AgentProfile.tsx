@@ -1,26 +1,26 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import ninIcon from "@/assets/images/icon-cardholder.svg";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import yellowStar from "@/assets/images/icon-yellow-star.svg";
-import starIcon from "@/assets/images/icon-normal-star.svg";
-import locationIcon from "@/assets/images/icon-location.svg";
-import houseIcon from "@/assets/images/icon-building.svg";
-import ActiveListings from "./ActiveListings";
-import AgentReviews from "./AgentReviews";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import ninIcon from "@/assets/images/icon-cardholder.svg"
+import agentAvatar from "@/assets/images/agentAvatar.jpg"
+import yellowStar from "@/assets/images/icon-yellow-star.svg"
+import starIcon from "@/assets/images/icon-normal-star.svg"
+import locationIcon from "@/assets/images/icon-location.svg"
+import houseIcon from "@/assets/images/icon-building.svg"
+import ActiveListings from "./ActiveListings"
+import AgentReviews from "./AgentReviews"
 
 export default function AgentProfile() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary mb-10">
+    <div className="mb-10 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative mx-6">
+      <div className="relative mx-6 flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Agents Details
         </p>
       </div>
@@ -32,13 +32,13 @@ export default function AgentProfile() {
             <img
               src={agentAvatar}
               alt=""
-              className="w-[73px] h-20 rounded-lg object-cover"
+              className="h-20 w-[73px] rounded-lg object-cover"
             />
 
             <div className="flex flex-col gap-1">
               <p className="text-[12px] font-semibold">Maryann Kikomu</p>
               <div className="flex items-center gap-1">
-                <img src={ninIcon} alt="" className="w-4 h-4" />
+                <img src={ninIcon} alt="" className="h-4 w-4" />
                 <p className="text-[12px] leading-4 text-text-secondary">
                   NIN Verified Agent
                 </p>
@@ -61,7 +61,7 @@ export default function AgentProfile() {
             </div>
           </div>
 
-          <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-2">
+          <div className="flex items-center gap-2 text-[12px] leading-4 text-text-secondary">
             <div className="flex items-center gap-1">
               <img src={locationIcon} alt="" />
               <p>Lagos, Nigeria</p>
@@ -88,7 +88,7 @@ export default function AgentProfile() {
           </div>
 
           {/* experience */}
-          <div className="flex items-center justify-between gap-2.5 mt-4">
+          <div className="mt-4 flex items-center justify-between gap-2.5">
             <div className="flex flex-col gap-1">
               <p className="text-[14px]">Experience</p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -118,10 +118,10 @@ export default function AgentProfile() {
         </section>
 
         {/* reviews */}
-        <section className="mt-6 mx-6">
+        <section className="mx-6 mt-6">
           <AgentReviews />
         </section>
       </main>
     </div>
-  );
+  )
 }

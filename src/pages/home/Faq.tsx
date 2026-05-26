@@ -3,7 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/ui/accordion"
 
 export default function Faq() {
   const items = [
@@ -37,12 +37,12 @@ export default function Faq() {
       content:
         "FindaHome features apartments, houses, land, and commercial properties across different locations and budgets.",
     },
-  ];
+  ]
 
   return (
-    <div className="px-6 space-y-4 font-ssPro text-text-primary md:space-y-12 md:px-8 max-w-7xl">
-      <div className="flex flex-col gap-1 items-center justify-center">
-        <p className="text-[24px] font-raleway font-medium tracking-[1px] text-text-primary text-center md:text-[36px] md:font-semibold">
+    <div className="max-w-7xl space-y-4 px-6 font-ssPro text-text-primary md:space-y-12 md:px-8">
+      <div className="flex flex-col items-center justify-center gap-1">
+        <p className="text-center font-raleway text-[24px] font-medium tracking-[1px] text-text-primary md:text-[36px] md:font-semibold">
           Frequently asked questions
         </p>
         <p className="text-[12px] text-text-secondary md:text-[16px]">
@@ -54,19 +54,19 @@ export default function Faq() {
         <Accordion
           type="single"
           collapsible
-          className="max-w-lg space-y-2 rounded-xl border-b border-bg-accent mx-auto md:space-y-8"
+          className="mx-auto max-w-lg space-y-2 rounded-xl border-b border-bg-accent md:space-y-8"
           // defaultValue="billing"
         >
           {items.map((item) => (
             <AccordionItem
               key={item.value}
               value={item.value}
-              className="border rounded-xl border-bg-accent"
+              className="rounded-xl border border-bg-accent"
             >
-              <AccordionTrigger className="p-2 cursor-pointer md:text-[18px] md:py-6">
+              <AccordionTrigger className="cursor-pointer p-2 md:py-6 md:text-[18px]">
                 {item.trigger}
               </AccordionTrigger>
-              <AccordionContent className="text-text-secondary px-2 md:text-[16px]">
+              <AccordionContent className="px-2 text-text-secondary md:text-[16px]">
                 {item.content}
               </AccordionContent>
             </AccordionItem>
@@ -74,5 +74,5 @@ export default function Faq() {
         </Accordion>
       </div>
     </div>
-  );
+  )
 }

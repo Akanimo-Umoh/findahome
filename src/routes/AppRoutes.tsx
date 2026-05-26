@@ -1,5 +1,5 @@
-import { Route, Routes } from "react-router-dom";
-import { Home } from "@/pages/home";
+import { Route, Routes } from "react-router-dom"
+import { Home } from "@/pages/home"
 import {
   AuthLayout,
   ForgotPassword,
@@ -10,66 +10,66 @@ import {
   Signup,
   VerifyEmail,
   VerifyEmailSuccess,
-} from "@/pages/auth";
-import RoleBasedRoute from "./RoleBasedRoute";
-import PublicOnlyRoute from "./PublicOnlyRoute";
-import MainLayout from "@/layouts/MainLayout";
+} from "@/pages/auth"
+import RoleBasedRoute from "./RoleBasedRoute"
+import PublicOnlyRoute from "./PublicOnlyRoute"
+import MainLayout from "@/layouts/MainLayout"
 
 // User Pages (buyers)
-import { Dashboard as UserDashboard } from "@/pages/user/dashboard";
-import { AgentProfile, Agents } from "@/pages/user/agents";
+import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
+import { AgentProfile, Agents } from "@/pages/user/agents"
 
 // Agent Pages
-import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard";
-import { Properties as AgentProperties } from "@/pages/agent/properties";
-import { AddProperty, PropertyPreview } from "@/pages/agent/add-property";
-import { Clients as AgentClients } from "@/pages/agent/clients";
-import { Profile as MyAgentProfile } from "@/pages/agent/profile";
+import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard"
+import { Properties as AgentProperties } from "@/pages/agent/properties"
+import { AddProperty, PropertyPreview } from "@/pages/agent/add-property"
+import { Clients as AgentClients } from "@/pages/agent/clients"
+import { Profile as MyAgentProfile } from "@/pages/agent/profile"
 
 // Admin Pages
-import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard";
-import { Users as AdminUsers } from "@/pages/admin/users";
-import { Agents as AdminAgents } from "@/pages/admin/agents";
-import { Properties as AdminProperties } from "@/pages/admin/properties";
-import { Settings as AdminSettings } from "@/pages/admin/settings";
-import { AllProperties } from "@/pages/properties";
-import { SearchResults } from "@/pages/search";
-import { PropertyDetails } from "@/pages/propertyDetails";
-import NormalLayout from "@/layouts/NormalLayout";
+import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard"
+import { Users as AdminUsers } from "@/pages/admin/users"
+import { Agents as AdminAgents } from "@/pages/admin/agents"
+import { Properties as AdminProperties } from "@/pages/admin/properties"
+import { Settings as AdminSettings } from "@/pages/admin/settings"
+import { AllProperties } from "@/pages/properties"
+import { SearchResults } from "@/pages/search"
+import { PropertyDetails } from "@/pages/propertyDetails"
+import NormalLayout from "@/layouts/NormalLayout"
 // import { ChatMessages, Chats } from "@/pages/user/chats";
 import {
   // EscrowTransactionsDetails,
   FundWallet,
   Wallet,
-} from "@/pages/user/wallet";
+} from "@/pages/user/wallet"
 import {
   Inspection,
   InspectionConfirmation,
   InspectionVisitDetails,
-} from "@/pages/user/inspection";
+} from "@/pages/user/inspection"
 import {
   PropertyEscrowTransaction,
   PropertyPayment,
-} from "@/pages/user/propertyPayment";
-import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover";
-import { PropertyVisitDetails } from "@/pages/user/visitDetails";
-import { ConfirmHandover } from "@/pages/user/confirmHandover";
-import { TransactionReceipt } from "@/pages/user/receipt";
-import { Recent } from "@/pages/user/recent";
-import { Profile } from "@/pages/user/profile";
+} from "@/pages/user/propertyPayment"
+import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover"
+import { PropertyVisitDetails } from "@/pages/user/visitDetails"
+import { ConfirmHandover } from "@/pages/user/confirmHandover"
+import { TransactionReceipt } from "@/pages/user/receipt"
+import { Recent } from "@/pages/user/recent"
+import { Profile } from "@/pages/user/profile"
 import {
   DisputeDetail,
   Disputes,
   DisputeSubmitted,
   OpenDispute,
-} from "@/pages/user/disputes";
-import { Miscellaneous } from "@/a";
-import { MyListings } from "@/pages/agent/my-listings";
-import { MyTransactions } from "@/pages/agent/my-transaction";
-import { SavedProperties } from "@/pages/user/saved-properties";
-import Chats from "@/components/Chats";
-import ChatMessages from "@/components/ChatMessages";
-import { TransactionDetails } from "@/pages/agent/transaction-details";
+} from "@/pages/user/disputes"
+import { Miscellaneous } from "@/a"
+import { MyListings } from "@/pages/agent/my-listings"
+import { MyTransactions } from "@/pages/agent/my-transaction"
+import { SavedProperties } from "@/pages/user/saved-properties"
+import Chats from "@/components/Chats"
+import ChatMessages from "@/components/ChatMessages"
+import { TransactionDetails } from "@/pages/agent/transaction-details"
 
 export default function AppRoutes() {
   return (
@@ -243,5 +243,5 @@ export default function AppRoutes() {
       {/* ==================== 404 - NOT FOUND ==================== */}
       <Route path="*" element={<div>404 - Page Not Found</div>} />
     </Routes>
-  );
+  )
 }

@@ -1,21 +1,21 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import Step2 from "./Step2";
-import Step3 from "./Step3";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import Step2 from "./Step2"
+import Step3 from "./Step3"
 
 export default function CreateAd() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="font-ssPro flex flex-col mb-10">
+    <div className="mb-10 flex flex-col font-ssPro">
       <header className="px-6">
         {/* header */}
-        <div className="flex items-center justify-center relative">
+        <div className="relative flex items-center justify-center">
           <button className="absolute left-0" onClick={() => navigate(-1)}>
             <img src={goBack} alt="" />
           </button>
 
-          <p className="text-[18px] font-raleway font-semibold">Create Ad</p>
+          <p className="font-raleway text-[18px] font-semibold">Create Ad</p>
         </div>
       </header>
 
@@ -25,7 +25,7 @@ export default function CreateAd() {
           <p className="">Step 1: Select Property</p>
 
           <div className="mt-2">
-            <button className="text-[14px] rounded-lg py-4 px-2 border border-dashed border-text-secondary w-full">
+            <button className="w-full rounded-lg border border-dashed border-text-secondary px-2 py-4 text-[14px]">
               Select Property
             </button>
           </div>
@@ -42,16 +42,16 @@ export default function CreateAd() {
         </div>
 
         {/* buttons */}
-        <div className="mt-8 mx-6 flex flex-col gap-4">
-          <button className="button-style w-full h-[45px] rounded-lg text-white font-raleway font-semibold text-[14px] tracking-[1px]">
+        <div className="mx-6 mt-8 flex flex-col gap-4">
+          <button className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             Create Ad
           </button>
 
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] border border-text-secondary bg-button-disabled rounded-lg h-[45px]">
+          <button className="h-[45px] rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
             Preview Ad
           </button>
         </div>
       </main>
     </div>
-  );
+  )
 }

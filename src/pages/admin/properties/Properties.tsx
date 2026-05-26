@@ -1,5 +1,3 @@
 export default function Properties() {
-  return (
-    <div>Properties</div>
-  )
+  return <div>Properties</div>
 }

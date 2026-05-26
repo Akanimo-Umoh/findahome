@@ -1,30 +1,30 @@
-import uploadIcon from "@/assets/images/icon-file-upload.svg";
+import uploadIcon from "@/assets/images/icon-file-upload.svg"
 
 type UploadImagesProps = {
-  value: File[];
-  onChange: (files: File[]) => void;
-};
+  value: File[]
+  onChange: (files: File[]) => void
+}
 
 export default function UploadImages({ value, onChange }: UploadImagesProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []);
+    const selected = Array.from(e.target.files ?? [])
     // merge with existing, cap at 10
-    const merged = [...value, ...selected].slice(0, 10);
-    onChange(merged);
-  };
+    const merged = [...value, ...selected].slice(0, 10)
+    onChange(merged)
+  }
 
   const removeImage = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
-  };
+    onChange(value.filter((_, i) => i !== index))
+  }
 
   return (
     <div>
       <div className="flex flex-col justify-center gap-2">
         <label
           htmlFor="upload-images"
-          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary cursor-pointer"
+          className="cursor-pointer rounded-lg border border-dashed border-text-secondary bg-button-disabled"
         >
-          <div className="flex flex-col items-center justify-center gap-2 py-6 rounded-lg">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-lg py-6">
             <input
               type="file"
               id="upload-images"
@@ -34,7 +34,7 @@ export default function UploadImages({ value, onChange }: UploadImagesProps) {
               onChange={handleChange}
             />
 
-            <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
               <img src={uploadIcon} alt="" />
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
@@ -58,12 +58,12 @@ export default function UploadImages({ value, onChange }: UploadImagesProps) {
                   <img
                     src={URL.createObjectURL(file)}
                     alt={file.name}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    className="h-16 w-16 rounded-lg object-cover"
                   />
                   <button
                     type="button"
                     onClick={() => removeImage(index)}
-                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center"
+                    className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white"
                   >
                     ✕
                   </button>
@@ -71,12 +71,12 @@ export default function UploadImages({ value, onChange }: UploadImagesProps) {
               ))}
             </div>
 
-            <p className="text-[11px] text-text-secondary self-end">
+            <p className="self-end text-[11px] text-text-secondary">
               {value.length}/10
             </p>
           </div>
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,33 +1,33 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import disputesIcon from "@/assets/agentImages/icon-disputes.svg";
-import blackNairaIcon from "@/assets/agentImages/icon-black-naira.svg";
-import Activities from "./Activities";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import disputesIcon from "@/assets/agentImages/icon-disputes.svg"
+import blackNairaIcon from "@/assets/agentImages/icon-black-naira.svg"
+import Activities from "./Activities"
 
 export default function EscrowWallet() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="font-ssPro text-text-primary px-6">
+    <div className="px-6 font-ssPro text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Escrow Wallet
         </p>
       </div>
 
       {/* available balance */}
-      <div className="bg-[#F8B400] p-3 rounded-2xl space-y-4 mt-[25px]">
+      <div className="mt-[25px] space-y-4 rounded-2xl bg-[#F8B400] p-3">
         <div className="flex justify-between">
           <div className="space-y-2">
             <p className="text-[14px]">Available Balance</p>
             <div className="flex items-center">
               <img src={blackNairaIcon} alt="" />
-              <p className="font-raleway font-semibold text-[18px] tracking-[1px]">
+              <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
                 500,000
               </p>
             </div>
@@ -39,10 +39,10 @@ export default function EscrowWallet() {
           <p className="text-[14px] text-button-bg">See Wallet Balance</p>
         </div>
 
-        <div className="flex flex-col gap-2 justify-center items-center">
-          <button className="h-[45px] rounded-lg bg-bg-tertiary flex items-center justify-center w-full gap-2">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <button className="flex h-[45px] w-full items-center justify-center gap-2 rounded-lg bg-bg-tertiary">
             <img src={disputesIcon} alt="" />
-            <p className="text-[14px] font-raleway font-semibold tracking-[1px] text-button-bg">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
               See Disputes
             </p>
           </button>
@@ -54,5 +54,5 @@ export default function EscrowWallet() {
         <Activities />
       </section>
     </div>
-  );
+  )
 }

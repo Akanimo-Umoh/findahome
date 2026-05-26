@@ -1,14 +1,14 @@
-import { Link, useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import iconInfo from "@/assets/images/icon-wallet-info.svg";
-import iconNotification from "@/assets/images/icon-wallet-notification.svg";
-import iconFund from "@/assets/images/icon-wallet-fund.svg";
-import iconNaira from "@/assets/images/icon-wallet-naira.svg";
-import ActiveTransactions from "./ActiveTransactions";
-import RecentTransactions from "./RecentTransactions";
+import { Link, useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import iconInfo from "@/assets/images/icon-wallet-info.svg"
+import iconNotification from "@/assets/images/icon-wallet-notification.svg"
+import iconFund from "@/assets/images/icon-wallet-fund.svg"
+import iconNaira from "@/assets/images/icon-wallet-naira.svg"
+import ActiveTransactions from "./ActiveTransactions"
+import RecentTransactions from "./RecentTransactions"
 
 export default function Wallet() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   // const activeTransactions = [
   //   {
@@ -20,18 +20,18 @@ export default function Wallet() {
   // ];
 
   return (
-    <div className="font-ssPro text-text-primary px-6">
+    <div className="px-6 font-ssPro text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           My Wallet
         </p>
 
-        <div className="flex items-center justify-center gap-4 absolute right-0">
+        <div className="absolute right-0 flex items-center justify-center gap-4">
           <button>
             <img src={iconInfo} alt="info" />
           </button>
@@ -42,28 +42,28 @@ export default function Wallet() {
       </div>
 
       {/* balance section */}
-      <section className="mt-9.5 rounded-lg p-2 flex flex-col gap-4 bg-button-bg">
-        <div className="text-bg-tertiary flex flex-col gap-1">
+      <section className="mt-9.5 flex flex-col gap-4 rounded-lg bg-button-bg p-2">
+        <div className="flex flex-col gap-1 text-bg-tertiary">
           <p className="">Available Balance</p>
-          <p className="flex items-center font-raleway font-semibold text-[18px] tracking-[1px]">
+          <p className="flex items-center font-raleway text-[18px] font-semibold tracking-[1px]">
             <img src={iconNaira} alt="" />
             <span>18,000</span>
           </p>
           <p className="text-[12px] leading-4">Funds securely held in Escrow</p>
         </div>
 
-        <div className="flex flex-col gap-3 justify-center items-center">
+        <div className="flex flex-col items-center justify-center gap-3">
           <Link
             to="/fund-wallet"
-            className="flex items-center justify-center rounded-lg bg-button-disabled h-[45px] w-full cursor-pointer gap-2"
+            className="flex h-[45px] w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-button-disabled"
           >
             <img src={iconFund} alt="" />
-            <p className="text-button-bg font-raleway font-semibold tracking-[1px] text-[14px]">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
               Fund Wallet
             </p>
           </Link>
 
-          <p className="text-[14px] text-bg-tertiary underline cursor-pointer">
+          <p className="cursor-pointer text-[14px] text-bg-tertiary underline">
             See Disputes
           </p>
         </div>
@@ -79,5 +79,5 @@ export default function Wallet() {
         <RecentTransactions />
       </section>
     </div>
-  );
+  )
 }

@@ -1,1 +1,1 @@
-export { default as PropertyVisitDetails } from "./PropertyVisitDetails";
+export { default as PropertyVisitDetails } from "./PropertyVisitDetails"

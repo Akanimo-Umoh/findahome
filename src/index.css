@@ -158,7 +158,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-ssPro;
+    @apply bg-background font-ssPro text-foreground;
   }
 }
 
@@ -174,11 +174,11 @@
 }
 
 .input-ctn {
-  @apply w-full bg-white h-8 rounded-lg flex items-center justify-between px-2 text-[14px];
+  @apply flex h-8 w-full items-center justify-between rounded-lg bg-white px-2 text-[14px];
 }
 
 .filter-input {
-  @apply w-full bg-white h-8 rounded-xl flex items-center justify-between px-2 text-[14px] border border-text-disabled;
+  @apply flex h-8 w-full items-center justify-between rounded-xl border border-text-disabled bg-white px-2 text-[14px];
 }
 
 .hideScroll {
@@ -212,7 +212,7 @@
 }
 
 .button-style {
-  @apply bg-button-bg hover:bg-button-hover cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply cursor-pointer bg-button-bg hover:bg-button-hover disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 .chat-header {
@@ -248,19 +248,19 @@
 }
 
 .addPropType {
-  @apply text-[14px] w-full rounded-lg h-[45px] border border-text-secondary;
+  @apply h-[45px] w-full rounded-lg border border-text-secondary text-[14px];
 }
 
 .addPropTypeFeatures {
-  @apply text-[14px] w-full rounded-lg h-[29px] border border-text-secondary;
+  @apply h-[29px] w-full rounded-lg border border-text-secondary text-[14px];
 }
 
 .addBank {
-  @apply bg-button-sec px-2 h-[45px] w-full text-[14px] rounded-xl border-2 border-bg-accent;
+  @apply h-[45px] w-full rounded-xl border-2 border-bg-accent bg-button-sec px-2 text-[14px];
 }
 
 .ads-select {
-  @apply border-none outline-none shadow-none;
+  @apply border-none shadow-none outline-none;
 }
 
 .app-property-label {
@@ -275,7 +275,7 @@
 } */
 
 .step3-slider [data-slot="slider-thumb"] {
-  @apply bg-button-bg border-button-bg;
+  @apply border-button-bg bg-button-bg;
 }
 
 .manage-ad {

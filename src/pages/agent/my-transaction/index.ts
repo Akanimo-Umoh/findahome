@@ -1,1 +1,1 @@
-export { default as MyTransactions } from "./MyTransactions";
+export { default as MyTransactions } from "./MyTransactions"

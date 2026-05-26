@@ -1,28 +1,28 @@
-import successImg from "@/assets/images/img-pay-inspection-fee.png";
+import successImg from "@/assets/images/img-pay-inspection-fee.png"
 
 export default function PaymentSuccessful() {
   return (
-    <div className="fixed inset-0 z-50 modal-enter font-ssPro text-text-primary h-screen">
+    <div className="modal-enter fixed inset-0 z-50 h-screen font-ssPro text-text-primary">
       {/* modal */}
-      <div className="bg-black/40 h-full flex items-center justify-center">
-        <div className="text-text-primary py-10 flex flex-col items-center justify-center bg-white rounded-t-[24px] w-full absolute bottom-0">
+      <div className="flex h-full items-center justify-center bg-black/40">
+        <div className="absolute bottom-0 flex w-full flex-col items-center justify-center rounded-t-[24px] bg-white py-10 text-text-primary">
           <img src={successImg} alt="" />
 
-          <div className="flex flex-col items-center justify-center gap-2 mt-4 w-[317px]">
-            <p className="font-raleway font-medium tracking-[1px] text-[24px] text-center">
+          <div className="mt-4 flex w-[317px] flex-col items-center justify-center gap-2">
+            <p className="text-center font-raleway text-[24px] font-medium tracking-[1px]">
               Your agent has received your handover request
             </p>
-            <p className="text-[12px] leading-4 text-text-secondary text-center">
+            <p className="text-center text-[12px] leading-4 text-text-secondary">
               You will receive a notification for handover schedule
             </p>
           </div>
 
           {/* buttons */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style h-11.25 rounded-lg text-white w-[343px] mt-6.5">
+          <button className="button-style mt-6.5 h-11.25 w-[343px] rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             Go to dashboard
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

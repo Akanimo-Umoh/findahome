@@ -1,27 +1,27 @@
 // import google from "@/assets/images/icon-google.svg";
-import hide from "@/assets/images/icon-hide-password.svg";
-import show from "@/assets/images/icon-show-password.svg";
-import inputError from "@/assets/images/icon-email-error.svg";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import hide from "@/assets/images/icon-hide-password.svg"
+import show from "@/assets/images/icon-show-password.svg"
+import inputError from "@/assets/images/icon-email-error.svg"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   type RegisterFormData,
   RegisterFormSchema,
-} from "@/validation/auth/rules";
-import { signup as signupApi } from "@/services/auth.service";
-import { useState } from "react";
-import { AxiosError } from "axios";
-import { GoogleLogin } from "@react-oauth/google";
-import { useGoogleAuth } from "@/hooks/useGoogleAuth";
-import Loading from "@/components/Loading";
+} from "@/validation/auth/rules"
+import { signup as signupApi } from "@/services/auth.service"
+import { useState } from "react"
+import { AxiosError } from "axios"
+import { GoogleLogin } from "@react-oauth/google"
+import { useGoogleAuth } from "@/hooks/useGoogleAuth"
+import Loading from "@/components/Loading"
 
 export default function Signup() {
-  const { role } = useParams<{ role: "user" | "agent" }>();
-  const selectedRole = role ?? "user";
+  const { role } = useParams<{ role: "user" | "agent" }>()
+  const selectedRole = role ?? "user"
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   // use custom google auth hook
   const {
@@ -30,74 +30,74 @@ export default function Signup() {
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  } = useGoogleAuth(setApiError);
+  } = useGoogleAuth(setApiError)
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterFormData>({ resolver: zodResolver(RegisterFormSchema) });
+  } = useForm<RegisterFormData>({ resolver: zodResolver(RegisterFormSchema) })
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
       // clear previous errors
-      setApiError(null);
-      setGoogleApiError(null);
+      setApiError(null)
+      setGoogleApiError(null)
 
       // add the fixed role "buyer" to the payload
       const payload = {
         ...data,
         email: data.email.toLowerCase(),
         role: selectedRole,
-      };
+      }
 
-      console.log("Sending payload:", payload);
+      console.log("Sending payload:", payload)
 
-      await signupApi(payload);
+      await signupApi(payload)
 
       // redirect to verification page
       navigate("/verify-email", {
         state: { email: data.email, from: "signup" },
         replace: true,
-      });
+      })
     } catch (error) {
-      console.error("Full error:", error);
+      console.error("Full error:", error)
 
       if (error instanceof AxiosError) {
-        console.error("Response data:", error.response?.data);
+        console.error("Response data:", error.response?.data)
         const errorMessage =
-          error.response?.data?.message || "Signup failed. Please try again.";
-        setApiError(errorMessage);
+          error.response?.data?.message || "Signup failed. Please try again."
+        setApiError(errorMessage)
       } else {
-        setApiError("An unexpected error occurred. Please try again.");
+        setApiError("An unexpected error occurred. Please try again.")
       }
     }
-  };
+  }
 
   // Parse password errors from JSON string to array
   const passwordErrors = errors.password?.message
     ? (() => {
         try {
-          return JSON.parse(errors.password.message);
+          return JSON.parse(errors.password.message)
         } catch {
-          return [errors.password.message];
+          return [errors.password.message]
         }
       })()
-    : null;
+    : null
 
   if (isGoogleLoading) {
-    return <Loading />;
+    return <Loading />
   }
 
   return (
-    <div className="flex flex-col gap-6 font-ssPro w-full mx-6 md:my-5 md:mx-7.5 md:gap-10">
+    <div className="mx-6 flex w-full flex-col gap-6 font-ssPro md:mx-7.5 md:my-5 md:gap-10">
       <div className="flex flex-col items-center justify-center gap-1">
-        <p className="text-text-primary text-[18px] tracking-[1px] font-semibold font-raleway md:hidden">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary md:hidden">
           Create Your Account
         </p>
-        <p className="text-text-primary tracking-[1px] font-medium font-raleway hidden md:flex text-[28px]">
+        <p className="hidden font-raleway text-[28px] font-medium tracking-[1px] text-text-primary md:flex">
           Create Account
         </p>
         <p className="text-[14px] text-text-secondary md:text-[16px]">
@@ -113,7 +113,7 @@ export default function Signup() {
             <p className="text-text-primary">Continue with Google</p>
           </div> */}
 
-          <div className="w-full flex items-center justify-center">
+          <div className="flex w-full items-center justify-center">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleError}
@@ -135,7 +135,7 @@ export default function Signup() {
         {/* API Error Display */}
         {(apiError || googleApiError) && (
           <div
-            className="flex items-center gap-2 p-3 bg-[#FFF0F0] border border-state-error rounded-lg"
+            className="flex items-center gap-2 rounded-lg border border-state-error bg-[#FFF0F0] p-3"
             role="alert"
           >
             <img src={inputError} alt="" aria-hidden="true" />
@@ -158,7 +158,7 @@ export default function Signup() {
                   type="text"
                   id="name"
                   placeholder="Enter Full Name"
-                  className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] px-2 rounded-xl outline-none ${
+                  className={`h-[45px] w-full rounded-xl bg-white px-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                     errors.name
                       ? "border-2 border-state-error"
                       : "md:border-2 md:border-text-disabled"
@@ -190,7 +190,7 @@ export default function Signup() {
                   type="text"
                   id="email"
                   placeholder="Enter Email"
-                  className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] px-2 rounded-xl outline-none ${
+                  className={`h-[45px] w-full rounded-xl bg-white px-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                     errors.email
                       ? "border-2 border-state-error"
                       : "md:border-2 md:border-text-disabled"
@@ -224,7 +224,7 @@ export default function Signup() {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     placeholder="Enter Password"
-                    className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-[45px] pl-2 pr-10 rounded-xl outline-none ${
+                    className={`h-[45px] w-full rounded-xl bg-white pr-10 pl-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                       errors.password
                         ? "border-2 border-state-error"
                         : "md:border-2 md:border-text-disabled"
@@ -238,7 +238,7 @@ export default function Signup() {
 
                   <p
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"
+                    className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -257,7 +257,7 @@ export default function Signup() {
                       <img src={inputError} alt="" aria-hidden="true" />
                       <p className="text-state-error">Password must:</p>
                     </div>
-                    <ul className="list-disc list-inside ml-4 space-y-1">
+                    <ul className="ml-4 list-inside list-disc space-y-1">
                       {passwordErrors.map((err: string) => (
                         <li key={err} className="text-state-error">
                           {err}
@@ -269,11 +269,11 @@ export default function Signup() {
               </div>
             </div>
 
-            <div className="text-center space-y-2 md:space-y-6">
+            <div className="space-y-2 text-center md:space-y-6">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-sec-but h-[37px] w-full font-raleway text-component-primary font-semibold tracking-[1px] text-[14px] rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1e3aa8] transition-colors md:h-[45px] md:text-[16px]"
+                className="h-[37px] w-full cursor-pointer rounded-lg bg-sec-but font-raleway text-[14px] font-semibold tracking-[1px] text-component-primary transition-colors hover:bg-[#1e3aa8] disabled:cursor-not-allowed disabled:opacity-50 md:h-[45px] md:text-[16px]"
               >
                 {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
@@ -289,5 +289,5 @@ export default function Signup() {
         </form>
       </div>
     </div>
-  );
+  )
 }

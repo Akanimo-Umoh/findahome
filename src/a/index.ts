@@ -1,1 +1,1 @@
-export { default as Miscellaneous } from "./Miscellaneous";
+export { default as Miscellaneous } from "./Miscellaneous"

@@ -1,16 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import iconOptions from "@/assets/images/icon-chat-options.svg";
-import iconSearch from "@/assets/images/icon-messages-search.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import iconInspection from "@/assets/images/icon-chats-inspection-scheduled.svg";
-import iconAwaiting from "@/assets/images/icon-chats-awaiting-handover.svg";
-import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg";
-import iconCompleted from "@/assets/images/icon-chats-completed.svg";
-import imgMessages from "@/assets/images/img-chats-messages.png";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import iconOptions from "@/assets/images/icon-chat-options.svg"
+import iconSearch from "@/assets/images/icon-messages-search.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import iconInspection from "@/assets/images/icon-chats-inspection-scheduled.svg"
+import iconAwaiting from "@/assets/images/icon-chats-awaiting-handover.svg"
+import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg"
+import iconCompleted from "@/assets/images/icon-chats-completed.svg"
+import imgMessages from "@/assets/images/img-chats-messages.png"
 
 export default function AgentChats() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const messages = [
     {
@@ -73,10 +73,10 @@ export default function AgentChats() {
       status_color: "text-[#274AD0]",
       unread_message: "3",
     },
-  ];
+  ]
 
   return (
-    <div className="font-ssPro flex flex-col mb-10">
+    <div className="mb-10 flex flex-col font-ssPro">
       <header className="px-6">
         {/* header */}
         <div className="flex items-center justify-between">
@@ -84,7 +84,7 @@ export default function AgentChats() {
             <img src={goBack} alt="" className="" />
           </button>
 
-          <p className="text-[18px] font-raleway font-semibold">Messages</p>
+          <p className="font-raleway text-[18px] font-semibold">Messages</p>
 
           <button>
             <img src={iconOptions} alt="" />
@@ -92,10 +92,10 @@ export default function AgentChats() {
         </div>
 
         {/* search messages ctn */}
-        <div className="relative h-8 flex items-center mt-[27px]">
+        <div className="relative mt-[27px] flex h-8 items-center">
           <label
             htmlFor="search"
-            className="absolute left-1 top-1/2 -translate-y-1/2"
+            className="absolute top-1/2 left-1 -translate-y-1/2"
           >
             <img src={iconSearch} alt="" />
           </label>
@@ -104,35 +104,35 @@ export default function AgentChats() {
             type="search"
             id="search"
             placeholder="Search conversations"
-            className="flex-1 h-full outline outline-bg-accent rounded-xl px-1 pl-6 text-[12px] leading-4 placeholder:text-text-secondary"
+            className="h-full flex-1 rounded-xl px-1 pl-6 text-[12px] leading-4 outline outline-bg-accent placeholder:text-text-secondary"
           />
         </div>
       </header>
 
       <main className="">
         {/* chats ctn */}
-        <div className="mt-6 px-6 space-y-6">
+        <div className="mt-6 space-y-6 px-6">
           {messages.map((message, index) => (
             <div
               key={index}
-              className="border border-bg-accent p-2 rounded-xl flex justify-between gap-2"
+              className="flex justify-between gap-2 rounded-xl border border-bg-accent p-2"
             >
               <img
                 src={message.img}
                 alt=""
-                className="w-12.5 h-12.5 rounded-lg"
+                className="h-12.5 w-12.5 rounded-lg"
               />
 
-              <div className="flex flex-col w-full gap-2">
+              <div className="flex w-full flex-col gap-2">
                 <div className="flex justify-between gap-2">
                   <div className="flex-1">
-                    <p className="line-clamp-2 text-[12px] text-text-primary font-raleway font-semibold tracking-[1px]">
+                    <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px] text-text-primary">
                       {message.title}
                     </p>
                     <p className="text-[12px] leading-4 text-text-secondary">
                       Agent: {message.agent}
                     </p>
-                    <p className="line-clamp-1 text-text-secondary text-[12px] leading-4">
+                    <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                       {message.last_message}
                     </p>
                   </div>
@@ -143,7 +143,7 @@ export default function AgentChats() {
 
                 <div className="flex items-center gap-[61px]">
                   <div
-                    className={`${message.status_bg} rounded-2xl px-2 py-1 flex items-center justify-center gap-1`}
+                    className={`${message.status_bg} flex items-center justify-center gap-1 rounded-2xl px-2 py-1`}
                   >
                     <img src={message.current_status_icon} alt="" />
                     <p
@@ -152,7 +152,7 @@ export default function AgentChats() {
                       {message.current_status}
                     </p>
                   </div>
-                  <p className="text-[10px] text-white w-3.75 h-3.75 rounded-full bg-[#149D18] flex items-center justify-center">
+                  <p className="flex h-3.75 w-3.75 items-center justify-center rounded-full bg-[#149D18] text-[10px] text-white">
                     1
                   </p>
                 </div>
@@ -162,11 +162,11 @@ export default function AgentChats() {
         </div>
       </main>
 
-      <div className="flex flex-col gap-5 h-full items-center justify-center hidden">
-        <img src={imgMessages} alt="" className="w-38 h-30.5 -mt-18" />
+      <div className="flex hidden h-full flex-col items-center justify-center gap-5">
+        <img src={imgMessages} alt="" className="-mt-18 h-30.5 w-38" />
 
-        <div className="flex flex-col items-center justify-center gap-1 w-56.5 text-center">
-          <p className="font-raleway txt-[14px] tracking-[1px] text-text-primary font-semibold">
+        <div className="flex w-56.5 flex-col items-center justify-center gap-1 text-center">
+          <p className="txt-[14px] font-raleway font-semibold tracking-[1px] text-text-primary">
             No active chat yet.
           </p>
           <p className="text-[12px] leading-4 text-text-secondary">
@@ -175,5 +175,5 @@ export default function AgentChats() {
         </div>
       </div>
     </div>
-  );
+  )
 }

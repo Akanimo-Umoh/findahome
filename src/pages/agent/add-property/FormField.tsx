@@ -1,10 +1,10 @@
 type FormFieldProps = {
-  label: string;
-  htmlFor?: string;
-  error?: string;
-  className?: string;
-  children: React.ReactNode;
-};
+  label: string
+  htmlFor?: string
+  error?: string
+  className?: string
+  children: React.ReactNode
+}
 
 export default function FormField({
   label,
@@ -19,9 +19,7 @@ export default function FormField({
         {label}
       </label>
       {children}
-      {error && (
-        <p className="text-red-500 text-[11px] leading-4">{error}</p>
-      )}
+      {error && <p className="text-[11px] leading-4 text-red-500">{error}</p>}
     </div>
-  );
+  )
 }

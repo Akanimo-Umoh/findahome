@@ -1,26 +1,26 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import nairaIcon from "@/assets/images/icon-chat-naira.svg";
-import gmailIcon from "@/assets/images/icon-gmail.svg";
-import homeIcon from "@/assets/images/icon-escrow-dashboard.svg";
-import downloadIcon from "@/assets/images/icon-white-download.svg";
-import whatsappIcon from "@/assets/images/icon-whatsapp.svg";
-import PartiesInvolved from "./PartiesInvolved";
-import Timeline from "./Timeline";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import nairaIcon from "@/assets/images/icon-chat-naira.svg"
+import gmailIcon from "@/assets/images/icon-gmail.svg"
+import homeIcon from "@/assets/images/icon-escrow-dashboard.svg"
+import downloadIcon from "@/assets/images/icon-white-download.svg"
+import whatsappIcon from "@/assets/images/icon-whatsapp.svg"
+import PartiesInvolved from "./PartiesInvolved"
+import Timeline from "./Timeline"
 
 export default function TransactionReceipt() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary px-6">
+    <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Transaction Receipt
         </p>
       </div>
@@ -31,18 +31,18 @@ export default function TransactionReceipt() {
           <img
             src={propertyImg}
             alt=""
-            className="w-15 h-15 rounded-lg object-cover"
+            className="h-15 w-15 rounded-lg object-cover"
           />
 
           <div>
-            <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
               Luxury 4 Bed-room Apartment
             </p>
 
-            <div className="text-[12px] leading-4 text-text-secondary flex items-center">
+            <div className="flex items-center text-[12px] leading-4 text-text-secondary">
               <p className="">Lekki Phase 1, Lagos.</p>
               <p className="flex items-center">
-                <img src={nairaIcon} alt="" className="w-4 h-4" />
+                <img src={nairaIcon} alt="" className="h-4 w-4" />
                 <span>3M/yr</span>
               </p>
             </div>
@@ -67,13 +67,13 @@ export default function TransactionReceipt() {
         <div className="mt-4 space-y-2">
           <p>Share Receipt</p>
 
-          <div className="rounded-lg border border-bg-accent py-4 px-2 flex items-center justify-center gap-6">
-            <div className="flex items-center border border-bg-accent rounded-xl p-2 gap-0.5 w-[85px]">
+          <div className="flex items-center justify-center gap-6 rounded-lg border border-bg-accent px-2 py-4">
+            <div className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2">
               <img src={gmailIcon} alt="" />
               <p className="text-[12px] leading-4">Email</p>
             </div>
 
-            <div className="flex items-center border border-bg-accent rounded-xl p-2 gap-0.5 w-[85px]">
+            <div className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2">
               <img src={whatsappIcon} alt="" />
               <p className="text-[12px] leading-4">Whatsapp</p>
             </div>
@@ -81,25 +81,25 @@ export default function TransactionReceipt() {
         </div>
 
         {/* links */}
-        <div className="mt-8 space-y-3 mb-10">
+        <div className="mt-8 mb-10 space-y-3">
           <div className="flex flex-col items-center justify-center gap-3">
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white flex items-center justify-center gap-2">
+            <button className="button-style flex h-[45px] w-full items-center justify-center gap-2 rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               <img src={downloadIcon} alt="" />
               <p>Download Receipt(PDF)</p>
             </button>
 
-            <button className="font-raleway font-semibold text-[14px] tracking-[1px] bg-button-disabled border border-text-secondary h-[45px] w-full rounded-lg flex items-center justify-center gap-2">
+            <button className="flex h-[45px] w-full items-center justify-center gap-2 rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
               <img src={homeIcon} alt="" />
               <p>Go to Dashboard</p>
             </button>
           </div>
 
-          <p className="text-[12px] leading-4 text-text-secondary text-center">
+          <p className="text-center text-[12px] leading-4 text-text-secondary">
             Having issues with agent?&nbsp;
             <span className="text-button-bg">Open a dispute</span>
           </p>
         </div>
       </main>
     </div>
-  );
+  )
 }

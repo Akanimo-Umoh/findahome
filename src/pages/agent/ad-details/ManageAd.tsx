@@ -1,5 +1,5 @@
-import pauseIcon from "@/assets/agentImages/icon-pause-ad.svg";
-import editIcon from "@/assets/agentImages/icon-edit-ad.svg";
+import pauseIcon from "@/assets/agentImages/icon-pause-ad.svg"
+import editIcon from "@/assets/agentImages/icon-edit-ad.svg"
 
 export default function ManageAd() {
   return (
@@ -7,8 +7,8 @@ export default function ManageAd() {
       <p>Manage Ad</p>
 
       <div className="mt-2 grid grid-cols-3 gap-5">
-        <div className="flex flex-col items-center justify-center gap-1 py-3 bg-button-sec manage-ad">
-          <div className="w-6 h-6 bg-[#F8B400] rounded-lg flex items-center justify-center">
+        <div className="manage-ad flex flex-col items-center justify-center gap-1 bg-button-sec py-3">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#F8B400]">
             <img src={pauseIcon} alt="" />
           </div>
 
@@ -17,8 +17,8 @@ export default function ManageAd() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-1 py-3 bg-button-sec manage-ad">
-          <div className="w-6 h-6 bg-[#149D18] rounded-lg flex items-center justify-center">
+        <div className="manage-ad flex flex-col items-center justify-center gap-1 bg-button-sec py-3">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#149D18]">
             <img src={editIcon} alt="" />
           </div>
 
@@ -27,8 +27,8 @@ export default function ManageAd() {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-1 py-3 bg-button-sec manage-ad">
-          <div className="w-6 h-6 bg-[#4F95FF] rounded-lg flex items-center justify-center">
+        <div className="manage-ad flex flex-col items-center justify-center gap-1 bg-button-sec py-3">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#4F95FF]">
             <img src={pauseIcon} alt="" />
           </div>
 
@@ -38,5 +38,5 @@ export default function ManageAd() {
         </div>
       </div>
     </div>
-  );
+  )
 }

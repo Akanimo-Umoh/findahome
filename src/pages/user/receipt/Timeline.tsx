@@ -1,4 +1,4 @@
-import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg";
+import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg"
 
 export default function Timeline() {
   const timelines = [
@@ -18,7 +18,7 @@ export default function Timeline() {
       title: "Funds Released",
       date: "30th Oct, 2025",
     },
-  ];
+  ]
 
   return (
     <div className="flex flex-col gap-2">
@@ -27,7 +27,7 @@ export default function Timeline() {
       <div className="flex flex-col gap-2">
         {timelines.map((timeline, index) => (
           <div key={index} className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -41,5 +41,5 @@ export default function Timeline() {
         ))}
       </div>
     </div>
-  );
+  )
 }

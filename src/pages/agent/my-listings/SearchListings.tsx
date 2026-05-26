@@ -1,5 +1,5 @@
-import searchIcon from "@/assets/agentImages/icon-search.svg";
-import filterIcon from "@/assets/agentImages/icon-filter.svg";
+import searchIcon from "@/assets/agentImages/icon-search.svg"
+import filterIcon from "@/assets/agentImages/icon-filter.svg"
 
 export default function SearchListings() {
   return (
@@ -14,7 +14,7 @@ export default function SearchListings() {
           name=""
           id="search"
           placeholder="Search Listings"
-          className="border border-bg-accent p-2 pl-10 pr-8 w-full text-[12px] leading-4 outline-none rounded-lg"
+          className="w-full rounded-lg border border-bg-accent p-2 pr-8 pl-10 text-[12px] leading-4 outline-none"
         />
 
         <button className="absolute right-2">
@@ -22,5 +22,5 @@ export default function SearchListings() {
         </button>
       </div>
     </div>
-  );
+  )
 }

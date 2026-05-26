@@ -1,32 +1,32 @@
-import { useNavigate } from "react-router-dom";
-import blueNaira from "@/assets/images/icon-naira.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import goBack from "@/assets/images/icon-back.svg";
-import iconNotification from "@/assets/images/icon-notification.svg";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import greyNaira from "@/assets/images/icon-chat-naira.svg";
-import blackNaira from "@/assets/images/icon-black-naira.svg";
-import greyInfo from "@/assets/images/icon-grey-info.svg";
-import downloadIcon from "@/assets/images/icon-download.svg";
-import cancelIcon from "@/assets/images/icon-cancel-payment.svg";
+import { useNavigate } from "react-router-dom"
+import blueNaira from "@/assets/images/icon-naira.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import goBack from "@/assets/images/icon-back.svg"
+import iconNotification from "@/assets/images/icon-notification.svg"
+import agentAvatar from "@/assets/images/agentAvatar.jpg"
+import greyNaira from "@/assets/images/icon-chat-naira.svg"
+import blackNaira from "@/assets/images/icon-black-naira.svg"
+import greyInfo from "@/assets/images/icon-grey-info.svg"
+import downloadIcon from "@/assets/images/icon-download.svg"
+import cancelIcon from "@/assets/images/icon-cancel-payment.svg"
 // import PropertyPaymentSuccessful from "./PropertyPaymentSuccessful";
 
 export default function PropertyPayment() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary px-6">
+    <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Property Payment
         </p>
 
-        <div className="flex items-center justify-center gap-4 absolute right-0">
+        <div className="absolute right-0 flex items-center justify-center gap-4">
           <button>
             <img src={iconNotification} alt="notifications" />
           </button>
@@ -34,33 +34,33 @@ export default function PropertyPayment() {
       </div>
 
       {/* property details */}
-      <div className="mt-4 flex items-center rounded-xl gap-2 border border-bg-accent p-2">
+      <div className="mt-4 flex items-center gap-2 rounded-xl border border-bg-accent p-2">
         <img
           src={propertyImg}
           alt=""
-          className="w-15 h-15 rounded-lg object-cover"
+          className="h-15 w-15 rounded-lg object-cover"
         />
 
         <div className="flex flex-col justify-center">
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] line-clamp-2">
+          <p className="line-clamp-2 font-raleway text-[14px] font-semibold tracking-[1px]">
             Luxury 4 Bed-room Apartment
           </p>
-          <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+          <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
             Lekki Phase 1, Lagos.
           </p>
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg flex items-center">
-            <img src={blueNaira} alt="" className="w-4 h-4" />
+          <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
+            <img src={blueNaira} alt="" className="h-4 w-4" />
             <span>3M/yr</span>
           </p>
         </div>
       </div>
 
       {/* agent details */}
-      <div className="flex items-center gap-2 mt-2">
+      <div className="mt-2 flex items-center gap-2">
         <img
           src={agentAvatar}
           alt=""
-          className="w-7.5 h-7.5 object-cover rounded-full"
+          className="h-7.5 w-7.5 rounded-full object-cover"
         />
 
         <div>
@@ -70,7 +70,7 @@ export default function PropertyPayment() {
       </div>
 
       {/* payment breakdown */}
-      <div className="rounded-xl border border-bg-accent p-2 flex flex-col gap-2 mt-6.5">
+      <div className="mt-6.5 flex flex-col gap-2 rounded-xl border border-bg-accent p-2">
         <p>Payment Breakdown</p>
 
         <div className="flex flex-col gap-2">
@@ -79,7 +79,7 @@ export default function PropertyPayment() {
             <p className="text-[12px] leading-4 text-text-secondary">
               Property Cost
             </p>
-            <p className="text-[12px] leading-4 text-text-secondary flex items-center">
+            <p className="flex items-center text-[12px] leading-4 text-text-secondary">
               <img src={greyNaira} alt="" />
               <span>3M/yr</span>
             </p>
@@ -91,7 +91,7 @@ export default function PropertyPayment() {
               <span>Escrow fee</span>
               <img src={greyInfo} alt="" />
             </p>
-            <p className="text-[12px] leading-4 text-text-secondary flex items-center">
+            <p className="flex items-center text-[12px] leading-4 text-text-secondary">
               <img src={greyNaira} alt="" />
               <span>60,000</span>
             </p>
@@ -102,7 +102,7 @@ export default function PropertyPayment() {
             <p className="text-[14px] font-semibold tracking-[1px]">
               Total Fee
             </p>
-            <p className="text-[14px] font-raleway font-semibold tracking-[1px] flex items-center">
+            <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px]">
               <img src={blackNaira} alt="" />
               <span>3,060,000</span>
             </p>
@@ -117,19 +117,19 @@ export default function PropertyPayment() {
         <div className="flex flex-col">
           <label
             htmlFor="payViaEscrow"
-            className="px-2 py-3 bg-bg-accent border border-button-bg rounded-xl flex gap-2 items-center"
+            className="flex items-center gap-2 rounded-xl border border-button-bg bg-bg-accent px-2 py-3"
           >
             <input
               type="radio"
               name="paymentMethod"
               id="payViaEscrow"
-              className="w-5 h-5"
+              className="h-5 w-5"
             />
 
             <p>Pay from Escrow Wallet</p>
           </label>
 
-          <div className="text-text-secondary text-[12px] leading-4 flex items-center mt-1">
+          <div className="mt-1 flex items-center text-[12px] leading-4 text-text-secondary">
             <p>Available balance:&nbsp;</p>
             <p className="flex items-center">
               <img src={greyNaira} alt="" />
@@ -139,13 +139,13 @@ export default function PropertyPayment() {
 
           <label
             htmlFor="fundWallet"
-            className="px-2 py-3 bg-bg-accent border border-button-bg rounded-xl flex gap-2 items-center mt-2"
+            className="mt-2 flex items-center gap-2 rounded-xl border border-button-bg bg-bg-accent px-2 py-3"
           >
             <input
               type="radio"
               name="paymentMethod"
               id="fundWallet"
-              className="w-5 h-5"
+              className="h-5 w-5"
             />
 
             <p>Fund Wallet</p>
@@ -154,11 +154,11 @@ export default function PropertyPayment() {
       </div>
 
       {/* legal documentation */}
-      <div className="mt-6.5 rounded-xl p-2 border border-bg-accent flex flex-col gap-2">
+      <div className="mt-6.5 flex flex-col gap-2 rounded-xl border border-bg-accent p-2">
         <div className="flex flex-col gap-2">
           <p className="text-black">Legal Documentation</p>
 
-          <div className="bg-bg-accent p-2 rounded-lg flex flex-col gap-1">
+          <div className="flex flex-col gap-1 rounded-lg bg-bg-accent p-2">
             <p className="text-[14px]">Property Legal Summary</p>
 
             <div className="text-[12px] leading-4 text-text-secondary">
@@ -179,7 +179,7 @@ export default function PropertyPayment() {
         </div>
 
         <div className="flex items-center gap-3">
-          <input type="checkbox" name="" id="legal" className="w-4 h-4" />
+          <input type="checkbox" name="" id="legal" className="h-4 w-4" />
 
           <label
             htmlFor="legal"
@@ -190,7 +190,7 @@ export default function PropertyPayment() {
         </div>
       </div>
 
-      <div className="flex items-center gap-1 mt-2">
+      <div className="mt-2 flex items-center gap-1">
         <img src={downloadIcon} alt="" />
         <p className="text-[12px] leading-4 text-button-bg">
           Download Full Legal Document
@@ -198,19 +198,19 @@ export default function PropertyPayment() {
       </div>
 
       {/* confirm payment */}
-      <div className="mt-11 flex flex-col gap-2 mb-10">
+      <div className="mt-11 mb-10 flex flex-col gap-2">
         <div className="flex flex-col gap-3">
-          <button className="h-[45px] font-raleway font-semibold text-[14px] tracking-[1px] bg-[#E2EEFF] rounded-lg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-[#E2EEFF] font-raleway text-[14px] font-semibold tracking-[1px]">
             Confirm and pay N3,060,000
           </button>
 
-          <button className="h-[45px] bg-button-disabled rounded-lg border border-text-secondary w-full flex items-center justify-center text-[14px] tracking-[1px] font-raleway font-semibold">
+          <button className="flex h-[45px] w-full items-center justify-center rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
             <img src={cancelIcon} alt="" />
             <span>Cancel Payment</span>
           </button>
         </div>
 
-        <p className="text-[12px] leading-4 text-text-secondary text-center">
+        <p className="text-center text-[12px] leading-4 text-text-secondary">
           Having issues with agent?{" "}
           <span className="text-button-bg">Open a dispute</span>
         </p>
@@ -219,5 +219,5 @@ export default function PropertyPayment() {
       {/* if the payment is successful, show this successful component */}
       {/* <PropertyPaymentSuccessful /> */}
     </div>
-  );
+  )
 }

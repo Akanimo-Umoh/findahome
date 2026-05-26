@@ -1,30 +1,30 @@
-import uploadIcon from "@/assets/agentImages/icon-upload-document.svg";
+import uploadIcon from "@/assets/agentImages/icon-upload-document.svg"
 
 type UploadDocumentsProps = {
-  value: File[];
-  onChange: (files: File[]) => void;
-};
+  value: File[]
+  onChange: (files: File[]) => void
+}
 
 export default function UploadDocuments({
   value,
   onChange,
 }: UploadDocumentsProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selected = Array.from(e.target.files ?? []);
-    const merged = [...value, ...selected].slice(0, 3);
-    onChange(merged);
-  };
+    const selected = Array.from(e.target.files ?? [])
+    const merged = [...value, ...selected].slice(0, 3)
+    onChange(merged)
+  }
 
   const removeDocument = (index: number) => {
-    onChange(value.filter((_, i) => i !== index));
-  };
+    onChange(value.filter((_, i) => i !== index))
+  }
 
   return (
     <div>
       <div className="flex flex-col justify-center gap-2">
         <label
           htmlFor="upload-documents"
-          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary cursor-pointer"
+          className="cursor-pointer rounded-lg border border-dashed border-text-secondary bg-button-disabled"
         >
           <div className="flex flex-col items-center justify-center gap-2 rounded-lg py-6">
             <input
@@ -35,7 +35,7 @@ export default function UploadDocuments({
               className="hidden"
               onChange={handleChange}
             />
-            <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
               <img src={uploadIcon} alt="" />
             </div>
 
@@ -56,15 +56,15 @@ export default function UploadDocuments({
             {value.map((file, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between px-3 py-2 bg-bg-accent rounded-lg"
+                className="flex items-center justify-between rounded-lg bg-bg-accent px-3 py-2"
               >
-                <p className="text-[12px] text-text-primary line-clamp-1 flex-1">
+                <p className="line-clamp-1 flex-1 text-[12px] text-text-primary">
                   {file.name}
                 </p>
                 <button
                   type="button"
                   onClick={() => removeDocument(index)}
-                  className="text-red-500 text-[11px] ml-2 shrink-0"
+                  className="ml-2 shrink-0 text-[11px] text-red-500"
                 >
                   Remove
                 </button>
@@ -77,5 +77,5 @@ export default function UploadDocuments({
         )}
       </div>
     </div>
-  );
+  )
 }

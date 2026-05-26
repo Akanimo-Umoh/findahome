@@ -98,29 +98,29 @@
 //   );
 // }
 
-import typeIcon from "@/assets/agentImages/icon-property-type.svg";
-import locationIcon from "@/assets/agentImages/icon-blue-location.svg";
-import bathIcon from "@/assets/agentImages/icon-blue-bath.svg";
-import kitchenIcon from "@/assets/agentImages/icon-blue-kitchen.svg";
-import bedIcon from "@/assets/agentImages/icon-blue-bed.svg";
+import typeIcon from "@/assets/agentImages/icon-property-type.svg"
+import locationIcon from "@/assets/agentImages/icon-blue-location.svg"
+import bathIcon from "@/assets/agentImages/icon-blue-bath.svg"
+import kitchenIcon from "@/assets/agentImages/icon-blue-kitchen.svg"
+import bedIcon from "@/assets/agentImages/icon-blue-bed.svg"
 
 type DetailsProps = {
   property: {
-    propertyType: "apartment" | "land";
-    address?: string;
-    bedroom?: number;
-    bathroom?: number;
-    kitchen?: number;
-    landSize?: string;
-    landUnit?: string;
-    serviceCharge?: number;
-    nearbyPlaces?: string[];
-    description?: string;
-  };
-};
+    propertyType: "apartment" | "land"
+    address?: string
+    bedroom?: number
+    bathroom?: number
+    kitchen?: number
+    landSize?: string
+    landUnit?: string
+    serviceCharge?: number
+    nearbyPlaces?: string[]
+    description?: string
+  }
+}
 
 export default function Details({ property }: DetailsProps) {
-  const isLand = property.propertyType === "land";
+  const isLand = property.propertyType === "land"
 
   return (
     <div>
@@ -128,7 +128,7 @@ export default function Details({ property }: DetailsProps) {
       {!isLand && (
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           <div className="flex items-center gap-1">
-            <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+            <div className="shrink-0 rounded-full bg-bg-accent p-2">
               <img src={typeIcon} alt="" />
             </div>
             <p className="text-[14px] text-text-secondary">
@@ -138,7 +138,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.address && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={locationIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -149,7 +149,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.bathroom != null && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={bathIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -160,7 +160,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.kitchen != null && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={kitchenIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -171,7 +171,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.bedroom != null && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={bedIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -186,7 +186,7 @@ export default function Details({ property }: DetailsProps) {
       {isLand && (
         <div className="flex flex-wrap gap-x-4 gap-y-2">
           <div className="flex items-center gap-1">
-            <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+            <div className="shrink-0 rounded-full bg-bg-accent p-2">
               <img src={typeIcon} alt="" />
             </div>
             <p className="text-[14px] text-text-secondary">
@@ -196,7 +196,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.address && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={locationIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -207,7 +207,7 @@ export default function Details({ property }: DetailsProps) {
 
           {property.landSize && (
             <div className="flex items-center gap-1">
-              <div className="p-2 shrink-0 bg-bg-accent rounded-full">
+              <div className="shrink-0 rounded-full bg-bg-accent p-2">
                 <img src={typeIcon} alt="" />
               </div>
               <p className="text-[14px] text-text-secondary">
@@ -232,7 +232,7 @@ export default function Details({ property }: DetailsProps) {
 
       {/* landmarks */}
       {property.nearbyPlaces && property.nearbyPlaces.length > 0 && (
-        <div className="text-[12px] tracking-[1px] text-text-secondary space-y-2 mt-4">
+        <div className="mt-4 space-y-2 text-[12px] tracking-[1px] text-text-secondary">
           {property.nearbyPlaces.map((place, index) => (
             <p key={index}>{place}</p>
           ))}
@@ -242,12 +242,12 @@ export default function Details({ property }: DetailsProps) {
       {/* description */}
       {property.description && (
         <div className="mt-6 space-y-2">
-          <p className="font-raleway font-medium text-[14px]">Description</p>
+          <p className="font-raleway text-[14px] font-medium">Description</p>
           <p className="text-[12px] text-text-secondary">
             {property.description}
           </p>
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,3 +1,3 @@
 export default function AdminLayout() {
-  return <div>AdminLayout</div>;
+  return <div>AdminLayout</div>
 }

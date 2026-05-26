@@ -1,1 +1,1 @@
-export { default as ConfirmHandover } from "./ConfirmHandover";
+export { default as ConfirmHandover } from "./ConfirmHandover"

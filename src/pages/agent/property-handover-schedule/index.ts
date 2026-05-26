@@ -1,1 +1,1 @@
-export { default as PropertyHandoverSchedule } from "./PropertyHandoverSchedule";
+export { default as PropertyHandoverSchedule } from "./PropertyHandoverSchedule"

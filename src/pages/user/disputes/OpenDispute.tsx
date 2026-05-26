@@ -1,55 +1,55 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import nairaIcon from "@/assets/images/icon-naira.svg";
-import warningIcon from "@/assets/images/icon-warning.svg";
-import UploadFile from "./UploadFile";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import nairaIcon from "@/assets/images/icon-naira.svg"
+import warningIcon from "@/assets/images/icon-warning.svg"
+import UploadFile from "./UploadFile"
 
 export default function OpenDispute() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary mb-10 px-6">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Open Dispute
         </p>
       </div>
 
       <main className="mt-6">
         {/* property details */}
-        <div className="flex items-center rounded-xl border border-bg-accent p-2 gap-3">
+        <div className="flex items-center gap-3 rounded-xl border border-bg-accent p-2">
           <img
             src={propertyImg}
             alt=""
-            className="w-15 h-15 object-cover rounded-lg"
+            className="h-15 w-15 rounded-lg object-cover"
           />
 
           <div className="space-y-2">
             <div className="space-y-1">
-              <p className="font-raleway font-semibold text-[12px] tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 3 Bed-room Apartment, Lekki phase 1
               </p>
               <div className="flex items-center gap-1">
-                <div className="flex items-center w-fit">
-                  <img src={nairaIcon} alt="" className="w-4 h-4" />
-                  <p className="text-button-bg font-raleway font-semibold tracking-[1px] text-[14px]">
+                <div className="flex w-fit items-center">
+                  <img src={nairaIcon} alt="" className="h-4 w-4" />
+                  <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
                     3,000,000
                   </p>
                 </div>
-                <p className="text-[12px] leading-4 text-text-secondary flex-1">
+                <p className="flex-1 text-[12px] leading-4 text-text-secondary">
                   Buyer: Victoria Ntekim
                 </p>
               </div>
             </div>
 
-            <div className="text-[12px] leading-4 text-text-secondary space-y-1">
-              <p className="text-bg-tertiary bg-[#F39C12] rounded-2xl py-1 px-2 w-fit">
+            <div className="space-y-1 text-[12px] leading-4 text-text-secondary">
+              <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-bg-tertiary">
                 In Escrow
               </p>
               <p className="">Ref ID: FH-TRX-002834</p>
@@ -60,7 +60,7 @@ export default function OpenDispute() {
 
         {/* notice */}
         <div className="mt-8 flex items-center gap-2">
-          <div className="w-7.5 h-7.5 bg-[#D0272733] rounded-lg flex items-center justify-center shrink-0">
+          <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#D0272733]">
             <img src={warningIcon} alt="" />
           </div>
           <p className="text-[12px] leading-4">
@@ -72,7 +72,7 @@ export default function OpenDispute() {
         {/* dispute form */}
         <form action="" className="mt-6">
           <div className="flex flex-col justify-center gap-2">
-            <label htmlFor="issue" className="text-[14px] w-fit">
+            <label htmlFor="issue" className="w-fit text-[14px]">
               Issue Category
             </label>
 
@@ -80,17 +80,17 @@ export default function OpenDispute() {
               type="text"
               id="issue"
               placeholder="Select Category"
-              className="w-full bg-button-disabled h-10 px-2 rounded-lg border border-button-disabled"
+              className="h-10 w-full rounded-lg border border-button-disabled bg-button-disabled px-2"
             />
           </div>
 
           {/* description */}
-          <div className="flex flex-col justify-center gap-2 mt-4">
-            <label htmlFor="description" className="text-[14px] w-fit">
+          <div className="mt-4 flex flex-col justify-center gap-2">
+            <label htmlFor="description" className="w-fit text-[14px]">
               Description
             </label>
 
-            <div className="bg-button-disabled py-5.5 px-2.5 rounded-lg h-[133px]">
+            <div className="h-[133px] rounded-lg bg-button-disabled px-2.5 py-5.5">
               <textarea
                 name="description"
                 id="description"
@@ -107,12 +107,12 @@ export default function OpenDispute() {
           </div>
 
           {/* submit button */}
-          <div className="space-y-2 mt-8">
-            <button className="rounded-lg button-style w-full h-[45px] text-white disabled:text-text-primary font-raleway font-semibold text-[14px] tracking-[1px] disabled:border disabled:border-text-secondary">
+          <div className="mt-8 space-y-2">
+            <button className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white disabled:border disabled:border-text-secondary disabled:text-text-primary">
               Submit Dispute
             </button>
 
-            <p className="text-[12px] leading-4 text-text-secondary text-center">
+            <p className="text-center text-[12px] leading-4 text-text-secondary">
               Our team will review your dispute and respond within 2-3 business
               days.
             </p>
@@ -120,5 +120,5 @@ export default function OpenDispute() {
         </form>
       </main>
     </div>
-  );
+  )
 }

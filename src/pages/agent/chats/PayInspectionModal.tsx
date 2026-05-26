@@ -1,18 +1,18 @@
-import propertyImg from "@/assets/images/property.jpg";
-import iconOptions from "@/assets/images/icon-chat-options.svg";
-import { useEffect } from "react";
-import nairaIcon from "@/assets/images/icon-chat-naira.svg";
-import blueNairaIcon from "@/assets/images/naira.svg";
-import escrowIcon from "@/assets/images/icon-pay-inspection-fee.svg";
-import infoIcon from "@/assets/images/icon-pay-inspection-info.svg";
-import { Link } from "react-router-dom";
+import propertyImg from "@/assets/images/property.jpg"
+import iconOptions from "@/assets/images/icon-chat-options.svg"
+import { useEffect } from "react"
+import nairaIcon from "@/assets/images/icon-chat-naira.svg"
+import blueNairaIcon from "@/assets/images/naira.svg"
+import escrowIcon from "@/assets/images/icon-pay-inspection-fee.svg"
+import infoIcon from "@/assets/images/icon-pay-inspection-info.svg"
+import { Link } from "react-router-dom"
 
 // import paymentError from "@/assets/images/icon-pay-inspection-fee-error.svg";
 
 type PayInspectionProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+  isOpen: boolean
+  onClose: () => void
+}
 
 export default function PayInspectionModal({
   isOpen,
@@ -20,26 +20,26 @@ export default function PayInspectionModal({
 }: PayInspectionProps) {
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = ""
     }
 
     return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+      document.body.style.overflow = ""
+    }
+  }, [isOpen])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 modal-enter font-ssPro">
+    <div className="modal-enter fixed inset-0 z-50 font-ssPro">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
       {/* modal */}
-      <div className="absolute bottom-0 left-0 right-0 bg-white pt-[50px] px-6 rounded-t-[24px]">
-        <div className="flex items-center justify-center relative">
-          <p className="text-[18px] font-raleway font-semibold tracking-[1px] text-text-primary">
+      <div className="absolute right-0 bottom-0 left-0 rounded-t-[24px] bg-white px-6 pt-[50px]">
+        <div className="relative flex items-center justify-center">
+          <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary">
             Pay Inspection Fee
           </p>
 
@@ -49,15 +49,15 @@ export default function PayInspectionModal({
         </div>
 
         {/* wallet balance */}
-        <div className="mt-[23px] border p-2 border-bg-accent rounded-xl flex items-center gap-2">
-          <div className="w-10 h-10 rounded-full bg-bg-accent flex items-center justify-center">
+        <div className="mt-[23px] flex items-center gap-2 rounded-xl border border-bg-accent p-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-accent">
             <img src={escrowIcon} alt="" />
           </div>
 
           <div className="flex flex-col gap-1">
             <p className="text-text-secondary">Escrow Wallet Balance</p>
-            <p className="text-[18px] font-bold font-raleway tracking-[1px] text-button-bg flex items-center">
-              <img src={blueNairaIcon} alt="" className="w-6 h-6" />
+            <p className="flex items-center font-raleway text-[18px] font-bold tracking-[1px] text-button-bg">
+              <img src={blueNairaIcon} alt="" className="h-6 w-6" />
               <span>18,000</span>
             </p>
           </div>
@@ -66,45 +66,45 @@ export default function PayInspectionModal({
         {/* details ctn */}
         <div className="mt-8 space-y-2">
           {/* property details */}
-          <div className="p-2 border border-bg-accent rounded-xl flex gap-2 items-center">
+          <div className="flex items-center gap-2 rounded-xl border border-bg-accent p-2">
             <img
               src={propertyImg}
               alt=""
-              className="w-15 h-15 object-cover rounded-lg"
+              className="h-15 w-15 rounded-lg object-cover"
             />
 
             <div className="flex flex-col justify-center">
-              <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-text-primary">
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary">
                 Luxury 4 Bed-room Apartment
               </p>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center">
+              <div className="flex items-center text-[12px] leading-4 text-text-secondary">
                 <p className="">Lekki Phase 1, Lagos.</p>
                 <p className="flex items-center">
-                  <img src={nairaIcon} alt="" className="w-4 h-4" />
+                  <img src={nairaIcon} alt="" className="h-4 w-4" />
                   <span>3M/yr</span>
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="px-3 py-2 flex flex-col gap-2 bg-bg-accent rounded-xl">
+          <div className="flex flex-col gap-2 rounded-xl bg-bg-accent px-3 py-2">
             <div className="flex items-center justify-between">
               <p className="text-text-primary">Inspection fee</p>
-              <p className="text-[14px] font-raleway font-semibold tracking-[1px] text-button-bg flex items-center">
-                <img src={blueNairaIcon} alt="" className="w-4 h-4" />
+              <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
+                <img src={blueNairaIcon} alt="" className="h-4 w-4" />
                 <span>5,000</span>
               </p>
             </div>
 
-            <div className="text-[12px] leading-4 text-text-secondary flex items-center justify-between">
+            <div className="flex items-center justify-between text-[12px] leading-4 text-text-secondary">
               <p className="">Payment Reference</p>
               <p className="">FH-PAY-2472-001</p>
             </div>
 
             <div className="flex items-center gap-1">
               <img src={infoIcon} alt="" />
-              <p className="text-[12px] text-text-secondary leading-4">
+              <p className="text-[12px] leading-4 text-text-secondary">
                 Payment is held securely by FindaHome until inspection is
                 complete
               </p>
@@ -131,11 +131,11 @@ export default function PayInspectionModal({
           </div> */}
 
           <div className="mt-[29px] flex flex-col items-center justify-center gap-1">
-            <button className="text-[14px] tracking-[1px] font-raleway font-semibold text-white button-style w-full h-[45px] rounded-lg flex justify-center items-center">
+            <button className="button-style flex h-[45px] w-full items-center justify-center rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               Confirm payment from wallet
             </button>
 
-            <p className="text-[12px] text-text-secondary leading-4">
+            <p className="text-[12px] leading-4 text-text-secondary">
               By proceeding, you agree to FindaHome's escrow policy
             </p>
           </div>
@@ -143,7 +143,7 @@ export default function PayInspectionModal({
           <div className="mt-3 mb-4 text-center">
             <Link
               to=""
-              className="text-[12px] text-text-secondary leading-4 text-center border-b border-b-button-bg"
+              className="border-b border-b-button-bg text-center text-[12px] leading-4 text-text-secondary"
             >
               Having issues with agent? Open a dispute
             </Link>
@@ -151,5 +151,5 @@ export default function PayInspectionModal({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-import editIcon from "@/assets/images/icon-blue-edit.svg";
-import { useAuthContext } from "@/context/AuthContext";
+import editIcon from "@/assets/images/icon-blue-edit.svg"
+import { useAuthContext } from "@/context/AuthContext"
 
 export default function PersonalInformation() {
-  const { user } = useAuthContext();
+  const { user } = useAuthContext()
 
   return (
     <div>
       <p className="text-black">Personal Information</p>
 
-      <div className="mt-4 rounded-lg p-3 space-y-4 border border-bg-accent">
+      <div className="mt-4 space-y-4 rounded-lg border border-bg-accent p-3">
         <div>
           <p className="text-text-secondary">Full Name:</p>
           <div className="flex items-center justify-between">
@@ -42,5 +42,5 @@ export default function PersonalInformation() {
         </div>
       </div>
     </div>
-  );
+  )
 }

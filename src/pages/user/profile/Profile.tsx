@@ -1,37 +1,37 @@
 // import avatar from "@/assets/images/agentAvatar.jpg";
-import addPicture from "@/assets/images/icon-picture.svg";
-import changePasswordIcon from "@/assets/images/icon-change-password.svg";
-import rightArrowIcon from "@/assets/images/icon-right-arrow.svg";
-import supportIcon from "@/assets/images/icon-support.svg";
-import feedbackIcon from "@/assets/images/icon-feedback.svg";
-import userSwitchIcon from "@/assets/images/icon-user-switch.svg";
+import addPicture from "@/assets/images/icon-picture.svg"
+import changePasswordIcon from "@/assets/images/icon-change-password.svg"
+import rightArrowIcon from "@/assets/images/icon-right-arrow.svg"
+import supportIcon from "@/assets/images/icon-support.svg"
+import feedbackIcon from "@/assets/images/icon-feedback.svg"
+import userSwitchIcon from "@/assets/images/icon-user-switch.svg"
 // import editProfile from "@/assets/images/icon-edit-profile.svg";
-import Summary from "./Summary";
-import PersonalInformation from "./PersonalInformation";
-import { useAuthContext } from "@/context/AuthContext";
-import { useProfilePicture } from "@/hooks/useProfilePicture";
-import { useRef } from "react";
-import Avatar from "@/components/Avatar";
-import { useLogout } from "@/hooks/useLogout";
+import Summary from "./Summary"
+import PersonalInformation from "./PersonalInformation"
+import { useAuthContext } from "@/context/AuthContext"
+import { useProfilePicture } from "@/hooks/useProfilePicture"
+import { useRef } from "react"
+import Avatar from "@/components/Avatar"
+import { useLogout } from "@/hooks/useLogout"
 
 export default function Profile() {
-  const { user } = useAuthContext();
-  const { changeProfilePicture, isUploading } = useProfilePicture();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuthContext()
+  const { changeProfilePicture, isUploading } = useProfilePicture()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { handleLogout } = useLogout();
+  const { handleLogout } = useLogout()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      changeProfilePicture(file);
+      changeProfilePicture(file)
     }
-  };
+  }
 
   return (
-    <div className="px-6 text-text-primary mb-10">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center gap-4 mt-0.5">
+      <div className="mt-0.5 flex items-center gap-4">
         <div className="relative shrink-0">
           <Avatar
             name={user?.name ?? "?"}
@@ -52,7 +52,7 @@ export default function Profile() {
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="absolute -bottom-1 right-0 disabled:opacity-50"
+            className="absolute right-0 -bottom-1 disabled:opacity-50"
           >
             <img src={addPicture} alt="change profile picture" />
           </button>
@@ -60,10 +60,10 @@ export default function Profile() {
 
         <div className="flex flex-col gap-2">
           <div>
-            <p className="font-raleway font-semibold tracking-[1px] line-clamp-1">
+            <p className="line-clamp-1 font-raleway font-semibold tracking-[1px]">
               {user?.name}
             </p>
-            <p className="text-[12px] leadinig-4 line-clamp-1">{user?.email}</p>
+            <p className="leadinig-4 line-clamp-1 text-[12px]">{user?.email}</p>
           </div>
 
           {/* <div className="flex items-center py-1 px-2 gap-1 border border-button-bg rounded-lg">
@@ -77,7 +77,7 @@ export default function Profile() {
 
       {/* profile */}
       <section className="mt-6">
-        <div className="flex flex-col rounded-lg gap-2 p-2 bg-bg-accent">
+        <div className="flex flex-col gap-2 rounded-lg bg-bg-accent p-2">
           <div className="flex items-center justify-between">
             <p>Profile Completion</p>
             <p>75%</p>
@@ -110,7 +110,7 @@ export default function Profile() {
       <div className="mt-6">
         <p>Security</p>
 
-        <div className="rounded-lg border border-bg-accent p-3 flex flex-col gap-4 mt-4">
+        <div className="mt-4 flex flex-col gap-4 rounded-lg border border-bg-accent p-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img src={changePasswordIcon} alt="" />
@@ -142,13 +142,13 @@ export default function Profile() {
 
       <button
         onClick={handleLogout}
-        className="mt-6 flex items-center border border-button-bg rounded-lg py-1 px-2 gap-1 mx-auto cursor-pointer"
+        className="mx-auto mt-6 flex cursor-pointer items-center gap-1 rounded-lg border border-button-bg px-2 py-1"
       >
         <img src={userSwitchIcon} alt="" />
-        <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+        <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
           Log out
         </p>
       </button>
     </div>
-  );
+  )
 }

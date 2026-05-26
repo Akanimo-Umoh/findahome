@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import location from "@/assets/images/icon-location.svg";
-import phone from "@/assets/images/icon-phone-number.svg";
-import email from "@/assets/images/icon-email.svg";
-import copyright from "@/assets/images/icon-copyright.svg";
-import Logo from "./Logo";
+import { Link } from "react-router-dom"
+import location from "@/assets/images/icon-location.svg"
+import phone from "@/assets/images/icon-phone-number.svg"
+import email from "@/assets/images/icon-email.svg"
+import copyright from "@/assets/images/icon-copyright.svg"
+import Logo from "./Logo"
 
 export default function Footer() {
   const contactUs = [
@@ -22,12 +22,12 @@ export default function Footer() {
       alt: "",
       text: "hello@findahome.ng",
     },
-  ];
+  ]
 
   return (
-    <div className="mt-6 font-ssPro px-6 md:mt-20 md:px-8 max-w-7xl mx-auto">
+    <div className="mx-auto mt-6 max-w-7xl px-6 font-ssPro md:mt-20 md:px-8">
       <div className="flex items-center justify-between md:flex-col md:items-start">
-        <div className="flex flex-col gap-1 max-w-41 md:max-w-full md:gap-2">
+        <div className="flex max-w-41 flex-col gap-1 md:max-w-full md:gap-2">
           <Logo />
 
           <p className="text-[12px] text-text-secondary md:w-full md:text-[14px]">
@@ -46,9 +46,9 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-1 mr-6 w-[102px] md:float-left md:hidden">
+        <div className="mr-6 flex w-[102px] flex-col gap-1 md:float-left md:hidden">
           <p>Quick Links</p>
-          <div className="text-[14px] text-text-secondary flex flex-col gap-1">
+          <div className="flex flex-col gap-1 text-[14px] text-text-secondary">
             <Link to="">Buy Property</Link>
             <Link to="">List Property</Link>
             <Link to="">Rent Apartment</Link>
@@ -56,10 +56,10 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="flex mt-2 justify-between md:mt-8">
-        <div className="flex-col gap-1 hidden md:flex md:gap-6">
+      <div className="mt-2 flex justify-between md:mt-8">
+        <div className="hidden flex-col gap-1 md:flex md:gap-6">
           <p className="md:font-semibold">Quick Links</p>
-          <div className="text-[14px] text-text-secondary flex flex-col gap-1 md:text-[18px] md:gap-4">
+          <div className="flex flex-col gap-1 text-[14px] text-text-secondary md:gap-4 md:text-[18px]">
             <Link to="">Buy Property</Link>
             <Link to="">List Property</Link>
             <Link to="">Rent Apartment</Link>
@@ -67,7 +67,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-1 md:gap-6">
-          <p className="text-[14px] font-raleway font-semibold tracking-[1px] text-text-primary md:text-[16px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:text-[16px]">
             Contact Us
           </p>
           <div className="md:space-y-4">
@@ -76,7 +76,7 @@ export default function Footer() {
                 <img
                   src={contact.icon}
                   alt={contact.alt}
-                  className="md:w-6 md:h-6"
+                  className="md:h-6 md:w-6"
                 />
                 <p className="text-[14px] text-text-secondary md:text-[18px]">
                   {contact.text}
@@ -87,11 +87,11 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col gap-1 md:gap-6">
-          <p className="text-[14px] font-raleway font-semibold tracking-[1px] text-text-primary md:text-[16px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:text-[16px]">
             Company
           </p>
 
-          <div className="text-text-secondary text-[14px] flex flex-col gap-1 md:text-[18px] md:gap-4">
+          <div className="flex flex-col gap-1 text-[14px] text-text-secondary md:gap-4 md:text-[18px]">
             <Link to="">About Us</Link>
             <Link to="" className="md:hidden">
               How it works
@@ -102,12 +102,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-1 mt-6 mb-[100px] md:mt-14 md:mb-14">
-        <img src={copyright} alt="copyright" className="md:w-6 md:h-6" />
+      <div className="mt-6 mb-[100px] flex items-center justify-center gap-1 md:mt-14 md:mb-14">
+        <img src={copyright} alt="copyright" className="md:h-6 md:w-6" />
         <p className="text-[12px] text-text-secondary md:text-[16px]">
           2026 FindaHome. All right reserved.
         </p>
       </div>
     </div>
-  );
+  )
 }

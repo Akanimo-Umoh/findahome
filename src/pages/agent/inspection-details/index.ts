@@ -1,1 +1,1 @@
-export { default as InspectionDetails } from "./Inspection";
+export { default as InspectionDetails } from "./Inspection"

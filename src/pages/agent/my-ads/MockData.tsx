@@ -1,4 +1,4 @@
-import type { AdsStats, DateRange } from "@/types/ads";
+import type { AdsStats, DateRange } from "@/types/ads"
 
 export const adsStatsData: Record<DateRange, AdsStats> = {
   "this-week": {
@@ -28,4 +28,4 @@ export const adsStatsData: Record<DateRange, AdsStats> = {
     amountSpent: 2140000,
     ctr: 3.7,
   },
-};
+}

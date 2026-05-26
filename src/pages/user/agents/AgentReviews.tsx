@@ -1,6 +1,6 @@
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import yellowStar from "@/assets/images/icon-yellow-star.svg";
-import starIcon from "@/assets/images/icon-normal-star.svg";
+import agentAvatar from "@/assets/images/agentAvatar.jpg"
+import yellowStar from "@/assets/images/icon-yellow-star.svg"
+import starIcon from "@/assets/images/icon-normal-star.svg"
 
 export default function AgentReviews() {
   return (
@@ -14,10 +14,10 @@ export default function AgentReviews() {
               <img
                 src={agentAvatar}
                 alt=""
-                className="w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 rounded-full object-cover"
               />
               <div>
-                <p className="font-semibold text-[12px]">Maryann Kikomu</p>
+                <p className="text-[12px] font-semibold">Maryann Kikomu</p>
                 <p className="text-[12px] leading-4">2 days ago</p>
               </div>
             </div>
@@ -32,7 +32,7 @@ export default function AgentReviews() {
           </div>
 
           {/* review */}
-          <p className="text-[12px] leading-[17px] mt-1 text-text-secondary">
+          <p className="mt-1 text-[12px] leading-[17px] text-text-secondary">
             John was exceptional throughout the entire process. Very
             professional, responsive, and helped us find exactly what we were
             looking for. The escrow process was smooth and secure.
@@ -45,10 +45,10 @@ export default function AgentReviews() {
               <img
                 src={agentAvatar}
                 alt=""
-                className="w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 rounded-full object-cover"
               />
               <div>
-                <p className="font-semibold text-[12px]">Maryann Kikomu</p>
+                <p className="text-[12px] font-semibold">Maryann Kikomu</p>
                 <p className="text-[12px] leading-4">2 days ago</p>
               </div>
             </div>
@@ -63,7 +63,7 @@ export default function AgentReviews() {
           </div>
 
           {/* review */}
-          <p className="text-[12px] leading-[17px] mt-1 text-text-secondary">
+          <p className="mt-1 text-[12px] leading-[17px] text-text-secondary">
             John was exceptional throughout the entire process. Very
             professional, responsive, and helped us find exactly what we were
             looking for. The escrow process was smooth and secure.
@@ -71,5 +71,5 @@ export default function AgentReviews() {
         </div>
       </div>
     </div>
-  );
+  )
 }

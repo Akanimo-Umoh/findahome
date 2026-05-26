@@ -1,1 +1,1 @@
-export { default as CreateAd } from "./CreateAd";
+export { default as CreateAd } from "./CreateAd"

@@ -156,62 +156,62 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import rightIcon from "@/assets/agentImages/icon-right-arrow.svg";
-import addIcon from "@/assets/agentImages/icon-add-landmarks.svg";
-import type { AddPropertyFormData } from "./AddProperty";
-import { nigerianStates } from "@/types/nigerianStates";
-import FormField from "./FormField";
-import { useState } from "react";
+} from "@/components/ui/select"
+import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
+import addIcon from "@/assets/agentImages/icon-add-landmarks.svg"
+import type { AddPropertyFormData } from "./AddProperty"
+import { nigerianStates } from "@/types/nigerianStates"
+import FormField from "./FormField"
+import { useState } from "react"
 
 type Step2Props = {
-  formData: AddPropertyFormData;
-  updateFormData: (fields: Partial<AddPropertyFormData>) => void;
-  onNext: () => void;
-};
+  formData: AddPropertyFormData
+  updateFormData: (fields: Partial<AddPropertyFormData>) => void
+  onNext: () => void
+}
 
 type Step2Errors = {
-  state?: string;
-  city?: string;
-  description?: string;
-};
+  state?: string
+  city?: string
+  description?: string
+}
 
 export default function Step2({
   formData,
   updateFormData,
   onNext,
 }: Step2Props) {
-  const [errors, setErrors] = useState<Step2Errors>({});
-  const isApartment = formData.propertyType === "apartment";
+  const [errors, setErrors] = useState<Step2Errors>({})
+  const isApartment = formData.propertyType === "apartment"
 
   const validate = (): boolean => {
-    const newErrors: Step2Errors = {};
+    const newErrors: Step2Errors = {}
 
-    if (!formData.state) newErrors.state = "Please select a state";
-    if (!formData.city.trim()) newErrors.city = "City can't be empty";
+    if (!formData.state) newErrors.state = "Please select a state"
+    if (!formData.city.trim()) newErrors.city = "City can't be empty"
     if (!isApartment && !formData.description.trim())
-      newErrors.description = "Description can't be empty";
+      newErrors.description = "Description can't be empty"
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleLandmarkChange = (index: number, value: string) => {
-    const updated = [...formData.landmarks];
-    updated[index] = value;
-    updateFormData({ landmarks: updated });
-  };
+    const updated = [...formData.landmarks]
+    updated[index] = value
+    updateFormData({ landmarks: updated })
+  }
 
   const addLandmark = () => {
-    updateFormData({ landmarks: [...formData.landmarks, ""] });
-  };
+    updateFormData({ landmarks: [...formData.landmarks, ""] })
+  }
 
   return (
     <div>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          if (validate()) onNext();
+          e.preventDefault()
+          if (validate()) onNext()
         }}
       >
         <p className="md:text-[18px]">Location Info</p>
@@ -220,9 +220,9 @@ export default function Step2({
           <Select
             value={formData.state}
             onValueChange={(val) => {
-              updateFormData({ state: val });
+              updateFormData({ state: val })
               if (errors.state)
-                setErrors((prev) => ({ ...prev, state: undefined }));
+                setErrors((prev) => ({ ...prev, state: undefined }))
             }}
           >
             <SelectTrigger
@@ -251,16 +251,16 @@ export default function Step2({
             id="city"
             value={formData.city}
             onChange={(e) => {
-              updateFormData({ city: e.target.value });
+              updateFormData({ city: e.target.value })
               if (errors.city)
-                setErrors((prev) => ({ ...prev, city: undefined }));
+                setErrors((prev) => ({ ...prev, city: undefined }))
             }}
-            className={`text-[14px] w-full rounded-lg h-[45px] border px-2 ${errors.city ? "border-red-500" : "border-text-secondary"}`}
+            className={`h-[45px] w-full rounded-lg border px-2 text-[14px] ${errors.city ? "border-red-500" : "border-text-secondary"}`}
             placeholder="e.g, Ikoyi, Garki, etc"
           />
         </FormField>
 
-        <div className="flex flex-col gap-1 mt-4">
+        <div className="mt-4 flex flex-col gap-1">
           <label className="app-property-label">Nearest Landmarks</label>
           {formData.landmarks.map((landmark, index) => (
             <input
@@ -268,7 +268,7 @@ export default function Step2({
               type="text"
               value={landmark}
               onChange={(e) => handleLandmarkChange(index, e.target.value)}
-              className="text-[14px] w-full rounded-lg h-[45px] border border-text-secondary px-2 mt-1"
+              className="mt-1 h-[45px] w-full rounded-lg border border-text-secondary px-2 text-[14px]"
               placeholder="e.g, 5 mins to Silverbird cinema"
             />
           ))}
@@ -277,10 +277,10 @@ export default function Step2({
         <button
           type="button"
           onClick={addLandmark}
-          className="flex items-center mt-4 rounded-lg border border-bg-accent bg-button-disabled h-[45px] px-2 gap-2 justify-center"
+          className="mt-4 flex h-[45px] items-center justify-center gap-2 rounded-lg border border-bg-accent bg-button-disabled px-2"
         >
           <img src={addIcon} alt="" />
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] md:text-[16px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px] md:text-[16px]">
             Add more landmarks
           </p>
         </button>
@@ -293,18 +293,18 @@ export default function Step2({
             className="mt-6"
           >
             <div
-              className={`p-3 border rounded-xl h-25 md:h-37.5 ${errors.description ? "border-red-500" : "border-text-disabled"}`}
+              className={`h-25 rounded-xl border p-3 md:h-37.5 ${errors.description ? "border-red-500" : "border-text-disabled"}`}
             >
               <textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => {
-                  updateFormData({ description: e.target.value });
+                  updateFormData({ description: e.target.value })
                   if (errors.description)
-                    setErrors((prev) => ({ ...prev, description: undefined }));
+                    setErrors((prev) => ({ ...prev, description: undefined }))
                 }}
                 placeholder="Start typing..."
-                className="outline-none text-[12px] w-full h-full resize-none"
+                className="h-full w-full resize-none text-[12px] outline-none"
               />
             </div>
           </FormField>
@@ -312,14 +312,14 @@ export default function Step2({
 
         <button
           type="submit"
-          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-6 ml-auto cursor-pointer"
+          className="mt-6 ml-auto flex h-[45px] cursor-pointer items-center gap-2 rounded-lg bg-button-bg px-2"
         >
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white md:text-[16px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
             Next
           </p>
           <img src={rightIcon} alt="" />
         </button>
       </form>
     </div>
-  );
+  )
 }

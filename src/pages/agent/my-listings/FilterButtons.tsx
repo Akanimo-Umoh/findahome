@@ -1,8 +1,8 @@
-import type { FilterStatus } from "./MyListings";
+import type { FilterStatus } from "./MyListings"
 
 interface FilterButtonsProps {
-  activeFilter: FilterStatus;
-  onFilterChange: (filter: FilterStatus) => void;
+  activeFilter: FilterStatus
+  onFilterChange: (filter: FilterStatus) => void
 }
 
 const filters: { label: string; value: FilterStatus }[] = [
@@ -11,7 +11,7 @@ const filters: { label: string; value: FilterStatus }[] = [
   { label: "Sold", value: "sold" },
   { label: "Pending", value: "pending" },
   { label: "Rejected", value: "rejected" },
-];
+]
 
 export default function FilterButtons({
   activeFilter,
@@ -23,11 +23,11 @@ export default function FilterButtons({
         <button
           key={value}
           onClick={() => onFilterChange(value)}
-          className={`rounded-lg py-1 px-2 transition-colors duration-500 cursor-pointer ${activeFilter === value ? "text-white bg-button-bg" : "bg-button-sec text-text-primary"}`}
+          className={`cursor-pointer rounded-lg px-2 py-1 transition-colors duration-500 ${activeFilter === value ? "bg-button-bg text-white" : "bg-button-sec text-text-primary"}`}
         >
           {label}
         </button>
       ))}
     </div>
-  );
+  )
 }

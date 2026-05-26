@@ -1,3 +1,3 @@
 export default function UserLayout() {
-  return <div>UserLayout</div>;
+  return <div>UserLayout</div>
 }

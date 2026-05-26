@@ -1,34 +1,34 @@
-import naira from "@/assets/images/naira.svg";
-import location from "@/assets/images/location.svg";
-import bed from "@/assets/images/bed.svg";
-import tubs from "@/assets/images/tubs.svg";
-import verified from "@/assets/images/icon-verified.svg";
-import type { Property } from "@/types/property";
+import naira from "@/assets/images/naira.svg"
+import location from "@/assets/images/location.svg"
+import bed from "@/assets/images/bed.svg"
+import tubs from "@/assets/images/tubs.svg"
+import verified from "@/assets/images/icon-verified.svg"
+import type { Property } from "@/types/property"
 // import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg";
-import Avatar from "./Avatar";
-import { useFavorite } from "@/hooks/useFavorite";
-import heartIcon from "@/assets/images/icon-heart.svg";
+import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg"
+import Avatar from "./Avatar"
+import { useFavorite } from "@/hooks/useFavorite"
+import heartIcon from "@/assets/images/icon-heart.svg"
 
 type PropertyCardProps = {
-  property: Property;
-};
+  property: Property
+}
 
 export default function PropertyCard({ property }: PropertyCardProps) {
-  const { isSaved, isLoading, toggleFavorite } = useFavorite(property._id);
-  const isLand = property.propertyType === "land";
+  const { isSaved, isLoading, toggleFavorite } = useFavorite(property._id)
+  const isLand = property.propertyType === "land"
 
   return (
-    <div className="rounded-2xl overflow-hidden max-w-112.5 hover:shadow-lg transition">
+    <div className="max-w-112.5 overflow-hidden rounded-2xl transition hover:shadow-lg">
       <div className="relative">
         <img
           src={property.images[0]}
           alt={property.title}
-          className="w-full h-50 object-cover md:h-62.5"
+          className="h-50 w-full object-cover md:h-62.5"
         />
 
         {property.owner.isVerified && (
-          <div className="p-2 rounded-lg bg-[#10B981] absolute top-2.75 left-2.75 flex items-center justify-center gap-1 md:top-0 md:left-0 md:rounded-t-xl md:bg-linear-to-b md:from-[#149D18] md:to-white md:shadow-[4px_4px_4px_#00000080]">
+          <div className="absolute top-2.75 left-2.75 flex items-center justify-center gap-1 rounded-lg bg-[#10B981] p-2 md:top-0 md:left-0 md:rounded-t-xl md:bg-linear-to-b md:from-[#149D18] md:to-white md:shadow-[4px_4px_4px_#00000080]">
             <img src={verified} alt="" className="md:hidden" />
             <p className="font-raleway text-[14px] tracking-[1px] text-white md:text-[16px] md:text-text-primary">
               Verified
@@ -37,13 +37,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
         )}
       </div>
 
-      <div className="px-4 py-3 space-y-6 border rounded-b-2xl border-bg-accent md:p-3 md:space-y-0">
+      <div className="space-y-6 rounded-b-2xl border border-bg-accent px-4 py-3 md:space-y-0 md:p-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
-            <p className="font-raleway font-semibold text-[12px] tracking-[1px] text-black line-clamp-1 flex-1 md:text-[16px]">
+            <p className="line-clamp-1 flex-1 font-raleway text-[12px] font-semibold tracking-[1px] text-black md:text-[16px]">
               {property.title}
             </p>
-            <div className="flex items-center text-[#274AD0] font-raleway font-semibold text-[12px] tracking-[1px] w-fit md:text-[16px]">
+            <div className="flex w-fit items-center font-raleway text-[12px] font-semibold tracking-[1px] text-[#274AD0] md:text-[16px]">
               <img src={naira} alt="naira" />
               <p className="line-clamp-1">{property.price.toLocaleString()}</p>
             </div>
@@ -52,20 +52,20 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           <div className="flex flex-col gap-2">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-1 md:flex-1">
-                <img src={location} alt="" className="w-4 h-4" />
+                <img src={location} alt="" className="h-4 w-4" />
                 <p className="line-clamp-1 text-[12px] text-text-secondary md:text-[14px]">
                   {property.address}
                 </p>
               </div>
 
               {isLand ? (
-                <div className="flex items-center h-5 text-[12px] text-text-secondary md:text-[14px]">
+                <div className="flex h-5 items-center text-[12px] text-text-secondary md:text-[14px]">
                   Land Type: {property.landType}
                 </div>
               ) : (
-                <div className="flex items-center gap-2 text-[12px] text-text-secondary h-5 md:text-[14px]">
+                <div className="flex h-5 items-center gap-2 text-[12px] text-text-secondary md:text-[14px]">
                   <div className="flex items-center gap-1">
-                    <img src={bed} alt="" className="w-4 h-4" />
+                    <img src={bed} alt="" className="h-4 w-4" />
                     <p>
                       <span className="md:font-semibold">
                         {property.bedroom}
@@ -75,7 +75,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <img src={tubs} alt="" className="w-4 h-4" />
+                    <img src={tubs} alt="" className="h-4 w-4" />
                     <p>
                       <span className="md:font-semibold">
                         {property.bathroom}
@@ -101,7 +101,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                   />
                 </div>
 
-                <div className="text-[12px] text-text-secondary flex items-center justify-center gap-0.5 md:flex-col md:items-start md:text-[14px]">
+                <div className="flex items-center justify-center gap-0.5 text-[12px] text-text-secondary md:flex-col md:items-start md:text-[14px]">
                   <p>
                     <span className="md:hidden">Listed by</span>
                     <span className="hidden md:flex">Agent</span>
@@ -116,11 +116,11 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 type="button"
                 disabled={isLoading}
                 onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  toggleFavorite();
+                  e.preventDefault()
+                  e.stopPropagation()
+                  toggleFavorite()
                 }}
-                className="hidden md:flex cursor-pointer disabled:opacity-50"
+                className="hidden cursor-pointer disabled:opacity-50 md:flex"
               >
                 <img
                   src={isSaved ? heartIcon : favoriteIcon}
@@ -131,10 +131,10 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
-        <div className="font-raleway font-semibold text-[14px] tracking-[1px] text-text-primary rounded-lg border border-button-bg bg-button-sec h-[45px] flex items-center justify-center w-full md:hidden">
+        <div className="flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden">
           View Details
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,1 +1,1 @@
-export { default as SavedProperties } from "./SavedProperties";
+export { default as SavedProperties } from "./SavedProperties"

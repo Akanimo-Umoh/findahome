@@ -1,23 +1,23 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
 // import pendingIcon from "@/assets/agentImages/icon-pending-transaction.svg";
 // import greenNairaIcon from "@/assets/agentImages/icon-green-naira.svg";
 // import paidOutIcon from "@/assets/agentImages/icon-paid-out.svg";
 // import warningIcon from "@/assets/agentImages/icon-warning.svg";
-import Transactions from "./Transactions";
+import Transactions from "./Transactions"
 
 export default function MyTransactions() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary mb-10 px-6">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           My Transactions
         </p>
       </div>
@@ -66,5 +66,5 @@ export default function MyTransactions() {
         <Transactions />
       </section>
     </div>
-  );
+  )
 }

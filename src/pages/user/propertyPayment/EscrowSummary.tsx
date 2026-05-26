@@ -1,5 +1,5 @@
-import blackNaira from "@/assets/images/icon-black-naira.svg";
-import greyInfo from "@/assets/images/icon-grey-info.svg";
+import blackNaira from "@/assets/images/icon-black-naira.svg"
+import greyInfo from "@/assets/images/icon-grey-info.svg"
 
 export default function EscrowSummary() {
   return (
@@ -7,7 +7,7 @@ export default function EscrowSummary() {
       <div>
         <p>Escrow Summary</p>
 
-        <div className="rounded-xl p-2 flex flex-col gap-3 bg-bg-accent border border-bg-accent">
+        <div className="flex flex-col gap-3 rounded-xl border border-bg-accent bg-bg-accent p-2">
           <div className="flex items-center justify-between">
             <p className="text-[12px] leading-4">Escrow ID:</p>
 
@@ -18,21 +18,21 @@ export default function EscrowSummary() {
           <div className="flex items-center justify-between">
             <p className="text-[12px] leading-4">Property Amount</p>
 
-            <p className="flex items-center text-[14px] font-raleway font-semibold tracking-[1px]">
-              <img src={blackNaira} alt="" className="w-4 h-4" />
+            <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px]">
+              <img src={blackNaira} alt="" className="h-4 w-4" />
               <span>3,000,000</span>
             </p>
           </div>
 
           {/* Escrow fee */}
           <div className="flex items-center justify-between">
-            <p className="text-[12px] leading-4 flex items-center">
+            <p className="flex items-center text-[12px] leading-4">
               <span>Escrow fee</span>
               <img src={greyInfo} alt="" />
             </p>
 
-            <p className="flex items-center text-[14px] font-raleway font-semibold tracking-[1px]">
-              <img src={blackNaira} alt="" className="w-4 h-4" />
+            <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px]">
+              <img src={blackNaira} alt="" className="h-4 w-4" />
               <span>60,000</span>
             </p>
           </div>
@@ -46,17 +46,17 @@ export default function EscrowSummary() {
 
           {/* Total Fee */}
           <div className="flex items-center justify-between">
-            <p className="text-[14px] tracking-[1px] font-raleway font-semibold">
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
               Total Fee
             </p>
 
-            <p className="flex items-center text-[14px] font-raleway font-semibold tracking-[1px]">
-              <img src={blackNaira} alt="" className="w-4 h-4" />
+            <p className="flex items-center font-raleway text-[14px] font-semibold tracking-[1px]">
+              <img src={blackNaira} alt="" className="h-4 w-4" />
               <span>3,060,000</span>
             </p>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

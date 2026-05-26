@@ -1,50 +1,50 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import iconOptions from "@/assets/images/icon-chat-options.svg";
-import iconSearch from "@/assets/images/icon-messages-search.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import iconOptions from "@/assets/images/icon-chat-options.svg"
+import iconSearch from "@/assets/images/icon-messages-search.svg"
 // import propertyImg from "@/assets/images/property.jpg";
 // import iconInspection from "@/assets/images/icon-chats-inspection-scheduled.svg";
 // import iconAwaiting from "@/assets/images/icon-chats-awaiting-handover.svg";
 // import iconEscrow from "@/assets/images/icon-chats-in-escrow.svg";
 // import iconCompleted from "@/assets/images/icon-chats-completed.svg";
-import imgMessages from "@/assets/images/img-chats-messages.png";
-import { useAuthContext } from "@/context/AuthContext";
-import { useChatList } from "@/hooks/useChat";
-import Spinner from "./Spinner";
-import { useState } from "react";
+import imgMessages from "@/assets/images/img-chats-messages.png"
+import { useAuthContext } from "@/context/AuthContext"
+import { useChatList } from "@/hooks/useChat"
+import Spinner from "./Spinner"
+import { useState } from "react"
 
 const formatTime = (dateStr: string) =>
   new Date(dateStr).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
-  });
+  })
 
 export default function Chats() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const { user } = useAuthContext();
-  const { chats, isLoading, error } = useChatList();
+  const navigate = useNavigate()
+  const [searchQuery, setSearchQuery] = useState("")
+  const { user } = useAuthContext()
+  const { chats, isLoading, error } = useChatList()
 
   const filteredChats = chats.filter((chat) => {
-    const query = searchQuery.toLowerCase();
-    if (!query) return true;
+    const query = searchQuery.toLowerCase()
+    if (!query) return true
 
-    const other = chat.participants.find((p) => p._id !== user?.id);
-    const otherName = (other?.name ?? other?.email ?? "").toLowerCase();
-    const propertyTitle = chat.property.title.toLocaleLowerCase();
-    const lastMessage = (chat.lastMessage?.text ?? "").toLowerCase();
+    const other = chat.participants.find((p) => p._id !== user?.id)
+    const otherName = (other?.name ?? other?.email ?? "").toLowerCase()
+    const propertyTitle = chat.property.title.toLocaleLowerCase()
+    const lastMessage = (chat.lastMessage?.text ?? "").toLowerCase()
 
     return (
       otherName.includes(query) ||
       propertyTitle.includes(query) ||
       lastMessage.includes(query)
-    );
-  });
+    )
+  })
 
-  const isAgent = user?.role === "agent" || user?.role === "admin";
+  const isAgent = user?.role === "agent" || user?.role === "admin"
 
   return (
-    <div className="font-ssPro flex flex-col mb-10 max-w-7xl mx-auto">
+    <div className="mx-auto mb-10 flex max-w-7xl flex-col font-ssPro">
       <header className="px-6">
         {/* header */}
         <div className="flex items-center justify-between">
@@ -52,7 +52,7 @@ export default function Chats() {
             <img src={goBack} alt="" className="" />
           </button>
 
-          <p className="text-[18px] font-raleway font-semibold">Messages</p>
+          <p className="font-raleway text-[18px] font-semibold">Messages</p>
 
           <button className="cursor-pointer">
             <img src={iconOptions} alt="" />
@@ -64,14 +64,14 @@ export default function Chats() {
         {isLoading ? (
           <Spinner />
         ) : error ? (
-          <p className="text-center text-text-secondary text-[12px] mt-10">
+          <p className="mt-10 text-center text-[12px] text-text-secondary">
             {error}
           </p>
         ) : chats.length === 0 ? (
-          <div className="flex flex-col gap-5 items-center justify-center mt-20 cursor-pointer">
-            <img src={imgMessages} alt="" className="w-38 h-30.5" />
-            <div className="flex flex-col items-center justify-center gap-1 w-56.5 text-center">
-              <p className="font-raleway text-[14px] tracking-[1px] text-text-primary font-semibold">
+          <div className="mt-20 flex cursor-pointer flex-col items-center justify-center gap-5">
+            <img src={imgMessages} alt="" className="h-30.5 w-38" />
+            <div className="flex w-56.5 flex-col items-center justify-center gap-1 text-center">
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary">
                 No active chat yet.
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -84,10 +84,10 @@ export default function Chats() {
         ) : (
           <>
             {/* search messages ctn */}
-            <div className="relative h-8 flex items-center mt-[27px] mx-6">
+            <div className="relative mx-6 mt-[27px] flex h-8 items-center">
               <label
                 htmlFor="search"
-                className="absolute left-1 top-1/2 -translate-y-1/2"
+                className="absolute top-1/2 left-1 -translate-y-1/2"
               >
                 <img src={iconSearch} alt="" />
               </label>
@@ -98,48 +98,48 @@ export default function Chats() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search conversations"
-                className="flex-1 h-full outline outline-bg-accent rounded-xl px-1 pl-6 text-[12px] leading-4 placeholder:text-text-secondary"
+                className="h-full flex-1 rounded-xl px-1 pl-6 text-[12px] leading-4 outline outline-bg-accent placeholder:text-text-secondary"
               />
             </div>
 
             {/*chats ctn*/}
-            <div className="mt-6 mx-6 space-y-6">
+            <div className="mx-6 mt-6 space-y-6">
               {filteredChats.length === 0 ? (
-                <p className="text-center text-text-secondary text-[12px] mt-10">
+                <p className="mt-10 text-center text-[12px] text-text-secondary">
                   No conversations match your search.
                 </p>
               ) : (
                 filteredChats.map((chat) => {
                   const other = chat.participants.find(
-                    (p) => p._id !== user?.id,
-                  );
+                    (p) => p._id !== user?.id
+                  )
                   return (
                     <div
                       key={chat._id}
                       onClick={() => navigate(`/messages/${chat._id}`)}
-                      className="border border-bg-accent p-2 rounded-xl flex justify-between gap-2"
+                      className="flex justify-between gap-2 rounded-xl border border-bg-accent p-2"
                     >
                       {chat.property.images?.[0] ? (
                         <img
                           src={chat.property.images[0]}
                           alt={chat.property.title}
-                          className="w-12.5 h-12.5 rounded-lg object-cover shrink-0"
+                          className="h-12.5 w-12.5 shrink-0 rounded-lg object-cover"
                         />
                       ) : (
-                        <div className="w-12.5 h-12.5 rounded-lg bg-bg-accent shrink-0" />
+                        <div className="h-12.5 w-12.5 shrink-0 rounded-lg bg-bg-accent" />
                       )}
 
-                      <div className="flex flex-col w-full gap-2">
+                      <div className="flex w-full flex-col gap-2">
                         <div className="flex justify-between gap-2">
                           <div className="flex-1">
-                            <p className="line-clamp-2 text-[12px] text-text-primary font-raleway font-semibold tracking-[1px]">
+                            <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px] text-text-primary">
                               {chat.property.title}
                             </p>
                             <p className="text-[12px] leading-4 text-text-secondary">
                               {isAgent ? "Buyer" : "Agent"}:{" "}
                               {other?.name ?? other?.email ?? "Unknown"}
                             </p>
-                            <p className="line-clamp-1 text-text-secondary text-[12px] leading-4">
+                            <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                               {chat.lastMessage?.text ?? "No messages yet"}
                             </p>
                           </div>
@@ -151,13 +151,13 @@ export default function Chats() {
                         </div>
 
                         <div className="flex items-center gap-[61px]">
-                          <p className="text-[10px] text-white w-3.75 h-3.75 rounded-full bg-[#149D18] flex items-center justify-center">
+                          <p className="flex h-3.75 w-3.75 items-center justify-center rounded-full bg-[#149D18] text-[10px] text-white">
                             1
                           </p>
                         </div>
                       </div>
                     </div>
-                  );
+                  )
                 })
               )}
             </div>
@@ -165,5 +165,5 @@ export default function Chats() {
         )}
       </main>
     </div>
-  );
+  )
 }

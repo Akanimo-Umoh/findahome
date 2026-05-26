@@ -1,32 +1,32 @@
-import FeaturedProps from "./FeaturedProps";
-import HowItWorks from "./HowItWorks";
-import Reviews from "./Reviews";
-import Search from "./Search";
-import Properties from "./Properties";
-import Faq from "./Faq";
-import { useAuthContext } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import FeaturedProps from "./FeaturedProps"
+import HowItWorks from "./HowItWorks"
+import Reviews from "./Reviews"
+import Search from "./Search"
+import Properties from "./Properties"
+import Faq from "./Faq"
+import { useAuthContext } from "@/context/AuthContext"
+import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 // import Why from "./Why";
 
 export default function Home() {
-  const { user } = useAuthContext();
-  const navigate = useNavigate();
+  const { user } = useAuthContext()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    if (user?.role === "agent") navigate("/agent/dashboard", { replace: true });
-    if (user?.role === "admin") navigate("/admin/dashboard", { replace: true });
-  }, [user, navigate]);
+    if (user?.role === "agent") navigate("/agent/dashboard", { replace: true })
+    if (user?.role === "admin") navigate("/admin/dashboard", { replace: true })
+  }, [user, navigate])
 
   return (
     <div className="font-ssPro">
-      <section className="heroBg pt-9.25 pb-10.75 relative md:h-[calc(100vh-66px)] md:flex md:items-center md:justify-center md:p-0">
+      <section className="heroBg relative pt-9.25 pb-10.75 md:flex md:h-[calc(100vh-66px)] md:items-center md:justify-center md:p-0">
         {/* black overlay */}
         <div className="absolute inset-0 bg-black/20 md:bg-[#00000099]" />
 
         <div className="relative z-10 max-w-7xl">
-          <div className="flex flex-col items-center justify-center text-center gap-1 max-w-85.5 mx-auto text-white md:max-w-full md:gap-2">
-            <p className="font-raleway text-[18px] font-semibold tracking-[1px] leading-7.5 md:text-[40px] md:leading-15 md:font-metamorphous md:font-normal">
+          <div className="mx-auto flex max-w-85.5 flex-col items-center justify-center gap-1 text-center text-white md:max-w-full md:gap-2">
+            <p className="font-raleway text-[18px] leading-7.5 font-semibold tracking-[1px] md:font-metamorphous md:text-[40px] md:leading-15 md:font-normal">
               <span className="md:hidden">
                 Find your next home, stress-free
               </span>
@@ -45,13 +45,13 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-55.5 mx-6 md:mt-20 md:mx-11.5">
+          <div className="mx-6 mt-55.5 md:mx-11.5 md:mt-20">
             <Search />
           </div>
         </div>
       </section>
 
-      <main className="space-y-10 mt-10 md:mt-20 md:space-y-20 mx-auto max-w-7xl">
+      <main className="mx-auto mt-10 max-w-7xl space-y-10 md:mt-20 md:space-y-20">
         {/* featured section */}
         <section>
           <FeaturedProps />
@@ -82,5 +82,5 @@ export default function Home() {
         </section>
       </main>
     </div>
-  );
+  )
 }

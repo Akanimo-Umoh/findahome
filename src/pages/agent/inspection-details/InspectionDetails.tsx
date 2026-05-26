@@ -1,6 +1,6 @@
-import blueCalendarIcon from "@/assets/images/icon-blue-calendar.svg";
-import timeIcon from "@/assets/images/icon-inspection-schedule-time.svg";
-import locationIcon from "@/assets/images/icon-inspection-schedule-location.svg";
+import blueCalendarIcon from "@/assets/images/icon-blue-calendar.svg"
+import timeIcon from "@/assets/images/icon-inspection-schedule-time.svg"
+import locationIcon from "@/assets/images/icon-inspection-schedule-location.svg"
 
 export default function InspectionDetails() {
   const indpectionDetails = [
@@ -19,7 +19,7 @@ export default function InspectionDetails() {
       title: "Location",
       detail: "Lekki Toll Gate",
     },
-  ];
+  ]
 
   return (
     <div>
@@ -31,7 +31,7 @@ export default function InspectionDetails() {
         <div className="mt-2 space-y-2">
           {indpectionDetails.map((inspectionDetail, index) => (
             <div key={index} className="flex items-center gap-2">
-              <div className="w-7.5 h-7.5 rounded-full bg-bg-accent flex items-center justify-center">
+              <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-bg-accent">
                 <img src={inspectionDetail.icon} alt="" />
               </div>
 
@@ -46,5 +46,5 @@ export default function InspectionDetails() {
         </div>
       </div>
     </div>
-  );
+  )
 }

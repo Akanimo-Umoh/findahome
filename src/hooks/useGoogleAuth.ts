@@ -1,78 +1,75 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { AxiosError } from "axios";
-import { type CredentialResponse } from "@react-oauth/google";
-import { googleAuth } from "@/services/auth.service";
-import { useAuthContext } from "@/context/AuthContext";
+import { useState } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
+import { AxiosError } from "axios"
+import { type CredentialResponse } from "@react-oauth/google"
+import { googleAuth } from "@/services/auth.service"
+import { useAuthContext } from "@/context/AuthContext"
 
 export const useGoogleAuth = (
-  clearFormError?: (error: string | null) => void,
+  clearFormError?: (error: string | null) => void
 ) => {
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuthContext();
+  const [apiError, setApiError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuthContext()
 
   const handleGoogleSuccess = async (
-    credentialResponse: CredentialResponse,
+    credentialResponse: CredentialResponse
   ) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      setApiError(null);
-      clearFormError?.(null);
+      setApiError(null)
+      clearFormError?.(null)
 
       if (!credentialResponse.credential) {
-        setApiError("Google authentication failed. Please try again.");
-        return;
+        setApiError("Google authentication failed. Please try again.")
+        return
       }
 
-      let result;
+      let result
 
       try {
-        result = await googleAuth(credentialResponse.credential, "login");
+        result = await googleAuth(credentialResponse.credential, "login")
       } catch (loginError) {
         if (loginError instanceof AxiosError) {
-          const errorMessage = loginError.response?.data?.message || "";
+          const errorMessage = loginError.response?.data?.message || ""
 
           if (errorMessage.includes("User not found")) {
-            result = await googleAuth(
-              credentialResponse.credential,
-              "register",
-            );
+            result = await googleAuth(credentialResponse.credential, "register")
           } else if (
             errorMessage.includes("Please login using email/password")
           ) {
             setApiError(
-              "This email is registered with email/password. Please use the email login form instead.",
-            );
-            return;
+              "This email is registered with email/password. Please use the email login form instead."
+            )
+            return
           } else if (errorMessage.includes("Please verify your email")) {
             navigate("/verify-email", {
               state: { from: "google-auth" },
               replace: true,
-            });
-            return;
+            })
+            return
           } else {
-            throw loginError;
+            throw loginError
           }
         } else {
-          throw loginError;
+          throw loginError
         }
       }
 
-      if (!result) return;
+      if (!result) return
 
       if (!result.user?.isVerified) {
         navigate("/verify-email", {
           state: { email: result.user.email, from: "google-auth" },
           replace: true,
-        });
-        return;
+        })
+        return
       }
 
       // Get the "from" state (where user was trying to go)
-      const from = (location.state as { from?: string })?.from;
+      const from = (location.state as { from?: string })?.from
 
       // Determine redirect path
       const redirectPath =
@@ -80,42 +77,42 @@ export const useGoogleAuth = (
         (() => {
           switch (result.user.role) {
             case "user":
-              return "/dashboard";
+              return "/dashboard"
             case "agent":
-              return "/agent/dashboard";
+              return "/agent/dashboard"
             case "admin":
-              return "/admin/dashboard";
+              return "/admin/dashboard"
             default:
-              return "/dashboard";
+              return "/dashboard"
           }
-        })();
+        })()
 
       // Store user and token
       if (result.token && result.user) {
-        login(result.user, result.token);
-        navigate(redirectPath, { replace: true });
+        login(result.user, result.token)
+        navigate(redirectPath, { replace: true })
       }
     } catch (error) {
-      console.error("Google auth error:", error);
+      console.error("Google auth error:", error)
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message ||
-          "Google authentication failed. Please try again.";
-        setApiError(errorMessage);
+          "Google authentication failed. Please try again."
+        setApiError(errorMessage)
       } else {
-        setApiError("An unexpected error occurred. Please try again.");
+        setApiError("An unexpected error occurred. Please try again.")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleGoogleError = () => {
     setApiError(
-      "Google authentication was cancelled or failed. Please try again.",
-    );
-    setIsLoading(false);
-  };
+      "Google authentication was cancelled or failed. Please try again."
+    )
+    setIsLoading(false)
+  }
 
   return {
     apiError,
@@ -123,5 +120,5 @@ export const useGoogleAuth = (
     setApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  };
-};
+  }
+}

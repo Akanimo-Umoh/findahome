@@ -1,42 +1,42 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import infoIcon from "@/assets/images/icon-pay-inspection-info.svg";
-import copyIcon from "@/assets/images/icon-black-clipboard.svg";
-import starIcon from "@/assets/images/icon-inspection-star.svg";
-import InspectionConfirmedModal from "./InspectionConfirmedModal";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import infoIcon from "@/assets/images/icon-pay-inspection-info.svg"
+import copyIcon from "@/assets/images/icon-black-clipboard.svg"
+import starIcon from "@/assets/images/icon-inspection-star.svg"
+import InspectionConfirmedModal from "./InspectionConfirmedModal"
 
 export default function InspectionConfirmation() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary px-6">
+    <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Inspection Confirmation
         </p>
       </div>
 
       <main>
-        <p className="text-[12px] leading-4 text-text-secondary text-center">
+        <p className="text-center text-[12px] leading-4 text-text-secondary">
           Confirm that this inspection has been completed.
         </p>
 
-        <div className="flex items-center gap-3 p-2 rounded-xl border border-bg-accent mt-4.5">
+        <div className="mt-4.5 flex items-center gap-3 rounded-xl border border-bg-accent p-2">
           <img
             src={propertyImg}
             alt=""
-            className="w-15 h-15 object-cover rounded-lg"
+            className="h-15 w-15 rounded-lg object-cover"
           />
 
-          <div className="flex flex-col justify-center gap-2 w-full">
+          <div className="flex w-full flex-col justify-center gap-2">
             <div className="flex flex-col gap-1">
-              <p className="font-raleway font-semibold text-[12px] tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 4 Bed-room Apartment, Lekki phase 1
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -48,22 +48,22 @@ export default function InspectionConfirmation() {
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 bg-[#F39C12] py-1 px-2 rounded-2xl w-fit">
+            <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-[12px] leading-4">
               Inspection Pending
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 py-3 rounded-lg border border-bg-accent items-center justify-center mt-6.5">
-          <div className="w-14 h-14 rounded-lg flex items-center justify-center bg-bg-accent">
-            <img src={infoIcon} alt="" className="w-10 h-10" />
+        <div className="mt-6.5 flex flex-col items-center justify-center gap-2 rounded-lg border border-bg-accent py-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-bg-accent">
+            <img src={infoIcon} alt="" className="h-10 w-10" />
           </div>
 
           <div className="flex flex-col items-center justify-center gap-2">
-            <p className="font-raleway font-semibold text-[18px] tracking-[1px]">
+            <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
               Verify Your Property Inspection
             </p>
-            <p className="text-[14px] text-text-secondary flex max-w-[288px]">
+            <p className="flex max-w-[288px] text-[14px] text-text-secondary">
               Share this unique code with the agent after your inspection. Only
               enter it if you are satisfied with the inspection carried out
             </p>
@@ -74,7 +74,7 @@ export default function InspectionConfirmation() {
         <div className="mt-6 flex flex-col gap-2">
           <div className="flex flex-col items-center justify-center gap-2">
             <p className="text-[14px]">Your inspection code</p>
-            <p className="font-semibold text-[24px] text-button-bg p-2 border border-bg-accent rounded-lg w-full text-center">
+            <p className="w-full rounded-lg border border-bg-accent p-2 text-center text-[24px] font-semibold text-button-bg">
               479 017
             </p>
             <p className="text-[12px] leading-4 text-[#D02727]">
@@ -82,7 +82,7 @@ export default function InspectionConfirmation() {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 rounded-lg p-2 border border-bg-accent">
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-bg-accent p-2">
             <img src={copyIcon} alt="" />
             <p className="text-[14px]">Copy code</p>
           </div>
@@ -98,7 +98,7 @@ export default function InspectionConfirmation() {
                 type="checkbox"
                 name=""
                 id="satisfied"
-                className="w-4 h-4"
+                className="h-4 w-4"
               />
               <label
                 htmlFor="satisfied"
@@ -113,7 +113,7 @@ export default function InspectionConfirmation() {
                 type="checkbox"
                 name=""
                 id="inspected-properly"
-                className="w-4 h-4"
+                className="h-4 w-4"
               />
               <label
                 htmlFor="inspected-properly"
@@ -124,7 +124,7 @@ export default function InspectionConfirmation() {
             </div>
 
             <div className="flex items-center gap-2">
-              <input type="checkbox" name="" id="match" className="w-4 h-4" />
+              <input type="checkbox" name="" id="match" className="h-4 w-4" />
               <label
                 htmlFor="match"
                 className="text-[12px] leading-4 text-text-secondary"
@@ -136,7 +136,7 @@ export default function InspectionConfirmation() {
         </div>
 
         {/* rate agent */}
-        <div className="flex flex-col gap-2 mt-6">
+        <div className="mt-6 flex flex-col gap-2">
           <div className="flex flex-col gap-1">
             <p>Rate this Agent</p>
 
@@ -150,7 +150,7 @@ export default function InspectionConfirmation() {
             <p>Kindly leave a review(Optional)</p>
 
             <textarea
-              className="w-full  rounded-xl border border-text-disabled px-2 text-[12px] leading-4"
+              className="w-full rounded-xl border border-text-disabled px-2 text-[12px] leading-4"
               placeholder="Share your thoughts about the property, any concerns or feedback about the visit?"
               rows={4}
             />
@@ -162,7 +162,7 @@ export default function InspectionConfirmation() {
         </div>
 
         <div className="mt-8.5 flex flex-col gap-3">
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] h-11.25 rounded-lg bg-[#E2EEFF] w-full">
+          <button className="h-11.25 w-full rounded-lg bg-[#E2EEFF] font-raleway text-[14px] font-semibold tracking-[1px]">
             Submit Confirmation
           </button>
 
@@ -171,7 +171,7 @@ export default function InspectionConfirmation() {
             Send Code to Agent
           </button> */}
 
-          <p className="text-[12px] leading-4 text-text-secondary flex items-center justify-center mb-10">
+          <p className="mb-10 flex items-center justify-center text-[12px] leading-4 text-text-secondary">
             Having issues with agent?&nbsp;
             <span className="text-button-bg">Open a dispute</span>
           </p>
@@ -180,5 +180,5 @@ export default function InspectionConfirmation() {
         <InspectionConfirmedModal />
       </main>
     </div>
-  );
+  )
 }

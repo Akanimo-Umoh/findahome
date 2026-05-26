@@ -1,1 +1,1 @@
-export { default as WithdrawFunds } from "./WithdrawFunds";
+export { default as WithdrawFunds } from "./WithdrawFunds"

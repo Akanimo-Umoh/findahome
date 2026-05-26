@@ -1,4 +1,4 @@
-import calendar from "@/assets/images/img-calendar.png";
+import calendar from "@/assets/images/img-calendar.png"
 
 export default function NoScheduledVisits() {
   return (
@@ -8,7 +8,7 @@ export default function NoScheduledVisits() {
       </div>
 
       <div className="flex flex-col items-center justify-center gap-1">
-        <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-text-primary">
+        <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary">
           No Scheduled Visit
         </p>
         <p className="text-[12px] leading-4 text-text-secondary">
@@ -16,5 +16,5 @@ export default function NoScheduledVisits() {
         </p>
       </div>
     </div>
-  );
+  )
 }

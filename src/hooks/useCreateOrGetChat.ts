@@ -1,25 +1,25 @@
-import { useState } from "react";
-import api from "@/services/api";
-import { toast } from "sonner";
+import { useState } from "react"
+import api from "@/services/api"
+import { toast } from "sonner"
 
 export function useCreateOrGetChat() {
-  const [isCreating, setIsCreating] = useState(false);
+  const [isCreating, setIsCreating] = useState(false)
 
   async function createOrGetChat(propertyId: string, agentId: string) {
-    setIsCreating(true);
+    setIsCreating(true)
     try {
       const res = await api.post("/chat/create-or-get", {
         agentId,
         propertyId,
-      });
-      return res.data._id as string;
+      })
+      return res.data._id as string
     } catch {
-      toast.error("Failed to start chat. Please try again.");
-      return null;
+      toast.error("Failed to start chat. Please try again.")
+      return null
     } finally {
-      setIsCreating(false);
+      setIsCreating(false)
     }
   }
 
-  return { createOrGetChat, isCreating };
+  return { createOrGetChat, isCreating }
 }

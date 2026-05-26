@@ -1,3 +1,3 @@
 export default function Agents() {
-  return <div>Agents</div>;
+  return <div>Agents</div>
 }

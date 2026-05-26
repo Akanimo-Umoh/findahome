@@ -1,1 +1,1 @@
-export { default as EscrowWallet } from "./EscrowWallet";
+export { default as EscrowWallet } from "./EscrowWallet"

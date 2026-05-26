@@ -1,12 +1,12 @@
-import logoIcon from "@/assets/images/icon-logo-tablet.svg";
-import { Link } from "react-router-dom";
+import logoIcon from "@/assets/images/icon-logo-tablet.svg"
+import { Link } from "react-router-dom"
 
 export default function Logo() {
   return (
     <div>
       <Link
         to="/"
-        className={`font-raleway text-[24px] font-bold leading-6 flex items-center justify-center gap-2 text-button-bg w-fit`}
+        className={`flex w-fit items-center justify-center gap-2 font-raleway text-[24px] leading-6 font-bold text-button-bg`}
       >
         <img src={logoIcon} alt="" className="" />
         <p>
@@ -14,5 +14,5 @@ export default function Logo() {
         </p>
       </Link>
     </div>
-  );
+  )
 }

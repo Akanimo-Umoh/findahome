@@ -1,18 +1,18 @@
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import Navbar from "@/components/Navbar";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import Navbar from "@/components/Navbar"
 
 export default function AuthLayout() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const showBackButton =
     location.pathname === "/forgot-password" ||
-    location.pathname === "/reset-password";
+    location.pathname === "/reset-password"
 
   return (
-    <div className="min-h-screen flex flex-col auth-bg items-center md:relative md:pt-18 md:min-h-[calc(screen-72px)] md:justify-center">
-      <div className="relative w-full flex items-center justify-center mt-8 md:hidden">
+    <div className="auth-bg flex min-h-screen flex-col items-center md:relative md:min-h-[calc(screen-72px)] md:justify-center md:pt-18">
+      <div className="relative mt-8 flex w-full items-center justify-center md:hidden">
         {showBackButton && (
           <button
             onClick={() => navigate(-1)}
@@ -23,7 +23,7 @@ export default function AuthLayout() {
         )}
         <Link
           to="/"
-          className="font-raleway font-bold text-[24px] text-[#274AD0]"
+          className="font-raleway text-[24px] font-bold text-[#274AD0]"
         >
           Finda<span className="font-ssPro">Home</span>
         </Link>
@@ -33,9 +33,9 @@ export default function AuthLayout() {
         <Navbar />
       </div>
 
-      <div className="flex w-full justify-center mt-8 mb-8 max-w-[406px] md:bg-white md:rounded-2xl md:border md:border-bg-accent md:my-10">
+      <div className="mt-8 mb-8 flex w-full max-w-[406px] justify-center md:my-10 md:rounded-2xl md:border md:border-bg-accent md:bg-white">
         <Outlet />
       </div>
     </div>
-  );
+  )
 }

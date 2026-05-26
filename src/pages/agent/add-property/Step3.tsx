@@ -184,76 +184,76 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import bedroomIcon from "@/assets/agentImages/icon-bedrooms.svg";
-import bathroomIcon from "@/assets/agentImages/icon-bathrooms.svg";
-import UploadImages from "./UploadImages";
-import UploadDocuments from "./UploadDocuments";
-import UploadVideo from "./UploadVideo";
-import type { AddPropertyFormData } from "./AddProperty";
-import { toast } from "sonner";
-import { useState } from "react";
-import FormField from "./FormField";
+} from "@/components/ui/select"
+import bedroomIcon from "@/assets/agentImages/icon-bedrooms.svg"
+import bathroomIcon from "@/assets/agentImages/icon-bathrooms.svg"
+import UploadImages from "./UploadImages"
+import UploadDocuments from "./UploadDocuments"
+import UploadVideo from "./UploadVideo"
+import type { AddPropertyFormData } from "./AddProperty"
+import { toast } from "sonner"
+import { useState } from "react"
+import FormField from "./FormField"
 
 type Step3Props = {
-  formData: AddPropertyFormData;
-  updateFormData: (fields: Partial<AddPropertyFormData>) => void;
-  onSubmit: () => Promise<void>;
-};
+  formData: AddPropertyFormData
+  updateFormData: (fields: Partial<AddPropertyFormData>) => void
+  onSubmit: () => Promise<void>
+}
 
 type Step3Errors = {
-  bedrooms?: string;
-  bathrooms?: string;
-  apartmentDescription?: string;
-  images?: string;
-  documents?: string;
-  video?: string;
-};
+  bedrooms?: string
+  bathrooms?: string
+  apartmentDescription?: string
+  images?: string
+  documents?: string
+  video?: string
+}
 
 export default function Step3({
   formData,
   updateFormData,
   onSubmit,
 }: Step3Props) {
-  const [errors, setErrors] = useState<Step3Errors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isApartment = formData.propertyType === "apartment";
+  const [errors, setErrors] = useState<Step3Errors>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const isApartment = formData.propertyType === "apartment"
 
   const validate = (): boolean => {
-    const newErrors: Step3Errors = {};
+    const newErrors: Step3Errors = {}
 
     if (isApartment) {
       if (!formData.bedrooms)
-        newErrors.bedrooms = "Please select number of bedrooms";
+        newErrors.bedrooms = "Please select number of bedrooms"
       if (!formData.bathrooms)
-        newErrors.bathrooms = "Please select number of bathrooms";
+        newErrors.bathrooms = "Please select number of bathrooms"
       if (!formData.apartmentDescription.trim())
-        newErrors.apartmentDescription = "Description can't be empty";
+        newErrors.apartmentDescription = "Description can't be empty"
     }
 
     if (formData.images.length === 0)
-      newErrors.images = "Please upload at least one photo";
+      newErrors.images = "Please upload at least one photo"
     if (!isApartment && formData.documents.length === 0)
-      newErrors.documents = "Please upload at least one legal document";
-    if (!formData.video) newErrors.video = "Please upload a video tour";
+      newErrors.documents = "Please upload at least one legal document"
+    if (!formData.video) newErrors.video = "Please upload a video tour"
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!validate()) {
-      toast.error("Please fill in all required fields.");
-      return;
+      toast.error("Please fill in all required fields.")
+      return
     }
     try {
-      setIsSubmitting(true);
-      await onSubmit();
+      setIsSubmitting(true)
+      await onSubmit()
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div>
@@ -262,14 +262,14 @@ export default function Step3({
           <>
             <p>Property Features</p>
 
-            <div className="flex items-start justify-between gap-4 mt-2">
+            <div className="mt-2 flex items-start justify-between gap-4">
               <div className="w-full">
                 <Select
                   value={formData.bedrooms}
                   onValueChange={(val) => {
-                    updateFormData({ bedrooms: val });
+                    updateFormData({ bedrooms: val })
                     if (errors.bedrooms)
-                      setErrors((prev) => ({ ...prev, bedrooms: undefined }));
+                      setErrors((prev) => ({ ...prev, bedrooms: undefined }))
                   }}
                 >
                   <SelectTrigger
@@ -289,7 +289,7 @@ export default function Step3({
                   </SelectContent>
                 </Select>
                 {errors.bedrooms && (
-                  <p className="text-red-500 text-[11px] leading-4 mt-1">
+                  <p className="mt-1 text-[11px] leading-4 text-red-500">
                     {errors.bedrooms}
                   </p>
                 )}
@@ -299,9 +299,9 @@ export default function Step3({
                 <Select
                   value={formData.bathrooms}
                   onValueChange={(val) => {
-                    updateFormData({ bathrooms: val });
+                    updateFormData({ bathrooms: val })
                     if (errors.bathrooms)
-                      setErrors((prev) => ({ ...prev, bathrooms: undefined }));
+                      setErrors((prev) => ({ ...prev, bathrooms: undefined }))
                   }}
                 >
                   <SelectTrigger
@@ -321,7 +321,7 @@ export default function Step3({
                   </SelectContent>
                 </Select>
                 {errors.bathrooms && (
-                  <p className="text-red-500 text-[11px] leading-4 mt-1">
+                  <p className="mt-1 text-[11px] leading-4 text-red-500">
                     {errors.bathrooms}
                   </p>
                 )}
@@ -335,21 +335,21 @@ export default function Step3({
               className="mt-6"
             >
               <div
-                className={`p-3 border rounded-xl h-25 md:h-37.5 ${errors.apartmentDescription ? "border-red-500" : "border-text-disabled"}`}
+                className={`h-25 rounded-xl border p-3 md:h-37.5 ${errors.apartmentDescription ? "border-red-500" : "border-text-disabled"}`}
               >
                 <textarea
                   id="apartmentDescription"
                   value={formData.apartmentDescription}
                   onChange={(e) => {
-                    updateFormData({ apartmentDescription: e.target.value });
+                    updateFormData({ apartmentDescription: e.target.value })
                     if (errors.apartmentDescription)
                       setErrors((prev) => ({
                         ...prev,
                         apartmentDescription: undefined,
-                      }));
+                      }))
                   }}
                   placeholder="Start typing..."
-                  className="outline-none text-[12px] w-full h-full resize-none"
+                  className="h-full w-full resize-none text-[12px] outline-none"
                 />
               </div>
             </FormField>
@@ -359,18 +359,18 @@ export default function Step3({
         <div className="mt-6">
           <p>Upload Photos & Videos</p>
 
-          <div className="mt-5 mx-4">
+          <div className="mx-4 mt-5">
             <div>
               <UploadImages
                 value={formData.images}
                 onChange={(files) => {
-                  updateFormData({ images: files });
+                  updateFormData({ images: files })
                   if (errors.images)
-                    setErrors((prev) => ({ ...prev, images: undefined }));
+                    setErrors((prev) => ({ ...prev, images: undefined }))
                 }}
               />
               {errors.images && (
-                <p className="text-red-500 text-[11px] leading-4 mt-1">
+                <p className="mt-1 text-[11px] leading-4 text-red-500">
                   {errors.images}
                 </p>
               )}
@@ -381,13 +381,13 @@ export default function Step3({
                 <UploadDocuments
                   value={formData.documents}
                   onChange={(files) => {
-                    updateFormData({ documents: files });
+                    updateFormData({ documents: files })
                     if (errors.documents)
-                      setErrors((prev) => ({ ...prev, documents: undefined }));
+                      setErrors((prev) => ({ ...prev, documents: undefined }))
                   }}
                 />
                 {errors.documents && (
-                  <p className="text-red-500 text-[11px] leading-4 mt-1">
+                  <p className="mt-1 text-[11px] leading-4 text-red-500">
                     {errors.documents}
                   </p>
                 )}
@@ -398,13 +398,13 @@ export default function Step3({
               <UploadVideo
                 value={formData.video}
                 onChange={(file) => {
-                  updateFormData({ video: file });
+                  updateFormData({ video: file })
                   if (errors.video)
-                    setErrors((prev) => ({ ...prev, video: undefined }));
+                    setErrors((prev) => ({ ...prev, video: undefined }))
                 }}
               />
               {errors.video && (
-                <p className="text-red-500 text-[11px] leading-4 mt-1">
+                <p className="mt-1 text-[11px] leading-4 text-red-500">
                   {errors.video}
                 </p>
               )}
@@ -412,23 +412,23 @@ export default function Step3({
           </div>
         </div>
 
-        <div className="text-[14px] font-raleway font-semibold tracking-[1px] space-y-4 mt-11">
+        <div className="mt-11 space-y-4 font-raleway text-[14px] font-semibold tracking-[1px]">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-lg h-[45px] button-style text-white w-full disabled:opacity-50"
+            className="button-style h-[45px] w-full rounded-lg text-white disabled:opacity-50"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </button>
 
           <button
             type="button"
-            className="rounded-lg border border-text-secondary bg-button-disabled h-[45px] w-full cursor-pointer"
+            className="h-[45px] w-full cursor-pointer rounded-lg border border-text-secondary bg-button-disabled"
           >
             Save as draft
           </button>
         </div>
       </form>
     </div>
-  );
+  )
 }

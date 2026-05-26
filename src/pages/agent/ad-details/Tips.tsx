@@ -1,8 +1,8 @@
-import tipsIcon from "@/assets/agentImages/icon-tips.svg";
+import tipsIcon from "@/assets/agentImages/icon-tips.svg"
 
 export default function Tips() {
   return (
-    <div className="flex items-start bg-bg-accent rounded-lg p-2 gap-2">
+    <div className="flex items-start gap-2 rounded-lg bg-bg-accent p-2">
       <img src={tipsIcon} alt="" className="shrink-0" />
       <div>
         <p className="text-[14px]">Tips for better results</p>
@@ -11,5 +11,5 @@ export default function Tips() {
         </p>
       </div>
     </div>
-  );
+  )
 }

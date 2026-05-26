@@ -1,19 +1,19 @@
-import blueNaira from "@/assets/agentImages/icon-blue-naira.svg";
-import blackNaira from "@/assets/agentImages/icon-black-naira.svg";
-import greyNaira from "@/assets/agentImages/icon-grey-naira.svg";
+import blueNaira from "@/assets/agentImages/icon-blue-naira.svg"
+import blackNaira from "@/assets/agentImages/icon-black-naira.svg"
+import greyNaira from "@/assets/agentImages/icon-grey-naira.svg"
 
 export default function BudgetSpend() {
   return (
     <div>
       <p>Budget & Spend</p>
 
-      <div className="mt-2 rounded-lg p-2 flex flex-col gap-2 bg-bg-accent">
+      <div className="mt-2 flex flex-col gap-2 rounded-lg bg-bg-accent p-2">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[14px] text-text-secondary">Total Budget</p>
             <div className="flex items-center">
-              <img src={blackNaira} alt="" className="w-4 h-4" />
-              <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+              <img src={blackNaira} alt="" className="h-4 w-4" />
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
                 15,000
               </p>
             </div>
@@ -23,8 +23,8 @@ export default function BudgetSpend() {
             <p className="text-[14px] text-text-secondary">Spent so far</p>
 
             <div className="flex items-center">
-              <img src={blueNaira} alt="" className="w-4 h-4" />
-              <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
+              <img src={blueNaira} alt="" className="h-4 w-4" />
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
                 5,600
               </p>
             </div>
@@ -36,7 +36,7 @@ export default function BudgetSpend() {
           <div>progress bar</div>
 
           <div className="flex items-center justify-between">
-            <p className="text-text-secondary text-[12px] leading-4">
+            <p className="text-[12px] leading-4 text-text-secondary">
               60.8% used
             </p>
 
@@ -50,5 +50,5 @@ export default function BudgetSpend() {
         </div>
       </div>
     </div>
-  );
+  )
 }

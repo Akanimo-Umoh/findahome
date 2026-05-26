@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import blueNaira from "@/assets/images/icon-naira.svg";
-import walletIcon from "@/assets/images/icon-pay-inspection-fee.svg";
-import blackNaira from "@/assets/images/icon-black-naira.svg";
-import iconTransfer from "@/assets/images/icon-wallet-via-bank-transfer.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import blueNaira from "@/assets/images/icon-naira.svg"
+import walletIcon from "@/assets/images/icon-pay-inspection-fee.svg"
+import blackNaira from "@/assets/images/icon-black-naira.svg"
+import iconTransfer from "@/assets/images/icon-wallet-via-bank-transfer.svg"
 
 export default function FundWallet() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const nairaAmount = [
     {
@@ -21,35 +21,35 @@ export default function FundWallet() {
     {
       value: "20,000",
     },
-  ];
+  ]
 
   return (
     <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Fund Wallet
         </p>
       </div>
 
       {/* current balance */}
       <section className="mt-7.5">
-        <div className="flex flex-col justify-center gap-2 border border-bg-accent rounded-xl px-3 py-2">
+        <div className="flex flex-col justify-center gap-2 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <p className="text-[14px]">Current balance</p>
-              <p className="text-[18px] tracking-[1px] font-raleway font-semibold text-button-bg flex items-center">
+              <p className="flex items-center font-raleway text-[18px] font-semibold tracking-[1px] text-button-bg">
                 <img src={blueNaira} alt="" />
                 <span>12,000</span>
               </p>
               <p className="text-[12px] leading-4">Wallet ID: WAL-0LA4K</p>
             </div>
 
-            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-bg-accent">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-accent">
               <img src={walletIcon} alt="" />
             </div>
           </div>
@@ -65,23 +65,23 @@ export default function FundWallet() {
           <label htmlFor="amount" className="text-[14px]">
             Enter Amount
           </label>
-          <div className="flex items-center justify-center relative mt-2">
-            <img src={blackNaira} alt="" className="absolute left-0 w-6 h-6" />
+          <div className="relative mt-2 flex items-center justify-center">
+            <img src={blackNaira} alt="" className="absolute left-0 h-6 w-6" />
             <input
               type="text"
               name=""
               id="amount"
-              className="outline-none border-b w-full pl-7 pr-6"
+              className="w-full border-b pr-6 pl-7 outline-none"
             />
           </div>
         </div>
 
         {/* amounts */}
-        <div className="mt-6 flex justify-between items-center">
+        <div className="mt-6 flex items-center justify-between">
           {nairaAmount.map((amount, index) => (
             <div key={index} className="flex items-center">
-              <img src={blueNaira} alt="" className="w-4 h-4" />
-              <span className="text-[14px] tracking-[1px] font-raleway font-semibold text-button-bg">
+              <img src={blueNaira} alt="" className="h-4 w-4" />
+              <span className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
                 {amount.value}
               </span>
             </div>
@@ -95,34 +95,34 @@ export default function FundWallet() {
           <div className="flex flex-col gap-4">
             <label
               htmlFor="payViaCard"
-              className="px-2 py-3 bg-bg-accent border border-button-bg rounded-xl flex gap-4 items-center"
+              className="flex items-center gap-4 rounded-xl border border-button-bg bg-bg-accent px-2 py-3"
             >
               <input
                 type="radio"
                 name="paymentMethod"
                 id="payViaCard"
-                className="w-5 h-5"
+                className="h-5 w-5"
               />
 
               <div className="flex items-center gap-2">
-                <img src={walletIcon} alt="" className="w-6 h-6" />
+                <img src={walletIcon} alt="" className="h-6 w-6" />
                 <span className="text-text-secondary">Pay with Card</span>
               </div>
             </label>
 
             <label
               htmlFor="payViaTransfer"
-              className="px-2 py-3 bg-bg-accent border border-button-bg rounded-xl flex gap-4 items-center"
+              className="flex items-center gap-4 rounded-xl border border-button-bg bg-bg-accent px-2 py-3"
             >
               <input
                 type="radio"
                 name="paymentMethod"
                 id="payViaTransfer"
-                className="w-5 h-5"
+                className="h-5 w-5"
               />
 
               <div className="flex items-center gap-2">
-                <img src={iconTransfer} alt="" className="w-6 h-6" />
+                <img src={iconTransfer} alt="" className="h-6 w-6" />
                 <span className="text-text-secondary">
                   Pay with via bank transfer
                 </span>
@@ -131,8 +131,8 @@ export default function FundWallet() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-1 items-center justify-center mb-10">
-          <button className="font-raleway font-semibold text-white text-[14px] tracking-[1px] h-[45px] rounded-lg button-style w-full flex items-center justify-center">
+        <div className="mt-8 mb-10 flex flex-col items-center justify-center gap-1">
+          <button className="button-style flex h-[45px] w-full items-center justify-center rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             Proceed to pay N5000
           </button>
 
@@ -142,5 +142,5 @@ export default function FundWallet() {
         </div>
       </section>
     </div>
-  );
+  )
 }

@@ -1,36 +1,36 @@
-import { useEffect, useState } from "react";
-import hide from "@/assets/images/icon-hide-password.svg";
-import show from "@/assets/images/icon-show-password.svg";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react"
+import hide from "@/assets/images/icon-hide-password.svg"
+import show from "@/assets/images/icon-show-password.svg"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
+import { useForm } from "react-hook-form"
 import {
   ResetPasswordSchema,
   type ResetPasswordFormData,
-} from "@/validation/auth/rules";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { forgotPassword, resetPassword } from "@/services/auth.service";
-import { AxiosError } from "axios";
-import inputError from "@/assets/images/icon-email-error.svg";
+} from "@/validation/auth/rules"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { forgotPassword, resetPassword } from "@/services/auth.service"
+import { AxiosError } from "axios"
+import inputError from "@/assets/images/icon-email-error.svg"
 
 type LocationState = {
-  email?: string;
-};
+  email?: string
+}
 
 export default function ResetPassword() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
-  const [isResending, setIsResending] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
+  const [isResending, setIsResending] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   // check url params first before checking the location state
-  const emailFromUrl = searchParams.get("email");
-  const emailFromState = (location.state as LocationState)?.email;
-  const email = emailFromUrl || emailFromState;
+  const emailFromUrl = searchParams.get("email")
+  const emailFromState = (location.state as LocationState)?.email
+  const email = emailFromUrl || emailFromState
 
   const {
     register,
@@ -38,80 +38,80 @@ export default function ResetPassword() {
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(ResetPasswordSchema),
-  });
+  })
 
   // redirect if no email provided
   useEffect(() => {
     if (!email) {
-      navigate("/forgot-password", { replace: true });
+      navigate("/forgot-password", { replace: true })
     }
-  }, [email, navigate]);
+  }, [email, navigate])
 
-  if (!email) return null;
+  if (!email) return null
 
   const handleResendCode = async () => {
     try {
-      setIsResending(true);
-      setApiError(null);
-      setSuccessMessage(null);
+      setIsResending(true)
+      setApiError(null)
+      setSuccessMessage(null)
 
-      await forgotPassword({ email });
+      await forgotPassword({ email })
 
-      setSuccessMessage("Reset code sent! Please check your email.");
+      setSuccessMessage("Reset code sent! Please check your email.")
     } catch (error) {
-      console.error("Resend error:", error);
+      console.error("Resend error:", error)
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message ||
-          "Failed to resend code. Please try again.";
-        setApiError(errorMessage);
+          "Failed to resend code. Please try again."
+        setApiError(errorMessage)
       } else {
-        setApiError("An unexpected error occurred. Please try again.");
+        setApiError("An unexpected error occurred. Please try again.")
       }
     } finally {
-      setIsResending(false);
+      setIsResending(false)
     }
-  };
+  }
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     try {
-      setApiError(null);
-      setSuccessMessage(null);
+      setApiError(null)
+      setSuccessMessage(null)
 
-      console.log("Resetting password for:", email);
+      console.log("Resetting password for:", email)
 
       // only send email, code and newPassword
       await resetPassword({
         email,
         code: data.code,
         newPassword: data.newPassword,
-      });
+      })
 
-      console.log("Password reset successful");
+      console.log("Password reset successful")
 
       navigate("/reset-password/success", {
         replace: true,
-      });
+      })
     } catch (error) {
-      console.error("Reset password error:", error);
+      console.error("Reset password error:", error)
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message ||
-          "Failed to reset password. Please try again.";
-        setApiError(errorMessage);
+          "Failed to reset password. Please try again."
+        setApiError(errorMessage)
       } else {
-        setApiError("An unexpected error occurred. Please try again.");
+        setApiError("An unexpected error occurred. Please try again.")
       }
     }
-  };
+  }
 
   return (
-    <div className="font-ssPro mx-6 w-full items-center justify-center space-y-[45px]">
-      <div className="text-text-primary space-y-2 text-center">
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+    <div className="mx-6 w-full items-center justify-center space-y-[45px] font-ssPro">
+      <div className="space-y-2 text-center text-text-primary">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Reset Password
         </p>
-        <p className="text-[12px] text-center">
+        <p className="text-center text-[12px]">
           We've sent a reset code to <span>{email}</span>
         </p>
       </div>
@@ -120,7 +120,7 @@ export default function ResetPassword() {
         {/* Success message */}
         {successMessage && (
           <div
-            className="flex items-center gap-2 p-3 bg-[#F0FFF4] border border-green-500 rounded-lg mb-2"
+            className="mb-2 flex items-center gap-2 rounded-lg border border-green-500 bg-[#F0FFF4] p-3"
             role="alert"
           >
             <p className="text-[12px] text-green-700">{successMessage}</p>
@@ -130,7 +130,7 @@ export default function ResetPassword() {
         {/* Error message */}
         {apiError && (
           <div
-            className="flex items-center gap-2 p-3 bg-[#FFF0F0] border border-state-error rounded-lg mb-2"
+            className="mb-2 flex items-center gap-2 rounded-lg border border-state-error bg-[#FFF0F0] p-3"
             role="alert"
           >
             <img src={inputError} alt="" aria-hidden="true" />
@@ -149,7 +149,7 @@ export default function ResetPassword() {
               id="code"
               placeholder="Enter code"
               maxLength={6}
-              className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-12 pl-2 pr-10 rounded-xl outline-none ${
+              className={`h-12 w-full rounded-xl bg-white pr-10 pl-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                 errors.code
                   ? "border-2 border-state-error"
                   : "border border-[#0A0A0A59]"
@@ -184,7 +184,7 @@ export default function ResetPassword() {
                 type={showPassword ? "text" : "password"}
                 id="newPassword"
                 placeholder="Enter Password"
-                className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-12 pl-2 pr-10 rounded-xl outline-none ${
+                className={`h-12 w-full rounded-xl bg-white pr-10 pl-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                   errors.newPassword
                     ? "border-2 border-state-error"
                     : "border border-[#0A0A0A59]"
@@ -199,7 +199,7 @@ export default function ResetPassword() {
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 tabIndex={0}
               >
@@ -235,7 +235,7 @@ export default function ResetPassword() {
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 placeholder="Enter Password"
-                className={`w-full text-[14px] placeholder:text-text-secondary text-black bg-white h-12 pl-2 pr-10 rounded-xl outline-none ${
+                className={`h-12 w-full rounded-xl bg-white pr-10 pl-2 text-[14px] text-black outline-none placeholder:text-text-secondary ${
                   errors.confirmPassword
                     ? "border-2 border-state-error"
                     : "border border-[#0A0A0A59]"
@@ -250,7 +250,7 @@ export default function ResetPassword() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="absolute top-1/2 -translate-y-1/2 right-2 cursor-pointer"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                 aria-label={
                   showConfirmPassword ? "Hide password" : "Show password"
                 }
@@ -283,7 +283,7 @@ export default function ResetPassword() {
           type="button"
           onClick={handleResendCode}
           disabled={isResending}
-          className="text-[14px] cursor-pointer text-text-secondary disabled:opacity-50 disabled:cursor-not-allowed mx-auto hover:text-button-bg"
+          className="mx-auto cursor-pointer text-[14px] text-text-secondary hover:text-button-bg disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isResending ? "Sending..." : "Resend Code"}
         </button>
@@ -291,11 +291,11 @@ export default function ResetPassword() {
         <button
           type="submit"
           disabled={isSubmitting || isResending}
-          className="mt-8 h-12 rounded-lg bg-button-bg flex items-center justify-center w-full text-white font-raleway font-semibold tracking-[1px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1e3aa8] transition-colors"
+          className="mt-8 flex h-12 w-full cursor-pointer items-center justify-center rounded-lg bg-button-bg font-raleway font-semibold tracking-[1px] text-white transition-colors hover:bg-[#1e3aa8] disabled:cursor-not-allowed disabled:opacity-50"
         >
           Continue
         </button>
       </form>
     </div>
-  );
+  )
 }

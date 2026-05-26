@@ -1,4 +1,4 @@
-import nairaIcon from "@/assets/images/icon-chat-naira.svg";
+import nairaIcon from "@/assets/images/icon-chat-naira.svg"
 
 export default function PartiesInvolved() {
   const users = [
@@ -22,7 +22,7 @@ export default function PartiesInvolved() {
       title: "Transaction ID:",
       text: "TXN-89234567",
     },
-  ];
+  ]
 
   const transactionDetails = [
     {
@@ -49,11 +49,11 @@ export default function PartiesInvolved() {
       title: "Transaction Status",
       text: "Funds Released",
     },
-  ];
+  ]
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col justify-center gap-2 bg-[#FAF3E0] rounded-xl p-2">
+      <div className="flex flex-col justify-center gap-2 rounded-xl bg-[#FAF3E0] p-2">
         {users.map((user, index) => (
           <div key={index} className="flex items-center justify-between">
             <p className="text-[12px] leading-4 text-text-primary">
@@ -67,7 +67,7 @@ export default function PartiesInvolved() {
         ))}
       </div>
 
-      <div className="flex flex-col justify-center gap-2 bg-bg-accent rounded-xl p-2">
+      <div className="flex flex-col justify-center gap-2 rounded-xl bg-bg-accent p-2">
         {transactionDetails.map((detail, index) => (
           <div key={index} className="flex items-center justify-between">
             <p className="text-[12px] leading-4 text-text-primary">
@@ -75,7 +75,7 @@ export default function PartiesInvolved() {
             </p>
 
             {detail.title === "Total Amount Paid" ? (
-              <p className="text-[12px] leading-4 text-text-secondary flex items-center">
+              <p className="flex items-center text-[12px] leading-4 text-text-secondary">
                 <img src={nairaIcon} alt="" />
                 <span>{detail.text}</span>
               </p>
@@ -88,5 +88,5 @@ export default function PartiesInvolved() {
         ))}
       </div>
     </div>
-  );
+  )
 }

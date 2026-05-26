@@ -1,7 +1,7 @@
-import escrowReleaseIcon from "@/assets/agentImages/icon-escrow-release.svg";
-import escrowHoldIcon from "@/assets/agentImages/icon-escrow-lock.svg";
-import withdrawIcon from "@/assets/agentImages/icon-withdraw-successful.svg";
-import blueNaira from "@/assets/agentImages/icon-blue-naira.svg";
+import escrowReleaseIcon from "@/assets/agentImages/icon-escrow-release.svg"
+import escrowHoldIcon from "@/assets/agentImages/icon-escrow-lock.svg"
+import withdrawIcon from "@/assets/agentImages/icon-withdraw-successful.svg"
+import blueNaira from "@/assets/agentImages/icon-blue-naira.svg"
 
 export default function Activities() {
   return (
@@ -11,17 +11,17 @@ export default function Activities() {
       {/* activities ctn */}
       <div className="mt-4 space-y-4">
         {/* escrow release */}
-        <div className="flex items-start gap-2 p-2 justify-between border border-bg-accent rounded-xl">
+        <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
           <div className="flex flex-1 gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#149D18] flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#149D18]">
               <img src={escrowReleaseIcon} alt="" />
             </div>
 
             <div>
-              <p className="text-[12px] font-raleway font-semibold tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 Escrow Release - Lekki Phase 1 Apartment
               </p>
-              <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+              <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                 Buyer confirmed inspection
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -37,17 +37,17 @@ export default function Activities() {
         </div>
 
         {/* escrow hold */}
-        <div className="flex items-start gap-2 p-2 justify-between border border-bg-accent rounded-xl">
+        <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
           <div className="flex flex-1 gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#FF6B6B] flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FF6B6B]">
               <img src={escrowHoldIcon} alt="" />
             </div>
 
             <div>
-              <p className="text-[12px] font-raleway font-semibold tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 Escrow Hold - Ikoyi Duplex
               </p>
-              <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+              <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                 Buyer confirmed inspection
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -63,17 +63,17 @@ export default function Activities() {
         </div>
 
         {/* withdrawal successful */}
-        <div className="flex items-start gap-2 p-2 justify-between border border-bg-accent rounded-xl">
+        <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
           <div className="flex flex-1 gap-3">
-            <div className="w-10 h-10 rounded-full bg-button-bg flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-button-bg">
               <img src={withdrawIcon} alt="" />
             </div>
 
             <div>
-              <p className="text-[12px] font-raleway font-semibold tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 Withdrawal successful
               </p>
-              <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+              <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                 Transferred to First Bank ****4810
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -89,17 +89,17 @@ export default function Activities() {
         </div>
 
         {/* escrow release */}
-        <div className="flex items-start gap-2 p-2 justify-between border border-bg-accent rounded-xl">
+        <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
           <div className="flex flex-1 gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#149D18] flex items-center justify-center shrink-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#149D18]">
               <img src={escrowReleaseIcon} alt="" />
             </div>
 
             <div>
-              <p className="text-[12px] font-raleway font-semibold tracking-[1px] line-clamp-2">
+              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
                 Escrow Release - 2- Bedroom Apartment, Ikorodu, Lagos.
               </p>
-              <p className="text-[12px] leading-4 text-text-secondary line-clamp-1">
+              <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                 Buyer confirmed property handover.
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -115,5 +115,5 @@ export default function Activities() {
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,10 +1,10 @@
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import verifiedIcon from "@/assets/images/icon-verified-green.svg";
-import yellowStar from "@/assets/images/icon-yellow-star.svg";
-import starIcon from "@/assets/images/icon-normal-star.svg";
-import ellipseIcon from "@/assets/images/icon-ellipse.svg";
-import locationIcon from "@/assets/images/icon-location.svg";
-import houseIcon from "@/assets/images/icon-nav-apartments.svg";
+import agentAvatar from "@/assets/images/agentAvatar.jpg"
+import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+import yellowStar from "@/assets/images/icon-yellow-star.svg"
+import starIcon from "@/assets/images/icon-normal-star.svg"
+import ellipseIcon from "@/assets/images/icon-ellipse.svg"
+import locationIcon from "@/assets/images/icon-location.svg"
+import houseIcon from "@/assets/images/icon-nav-apartments.svg"
 
 export default function AgentsCard() {
   return (
@@ -12,27 +12,27 @@ export default function AgentsCard() {
       {/* number of agents available */}
       <p className="text-[14px]">14 agents found</p>
 
-      <div className="flex items-center justify-center mt-2 gap-1 sm:gap-4 flex-wrap">
-        <div className="rounded-xl py-2 px-3 flex flex-col gap-4 border border-bg-accent agent-card w-40">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-1 sm:gap-4">
+        <div className="agent-card flex w-40 flex-col gap-4 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex h-[36px] items-center gap-1">
               <img
                 src={agentAvatar}
                 alt=""
-                className="min-w-7.5 w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 min-w-7.5 rounded-full object-cover"
               />
 
-              <p className="text-[12px] font-semibold line-clamp-2">
+              <p className="line-clamp-2 text-[12px] font-semibold">
                 Maryann Kikomu
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 line-clamp-1">
+            <p className="line-clamp-1 text-[12px] leading-4">
               Luxury Properties Limited
             </p>
 
-            <div className="bg-bg-accent flex items-center gap-0.5 py-0.5 px-1 rounded-lg justify-center w-fit">
-              <img src={verifiedIcon} alt="" className="w-4 h-4" />
+            <div className="flex w-fit items-center justify-center gap-0.5 rounded-lg bg-bg-accent px-1 py-0.5">
+              <img src={verifiedIcon} alt="" className="h-4 w-4" />
               <p className="text-[12px] leading-4">Verified</p>
             </div>
 
@@ -46,7 +46,7 @@ export default function AgentsCard() {
                 <img src={starIcon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-1">
+              <div className="flex items-center gap-1 text-[12px] leading-4 text-text-secondary">
                 <p>4.5</p>
                 <img src={ellipseIcon} alt="" />
                 <p>140 reviews</p>
@@ -72,31 +72,31 @@ export default function AgentsCard() {
           </div>
 
           {/* view profile */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-lg h-[45px] bg-button-bg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             View Profile
           </button>
         </div>
 
-        <div className="rounded-xl py-2 px-3 flex flex-col gap-4 border border-bg-accent agent-card w-40">
+        <div className="agent-card flex w-40 flex-col gap-4 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex h-[36px] items-center gap-1">
               <img
                 src={agentAvatar}
                 alt=""
-                className="min-w-7.5 w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 min-w-7.5 rounded-full object-cover"
               />
 
-              <p className="text-[12px] font-semibold line-clamp-2">
+              <p className="line-clamp-2 text-[12px] font-semibold">
                 Maryann Kikomu
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 line-clamp-1">
+            <p className="line-clamp-1 text-[12px] leading-4">
               Luxury Properties Limited
             </p>
 
-            <div className="bg-bg-accent flex items-center gap-0.5 py-0.5 px-1 rounded-lg justify-center w-fit">
-              <img src={verifiedIcon} alt="" className="w-4 h-4" />
+            <div className="flex w-fit items-center justify-center gap-0.5 rounded-lg bg-bg-accent px-1 py-0.5">
+              <img src={verifiedIcon} alt="" className="h-4 w-4" />
               <p className="text-[12px] leading-4">Verified</p>
             </div>
 
@@ -110,7 +110,7 @@ export default function AgentsCard() {
                 <img src={starIcon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-1">
+              <div className="flex items-center gap-1 text-[12px] leading-4 text-text-secondary">
                 <p>4.5</p>
                 <img src={ellipseIcon} alt="" />
                 <p>140 reviews</p>
@@ -136,30 +136,30 @@ export default function AgentsCard() {
           </div>
 
           {/* view profile */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-lg h-[45px] bg-button-bg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             View Profile
           </button>
         </div>
-        <div className="rounded-xl py-2 px-3 flex flex-col gap-4 border border-bg-accent agent-card w-40">
+        <div className="agent-card flex w-40 flex-col gap-4 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex h-[36px] items-center gap-1">
               <img
                 src={agentAvatar}
                 alt=""
-                className="min-w-7.5 w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 min-w-7.5 rounded-full object-cover"
               />
 
-              <p className="text-[12px] font-semibold line-clamp-2">
+              <p className="line-clamp-2 text-[12px] font-semibold">
                 Maryann Kikomu
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 line-clamp-1">
+            <p className="line-clamp-1 text-[12px] leading-4">
               Luxury Properties Limited
             </p>
 
-            <div className="bg-bg-accent flex items-center gap-0.5 py-0.5 px-1 rounded-lg justify-center w-fit">
-              <img src={verifiedIcon} alt="" className="w-4 h-4" />
+            <div className="flex w-fit items-center justify-center gap-0.5 rounded-lg bg-bg-accent px-1 py-0.5">
+              <img src={verifiedIcon} alt="" className="h-4 w-4" />
               <p className="text-[12px] leading-4">Verified</p>
             </div>
 
@@ -173,7 +173,7 @@ export default function AgentsCard() {
                 <img src={starIcon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-1">
+              <div className="flex items-center gap-1 text-[12px] leading-4 text-text-secondary">
                 <p>4.5</p>
                 <img src={ellipseIcon} alt="" />
                 <p>140 reviews</p>
@@ -199,30 +199,30 @@ export default function AgentsCard() {
           </div>
 
           {/* view profile */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-lg h-[45px] bg-button-bg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             View Profile
           </button>
         </div>
-        <div className="rounded-xl py-2 px-3 flex flex-col gap-4 border border-bg-accent agent-card w-40">
+        <div className="agent-card flex w-40 flex-col gap-4 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex h-[36px] items-center gap-1">
               <img
                 src={agentAvatar}
                 alt=""
-                className="min-w-7.5 w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 min-w-7.5 rounded-full object-cover"
               />
 
-              <p className="text-[12px] font-semibold line-clamp-2">
+              <p className="line-clamp-2 text-[12px] font-semibold">
                 Maryann Kikomu
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 line-clamp-1">
+            <p className="line-clamp-1 text-[12px] leading-4">
               Luxury Properties Limited
             </p>
 
-            <div className="bg-bg-accent flex items-center gap-0.5 py-0.5 px-1 rounded-lg justify-center w-fit">
-              <img src={verifiedIcon} alt="" className="w-4 h-4" />
+            <div className="flex w-fit items-center justify-center gap-0.5 rounded-lg bg-bg-accent px-1 py-0.5">
+              <img src={verifiedIcon} alt="" className="h-4 w-4" />
               <p className="text-[12px] leading-4">Verified</p>
             </div>
 
@@ -236,7 +236,7 @@ export default function AgentsCard() {
                 <img src={starIcon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-1">
+              <div className="flex items-center gap-1 text-[12px] leading-4 text-text-secondary">
                 <p>4.5</p>
                 <img src={ellipseIcon} alt="" />
                 <p>140 reviews</p>
@@ -262,30 +262,30 @@ export default function AgentsCard() {
           </div>
 
           {/* view profile */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-lg h-[45px] bg-button-bg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             View Profile
           </button>
         </div>
-        <div className="rounded-xl py-2 px-3 flex flex-col gap-4 border border-bg-accent agent-card w-40">
+        <div className="agent-card flex w-40 flex-col gap-4 rounded-xl border border-bg-accent px-3 py-2">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-1 h-[36px]">
+            <div className="flex h-[36px] items-center gap-1">
               <img
                 src={agentAvatar}
                 alt=""
-                className="min-w-7.5 w-7.5 h-7.5 object-cover rounded-full"
+                className="h-7.5 w-7.5 min-w-7.5 rounded-full object-cover"
               />
 
-              <p className="text-[12px] font-semibold line-clamp-2">
+              <p className="line-clamp-2 text-[12px] font-semibold">
                 Maryann Kikomu
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 line-clamp-1">
+            <p className="line-clamp-1 text-[12px] leading-4">
               Luxury Properties Limited
             </p>
 
-            <div className="bg-bg-accent flex items-center gap-0.5 py-0.5 px-1 rounded-lg justify-center w-fit">
-              <img src={verifiedIcon} alt="" className="w-4 h-4" />
+            <div className="flex w-fit items-center justify-center gap-0.5 rounded-lg bg-bg-accent px-1 py-0.5">
+              <img src={verifiedIcon} alt="" className="h-4 w-4" />
               <p className="text-[12px] leading-4">Verified</p>
             </div>
 
@@ -299,7 +299,7 @@ export default function AgentsCard() {
                 <img src={starIcon} alt="" />
               </div>
 
-              <div className="text-[12px] leading-4 text-text-secondary flex items-center gap-1">
+              <div className="flex items-center gap-1 text-[12px] leading-4 text-text-secondary">
                 <p>4.5</p>
                 <img src={ellipseIcon} alt="" />
                 <p>140 reviews</p>
@@ -325,15 +325,15 @@ export default function AgentsCard() {
           </div>
 
           {/* view profile */}
-          <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white rounded-lg h-[45px] bg-button-bg w-full">
+          <button className="h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
             View Profile
           </button>
         </div>
       </div>
 
-      <p className="bg-bg-accent font-raleway font-semibold text-[14px] tracking-[1px] rounded-lg p-2 w-fit mx-auto mt-8">
+      <p className="mx-auto mt-8 w-fit rounded-lg bg-bg-accent p-2 font-raleway text-[14px] font-semibold tracking-[1px]">
         Load More...
       </p>
     </div>
-  );
+  )
 }

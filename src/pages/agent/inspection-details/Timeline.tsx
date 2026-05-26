@@ -1,4 +1,4 @@
-import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg";
+import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg"
 
 export default function Timeline() {
   return (
@@ -9,7 +9,7 @@ export default function Timeline() {
 
         <div className="mt-2 space-y-2">
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -22,7 +22,7 @@ export default function Timeline() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -35,7 +35,7 @@ export default function Timeline() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -48,7 +48,7 @@ export default function Timeline() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
               {/* <img src={checkIcon} alt="" /> */}
               {/* note: if it is confirmed, show the img and also change the div bg to bg-[#149D18] */}
             </div>
@@ -68,7 +68,7 @@ export default function Timeline() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -82,7 +82,7 @@ export default function Timeline() {
           </div>
 
           <div className="flex items-center gap-2">
-            <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+            <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
               <img src={checkIcon} alt="" />
             </div>
 
@@ -97,5 +97,5 @@ export default function Timeline() {
         </div>
       </div>
     </div>
-  );
+  )
 }

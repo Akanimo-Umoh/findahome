@@ -3,7 +3,7 @@ export default function CampaignDetails() {
     <div>
       <p>Campaign Details</p>
 
-      <div className="mt-2 rounded-lg p-2 flex flex-col gap-2 bg-bg-accent">
+      <div className="mt-2 flex flex-col gap-2 rounded-lg bg-bg-accent p-2">
         <div className="flex items-center justify-between">
           <p className="text-[14px] text-text-secondary">Ad Goal</p>
           <p className="text-[14px]">Lead generation</p>
@@ -25,5 +25,5 @@ export default function CampaignDetails() {
         </div>
       </div>
     </div>
-  );
+  )
 }

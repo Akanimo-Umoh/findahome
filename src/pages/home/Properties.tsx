@@ -1,18 +1,18 @@
-import { Link } from "react-router-dom";
-import PropertyCard from "@/components/PropertyCard";
-import { useProperties } from "@/hooks/useProperties";
-import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
+import { Link } from "react-router-dom"
+import PropertyCard from "@/components/PropertyCard"
+import { useProperties } from "@/hooks/useProperties"
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 
 export default function Properties() {
-  const { properties, loading, error } = useProperties();
+  const { properties, loading, error } = useProperties()
 
   // slice to 3 for the homepage preview
-  const previewProperties = properties.slice(0, 3);
-  const skeletons = Array(3).fill(null);
+  const previewProperties = properties.slice(0, 3)
+  const skeletons = Array(3).fill(null)
 
   return (
-    <div className="font-ssPro mx-6 md:mx-8 max-w-7xl">
-      <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-primary md:text-[36px] text-center">
+    <div className="mx-6 max-w-7xl font-ssPro md:mx-8">
+      <p className="text-center font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary md:text-[36px]">
         Available Properties
       </p>
 
@@ -26,7 +26,7 @@ export default function Properties() {
           <div className="text-center text-red-500">Error: {error}</div>
         ) : (
           // show properties
-          <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
             {previewProperties.map((property) => (
               <Link
                 key={property._id}
@@ -41,15 +41,15 @@ export default function Properties() {
       </div>
 
       {!loading && !error && (
-        <div className="text-center mt-2 md:mt-10">
+        <div className="mt-2 text-center md:mt-10">
           <Link
             to="/available-properties"
-            className="text-text-secondary text-center md:text-[18px]"
+            className="text-center text-text-secondary md:text-[18px]"
           >
             See More
           </Link>
         </div>
       )}
     </div>
-  );
+  )
 }

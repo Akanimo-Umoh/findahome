@@ -36,4 +36,4 @@ export const nigerianStates = [
   { value: "taraba", label: "Taraba" },
   { value: "yobe", label: "Yobe" },
   { value: "zamfara", label: "Zamfara" },
-];
+]

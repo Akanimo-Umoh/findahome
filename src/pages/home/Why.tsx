@@ -1,6 +1,6 @@
-import protect from "@/assets/images/protected.svg";
-import verified from "@/assets/images/verified.svg";
-import legal from "@/assets/images/legal.svg";
+import protect from "@/assets/images/protected.svg"
+import verified from "@/assets/images/verified.svg"
+import legal from "@/assets/images/legal.svg"
 
 export default function Why() {
   const details = [
@@ -26,37 +26,37 @@ export default function Why() {
       description:
         "Professional legal document review and digital signing support for all transactions.",
     },
-  ];
+  ]
 
   return (
-    <div className="text-text-primary px-6 flex flex-col items-center justify-center">
-      <div className="flex flex-col items-center justify-center text-center gap-1 max-w-[308px]">
-        <p className="text-[18px] font-raleway tracking-[1px] font-semibold">
+    <div className="flex flex-col items-center justify-center px-6 text-text-primary">
+      <div className="flex max-w-[308px] flex-col items-center justify-center gap-1 text-center">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Why Choose Findahome?
         </p>
-        <p className="text-[12px] text-text-secondary leading-4.5">
+        <p className="text-[12px] leading-4.5 text-text-secondary">
           We've built our platform with your safety and peace of mind as the top
           priority
         </p>
       </div>
 
-      <div className="mt-4 space-y-4 w-full">
+      <div className="mt-4 w-full space-y-4">
         {details.map((detail, index) => (
           <div
             key={index}
-            className={`${detail.bg} h-[174px] flex flex-col items-center justify-center gap-1 why-shadow text-center`}
+            className={`${detail.bg} why-shadow flex h-[174px] flex-col items-center justify-center gap-1 text-center`}
           >
             <div
-              className={`w-14 h-14 rounded-2xl ${detail.iconBg} flex items-center justify-center`}
+              className={`h-14 w-14 rounded-2xl ${detail.iconBg} flex items-center justify-center`}
             >
               <img src={detail.icon} alt="" />
             </div>
 
             <div className="flex flex-col items-center justify-center gap-0.5">
-              <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+              <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
                 {detail.title}
               </p>
-              <p className="font-ssPro text-[12px] text-text-secondary max-w-[259px]">
+              <p className="max-w-[259px] font-ssPro text-[12px] text-text-secondary">
                 {detail.description}
               </p>
             </div>
@@ -64,5 +64,5 @@ export default function Why() {
         ))}
       </div>
     </div>
-  );
+  )
 }

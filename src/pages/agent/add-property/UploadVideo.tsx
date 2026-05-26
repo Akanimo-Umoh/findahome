@@ -1,59 +1,59 @@
-import uploadIcon from "@/assets/agentImages/icon-upload-video.svg";
-import { useState } from "react";
+import uploadIcon from "@/assets/agentImages/icon-upload-video.svg"
+import { useState } from "react"
 
 type UploadVideoProps = {
-  value: File | null;
-  onChange: (file: File | null) => void;
-};
+  value: File | null
+  onChange: (file: File | null) => void
+}
 
 export default function UploadVideo({ value, onChange }: UploadVideoProps) {
-  const [durationError, setDurationError] = useState<string | null>(null);
+  const [durationError, setDurationError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    if (!file) return;
+    const file = e.target.files?.[0] ?? null
+    if (!file) return
 
-    setDurationError(null);
+    setDurationError(null)
 
     // create a temporary video element to check duration
-    const url = URL.createObjectURL(file);
-    const video = document.createElement("video");
-    video.preload = "metadata";
+    const url = URL.createObjectURL(file)
+    const video = document.createElement("video")
+    video.preload = "metadata"
 
     video.onloadedmetadata = () => {
-      URL.revokeObjectURL(url); // clean up
+      URL.revokeObjectURL(url) // clean up
       if (video.duration > 120) {
         setDurationError(
-          "Video exceeds 2 minutes. Please upload a shorter clip.",
-        );
-        e.target.value = ""; // reset the input
-        return;
+          "Video exceeds 2 minutes. Please upload a shorter clip."
+        )
+        e.target.value = "" // reset the input
+        return
       }
-      onChange(file);
-    };
+      onChange(file)
+    }
 
     video.onerror = () => {
-      URL.revokeObjectURL(url);
-      setDurationError("Could not read video file. Please try another.");
-      e.target.value = "";
-    };
+      URL.revokeObjectURL(url)
+      setDurationError("Could not read video file. Please try another.")
+      e.target.value = ""
+    }
 
-    video.src = url;
-  };
+    video.src = url
+  }
 
   const removeVideo = () => {
-    onChange(null);
-    setDurationError(null);
-  };
+    onChange(null)
+    setDurationError(null)
+  }
 
   return (
     <div>
       <div className="flex flex-col justify-center gap-2">
         <label
           htmlFor="upload-video"
-          className="bg-button-disabled rounded-lg border border-dashed border-text-secondary cursor-pointer"
+          className="cursor-pointer rounded-lg border border-dashed border-text-secondary bg-button-disabled"
         >
-          <div className="flex flex-col items-center justify-center gap-2 py-6 rounded-lg">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-lg py-6">
             <input
               type="file"
               id="upload-video"
@@ -61,7 +61,7 @@ export default function UploadVideo({ value, onChange }: UploadVideoProps) {
               className="hidden"
               onChange={handleChange}
             />
-            <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
               <img src={uploadIcon} alt="" />
             </div>
 
@@ -78,21 +78,21 @@ export default function UploadVideo({ value, onChange }: UploadVideoProps) {
 
         {/* duration error */}
         {durationError && (
-          <p className="text-[12px] text-center text-red-500 leading-4">
+          <p className="text-center text-[12px] leading-4 text-red-500">
             {durationError}
           </p>
         )}
 
         {/* preview */}
         {value && (
-          <div className="flex items-center justify-between px-3 py-2 bg-bg-accent rounded-lg">
-            <p className="text-[12px] text-text-primary line-clamp-1 flex-1">
+          <div className="flex items-center justify-between rounded-lg bg-bg-accent px-3 py-2">
+            <p className="line-clamp-1 flex-1 text-[12px] text-text-primary">
               {value.name}
             </p>
             <button
               type="button"
               onClick={removeVideo}
-              className="text-red-500 text-[11px] ml-2 shrink-0"
+              className="ml-2 shrink-0 text-[11px] text-red-500"
             >
               Remove
             </button>
@@ -100,5 +100,5 @@ export default function UploadVideo({ value, onChange }: UploadVideoProps) {
         )}
       </div>
     </div>
-  );
+  )
 }

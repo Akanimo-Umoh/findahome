@@ -1,20 +1,20 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import calendarIcon from "@/assets/images/icon-calendar.svg";
-import propertyImg from "@/assets/images/property.jpg";
-import blueNaira from "@/assets/images/icon-naira.svg";
-import userIcon from "@/assets/images/icon-inspection-schedule-user.svg";
-import phoneIcon from "@/assets/images/icon-inspection-schedule-phone.svg";
-import emailIcon from "@/assets/images/icon-inspection-schedule-email.svg";
-import copyIcon from "@/assets/images/icon-green-clipboard.svg";
-import blueCalendarIcon from "@/assets/images/icon-blue-calendar.svg";
-import timeIcon from "@/assets/images/icon-inspection-schedule-time.svg";
-import locationIcon from "@/assets/images/icon-inspection-schedule-location.svg";
-import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import calendarIcon from "@/assets/images/icon-calendar.svg"
+import propertyImg from "@/assets/images/property.jpg"
+import blueNaira from "@/assets/images/icon-naira.svg"
+import userIcon from "@/assets/images/icon-inspection-schedule-user.svg"
+import phoneIcon from "@/assets/images/icon-inspection-schedule-phone.svg"
+import emailIcon from "@/assets/images/icon-inspection-schedule-email.svg"
+import copyIcon from "@/assets/images/icon-green-clipboard.svg"
+import blueCalendarIcon from "@/assets/images/icon-blue-calendar.svg"
+import timeIcon from "@/assets/images/icon-inspection-schedule-time.svg"
+import locationIcon from "@/assets/images/icon-inspection-schedule-location.svg"
+import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg"
 // import HandoverScheduleOverlay from "./HandoverScheduleOverlay";
 
 export default function PropertyHandoverSchedule() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const buyerDetails = [
     {
@@ -32,7 +32,7 @@ export default function PropertyHandoverSchedule() {
       title: "Email",
       detail: "etimvictoria62@gmail.com",
     },
-  ];
+  ]
 
   const indpectionDetails = [
     {
@@ -50,7 +50,7 @@ export default function PropertyHandoverSchedule() {
       title: "Location",
       detail: "Lekki Toll Gate",
     },
-  ];
+  ]
 
   // const escrowTimelines = [
   //   {
@@ -73,19 +73,19 @@ export default function PropertyHandoverSchedule() {
   return (
     <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Transaction Details
         </p>
       </div>
 
       <main className="mt-6.5">
-        <div className="flex items-center gap-1 py-2 px-3 bg-bg-accent border border-bg-accent rounded-lg">
-          <div className="w-7.5 h-7.5 bg-button-bg flex items-center justify-center rounded-full">
+        <div className="flex items-center gap-1 rounded-lg border border-bg-accent bg-bg-accent px-3 py-2">
+          <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-bg">
             <img src={calendarIcon} alt="" />
           </div>
 
@@ -99,7 +99,7 @@ export default function PropertyHandoverSchedule() {
           </div>
         </div>
 
-        <section className="mt-7 flex items-center gap-3 p-2 border border-bg-accent rounded-xl">
+        <section className="mt-7 flex items-center gap-3 rounded-xl border border-bg-accent p-2">
           <div>
             <img
               src={propertyImg}
@@ -110,13 +110,13 @@ export default function PropertyHandoverSchedule() {
 
           <div className="flex flex-col gap-2">
             <div>
-              <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
                 Luxury 4 Bed-room Apartment
               </p>
               <div className="flex items-center gap-2">
                 <p className="flex items-center">
-                  <img src={blueNaira} alt="" className="w-4 h-4" />
-                  <span className="text-[14px] tracking-[1px] font-raleway font-semibold text-button-bg">
+                  <img src={blueNaira} alt="" className="h-4 w-4" />
+                  <span className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
                     3,000,000
                   </span>
                 </p>
@@ -127,7 +127,7 @@ export default function PropertyHandoverSchedule() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <p className="text-[12px] leading-4 text-bg-tertiary bg-[#F39C12] py-1 px-2 rounded-2xl w-fit">
+              <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-[12px] leading-4 text-bg-tertiary">
                 In Escrow
               </p>
               <p className="text-[12px] leading-4 text-text-secondary">
@@ -147,7 +147,7 @@ export default function PropertyHandoverSchedule() {
           <div className="mt-2 space-y-4">
             {buyerDetails.map((buyerDetail, index) => (
               <div key={index} className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-lg bg-bg-accent flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-bg-accent">
                   <img src={buyerDetail.icon} alt="" />
                 </div>
 
@@ -165,11 +165,11 @@ export default function PropertyHandoverSchedule() {
           <div className="mt-6">
             <p className="">Payment Summary</p>
 
-            <div className="mt-2 payment-summary space-y-2">
+            <div className="payment-summary mt-2 space-y-2">
               <div className="payment-summary-ctn">
                 <p className="">Payment in Escrow</p>
-                <p className="text-[14px] tracking-[1px] text-button-bg font-raleway font-semibold flex items-center justify-center">
-                  <img src={blueNaira} alt="" className="w-4 h-4" />
+                <p className="flex items-center justify-center font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
+                  <img src={blueNaira} alt="" className="h-4 w-4" />
                   <span>3,000,000</span>
                 </p>
               </div>
@@ -181,7 +181,7 @@ export default function PropertyHandoverSchedule() {
 
               <div className="payment-summary-ctn">
                 <p className="">Reference Number</p>
-                <p className="text-text-secondary flex items-center justify-center gap-0.5">
+                <p className="flex items-center justify-center gap-0.5 text-text-secondary">
                   <span>Ref ID: FH-TRX-002834</span>
                   <img src={copyIcon} alt="" />
                 </p>
@@ -201,7 +201,7 @@ export default function PropertyHandoverSchedule() {
             <div className="mt-2 space-y-2">
               {indpectionDetails.map((inspectionDetail, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div className="w-7.5 h-7.5 rounded-full bg-bg-accent flex items-center justify-center">
+                  <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-bg-accent">
                     <img src={inspectionDetail.icon} alt="" />
                   </div>
 
@@ -222,7 +222,7 @@ export default function PropertyHandoverSchedule() {
 
             <div className="mt-2 space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
                   <img src={checkIcon} alt="" />
                 </div>
 
@@ -235,7 +235,7 @@ export default function PropertyHandoverSchedule() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
                   <img src={checkIcon} alt="" />
                 </div>
 
@@ -248,7 +248,7 @@ export default function PropertyHandoverSchedule() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-[#149D18] flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-[#149D18]">
                   <img src={checkIcon} alt="" />
                 </div>
 
@@ -261,7 +261,7 @@ export default function PropertyHandoverSchedule() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
                   {/* <img src={checkIcon} alt="" /> */}
                 </div>
 
@@ -278,7 +278,7 @@ export default function PropertyHandoverSchedule() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
                   <img src={checkIcon} alt="" />
                 </div>
 
@@ -292,7 +292,7 @@ export default function PropertyHandoverSchedule() {
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="w-7.5 h-7.5 rounded-full bg-button-disabled flex items-center justify-center">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-full bg-button-disabled">
                   <img src={checkIcon} alt="" />
                 </div>
 
@@ -308,19 +308,19 @@ export default function PropertyHandoverSchedule() {
           </div>
 
           {/* buttons */}
-          <div className="mt-6 space-y-3 mb-10">
+          <div className="mt-6 mb-10 space-y-3">
             <div className="flex flex-col items-center justify-center gap-4">
-              <button className="font-raleway font-semibold text-[14px] tracking-[1px] button-style w-full h-[45px] rounded-lg text-white">
+              <button className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
                 Confirm Handover schedule
               </button>
 
               {/* suggest new time takes the user back to the chat, only the agent can reschedule */}
-              <button className="font-raleway font-semibold text-[14px] tracking-[1px] bg-button-disabled border border-text-secondary h-[45px] w-full rounded-lg">
+              <button className="h-[45px] w-full rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
                 Suggest New Time
               </button>
             </div>
 
-            <p className="text-[12px] leading-4 text-text-secondary text-center">
+            <p className="text-center text-[12px] leading-4 text-text-secondary">
               Having issues with agent?&nbsp;
               <span className="text-button-bg">Open a dispute</span>
             </p>
@@ -331,5 +331,5 @@ export default function PropertyHandoverSchedule() {
         {/* <HandoverScheduleOverlay /> */}
       </main>
     </div>
-  );
+  )
 }

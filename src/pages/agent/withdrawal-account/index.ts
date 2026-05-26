@@ -1,1 +1,1 @@
-export { default as WithdrawalAccount } from "./WithdrawalAccount";
+export { default as WithdrawalAccount } from "./WithdrawalAccount"

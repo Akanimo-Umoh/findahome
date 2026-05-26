@@ -1,71 +1,71 @@
-import { useState } from "react";
-import leftArrow from "@/assets/agentImages/icon-leftArrow.svg";
-import rightArrow from "@/assets/images/icon-right-carousel.svg";
+import { useState } from "react"
+import leftArrow from "@/assets/agentImages/icon-leftArrow.svg"
+import rightArrow from "@/assets/images/icon-right-carousel.svg"
 
-type Slide = { type: "image"; url: string } | { type: "video"; url: string };
+type Slide = { type: "image"; url: string } | { type: "video"; url: string }
 
 type ImageCarouselProps = {
-  images: string[];
-  video?: string | string[] | null;
-};
+  images: string[]
+  video?: string | string[] | null
+}
 
 export default function ImageCarousel({ images, video }: ImageCarouselProps) {
-  const videoUrl = Array.isArray(video) ? (video[0] ?? null) : (video ?? null);
+  const videoUrl = Array.isArray(video) ? (video[0] ?? null) : (video ?? null)
 
   const imageSlides: Slide[] = images.map((url) => ({
     type: "image" as const,
     url,
-  }));
+  }))
 
   const videoSlide: Slide[] = videoUrl
     ? [{ type: "video" as const, url: videoUrl }]
-    : [];
+    : []
 
   // video first
-  const slides: Slide[] = [...videoSlide, ...imageSlides];
+  const slides: Slide[] = [...videoSlide, ...imageSlides]
 
   // image-only slides for fullscreen navigation
-  const imageOnlySlides = imageSlides;
+  const imageOnlySlides = imageSlides
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [fullscreenIndex, setFullscreenIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [fullscreenIndex, setFullscreenIndex] = useState(0)
 
-  const currentSlide = slides[currentIndex];
-  const isVideoSlide = currentSlide?.type === "video";
+  const currentSlide = slides[currentIndex]
+  const isVideoSlide = currentSlide?.type === "video"
 
   const goToPrev = () =>
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
 
   const goToNext = () =>
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
 
   const openFullscreen = (imageUrl: string) => {
-    const index = imageOnlySlides.findIndex((s) => s.url === imageUrl);
-    setFullscreenIndex(index >= 0 ? index : 0);
-    setIsFullscreen(true);
-  };
+    const index = imageOnlySlides.findIndex((s) => s.url === imageUrl)
+    setFullscreenIndex(index >= 0 ? index : 0)
+    setIsFullscreen(true)
+  }
 
   const fullscreenPrev = () =>
     setFullscreenIndex((prev) =>
-      prev === 0 ? imageOnlySlides.length - 1 : prev - 1,
-    );
+      prev === 0 ? imageOnlySlides.length - 1 : prev - 1
+    )
 
   const fullscreenNext = () =>
     setFullscreenIndex((prev) =>
-      prev === imageOnlySlides.length - 1 ? 0 : prev + 1,
-    );
+      prev === imageOnlySlides.length - 1 ? 0 : prev + 1
+    )
 
   // if somehow images is empty and no video, show nothing
   if (slides.length === 0) {
     return (
-      <div className="rounded-2xl h-[202px] w-full bg-bg-accent flex items-center justify-center">
-        <p className="text-text-secondary text-[12px]">No images available</p>
+      <div className="flex h-[202px] w-full items-center justify-center rounded-2xl bg-bg-accent">
+        <p className="text-[12px] text-text-secondary">No images available</p>
       </div>
-    );
+    )
   }
 
-  const showCarouselNav = slides.length > 1;
+  const showCarouselNav = slides.length > 1
 
   return (
     <>
@@ -76,7 +76,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
           <video
             src={currentSlide.url}
             controls
-            className="rounded-2xl h-[202px] w-full object-contain bg-black"
+            className="h-[202px] w-full rounded-2xl bg-black object-contain"
           />
         ) : (
           // image — opens fullscreen on click
@@ -84,7 +84,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
             src={currentSlide.url}
             alt={`Property image ${currentIndex + 1}`}
             onClick={() => openFullscreen(currentSlide.url)}
-            className="rounded-2xl h-[202px] w-full object-contain bg-black cursor-zoom-in"
+            className="h-[202px] w-full cursor-zoom-in rounded-2xl bg-black object-contain"
           />
         )}
 
@@ -93,7 +93,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
           <button
             type="button"
             onClick={goToPrev}
-            className="p-2 bg-bg-accent absolute top-1/2 -translate-y-1/2 left-[11px] rounded-full cursor-pointer"
+            className="absolute top-1/2 left-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
           >
             <img src={leftArrow} alt="Previous" />
           </button>
@@ -104,7 +104,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
           <button
             type="button"
             onClick={goToNext}
-            className="p-2 bg-bg-accent absolute top-1/2 -translate-y-1/2 right-[11px] rounded-full cursor-pointer"
+            className="absolute top-1/2 right-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
           >
             <img src={rightArrow} alt="Next" />
           </button>
@@ -112,7 +112,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
 
         {/* counter — only shown when more than one slide */}
         {showCarouselNav && (
-          <div className="bg-bg-accent rounded-2xl w-[33px] h-8 flex items-center justify-center absolute bottom-[21px] left-1/2 -translate-x-1/2">
+          <div className="absolute bottom-[21px] left-1/2 flex h-8 w-[33px] -translate-x-1/2 items-center justify-center rounded-2xl bg-bg-accent">
             <p className="text-[12px] text-text-primary">
               {currentIndex + 1}/{slides.length}
             </p>
@@ -122,10 +122,10 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
 
       {/* fullscreen overlay — images only */}
       {isFullscreen && imageOnlySlides.length > 0 && (
-        <div className="fixed inset-0 z-50 bg-black flex flex-col">
+        <div className="fixed inset-0 z-50 flex flex-col bg-black">
           {/* header */}
-          <div className="flex items-center justify-between px-4 pt-4 pb-2 shrink-0">
-            <p className="text-white text-[12px]">
+          <div className="flex shrink-0 items-center justify-between px-4 pt-4 pb-2">
+            <p className="text-[12px] text-white">
               {imageOnlySlides.length > 1
                 ? `${fullscreenIndex + 1} / ${imageOnlySlides.length}`
                 : ""}
@@ -133,28 +133,28 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
             <button
               type="button"
               onClick={() => setIsFullscreen(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 text-white text-[18px] cursor-pointer"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-[18px] text-white"
             >
               ✕
             </button>
           </div>
 
           {/* image */}
-          <div className="flex-1 flex items-center justify-center px-2">
+          <div className="flex flex-1 items-center justify-center px-2">
             <img
               src={imageOnlySlides[fullscreenIndex].url}
               alt={`Property image ${fullscreenIndex + 1}`}
-              className="max-w-full max-h-full object-contain"
+              className="max-h-full max-w-full object-contain"
             />
           </div>
 
           {/* navigation — only shown when more than one image */}
           {imageOnlySlides.length > 1 && (
-            <div className="flex items-center justify-between px-4 py-6 shrink-0">
+            <div className="flex shrink-0 items-center justify-between px-4 py-6">
               <button
                 type="button"
                 onClick={fullscreenPrev}
-                className="p-2 bg-white/20 rounded-full cursor-pointer"
+                className="cursor-pointer rounded-full bg-white/20 p-2"
               >
                 <img
                   src={leftArrow}
@@ -166,7 +166,7 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
               <button
                 type="button"
                 onClick={fullscreenNext}
-                className="p-2 bg-white/20 rounded-full cursor-pointer"
+                className="cursor-pointer rounded-full bg-white/20 p-2"
               >
                 <img
                   src={rightArrow}
@@ -179,5 +179,5 @@ export default function ImageCarousel({ images, video }: ImageCarouselProps) {
         </div>
       )}
     </>
-  );
+  )
 }

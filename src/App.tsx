@@ -1,6 +1,6 @@
-import { BrowserRouter as Router } from "react-router-dom";
-import { AppRoutes } from "./routes";
-import { Toaster } from "@/components/ui/sonner";
+import { BrowserRouter as Router } from "react-router-dom"
+import { AppRoutes } from "./routes"
+import { Toaster } from "@/components/ui/sonner"
 
 function App() {
   return (
@@ -8,7 +8,7 @@ function App() {
       <AppRoutes />
       <Toaster position="top-center" richColors />
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

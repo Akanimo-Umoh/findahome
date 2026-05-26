@@ -1,33 +1,33 @@
-import saveIcon from "@/assets/images/icon-heart.svg";
-import goBack from "@/assets/images/icon-back.svg";
-import { Link, useNavigate } from "react-router-dom";
-import { useSavedProperties } from "@/hooks/useSavedProperties";
-import { useState } from "react";
-import PropertyCardSkeleton from "@/components/PropertyCardSkeleton";
-import PropertyCard from "@/components/PropertyCard";
+import saveIcon from "@/assets/images/icon-heart.svg"
+import goBack from "@/assets/images/icon-back.svg"
+import { Link, useNavigate } from "react-router-dom"
+import { useSavedProperties } from "@/hooks/useSavedProperties"
+import { useState } from "react"
+import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
+import PropertyCard from "@/components/PropertyCard"
 
-type Tab = "apartment" | "land";
+type Tab = "apartment" | "land"
 
 export default function SavedProperties() {
-  const navigate = useNavigate();
-  const { favorites, loading, error } = useSavedProperties();
-  const [activeTab, setActiveTab] = useState<Tab>("apartment");
+  const navigate = useNavigate()
+  const { favorites, loading, error } = useSavedProperties()
+  const [activeTab, setActiveTab] = useState<Tab>("apartment")
 
   const filtered = favorites.filter((fav) =>
     activeTab === "land"
       ? fav.property.propertyType === "land"
-      : fav.property.propertyType !== "land",
-  );
+      : fav.property.propertyType !== "land"
+  )
 
   return (
-    <div className="text-text-primary px-6 mb-10">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative md:hidden">
+      <div className="relative flex items-center justify-center md:hidden">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Saved Properties
         </p>
 
@@ -44,7 +44,7 @@ export default function SavedProperties() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`rounded-xl py-2 w-26 transition-colors font-raleway text-[14px] tracking-[1px] cursor-pointer ${
+              className={`w-26 cursor-pointer rounded-xl py-2 font-raleway text-[14px] tracking-[1px] transition-colors ${
                 activeTab === tab
                   ? "border border-bg-accent font-semibold"
                   : "hover:font-semibold"
@@ -56,21 +56,21 @@ export default function SavedProperties() {
         </div>
 
         {/* main apartment card ctn */}
-        <div className="space-y-8 mt-8">
+        <div className="mt-8 space-y-8">
           {loading ? (
             <PropertyCardSkeleton />
           ) : error ? (
             <p>{error}</p>
           ) : filtered.length === 0 ? (
-            <p className="font-raleway font-semibold text-[18px] tracking-[1px] text-text-secondary flex items-center justify-center text-center max-w-[297px] mx-auto mt-30">
+            <p className="mx-auto mt-30 flex max-w-[297px] items-center justify-center text-center font-raleway text-[18px] font-semibold tracking-[1px] text-text-secondary">
               You don't have any saved properties yet.
             </p>
           ) : (
-            <div className="grid justify-center grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
               {filtered.map((fav) => (
                 <Link
                   to={`/property/${fav.property._id}`}
-                  className="max-w-85 mx-auto"
+                  className="mx-auto max-w-85"
                 >
                   <PropertyCard key={fav._id} property={fav.property} />
                 </Link>
@@ -80,5 +80,5 @@ export default function SavedProperties() {
         </div>
       </main>
     </div>
-  );
+  )
 }

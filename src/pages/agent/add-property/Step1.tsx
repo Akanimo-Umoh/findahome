@@ -243,79 +243,79 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import rightIcon from "@/assets/agentImages/icon-right-arrow.svg";
+} from "@/components/ui/select"
+import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
 import type {
   AddPropertyFormData,
   ListingType,
   PropertyType,
-} from "./AddProperty";
-import FormField from "./FormField";
-import { useState } from "react";
+} from "./AddProperty"
+import FormField from "./FormField"
+import { useState } from "react"
 
 type Step1Props = {
-  formData: AddPropertyFormData;
-  updateFormData: (fields: Partial<AddPropertyFormData>) => void;
-  onNext: () => void;
-};
+  formData: AddPropertyFormData
+  updateFormData: (fields: Partial<AddPropertyFormData>) => void
+  onNext: () => void
+}
 
 type Step1Errors = {
-  propertyName?: string;
-  propertyType?: string;
-  listingType?: string;
-  plotSize?: string;
-  plotUnit?: string;
-  landCondition?: string;
-  landDocType?: string;
-  price?: string;
-  serviceCharge?: string;
-};
+  propertyName?: string
+  propertyType?: string
+  listingType?: string
+  plotSize?: string
+  plotUnit?: string
+  landCondition?: string
+  landDocType?: string
+  price?: string
+  serviceCharge?: string
+}
 
 export default function Step1({
   formData,
   updateFormData,
   onNext,
 }: Step1Props) {
-  const [errors, setErrors] = useState<Step1Errors>({});
-  const isLand = formData.propertyType === "land";
+  const [errors, setErrors] = useState<Step1Errors>({})
+  const isLand = formData.propertyType === "land"
 
   const validate = (): boolean => {
-    const newErrors: Step1Errors = {};
+    const newErrors: Step1Errors = {}
 
     if (!formData.propertyName.trim())
-      newErrors.propertyName = "Property name can't be empty";
+      newErrors.propertyName = "Property name can't be empty"
     if (!formData.propertyType)
-      newErrors.propertyType = "Please select a property type";
+      newErrors.propertyType = "Please select a property type"
     if (!formData.listingType)
-      newErrors.listingType = "Please select a listing type";
-    if (!formData.price.trim()) newErrors.price = "Price can't be empty";
+      newErrors.listingType = "Please select a listing type"
+    if (!formData.price.trim()) newErrors.price = "Price can't be empty"
     if (!formData.serviceCharge.trim())
-      newErrors.serviceCharge = "Service charge can't be empty";
+      newErrors.serviceCharge = "Service charge can't be empty"
 
     if (isLand) {
       if (!formData.plotSize.trim())
-        newErrors.plotSize = "Plot size can't be empty";
-      if (!formData.plotUnit) newErrors.plotUnit = "Please select a unit";
+        newErrors.plotSize = "Plot size can't be empty"
+      if (!formData.plotUnit) newErrors.plotUnit = "Please select a unit"
       if (!formData.landCondition)
-        newErrors.landCondition = "Please select land condition";
+        newErrors.landCondition = "Please select land condition"
       if (!formData.landDocType)
-        newErrors.landDocType = "Please select document title";
+        newErrors.landDocType = "Please select document title"
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleNext = () => {
-    if (validate()) onNext();
-  };
+    if (validate()) onNext()
+  }
 
   return (
     <div>
       <form
         onSubmit={(e) => {
-          e.preventDefault();
-          handleNext();
+          e.preventDefault()
+          handleNext()
         }}
       >
         <FormField
@@ -328,11 +328,11 @@ export default function Step1({
             id="propertyName"
             value={formData.propertyName}
             onChange={(e) => {
-              updateFormData({ propertyName: e.target.value });
+              updateFormData({ propertyName: e.target.value })
               if (errors.propertyName)
-                setErrors((prev) => ({ ...prev, propertyName: undefined }));
+                setErrors((prev) => ({ ...prev, propertyName: undefined }))
             }}
-            className={`text-[14px] w-full rounded-lg h-[45px] border px-2 ${errors.propertyName ? "border-red-500" : "border-text-secondary"}`}
+            className={`h-[45px] w-full rounded-lg border px-2 text-[14px] ${errors.propertyName ? "border-red-500" : "border-text-secondary"}`}
             placeholder="3-Bedroom Apartment"
           />
         </FormField>
@@ -345,9 +345,9 @@ export default function Step1({
           <Select
             value={formData.propertyType}
             onValueChange={(val) => {
-              updateFormData({ propertyType: val as PropertyType });
+              updateFormData({ propertyType: val as PropertyType })
               if (errors.propertyType)
-                setErrors((prev) => ({ ...prev, propertyType: undefined }));
+                setErrors((prev) => ({ ...prev, propertyType: undefined }))
             }}
           >
             <SelectTrigger
@@ -364,7 +364,7 @@ export default function Step1({
 
         <div className="mt-6">
           <label className="app-property-label">Listing Type</label>
-          <div className="flex items-center gap-6 mt-3">
+          <div className="mt-3 flex items-center gap-6">
             <div className="flex items-center gap-3">
               <input
                 type="radio"
@@ -372,11 +372,11 @@ export default function Step1({
                 id="sale"
                 checked={formData.listingType === "sale"}
                 onChange={() => {
-                  updateFormData({ listingType: "sale" as ListingType });
+                  updateFormData({ listingType: "sale" as ListingType })
                   if (errors.listingType)
-                    setErrors((prev) => ({ ...prev, listingType: undefined }));
+                    setErrors((prev) => ({ ...prev, listingType: undefined }))
                 }}
-                className="w-5 h-5"
+                className="h-5 w-5"
               />
               <label htmlFor="sale" className="text-[14px]">
                 For Sale
@@ -389,11 +389,11 @@ export default function Step1({
                 id="rent"
                 checked={formData.listingType === "rent"}
                 onChange={() => {
-                  updateFormData({ listingType: "rent" as ListingType });
+                  updateFormData({ listingType: "rent" as ListingType })
                   if (errors.listingType)
-                    setErrors((prev) => ({ ...prev, listingType: undefined }));
+                    setErrors((prev) => ({ ...prev, listingType: undefined }))
                 }}
-                className="w-5 h-5"
+                className="h-5 w-5"
               />
               <label htmlFor="rent" className="text-[14px]">
                 For Rent
@@ -401,7 +401,7 @@ export default function Step1({
             </div>
           </div>
           {errors.listingType && (
-            <p className="text-red-500 text-[11px] leading-4 mt-1">
+            <p className="mt-1 text-[11px] leading-4 text-red-500">
               {errors.listingType}
             </p>
           )}
@@ -409,7 +409,7 @@ export default function Step1({
 
         {isLand && (
           <>
-            <div className="flex items-center justify-between gap-6 mt-6">
+            <div className="mt-6 flex items-center justify-between gap-6">
               <FormField
                 label="Plot Size"
                 htmlFor="plotSize"
@@ -421,11 +421,11 @@ export default function Step1({
                   id="plotSize"
                   value={formData.plotSize}
                   onChange={(e) => {
-                    updateFormData({ plotSize: e.target.value });
+                    updateFormData({ plotSize: e.target.value })
                     if (errors.plotSize)
-                      setErrors((prev) => ({ ...prev, plotSize: undefined }));
+                      setErrors((prev) => ({ ...prev, plotSize: undefined }))
                   }}
-                  className={`text-[14px] w-full rounded-lg h-[45px] border px-2 ${errors.plotSize ? "border-red-500" : "border-text-secondary"}`}
+                  className={`h-[45px] w-full rounded-lg border px-2 text-[14px] ${errors.plotSize ? "border-red-500" : "border-text-secondary"}`}
                   placeholder="e.g. 500"
                 />
               </FormField>
@@ -434,9 +434,9 @@ export default function Step1({
                 <Select
                   value={formData.plotUnit}
                   onValueChange={(val) => {
-                    updateFormData({ plotUnit: val });
+                    updateFormData({ plotUnit: val })
                     if (errors.plotUnit)
-                      setErrors((prev) => ({ ...prev, plotUnit: undefined }));
+                      setErrors((prev) => ({ ...prev, plotUnit: undefined }))
                   }}
                 >
                   <SelectTrigger
@@ -461,12 +461,12 @@ export default function Step1({
               <Select
                 value={formData.landCondition}
                 onValueChange={(val) => {
-                  updateFormData({ landCondition: val });
+                  updateFormData({ landCondition: val })
                   if (errors.landCondition)
                     setErrors((prev) => ({
                       ...prev,
                       landCondition: undefined,
-                    }));
+                    }))
                 }}
               >
                 <SelectTrigger
@@ -492,12 +492,12 @@ export default function Step1({
               <Select
                 value={formData.landDocType}
                 onValueChange={(val) => {
-                  updateFormData({ landDocType: val });
+                  updateFormData({ landDocType: val })
                   if (errors.landDocType)
                     setErrors((prev) => ({
                       ...prev,
                       documentTitle: undefined,
-                    }));
+                    }))
                 }}
               >
                 <SelectTrigger
@@ -532,11 +532,11 @@ export default function Step1({
             id="price"
             value={formData.price}
             onChange={(e) => {
-              updateFormData({ price: e.target.value });
+              updateFormData({ price: e.target.value })
               if (errors.price)
-                setErrors((prev) => ({ ...prev, price: undefined }));
+                setErrors((prev) => ({ ...prev, price: undefined }))
             }}
-            className={`text-[14px] w-full rounded-lg h-[45px] border px-2 ${errors.price ? "border-red-500" : "border-text-secondary"}`}
+            className={`h-[45px] w-full rounded-lg border px-2 text-[14px] ${errors.price ? "border-red-500" : "border-text-secondary"}`}
             placeholder="Price ₦"
           />
         </FormField>
@@ -552,25 +552,25 @@ export default function Step1({
             id="serviceCharge"
             value={formData.serviceCharge}
             onChange={(e) => {
-              updateFormData({ serviceCharge: e.target.value });
+              updateFormData({ serviceCharge: e.target.value })
               if (errors.serviceCharge)
-                setErrors((prev) => ({ ...prev, serviceCharge: undefined }));
+                setErrors((prev) => ({ ...prev, serviceCharge: undefined }))
             }}
-            className={`text-[14px] w-full rounded-lg h-[45px] border px-2 ${errors.serviceCharge ? "border-red-500" : "border-text-secondary"}`}
+            className={`h-[45px] w-full rounded-lg border px-2 text-[14px] ${errors.serviceCharge ? "border-red-500" : "border-text-secondary"}`}
             placeholder="Service Charge ₦"
           />
         </FormField>
 
         <button
           type="submit"
-          className="bg-button-bg flex items-center gap-2 h-[45px] px-2 rounded-lg mt-[37px] ml-auto cursor-pointer"
+          className="mt-[37px] ml-auto flex h-[45px] cursor-pointer items-center gap-2 rounded-lg bg-button-bg px-2"
         >
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px] text-white md:text-[16px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
             Next
           </p>
           <img src={rightIcon} alt="" />
         </button>
       </form>
     </div>
-  );
+  )
 }

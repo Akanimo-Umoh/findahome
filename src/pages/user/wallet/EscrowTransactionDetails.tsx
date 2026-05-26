@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router-dom";
-import propertyImg from "@/assets/images/property.jpg";
+import { useNavigate } from "react-router-dom"
+import propertyImg from "@/assets/images/property.jpg"
 // import greyNaira from "@/assets/images/icon-chat-naira.svg";
-import goBack from "@/assets/images/icon-back.svg";
-import blueNaira from "@/assets/images/icon-naira.svg";
-import confirmedIcon from "@/assets/images/icon-transaction-confirmed.svg";
-import privacyIcon from "@/assets/images/icon-escrow-privacy.svg";
+import goBack from "@/assets/images/icon-back.svg"
+import blueNaira from "@/assets/images/icon-naira.svg"
+import confirmedIcon from "@/assets/images/icon-transaction-confirmed.svg"
+import privacyIcon from "@/assets/images/icon-escrow-privacy.svg"
 
 export default function EscrowTransactionsDetails() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const details = [
     {
@@ -30,31 +30,31 @@ export default function EscrowTransactionsDetails() {
       title: "Date Funded",
       summary: "Oct 15, 2025",
     },
-  ];
+  ]
 
   return (
     <div className="px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           Escrow Transaction Details
         </p>
       </div>
 
       <main className="mt-6">
-        <div className="flex items-center gap-3 p-2 rounded-xl border border-bg-accent">
+        <div className="flex items-center gap-3 rounded-xl border border-bg-accent p-2">
           <img
             src={propertyImg}
             alt=""
-            className="w-15 h-15 object-cover rounded-lg"
+            className="h-15 w-15 rounded-lg object-cover"
           />
 
-          <div className="flex flex-col justify-center gap-1 w-full">
-            <p className="font-raleway font-semibold text-[12px] tracking-[1px] line-clamp-1">
+          <div className="flex w-full flex-col justify-center gap-1">
+            <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
               4 Bed-room Apartment, Lekki phase 1
             </p>
             {/* <div className="text-[12px] leading-4 text-text-secondary flex items-center justify-between">
@@ -68,7 +68,7 @@ export default function EscrowTransactionsDetails() {
               Listed by Maryann Kikomu{" "}
               <span className="text-button-bg">(Verified)</span>
             </p>
-            <p className="text-[12px] leading-4 bg-[#F39C12] py-1 px-2 rounded-2xl w-fit">
+            <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-[12px] leading-4">
               Inspection Pending
             </p>
             {/* payment secured would show if the user made payment into the escrow system */}
@@ -83,17 +83,17 @@ export default function EscrowTransactionsDetails() {
           <div>
             <p>Escrow Summary</p>
 
-            <div className="rounded-xl p-2 flex flex-col gap-3 bg-bg-accent border border-bg-accent">
+            <div className="flex flex-col gap-3 rounded-xl border border-bg-accent bg-bg-accent p-2">
               {details.map((detail, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <p className="text-[12px] leading-4">{detail.title}</p>
 
                   <p
-                    className={`text-[12px] font-semibold ${detail.title === "Total Amount Held:" ? "flex items-center text-[14px] font-raleway tracking-[1px] font-semibold text-button-bg" : ""}`}
+                    className={`text-[12px] font-semibold ${detail.title === "Total Amount Held:" ? "flex items-center font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg" : ""}`}
                   >
                     {detail.title === "Total Amount Held:" ? (
                       <>
-                        <img src={blueNaira} alt="" className="w-4 h-4" />
+                        <img src={blueNaira} alt="" className="h-4 w-4" />
                         <span>{detail.summary}</span>
                       </>
                     ) : (
@@ -114,15 +114,15 @@ export default function EscrowTransactionsDetails() {
               <div>progress bar</div>
 
               {/* transaction status */}
-              <div className="flex flex-col justify-center gap-2 mt-3">
+              <div className="mt-3 flex flex-col justify-center gap-2">
                 <div className="flex items-center gap-1">
-                  <div className="w-5 h-5 rounded-full bg-button-bg flex items-center justify-center">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-button-bg">
                     <img src={confirmedIcon} alt="" />
                   </div>
                   <p className="text-[12px] font-semibold">Payment initiated</p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <div className="w-5 h-5 rounded-full bg-button-bg flex items-center justify-center">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-button-bg">
                     <img src={confirmedIcon} alt="" />
                   </div>
                   <p className="text-[12px] font-semibold">
@@ -130,7 +130,7 @@ export default function EscrowTransactionsDetails() {
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <div className="w-5 h-5 rounded-full bg-button-bg flex items-center justify-center">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-button-bg">
                     <img src={confirmedIcon} alt="" />
                   </div>
                   <p className="text-[12px] font-semibold">
@@ -140,7 +140,7 @@ export default function EscrowTransactionsDetails() {
 
                 {/* if it is not completed */}
                 <div className="flex items-center gap-1">
-                  <div className="w-5 h-5 rounded-full bg-bg-accent flex items-center justify-center">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-bg-accent">
                     {/* <img src={confirmedIcon} alt="" /> */}
                   </div>
                   <p className="text-[12px] font-semibold text-text-secondary">
@@ -149,7 +149,7 @@ export default function EscrowTransactionsDetails() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  <div className="w-5 h-5 rounded-full bg-bg-accent flex items-center justify-center">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-bg-accent">
                     {/* <img src={confirmedIcon} alt="" /> */}
                   </div>
                   <p className="text-[12px] font-semibold text-text-secondary">
@@ -163,16 +163,16 @@ export default function EscrowTransactionsDetails() {
           {/* confirm inspection is completed */}
           <div className="mt-4">
             <div className="space-y-3">
-              <button className="font-raleway font-semibold text-[14px] tracking-[1px] text-white h-11.25 rounded-lg button-style w-full flex items-center justify-center">
+              <button className="button-style flex h-11.25 w-full items-center justify-center rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
                 Confirm Inspection Completed
               </button>
 
-              <button className="font-raleway font-semibold text-[14px] tracking-[1px] h-11.25 rounded-lg w-full flex items-center justify-center border border-text-secondary bg-button-disabled">
+              <button className="flex h-11.25 w-full items-center justify-center rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
                 View chat with Agent
               </button>
             </div>
 
-            <div className="flex items-center justify-center gap-1 mt-3">
+            <div className="mt-3 flex items-center justify-center gap-1">
               <img src={privacyIcon} alt="" />
               <p className="text-[12px] leading-4 text-text-secondary">
                 Funds are securely held by FindaHome until inspection is
@@ -180,7 +180,7 @@ export default function EscrowTransactionsDetails() {
               </p>
             </div>
 
-            <p className="text-[12px] leading-4 text-text-secondary mt-3 flex items-center justify-center mb-10">
+            <p className="mt-3 mb-10 flex items-center justify-center text-[12px] leading-4 text-text-secondary">
               Having issues with agent?&nbsp;
               <span className="text-button-bg">Open a dispute</span>
             </p>
@@ -188,5 +188,5 @@ export default function EscrowTransactionsDetails() {
         </div>
       </main>
     </div>
-  );
+  )
 }

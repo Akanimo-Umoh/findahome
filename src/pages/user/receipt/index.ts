@@ -1,1 +1,1 @@
-export { default as TransactionReceipt } from "./TransactionReceipt";
+export { default as TransactionReceipt } from "./TransactionReceipt"

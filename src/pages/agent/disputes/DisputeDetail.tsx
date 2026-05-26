@@ -1,31 +1,31 @@
-import { useNavigate } from "react-router-dom";
-import goBack from "@/assets/images/icon-back.svg";
-import uploadedFile from "@/assets/images/icon-evidence-uploaded.svg";
-import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg";
+import { useNavigate } from "react-router-dom"
+import goBack from "@/assets/images/icon-back.svg"
+import uploadedFile from "@/assets/images/icon-evidence-uploaded.svg"
+import checkIcon from "@/assets/images/icon-inspection-schedule-check.svg"
 
 export default function DisputeDetail() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="text-text-primary mb-10 px-6">
+    <div className="mb-10 px-6 text-text-primary">
       {/* header */}
-      <div className="flex items-center justify-center relative">
+      <div className="relative flex items-center justify-center">
         <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="w-6 h-6" />
+          <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 
-        <p className="text-[18px] font-raleway font-semibold tracking-[1px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
           My Dispute
         </p>
       </div>
 
       <main className="mt-2">
-        <p className="text-[12px] leading-4 text-center">
+        <p className="text-center text-[12px] leading-4">
           Dispute: REF ID: FH-TRX-002834
         </p>
 
         <div className="mt-8 space-y-2">
-          <p className="font-raleway font-semibold text-[14px] tracking-[1px]">
+          <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
             Agent Description
           </p>
 
@@ -41,7 +41,7 @@ export default function DisputeDetail() {
           <p>Issue Details</p>
 
           {/* dispute details */}
-          <div className="space-y-2 mt-3">
+          <div className="mt-3 space-y-2">
             <div className="flex items-center justify-between text-[12px] leading-4">
               <p>Buyer Name</p>
               <p className="text-text-secondary">Victoria Ntekim</p>
@@ -49,7 +49,7 @@ export default function DisputeDetail() {
 
             <div className="flex items-center justify-between text-[12px] leading-4">
               <p>Tracking Status</p>
-              <p className="text-bg-tertiary bg-[#D02727] py-0.5 px-2 rounded-2xl text-center">
+              <p className="rounded-2xl bg-[#D02727] px-2 py-0.5 text-center text-bg-tertiary">
                 Pending Review
               </p>
             </div>
@@ -71,20 +71,20 @@ export default function DisputeDetail() {
           <p>Evidence Uploaded</p>
 
           <div className="mt-4 flex items-center justify-between gap-4">
-            <div className="py-5 px-2 flex flex-col gap-2 items-center justify-center rounded-lg border border-bg-accent flex-1">
-              <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center line-clamp-1">
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-bg-accent px-2 py-5">
+              <div className="line-clamp-1 flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
                 <img src={uploadedFile} alt="" />
               </div>
-              <p className="text-[12px] leading-4 text-text-secondary text-center">
+              <p className="text-center text-[12px] leading-4 text-text-secondary">
                 imag3_54np
               </p>
             </div>
 
-            <div className="py-5 px-2 flex flex-col gap-2 items-center justify-center rounded-lg border border-bg-accent flex-1">
-              <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center">
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg border border-bg-accent px-2 py-5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
                 <img src={uploadedFile} alt="" />
               </div>
-              <p className="text-[12px] leading-4 text-text-secondary text-center line-clamp-1">
+              <p className="line-clamp-1 text-center text-[12px] leading-4 text-text-secondary">
                 imag3_55nx
               </p>
             </div>
@@ -97,7 +97,7 @@ export default function DisputeDetail() {
 
           <div className="mt-3 space-y-2">
             <div className="flex items-center gap-1">
-              <div className="w-6 h-6 rounded-full bg-[#149D18] flex items-center justify-center shrink-0">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#149D18]">
                 <img src={checkIcon} alt="" />
               </div>
 
@@ -110,7 +110,7 @@ export default function DisputeDetail() {
             </div>
 
             <div className="flex items-center gap-1">
-              <div className="w-6 h-6 rounded-full bg-[#149D18] flex items-center justify-center shrink-0">
+              <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#149D18]">
                 <img src={checkIcon} alt="" />
               </div>
 
@@ -125,5 +125,5 @@ export default function DisputeDetail() {
         </div>
       </main>
     </div>
-  );
+  )
 }

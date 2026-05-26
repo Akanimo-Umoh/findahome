@@ -1,7 +1,7 @@
-import chats from "@/assets/images/icon-chat.svg";
-import search from "@/assets/images/search.svg";
-import dashboard from "@/assets/images/icon-dashboard.svg";
-import { motion } from "framer-motion";
+import chats from "@/assets/images/icon-chat.svg"
+import search from "@/assets/images/search.svg"
+import dashboard from "@/assets/images/icon-dashboard.svg"
+import { motion } from "framer-motion"
 
 export default function HowItWorks() {
   const works = [
@@ -23,7 +23,7 @@ export default function HowItWorks() {
       details: "Complete transactions with  our escrow protection.",
       direction: "bottom",
     },
-  ];
+  ]
 
   // ✅ ADDED: animation variants
   const variants = {
@@ -39,12 +39,12 @@ export default function HowItWorks() {
       hidden: { opacity: 0, y: 40 },
       visible: { opacity: 1, y: 0 },
     },
-  };
+  }
 
   return (
-    <div className="px-6 md:px-8 max-w-7xl">
+    <div className="max-w-7xl px-6 md:px-8">
       <div className="text-center text-text-primary md:flex md:flex-col md:gap-1">
-        <p className="font-raleway font-semibold text-[24px] tracking-[1px] md:text-[36px]">
+        <p className="font-raleway text-[24px] font-semibold tracking-[1px] md:text-[36px]">
           How it works
         </p>
         <p className="text-[12px] text-text-secondary md:text-[16px]">
@@ -52,33 +52,33 @@ export default function HowItWorks() {
         </p>
       </div>
 
-      <div className="flex flex-col items-start justify-center mt-6 max-w-60 mx-auto md:mt-12 md:flex-row md:max-w-full md:gap-12">
+      <div className="mx-auto mt-6 flex max-w-60 flex-col items-start justify-center md:mt-12 md:max-w-full md:flex-row md:gap-12">
         {works.map((work, index) => (
           <motion.div
             key={index}
-            className="flex justify-center gap-1 w-full md:w-50 md:h-50 md:flex-col md:items-center md:justify-center md:border md:border-button-bg md:rounded-full md:gap-2"
+            className="flex w-full justify-center gap-1 md:h-50 md:w-50 md:flex-col md:items-center md:justify-center md:gap-2 md:rounded-full md:border md:border-button-bg"
             variants={variants[work.direction as keyof typeof variants]}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
           >
-            <div className="w-6 flex flex-col items-center md:w-8">
-              <div className="bg-button-bg flex items-center justify-center rounded-full w-6 h-6 md:w-8 md:h-8 md:rounded-2xl">
+            <div className="flex w-6 flex-col items-center md:w-8">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-button-bg md:h-8 md:w-8 md:rounded-2xl">
                 <img
                   src={work.icon}
                   alt="search properties"
-                  className="w-4 h-4 md:w-6 md:h-6"
+                  className="h-4 w-4 md:h-6 md:w-6"
                 />
               </div>
               {/* dashed border */}
               {index !== works.length - 1 && (
-                <div className="border-l border-dashed border-text-secondary w-[1px] h-[59px] md:hidden"></div>
+                <div className="h-[59px] w-[1px] border-l border-dashed border-text-secondary md:hidden"></div>
               )}
             </div>
 
-            <div className="w-full md:text-center md:w-[151px]">
-              <p className="text-text-primary font-semibold text-[12px] md:text-[14px] md:tracking-[1px]">
+            <div className="w-full md:w-[151px] md:text-center">
+              <p className="text-[12px] font-semibold text-text-primary md:text-[14px] md:tracking-[1px]">
                 {work.title}
               </p>
               <p className="text-[12px] text-text-secondary md:text-[12px]">
@@ -89,5 +89,5 @@ export default function HowItWorks() {
         ))}
       </div>
     </div>
-  );
+  )
 }

@@ -1,1 +1,1 @@
-export { default as ScheduleInspection } from "./ScheduleInspection";
+export { default as ScheduleInspection } from "./ScheduleInspection"

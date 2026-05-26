@@ -1,4 +1,4 @@
-import viewsIcon from "@/assets/agentImages/icon-visibility.svg";
+import viewsIcon from "@/assets/agentImages/icon-visibility.svg"
 
 export default function EstimatedPerformance() {
   return (
@@ -7,9 +7,9 @@ export default function EstimatedPerformance() {
         <p>Estimated Performance</p>
 
         <div className="mt-4 flex items-center justify-between">
-          <div className="bg-bg-accent py-3 px-4 rounded-lg">
+          <div className="rounded-lg bg-bg-accent px-4 py-3">
             <div className="flex items-center gap-2">
-              <img src={viewsIcon} alt="" className="w-4 h-4" />
+              <img src={viewsIcon} alt="" className="h-4 w-4" />
               <p className="text-[14px] text-text-secondary">Est. Views</p>
             </div>
 
@@ -19,9 +19,9 @@ export default function EstimatedPerformance() {
             <div>{/* blue progress and white track h-1 rounded-xl */}</div>
           </div>
 
-          <div className="bg-bg-accent py-3 px-4 rounded-lg">
+          <div className="rounded-lg bg-bg-accent px-4 py-3">
             <div className="flex items-center gap-2">
-              <img src={viewsIcon} alt="" className="w-4 h-4" />
+              <img src={viewsIcon} alt="" className="h-4 w-4" />
               <p className="text-[14px] text-text-secondary">Est. Views</p>
             </div>
 
@@ -33,5 +33,5 @@ export default function EstimatedPerformance() {
         </div>
       </div>
     </div>
-  );
+  )
 }

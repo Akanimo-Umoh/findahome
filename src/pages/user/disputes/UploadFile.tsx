@@ -1,4 +1,4 @@
-import uploadIcon from "@/assets/images/icon-file-upload.svg";
+import uploadIcon from "@/assets/images/icon-file-upload.svg"
 
 export default function UploadFile() {
   return (
@@ -10,11 +10,11 @@ export default function UploadFile() {
 
         <label
           htmlFor="upload"
-          className="bg-button-disabled rounded-lg py-3 px-4"
+          className="rounded-lg bg-button-disabled px-4 py-3"
         >
-          <div className="border-2 border-dashed border-text-secondary bg-white flex flex-col items-center justify-center gap-2 py-5 rounded-lg">
+          <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-text-secondary bg-white py-5">
             <input type="file" name="" id="upload" className="hidden" />
-            <div className="w-10 h-10 rounded-full bg-[#4F95FF] flex items-center justify-center">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
               <img src={uploadIcon} alt="" />
             </div>
 
@@ -30,5 +30,5 @@ export default function UploadFile() {
         </label>
       </div>
     </div>
-  );
+  )
 }

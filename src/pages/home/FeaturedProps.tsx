@@ -1,11 +1,11 @@
-import property from "@/assets/images/property.jpg";
-import landImg from "@/assets/images/img-land.jpg";
-import naira from "@/assets/images/naira.svg";
-import location from "@/assets/images/location.svg";
-import bed from "@/assets/images/bed.svg";
-import tubs from "@/assets/images/tubs.svg";
-import agentAvatar from "@/assets/images/agentAvatar.jpg";
-import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg";
+import property from "@/assets/images/property.jpg"
+import landImg from "@/assets/images/img-land.jpg"
+import naira from "@/assets/images/naira.svg"
+import location from "@/assets/images/location.svg"
+import bed from "@/assets/images/bed.svg"
+import tubs from "@/assets/images/tubs.svg"
+import agentAvatar from "@/assets/images/agentAvatar.jpg"
+import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg"
 // import heartIcon from "@/assets/images/icon-heart.svg";
 
 export default function FeaturedProps() {
@@ -69,38 +69,38 @@ export default function FeaturedProps() {
       avatar: agentAvatar,
       listed_by: "MaryAnn Kikomu",
     },
-  ];
+  ]
 
   return (
-    <div className="text-text-100 max-w-7xl mx-auto">
+    <div className="text-text-100 mx-auto max-w-7xl">
       <div className="flex flex-col items-center justify-center">
-        <p className="font-raleway font-semibold text-[18px] tracking-[1px] md:text-[36px]">
+        <p className="font-raleway text-[18px] font-semibold tracking-[1px] md:text-[36px]">
           Featured Properties
         </p>
-        <p className="text-xs font-ssPro text-text-secondary md:text-sm">
+        <p className="font-ssPro text-xs text-text-secondary md:text-sm">
           Handpicked for you
         </p>
       </div>
 
       {/* featured container */}
-      <div className="mt-6 md:mt-12 flex items-center justify-center md:mx-8">
-        <div className="flex gap-6 overflow-x-auto overscroll-x-contain hideScroll md:overflow-hidden md:grid md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] lg:grid-cols-3 md:justify-between md:items-center w-full px-6 md:px-0">
+      <div className="mt-6 flex items-center justify-center md:mx-8 md:mt-12">
+        <div className="hideScroll flex w-full gap-6 overflow-x-auto overscroll-x-contain px-6 md:grid md:grid-cols-[repeat(auto-fit,minmax(300px,1fr))] md:items-center md:justify-between md:overflow-hidden md:px-0 lg:grid-cols-3">
           {featured.map((feature, index) => (
             <div
               key={index}
-              className="max-w-112.5 w-36.5 md:min-w-0 md:w-full mx-auto shrink-0"
+              className="mx-auto w-36.5 max-w-112.5 shrink-0 md:w-full md:min-w-0"
             >
-              <div className="w-full h-32.5 overflow-hidden rounded-t-2xl md:h-62.5">
+              <div className="h-32.5 w-full overflow-hidden rounded-t-2xl md:h-62.5">
                 <img
                   src={feature.property_image}
                   alt="property"
-                  className="w-36.5 h-32.5 object-cover md:h-full md:w-full"
+                  className="h-32.5 w-36.5 object-cover md:h-full md:w-full"
                 />
               </div>
 
-              <div className="space-y-2 mt-1 md:mt-0 md:p-3 md:border md:border-bg-accent md:rounded-b-2xl">
-                <div className="font-raleway text-[12px] font-semibold space-y-1 tracking-[1px] md:text-[16px] md:font-medium md:flex md:items-center md:justify-between md:gap-1 md:space-y-0">
-                  <p className="text-black line-clamp-2 h-9 md:h-auto md:line-clamp-1 md:flex-1">
+              <div className="mt-1 space-y-2 md:mt-0 md:rounded-b-2xl md:border md:border-bg-accent md:p-3">
+                <div className="space-y-1 font-raleway text-[12px] font-semibold tracking-[1px] md:flex md:items-center md:justify-between md:gap-1 md:space-y-0 md:text-[16px] md:font-medium">
+                  <p className="line-clamp-2 h-9 text-black md:line-clamp-1 md:h-auto md:flex-1">
                     {feature.title}
                   </p>
                   <p className="flex items-center text-button-bg md:w-fit">
@@ -109,8 +109,8 @@ export default function FeaturedProps() {
                 </div>
 
                 <div className="space-y-1 md:space-y-2">
-                  <div className="flex flex-col justify-center text-text-secondary font-ssPro text-[12px] gap-2 md:flex-row md:justify-between md:gap-4 md:text-[14px]">
-                    <div className="flex items-center gap-1 h-9 md:h-auto md:flex-1">
+                  <div className="flex flex-col justify-center gap-2 font-ssPro text-[12px] text-text-secondary md:flex-row md:justify-between md:gap-4 md:text-[14px]">
+                    <div className="flex h-9 items-center gap-1 md:h-auto md:flex-1">
                       <img src={location} alt="" />
                       <p className="line-clamp-2 md:line-clamp-1">
                         {feature.location}
@@ -147,11 +147,11 @@ export default function FeaturedProps() {
                   </div>
 
                   <div className="md:flex md:items-end md:justify-between">
-                    <div className="flex items-center gap-0.5 md:flex-col md:justify-center md:items-start">
+                    <div className="flex items-center gap-0.5 md:flex-col md:items-start md:justify-center">
                       <img
                         src={feature.avatar}
                         alt="agent"
-                        className="w-5 h-5 rounded-full object-cover shrink-0 md:w-12.5 md:h-12.5"
+                        className="h-5 w-5 shrink-0 rounded-full object-cover md:h-12.5 md:w-12.5"
                       />
 
                       <div className="font-ssPro text-[12px] md:text-[14px]">
@@ -168,13 +168,13 @@ export default function FeaturedProps() {
                     <img
                       src={favoriteIcon}
                       alt=""
-                      className="hidden md:flex cursor-pointer"
+                      className="hidden cursor-pointer md:flex"
                     />
                   </div>
                 </div>
               </div>
 
-              <button className="font-raleway text-sm font-semibold tracking-[1px] text-text-primary border border-button-bg h-11.25 w-full rounded-lg mt-2 bg-button-disabled cursor-pointer md:hidden">
+              <button className="mt-2 h-11.25 w-full cursor-pointer rounded-lg border border-button-bg bg-button-disabled font-raleway text-sm font-semibold tracking-[1px] text-text-primary md:hidden">
                 View Details
               </button>
             </div>
@@ -182,5 +182,5 @@ export default function FeaturedProps() {
         </div>
       </div>
     </div>
-  );
+  )
 }
