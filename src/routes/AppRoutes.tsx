@@ -67,8 +67,8 @@ import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
 import { MyTransactions } from "@/pages/agent/my-transaction"
 import { SavedProperties } from "@/pages/user/saved-properties"
-import Chats from "@/components/Chats"
-import ChatMessages from "@/components/ChatMessages"
+import Chats from "@/components/shared/Chats"
+// import ChatMessages from "@/components/shared/ChatMessages"
 import { TransactionDetails } from "@/pages/agent/transaction-details"
 
 export default function AppRoutes() {
@@ -235,8 +235,7 @@ export default function AppRoutes() {
           {/* chats list */}
           <Route path="/messages" element={<Chats />} />
           {/* single chat */}
-          <Route path="/messages/chat" element={<ChatMessages />} />
-          <Route path="/messages/:chatId" element={<ChatMessages />} />
+          <Route path="/messages/:chatId" element={<Chats />} />
         </Route>
       </Route>
 

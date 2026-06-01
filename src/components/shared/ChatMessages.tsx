@@ -10,14 +10,18 @@ import iconEscrow from "@/assets/images/icon-chat-escrow.svg"
 import iconEmoji from "@/assets/images/icon-chat-emoji.svg"
 import iconAttach from "@/assets/images/icon-chat-attach-files.svg"
 import iconSend from "@/assets/images/icon-chat-sendMessage.svg"
-import PayInspectionModal from "./PayInspectionModal"
+import PayInspectionModal from "../PayInspectionModal"
 // import agentAvatarFallback from "@/assets/images/agentAvatar.jpg";
 import { useEffect, useRef, useState } from "react"
 import EscrowProtectionTerms from "@/components/EscrowProtectionTerms"
 import { useChatMessages } from "@/hooks/useChat"
 import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
-import Avatar from "./Avatar"
+import Avatar from "../Avatar"
+
+type ChatMessagesProps = {
+  chatId?: string
+}
 
 const formatTime = (dateStr: string) =>
   new Date(dateStr).toLocaleTimeString([], {
@@ -25,12 +29,16 @@ const formatTime = (dateStr: string) =>
     minute: "2-digit",
   })
 
-export default function ChatMessages() {
+export default function ChatMessages({
+  chatId: chatIdProp,
+}: ChatMessagesProps) {
   const [inputText, setInputText] = useState("")
   const [isPayModalOpen, setIsPayModalOpen] = useState(false)
   const [isEscrowOpen, setIsEscrowOpen] = useState(false)
 
-  const { chatId } = useParams<{ chatId: string }>()
+  const { chatId: chatIdParam } = useParams<{ chatId: string }>()
+  const chatId = chatIdProp ?? chatIdParam
+
   const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -152,11 +160,14 @@ export default function ChatMessages() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-72px)] flex-col justify-between font-ssPro">
+    <div className="flex h-[calc(100vh-72px)] flex-col justify-between font-ssPro lg:h-full">
       {/* chat header */}
       <div className="chat-header flex h-14 shrink-0 items-center justify-between gap-1 px-5.5 py-2 md:px-8">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-start gap-1">
-          <button onClick={() => navigate(-1)} className="cursor-pointer">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-start gap-1">
+          <button
+            onClick={() => navigate(-1)}
+            className="cursor-pointer lg:hidden"
+          >
             <img src={goBack} alt="" />
           </button>
 
@@ -179,9 +190,6 @@ export default function ChatMessages() {
                 {!isAgent && otherParty?.isVerified && (
                   <div className="flex flex-1 items-center justify-start gap-0.5">
                     <img src={iconVerified} alt="" className="h-4 w-4" />
-                    <p className="line-clamp-1 text-[12px] text-text-secondary">
-                      Verified Agent
-                    </p>
                   </div>
                 )}
               </div>
@@ -197,10 +205,10 @@ export default function ChatMessages() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col justify-between overflow-hidden">
+      <div className="mx-auto flex flex-1 flex-col justify-between overflow-hidden">
         {/* property info bar */}
-        <div className="mx-auto w-full px-5.5 md:px-8">
-          <div className="mx-auto flex max-w-7xl items-center gap-2 py-4">
+        <div className="mx-auto w-full px-5.5 md:px-8 lg:hidden">
+          <div className="mx-auto flex items-center gap-2 py-4">
             {property?.images?.[0] ? (
               <img
                 src={property.images[0]}
@@ -230,7 +238,7 @@ export default function ChatMessages() {
 
         {/* messages area */}
         <section className="mx-auto flex flex-col space-y-3 overflow-hidden px-5.5 md:px-8">
-          <div className="flex max-w-7xl flex-1 flex-col overflow-y-auto px-2 py-4">
+          <div className="flex max-w-3xl flex-1 flex-col overflow-y-auto px-2 py-4">
             {/* messages */}
             <p className="mb-2 text-center font-raleway text-[14px] font-semibold tracking-[1px] text-text-secondary">
               Today
@@ -297,7 +305,7 @@ export default function ChatMessages() {
 
         {/* bottom actions */}
         <div className="mx-auto w-full px-5.5 md:px-8">
-          <div className="max-w-7xl shrink-0 space-y-6 pb-2">
+          <div className="shrink-0 space-y-6 pb-2">
             <div className="flex items-center justify-center gap-1 sm:gap-10 md:gap-20">
               {miniLinks.map((link) => (
                 <button
