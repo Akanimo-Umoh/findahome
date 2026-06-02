@@ -49,7 +49,7 @@ export default function Chats() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-72px)] overflow-hidden font-ssPro lg:h-[calc(100vh-66px)]">
+    <div className="flex h-[calc(100vh-72px)] overflow-hidden font-ssPro md:h-[calc(100vh-66px)]">
       {/* left panel */}
       <div
         className={`flex w-full flex-col lg:max-w-[420px] lg:min-w-[280px] lg:shrink-0 lg:basis-[35%] lg:border-r lg:border-bg-accent ${selectedChatId ? "hidden lg:flex" : "flex"}`}
@@ -115,7 +115,7 @@ export default function Chats() {
               </div>
 
               {/* chats list */}
-              <div className="mx-6 mt-6 space-y-6">
+              <div className="mx-6 mt-6 space-y-4">
                 {filteredChats.length === 0 ? (
                   <p className="mt-10 text-center text-[12px] text-text-secondary">
                     No conversations match your search.

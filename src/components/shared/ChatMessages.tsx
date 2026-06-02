@@ -18,6 +18,7 @@ import { useChatMessages } from "@/hooks/useChat"
 import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "../Avatar"
+import { formatChatDateLabel } from "@/lib/utils"
 
 type ChatMessagesProps = {
   chatId?: string
@@ -45,10 +46,6 @@ export default function ChatMessages({
   const { user } = useAuthContext()
   const isAgent = user?.role === "agent" || user?.role === "admin"
 
-  // - agent: always has a real chatId in the URL
-  // - user from chat list: has a real chatId in the URL (/messages/:chatId)
-  // - user from ChatAgentModal: lands on /messages/chat with propertyId+agentId in state
-
   const {
     chatDetail,
     messages,
@@ -58,6 +55,24 @@ export default function ChatMessages({
     sendMessage,
     currentUserId,
   } = useChatMessages({ chatId: chatId ?? "" })
+
+  const groupedMessages = messages.reduce(
+    (acc, message) => {
+      const dateKey = new Date(message.createdAt).toDateString()
+
+      if (!acc[dateKey]) acc[dateKey] = []
+      acc[dateKey].push(message)
+
+      return acc
+    },
+    {} as Record<string, typeof messages>
+  )
+
+  const groupedEntries = Object.entries(groupedMessages)
+
+  // - agent: always has a real chatId in the URL
+  // - user from chat list: has a real chatId in the URL (/messages/:chatId)
+  // - user from ChatAgentModal: lands on /messages/chat with propertyId+agentId in state
 
   // derive display data from chatDetail
   const otherParty = chatDetail?.participants.find(
@@ -160,10 +175,10 @@ export default function ChatMessages({
   }
 
   return (
-    <div className="flex h-[calc(100vh-72px)] flex-col justify-between font-ssPro lg:h-full">
+    <div className="flex h-[calc(100vh-72px)] flex-col justify-between font-ssPro md:h-[calc(100vh-66px)] lg:h-full">
       {/* chat header */}
-      <div className="chat-header flex h-14 shrink-0 items-center justify-between gap-1 px-5.5 py-2 md:px-8">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-start gap-1">
+      <div className="flex h-14 shrink-0 items-center justify-between gap-1 px-5.5 py-2 shadow-sm md:px-8">
+        <div className="mx-auto flex w-full items-center justify-start gap-1">
           <button
             onClick={() => navigate(-1)}
             className="cursor-pointer lg:hidden"
@@ -205,7 +220,7 @@ export default function ChatMessages({
         </div>
       </div>
 
-      <div className="mx-auto flex flex-1 flex-col justify-between overflow-hidden">
+      <div className="mx-auto flex w-full flex-1 flex-col justify-between overflow-hidden border">
         {/* property info bar */}
         <div className="mx-auto w-full px-5.5 md:px-8 lg:hidden">
           <div className="mx-auto flex items-center gap-2 py-4">
@@ -237,75 +252,85 @@ export default function ChatMessages({
         </div>
 
         {/* messages area */}
-        <section className="mx-auto flex flex-col space-y-3 overflow-hidden px-5.5 md:px-8">
-          <div className="flex max-w-3xl flex-1 flex-col overflow-y-auto px-2 py-4">
-            {/* messages */}
-            <p className="mb-2 text-center font-raleway text-[14px] font-semibold tracking-[1px] text-text-secondary">
-              Today
-            </p>
+        <section className="mx-auto flex h-full w-full flex-col space-y-3 overflow-hidden">
+          <div className="w-full overflow-y-auto px-5.5 md:px-8">
+            <div className="mx-auto flex max-w-3xl flex-1 flex-col py-4">
+              {/* messages */}
+              {messages.length === 0 ? (
+                <p className="text-center text-[12px] text-text-secondary">
+                  No messages yet. Start the conversation!
+                </p>
+              ) : (
+                groupedEntries.map(([dateKey, groupMessages], gIndex) => (
+                  <div key={dateKey}>
+                    <p className="mb-2 text-center font-raleway text-[14px] font-semibold tracking-[1px] text-text-secondary">
+                      {formatChatDateLabel(groupMessages[0].createdAt)}
+                    </p>
 
-            {messages.length === 0 ? (
-              <p className="text-center text-[12px] text-text-secondary">
-                No messages yet. Start the conversation!
-              </p>
-            ) : (
-              messages.map((message) => {
-                const isOwn = message.sender._id === currentUserId
-                return (
-                  <div
-                    key={message._id}
-                    className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                  >
-                    <div className="max-w-[75%]">
-                      <div
-                        className={`rounded-2xl px-3 py-2 ${
-                          isOwn
-                            ? "rounded-tr-sm bg-button-bg"
-                            : "rounded-tl-sm bg-bg-accent"
-                        }`}
-                      >
-                        <p
-                          className={`text-[12px] leading-5 wrap-break-word md:text-[16px] md:leading-6 ${
-                            isOwn ? "text-white" : "text-text-primary"
-                          }`}
-                        >
-                          {message.text}
-                        </p>
-                      </div>
+                    {groupMessages.map((message, mIndex) => {
+                      const isOwn = message.sender._id === currentUserId
+                      const isLast =
+                        gIndex === groupedEntries.length - 1 &&
+                        mIndex === groupMessages.length - 1
 
-                      {/* attachments */}
-                      {message.attachments?.length > 0 && (
-                        <div>
-                          {message.attachments.map((url, i) => (
-                            <img
-                              key={i}
-                              src={url}
-                              alt="attachment"
-                              className="max-w-full rounded-lg"
-                            />
-                          ))}
+                      return (
+                        <div key={message._id}>
+                          <div
+                            className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                          >
+                            <div className="max-w-[75%]">
+                              <div
+                                className={`rounded-2xl px-3 py-2 ${
+                                  isOwn
+                                    ? "rounded-tr-sm bg-button-bg"
+                                    : "rounded-tl-sm bg-bg-accent"
+                                }`}
+                              >
+                                <p
+                                  className={`text-[12px] leading-5 wrap-break-word md:text-[16px] md:leading-6 ${
+                                    isOwn ? "text-white" : "text-text-primary"
+                                  }`}
+                                >
+                                  {message.text}
+                                </p>
+                              </div>
+
+                              {/* attachments */}
+                              {message.attachments?.length > 0 && (
+                                <div>
+                                  {message.attachments.map((url, i) => (
+                                    <img
+                                      key={i}
+                                      src={url}
+                                      alt="attachment"
+                                      className="max-w-full rounded-lg"
+                                    />
+                                  ))}
+                                </div>
+                              )}
+
+                              <p
+                                className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
+                              >
+                                {formatTime(message.createdAt)}
+                              </p>
+                            </div>
+                          </div>
+                          {/* scroll anchor */}
+                          {isLast && <div ref={messagesEndRef} />}
                         </div>
-                      )}
-
-                      <p
-                        className={`text-[10px] text-text-secondary ${isOwn ? "text-right" : "text-left"}`}
-                      >
-                        {formatTime(message.createdAt)}
-                      </p>
-                    </div>
+                      )
+                    })}
                   </div>
-                )
-              })
-            )}
-
-            {/* scroll anchor */}
-            <div ref={messagesEndRef} />
+                ))
+              )}
+            </div>
           </div>
         </section>
 
         {/* bottom actions */}
-        <div className="mx-auto w-full px-5.5 md:px-8">
-          <div className="shrink-0 space-y-6 pb-2">
+        <div className="mx-auto w-full px-5.5 pb-2 md:px-8 lg:pt-2 lg:pb-4">
+          <div className="mx-auto max-w-3xl shrink-0 space-y-6">
             <div className="flex items-center justify-center gap-1 sm:gap-10 md:gap-20">
               {miniLinks.map((link) => (
                 <button

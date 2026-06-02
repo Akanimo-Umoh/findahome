@@ -3,6 +3,7 @@ import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
 import { toast } from "sonner"
 import { getSocket } from "@/services/socket"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 export type ChatMessage = {
   _id: string
@@ -52,44 +53,62 @@ export type ChatDetail = {
 // ---- chat list ----
 export function useChatList() {
   const { user } = useAuthContext()
-  const [chats, setChats] = useState<ChatItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!user?.id) return
+  const {
+    data: chats = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["chats", user?.id],
+    queryFn: async () => {
+      const res = await api.get("/chat/all-chats")
+      return res.data as ChatItem[]
+    },
+    enabled: !!user?.id,
+  })
 
-    async function fetchChats() {
-      setIsLoading(true)
-      try {
-        const response = await api.get("/chat/all-chats")
-        setChats(response.data)
-      } catch {
-        setError("Failed to load chats")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchChats()
-  }, [user?.id])
-
-  return { chats, isLoading, error }
+  return {
+    chats,
+    isLoading,
+    error: error ? "Failed to load chats" : null,
+  }
 }
 
-type UseChatOptions = {
-  chatId: string
-}
-
-export function useChatMessages({ chatId }: UseChatOptions) {
+// ---- chat messages ----
+export function useChatMessages({ chatId }: { chatId: string }) {
   const { user } = useAuthContext()
-  const [chatDetail, setChatDetail] = useState<ChatDetail | null>(null)
-  const [messages, setMessages] = useState<ChatMessage[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [isSending, setIsSending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  // connect socket and register user once
+  // fetch chat detail
+  const {
+    data: chatDetail,
+    isLoading: isLoadingDetail,
+    error: detailError,
+  } = useQuery({
+    queryKey: ["chat", chatId],
+    queryFn: async () => {
+      const res = await api.get(`/chat/${chatId}`)
+      return res.data as ChatDetail
+    },
+    enabled: !!chatId,
+  })
+
+  // fetch messages
+  const {
+    data: messages = [],
+    isLoading: isLoadingMessages,
+    error: messagesError,
+  } = useQuery({
+    queryKey: ["messages", chatId],
+    queryFn: async () => {
+      const res = await api.get(`/message/${chatId}`)
+      return res.data as ChatMessage[]
+    },
+    enabled: !!chatId,
+  })
+
+  // socket — append incoming messages directly to the query cache
   useEffect(() => {
     if (!user?.id) return
 
@@ -98,36 +117,16 @@ export function useChatMessages({ chatId }: UseChatOptions) {
     socket.emit("user_connected", user.id)
 
     socket.on("receive_message", (message: ChatMessage) => {
-      setMessages((prev) => [...prev, message])
+      queryClient.setQueryData<ChatMessage[]>(
+        ["messages", chatId],
+        (prev = []) => [...prev, message]
+      )
     })
 
     return () => {
       socket.off("receive_message")
     }
-  }, [user?.id])
-
-  // create or fetch chat on mount
-  useEffect(() => {
-    if (!chatId) return
-
-    async function initChat() {
-      setIsLoading(true)
-      try {
-        const res = await api.get(`/chat/${chatId}`)
-        setChatDetail(res.data)
-
-        // fetch messages for this chat
-        const messagesRes = await api.get(`/message/${chatId}`)
-        setMessages(messagesRes.data)
-      } catch {
-        setError("Failed to load chat")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    initChat()
-  }, [chatId])
+  }, [user?.id, chatId, queryClient])
 
   async function sendMessage(text: string) {
     if (!chatDetail || !text.trim() || !user?.id) return
@@ -140,10 +139,20 @@ export function useChatMessages({ chatId }: UseChatOptions) {
       })
 
       const newMessage: ChatMessage = response.data.data
-      // append the new message to the list
-      setMessages((prev) => [...prev, newMessage])
 
-      // emit via socket so the other user receives it in real time
+      // update the cache directly — no re-fetch needed
+      queryClient.setQueryData<ChatMessage[]>(
+        ["messages", chatId],
+        (prev = []) => [...prev, newMessage]
+      )
+
+      // also update lastMessage in the chat list cache
+      queryClient.setQueryData<ChatItem[]>(["chats", user.id], (prev = []) =>
+        prev.map((chat) =>
+          chat._id === chatId ? { ...chat, lastMessage: newMessage } : chat
+        )
+      )
+
       const socket = getSocket()
       socket.emit("send_message", {
         from: user.id,
@@ -159,11 +168,11 @@ export function useChatMessages({ chatId }: UseChatOptions) {
   }
 
   return {
-    chatDetail,
+    chatDetail: chatDetail ?? null,
     messages,
-    isLoading,
+    isLoading: isLoadingDetail || isLoadingMessages,
     isSending,
-    error,
+    error: detailError || messagesError ? "Failed to load chat" : null,
     sendMessage,
     currentUserId: user?.id,
   }
