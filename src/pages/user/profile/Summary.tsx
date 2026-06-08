@@ -5,7 +5,7 @@ import savedIcon from "@/assets/images/icon-heart.svg"
 import rightArrowIcon from "@/assets/images/icon-nav-rightArrow.svg"
 import chatIcon from "@/assets/images/icon-blue-chat.svg"
 import { Link } from "react-router-dom"
-import { useSavedCount } from "@/hooks/useSavedCount"
+import { useSavedCount } from "@/hooks/useSavedProperties"
 
 export default function Summary() {
   const { savedCount, isLoading } = useSavedCount()

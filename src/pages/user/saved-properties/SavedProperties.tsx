@@ -1,10 +1,11 @@
 import saveIcon from "@/assets/images/icon-heart.svg"
 import goBack from "@/assets/images/icon-back.svg"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useSavedProperties } from "@/hooks/useSavedProperties"
 import { useState } from "react"
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
-import PropertyCard from "@/components/PropertyCard"
+// import PropertyCard from "@/components/PropertyCard"
+import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 
 type Tab = "apartment" | "land"
 
@@ -58,7 +59,11 @@ export default function SavedProperties() {
         {/* main apartment card ctn */}
         <div className="mt-8 space-y-8">
           {loading ? (
-            <PropertyCardSkeleton />
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <PropertyCardSkeleton key={i} />
+              ))}
+            </div>
           ) : error ? (
             <p>{error}</p>
           ) : filtered.length === 0 ? (
@@ -68,12 +73,7 @@ export default function SavedProperties() {
           ) : (
             <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
               {filtered.map((fav) => (
-                <Link
-                  to={`/property/${fav.property._id}`}
-                  className="mx-auto max-w-85"
-                >
-                  <PropertyCard key={fav._id} property={fav.property} />
-                </Link>
+                <PropertyCardCtn key={fav._id} property={fav.property} />
               ))}
             </div>
           )}

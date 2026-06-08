@@ -1,11 +1,11 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import leftArrow from "@/assets/images/icon-left-arrow.svg"
 import rightArrow from "@/assets/images/icon-right-arrow.svg"
 import goBack from "@/assets/images/icon-back.svg"
-import PropertyCard from "@/components/PropertyCard"
 import { useProperties } from "@/hooks/useProperties"
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 import Search from "../home/Search"
+import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -65,35 +65,9 @@ export default function AllProperties() {
     return pages
   }
 
-  let content
-
-  if (loading) {
-    content = Array.from({ length: 3 }).map((_, index) => (
-      <PropertyCardSkeleton key={index} />
-    ))
-  } else if (error) {
-    content = (
-      <div className="mt-6 text-center text-red-500">Error: {error}</div>
-    )
-  } else {
-    content = (
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {currentProperties.map((property) => (
-          <Link
-            key={property._id}
-            to={`/property/${property._id}`}
-            className="mx-auto w-full"
-          >
-            <PropertyCard key={property._id} property={property} />
-          </Link>
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div className="flex justify-center">
-      <div className="mx-6 flex min-h-screen max-w-7xl flex-col font-ssPro">
+      <div className="mx-6 flex min-h-screen w-full max-w-7xl flex-col font-ssPro">
         {/* main contents */}
         <main className="">
           <div className="relative flex items-center justify-center md:mt-6">
@@ -115,7 +89,25 @@ export default function AllProperties() {
           </div>
 
           {/* main properties ctn */}
-          <div className="mt-6">{content}</div>
+          <div className="mt-6">
+            {loading ? (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <PropertyCardSkeleton key={index} />
+                ))}
+              </div>
+            ) : error ? (
+              <div className="mt-6 text-center text-red-500">
+                Error: {error}
+              </div>
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {currentProperties.map((property) => (
+                  <PropertyCardCtn key={property._id} property={property} />
+                ))}
+              </div>
+            )}
+          </div>
         </main>
 
         {/* Pagination */}

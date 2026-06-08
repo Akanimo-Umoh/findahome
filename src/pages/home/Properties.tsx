@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom"
-import PropertyCard from "@/components/PropertyCard"
 import { useProperties } from "@/hooks/useProperties"
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
+import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 
 export default function Properties() {
   const { properties, loading, error } = useProperties()
 
   // slice to 3 for the homepage preview
   const previewProperties = properties.slice(0, 3)
-  const skeletons = Array(3).fill(null)
 
   return (
     <div className="mx-6 max-w-7xl font-ssPro md:mx-8">
@@ -20,7 +19,11 @@ export default function Properties() {
       <div className="mt-6 space-y-8 md:mt-12">
         {loading ? (
           // show skeletons
-          skeletons.map((_, index) => <PropertyCardSkeleton key={index} />)
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <PropertyCardSkeleton key={i} />
+            ))}
+          </div>
         ) : error ? (
           // show error message
           <div className="text-center text-red-500">Error: {error}</div>
@@ -28,13 +31,7 @@ export default function Properties() {
           // show properties
           <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6 md:grid-cols-2 lg:grid-cols-3">
             {previewProperties.map((property) => (
-              <Link
-                key={property._id}
-                to={`/property/${property._id}`}
-                className="mx-auto w-full"
-              >
-                <PropertyCard property={property} />
-              </Link>
+              <PropertyCardCtn key={property._id} property={property} />
             ))}
           </div>
         )}

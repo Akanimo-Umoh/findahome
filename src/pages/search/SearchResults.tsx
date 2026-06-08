@@ -1,6 +1,5 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { useMemo, useRef, useState } from "react"
-import PropertyCard from "@/components/PropertyCard"
 import leftArrow from "@/assets/images/icon-left-arrow.svg"
 import rightArrow from "@/assets/images/icon-right-arrow.svg"
 import filterIcon from "@/assets/images/icon-filter.svg"
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/select"
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 import Search from "../home/Search"
+import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 
 type SortOption = "low-to-high" | "high-to-low" | "newest" | ""
 type FilterOption = "all" | "verified"
@@ -193,7 +193,7 @@ export default function SearchResults() {
                 />
 
                 {/* dropdown */}
-                <div className="absolute top-10 right-0 z-20 min-w-[140px] overflow-hidden rounded-xl border border-bg-accent bg-white py-1 shadow-sm">
+                <div className="absolute top-10 right-0 z-20 min-w-35 overflow-hidden rounded-xl border border-bg-accent bg-white py-1 shadow-sm">
                   {(["all", "verified"] as FilterOption[]).map((option) => (
                     <button
                       key={option}
@@ -235,13 +235,7 @@ export default function SearchResults() {
             // results
             <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
               {currentProperties.map((property) => (
-                <Link
-                  to={`/property/${property._id}`}
-                  key={property._id}
-                  className="mx-auto max-w-85"
-                >
-                  <PropertyCard property={property} />
-                </Link>
+                <PropertyCardCtn key={property._id} property={property} />
               ))}
             </div>
           ) : (

@@ -2,19 +2,22 @@ import naira from "@/assets/images/naira.svg"
 import location from "@/assets/images/location.svg"
 import bed from "@/assets/images/bed.svg"
 import tubs from "@/assets/images/tubs.svg"
-import verified from "@/assets/images/icon-verified.svg"
+// import verified from "@/assets/images/icon-verified.svg"
 import type { Property } from "@/types/property"
 // import agentAvatar from "@/assets/images/agentAvatar.jpg";
 import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg"
 import Avatar from "./Avatar"
 import { useFavorite } from "@/hooks/useFavorite"
 import heartIcon from "@/assets/images/icon-heart.svg"
+import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+import { Link } from "react-router-dom"
 
 type PropertyCardProps = {
   property: Property
+  to: string
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property, to }: PropertyCardProps) {
   const { isSaved, isLoading, toggleFavorite } = useFavorite(property._id)
   const isLand = property.propertyType === "land"
 
@@ -27,14 +30,14 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           className="h-50 w-full object-cover md:h-62.5"
         />
 
-        {property.owner.isVerified && (
+        {/* {property.owner.isVerified && (
           <div className="absolute top-2.75 left-2.75 flex items-center justify-center gap-1 rounded-lg bg-[#10B981] p-2 md:top-0 md:left-0 md:rounded-t-xl md:bg-linear-to-b md:from-[#149D18] md:to-white md:shadow-[4px_4px_4px_#00000080]">
             <img src={verified} alt="" className="md:hidden" />
             <p className="font-raleway text-[14px] tracking-[1px] text-white md:text-[16px] md:text-text-primary">
               Verified
             </p>
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="space-y-6 rounded-b-2xl border border-bg-accent px-4 py-3 md:space-y-0 md:p-3">
@@ -87,9 +90,9 @@ export default function PropertyCard({ property }: PropertyCardProps) {
               )}
             </div>
 
-            <div className="md:flex md:items-end md:justify-between">
+            <div className="md:flex md:items-end md:justify-between md:gap-2">
               <div className="flex items-center gap-1 md:flex-col md:items-start">
-                <div>
+                <div className="shrink-0">
                   <Avatar
                     name={property.owner.name ?? "?"}
                     src={
@@ -101,14 +104,25 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                   />
                 </div>
 
-                <div className="flex items-center justify-center gap-0.5 text-[12px] text-text-secondary md:flex-col md:items-start md:text-[14px]">
-                  <p>
+                <div className="flex w-full flex-1 items-center gap-0.5 text-[12px] text-text-secondary md:flex-col md:items-start md:text-[14px]">
+                  <p className="flex items-center">
                     <span className="md:hidden">Listed by</span>
                     <span className="hidden md:flex">Agent</span>
                   </p>
-                  <span className="font-semibold text-black">
-                    {property.owner.name}
-                  </span>
+
+                  <div className="flex flex-1 items-center gap-1">
+                    <span className="line-clamp-1 max-w-fit font-semibold text-black">
+                      {property.owner.name}
+                    </span>
+                    {/* verified badge */}
+                    {property.owner.isVerified && (
+                      <img
+                        src={verifiedIcon}
+                        alt="verified"
+                        className="h-5 w-5 md:h-6 md:w-6"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -120,7 +134,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                   e.stopPropagation()
                   toggleFavorite()
                 }}
-                className="hidden cursor-pointer disabled:opacity-50 md:flex"
+                className="hidden shrink-0 cursor-pointer disabled:opacity-50 md:flex"
               >
                 <img
                   src={isSaved ? heartIcon : favoriteIcon}
@@ -131,9 +145,12 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
-        <div className="flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden">
+        <Link
+          to={to}
+          className="flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden"
+        >
           View Details
-        </div>
+        </Link>
       </div>
     </div>
   )
