@@ -82,6 +82,9 @@
   --color-success: #149d18;
   --color-warning: #f8b400;
   --color-error: #ff6b6b;
+
+  /* breakpoint */
+  --breakpoint-xs: 375px;
 }
 
 :root {

@@ -10,9 +10,10 @@ import iconSearch from "@/assets/images/icon-messages-search.svg"
 import imgMessages from "@/assets/images/img-chats-messages.png"
 import { useAuthContext } from "@/context/AuthContext"
 import { useChatList } from "@/hooks/useChat"
-import Spinner from "../Spinner"
+// import Spinner from "../Spinner"
 import { useState } from "react"
 import ChatMessages from "./ChatMessages"
+import ChatListSkeleton from "../ChatListSkeleton"
 
 const formatTime = (dateStr: string) =>
   new Date(dateStr).toLocaleTimeString([], {
@@ -74,7 +75,7 @@ export default function Chats() {
 
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <Spinner />
+            <ChatListSkeleton />
           ) : error ? (
             <p className="mt-10 text-center text-[12px] text-text-secondary">
               {error}

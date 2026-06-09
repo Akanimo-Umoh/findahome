@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import iconVerified from "@/assets/images/icon-verified-green.svg"
 import goBack from "@/assets/images/icon-back.svg"
 import iconOptions from "@/assets/images/icon-chat-options.svg"
@@ -36,6 +36,46 @@ export default function ChatMessages({
   const [inputText, setInputText] = useState("")
   const [isPayModalOpen, setIsPayModalOpen] = useState(false)
   const [isEscrowOpen, setIsEscrowOpen] = useState(false)
+  const [isOptions, setIsOptions] = useState(false)
+  const optionsRef = useRef<HTMLDivElement>(null)
+  const linkRef = useRef<HTMLAnchorElement>(null)
+
+  useEffect(() => {
+    if (!isOptions) return
+
+    // Focus the first element when opened
+    linkRef.current?.focus()
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        optionsRef.current &&
+        !optionsRef.current.contains(event.target as Node)
+      ) {
+        setIsOptions(false)
+      }
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Close on Escape
+      if (event.key === "Escape") {
+        setIsOptions(false)
+      }
+
+      // Trap focus
+      if (event.key === "Tab") {
+        event.preventDefault()
+        linkRef.current?.focus()
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [isOptions])
 
   const { chatId: chatIdParam } = useParams<{ chatId: string }>()
   const chatId = chatIdProp ?? chatIdParam
@@ -214,9 +254,25 @@ export default function ChatMessages({
               </p>
             </div>
           </div>
-          <button className="cursor-pointer">
-            <img src={iconOptions} alt="" />
-          </button>
+          {/* options - report agent */}
+          <div ref={optionsRef} className="relative">
+            <button
+              onClick={() => setIsOptions((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <img src={iconOptions} alt="" />
+            </button>
+
+            {isOptions && (
+              <Link
+                ref={linkRef}
+                to="/"
+                className="absolute top-9 right-0 flex w-fit min-w-28.75 items-center justify-center rounded-lg bg-white p-2 font-raleway text-[14px] font-semibold text-text-primary shadow-sm"
+              >
+                Report Agent
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -349,7 +405,7 @@ export default function ChatMessages({
                   }}
                   className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}
                 >
-                  <img src={link.icon} alt="" />
+                  <img src={link.icon} alt="" className="hidden xs:flex" />
                   <p className={`${link.color} text-[12px] leading-4`}>
                     {link.title}
                   </p>

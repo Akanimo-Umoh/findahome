@@ -1,121 +1,10 @@
-// import successImg from "@/assets/images/img-pay-inspection-fee.png";
-// import { useEffect } from "react";
-
-// type PayInspectionProps = {
-//   isOpen: boolean;
-//   onClose: () => void;
-// };
-
-// export default function PayInspectionModal({
-//   isOpen,
-//   onClose,
-// }: PayInspectionProps) {
-//   useEffect(() => {
-//     if (isOpen) {
-//       document.body.style.overflow = "hidden";
-//     } else {
-//       document.body.style.overflow = "";
-//     }
-
-//     return () => {
-//       document.body.style.overflow = "";
-//     };
-//   }, [isOpen]);
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 z-50 modal-enter font-ssPro">
-//       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-
-//       {/* modal */}
-//       <div className="absolute bottom-0 left-0 right-0 bg-white pt-[50px] px-6 rounded-t-[24px]">
-//         <img src={successImg} alt="" className="w-25 h-25 mx-auto" />
-
-//         <div className="flex flex-col items-center justify-center gap-2 mt-4 max-w-[317px] mx-auto text-center">
-//           <p className="font-raleway font-medium text-[24px] tracking-[1px]">
-//             Your agent has received your inspection request
-//           </p>
-//           <p className="text-text-secondary text-[12px] leading-4">
-//             You will receive a notification for an inspection schedule
-//           </p>
-//         </div>
-
-//         <div className="mt-[34px] flex flex-col gap-4 mb-8">
-//           <button className="text-[14px] tracking-[1px] font-raleway font-semibold text-white flex items-center justify-center button-style w-full rounded-lg h-[45px] cursor-pointer">
-//             Go to Dashboard
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// import successImg from "@/assets/images/img-inspection-fee-successful.png";
-// import { useEffect } from "react";
-
-// type PayInspectionProps = {
-//   isOpen: boolean;
-//   onClose: () => void;
-// };
-
-// export default function PayInspectionModal({
-//   isOpen,
-//   onClose,
-// }: PayInspectionProps) {
-//   useEffect(() => {
-//     if (isOpen) {
-//       document.body.style.overflow = "hidden";
-//     } else {
-//       document.body.style.overflow = "";
-//     }
-
-//     return () => {
-//       document.body.style.overflow = "";
-//     };
-//   }, [isOpen]);
-
-//   if (!isOpen) return null;
-
-//   return (
-//     <div className="fixed inset-0 z-50 modal-enter font-ssPro">
-//       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-
-//       {/* modal */}
-//       <div className="absolute bottom-0 left-0 right-0 bg-white pt-[50px] px-6 rounded-t-[24px]">
-//         <img src={successImg} alt="" className="w-[191px] h-[191px] mx-auto" />
-
-//         <div className="flex flex-col items-center justify-center gap-2 mt-8">
-//           <p className="font-raleway font-medium text-[24px] tracking-[1px]">
-//             Payment Successful!
-//           </p>
-//           <p className="text-text-primary">
-//             Your inspection with John Ade is confirmed.
-//           </p>
-//         </div>
-
-//         <div className="mt-8 flex flex-col gap-4 mb-8">
-//           <button className="text-[14px] tracking-[1px] font-raleway font-semibold text-white flex items-center justify-center button-style w-full rounded-lg h-[45px] cursor-pointer">
-//             Schedule Inspection
-//           </button>
-//           <button className="text-[14px] font-raleway font-semibold tracking-[1px] text-text-primary h-[45px] rounded-lg bg-bg-accent border border-text-secondary cursor-pointer">
-//             Return to chat
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import closeIcon from "@/assets/images/closeMenu.svg"
 import { useEffect } from "react"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
 import blueNairaIcon from "@/assets/images/naira.svg"
-import escrowIcon from "@/assets/images/icon-pay-inspection-fee.svg"
+// import escrowIcon from "@/assets/images/icon-pay-inspection-fee.svg"
 import infoIcon from "@/assets/images/icon-pay-inspection-info.svg"
 import { Link } from "react-router-dom"
-
-// import paymentError from "@/assets/images/icon-pay-inspection-fee-error.svg";
 
 type PayInspectionProps = {
   isOpen: boolean
@@ -167,7 +56,7 @@ export default function PayInspectionModal({
           </div>
 
           {/* wallet balance */}
-          <div className="mt-[23px] flex items-center gap-2 rounded-xl border border-bg-accent p-2">
+          {/* <div className="mt-[23px] flex items-center gap-2 rounded-xl border border-bg-accent p-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-accent">
               <img src={escrowIcon} alt="" />
             </div>
@@ -179,10 +68,10 @@ export default function PayInspectionModal({
                 <span>18,000</span>
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* details ctn */}
-          <div className="mt-8 flex-1 space-y-2 overflow-y-auto">
+          <div className="mt-6 flex-1 space-y-2 overflow-y-auto">
             {/* property details */}
             <div className="flex items-center gap-2 rounded-xl border border-bg-accent p-2">
               <img
@@ -229,25 +118,6 @@ export default function PayInspectionModal({
               </div>
             </div>
 
-            {/* payment not successful */}
-            {/* <div className="flex items-center bg-[#FF6B6B26] border border-state-error py-2 px-3 gap-2 rounded-xl mt-4">
-            <img src={paymentError} alt="" />
-            <p className="text-[12px] leading-4 text-state-error">
-              Insufficient funds in your escrow wallet. Please fund your wallet
-              to continue
-            </p>
-            </div>
-
-            <div className="flex items-center justify-between mt-10.5 gap-4">
-            <button className="rounded-lg h-[45px] flex items-center justify-center bg-button-disabled border border-text-secondary text-[14px] tracking-[1px] font-raleway font-semibold cursor-pointer w-full">
-              Cancel
-            </button>
-
-            <button className="rounded-lg h-[45px] flex items-center justify-center bg-button-bg text-[14px] tracking-[1px] font-raleway font-semibold text-white w-full">
-              Fund Wallet
-            </button>
-            </div> */}
-
             <div className="mt-[29px] flex flex-col items-center justify-center gap-1">
               <button className="button-style flex h-[45px] w-full items-center justify-center rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
                 Confirm payment from wallet
@@ -258,7 +128,7 @@ export default function PayInspectionModal({
               </p>
             </div>
 
-            <div className="mt-3 mb-4 text-center">
+            <div className="mt-3 mb-8 text-center">
               <Link
                 to=""
                 className="border-b border-b-button-bg text-center text-[12px] leading-4 text-text-secondary"
