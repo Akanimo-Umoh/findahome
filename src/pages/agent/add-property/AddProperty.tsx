@@ -4,41 +4,9 @@ import Step1 from "./Step1"
 import Step2 from "./Step2"
 import Step3 from "./Step3"
 import { useState } from "react"
-import { toast } from "sonner"
-import api from "@/services/api"
 import SubmissionSuccessful from "./SubmissionSuccessful"
-// import SubmissionSuccessful from "./SubmissionSuccessful";
-
-export type PropertyType = "apartment" | "land"
-export type ListingType = "sale" | "rent"
-
-export type AddPropertyFormData = {
-  // Step 1
-  propertyName: string
-  propertyType: PropertyType
-  listingType: ListingType
-  price: string
-  serviceCharge: string
-  // Land-only Step 1
-  plotSize: string
-  plotUnit: string
-  landCondition: string
-  landDocType: string
-  // Step 2
-  state: string
-  city: string
-  landmarks: string[]
-  // Land-only Step 2
-  description: string
-  // Step 3 — Apartment-only
-  bedrooms: string
-  bathrooms: string
-  apartmentDescription: string
-  // Step 3 — shared
-  images: File[]
-  documents: File[]
-  video: File | null
-}
+import type { AddPropertyFormData } from "@/types/addProperty"
+import { useAddProperty } from "@/hooks/useAddProperty"
 
 const initialFormData: AddPropertyFormData = {
   propertyName: "",
@@ -64,6 +32,7 @@ const initialFormData: AddPropertyFormData = {
 
 export default function AddProperty() {
   const navigate = useNavigate()
+  const { addProperty, isSubmitting } = useAddProperty()
   const [currentStep, setCurrentStep] = useState(1)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [propertyId, setPropertyId] = useState<string | null>(null)
@@ -77,79 +46,10 @@ export default function AddProperty() {
   const goToPrevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1))
 
   const handleSubmit = async () => {
-    try {
-      const formDataToSend = new FormData()
-
-      // basic fields
-      formDataToSend.append("title", formData.propertyName)
-      formDataToSend.append("propertyType", formData.propertyType)
-      formDataToSend.append("listingType", formData.listingType) // now supported
-      formDataToSend.append("inspectionFee", "5000")
-      formDataToSend.append("serviceCharge", formData.serviceCharge)
-      formDataToSend.append("price", formData.price)
-      formDataToSend.append("address", `${formData.city}, ${formData.state}`)
-
-      // description
-      const description =
-        formData.propertyType === "apartment"
-          ? formData.apartmentDescription
-          : formData.description
-      formDataToSend.append("description", description)
-
-      // nearby places
-      formData.landmarks
-        .filter((l) => l.trim())
-        .forEach((landmark) => {
-          formDataToSend.append("nearbyPlaces", landmark)
-        })
-
-      // land-only fields
-      if (formData.propertyType === "land") {
-        formDataToSend.append("landSize", formData.plotSize) // CHANGED: landType → landSize
-        formDataToSend.append("landUnit", formData.plotUnit)
-        formDataToSend.append("landCondition", formData.landCondition)
-        formDataToSend.append("landDocType", formData.landDocType)
-
-        // land documents
-        formData.documents.forEach((file) => {
-          formDataToSend.append("landDocuments", file)
-        })
-      }
-
-      // apartment-only fields
-      if (formData.propertyType === "apartment") {
-        formDataToSend.append("bedroom", formData.bedrooms)
-        formDataToSend.append("bathroom", formData.bathrooms)
-      }
-
-      // images
-      formData.images.forEach((file) => {
-        formDataToSend.append("images", file)
-      })
-
-      // video
-      if (formData.video) {
-        formDataToSend.append("videos", formData.video)
-      }
-
-      // add this just before the api.post() call
-      for (const [key, value] of formDataToSend.entries()) {
-        console.log(key, value)
-      }
-      // CHANGED: updated endpoint
-      const response = await api.post("/property", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-
-      if (response.data.success) {
-        setPropertyId(response.data.property._id)
-        setIsSuccessOpen(true)
-        // toast.success("Property listed successfully!");
-        // navigate("/agent/my-listings");
-      }
-    } catch (err) {
-      toast.error("Failed to create property. Please try again.")
-      console.error("createProperty error:", err)
+    const id = await addProperty(formData)
+    if (id) {
+      setPropertyId(id)
+      setIsSuccessOpen(true)
     }
   }
 
@@ -217,6 +117,7 @@ export default function AddProperty() {
             formData={formData}
             updateFormData={updateFormData}
             onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
           />
         )}
       </section>

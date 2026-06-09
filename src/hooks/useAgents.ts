@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 
 export type Agent = {
   id: string
@@ -9,115 +9,53 @@ export type Agent = {
   total_listings: string
 }
 
+const fetchAgents = async (): Promise<Agent[]> => {
+  const response = await fetch("/agents.json")
+  if (!response.ok) throw new Error("Failed to fetch agents")
+  const data = await response.json()
+  return data.agents
+}
+
 export function useAgents() {
-  const [agents, setAgents] = useState<Agent[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["agents"],
+    queryFn: fetchAgents,
+  })
 
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/agents.json")
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch agents")
-        }
-
-        const data = await response.json()
-        setAgents(data.agents)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-        setAgents([])
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchAgents()
-  }, [])
-
-  return { agents, loading, error }
+  return {
+    agents: data ?? [],
+    loading: isLoading,
+    error: error ? "Failed to fetch agents" : null,
+  }
 }
 
 export function useAgent(id: string) {
-  const [agent, setAgent] = useState<Agent | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["agents"],
+    queryFn: fetchAgents,
+    select: (agents) => agents.find((a) => a.id === id) ?? null,
+    enabled: !!id,
+  })
 
-  useEffect(() => {
-    const fetchAgent = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/agents.json")
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch agent")
-        }
-
-        const data = await response.json()
-        const foundAgent = data.agents.find((a: Agent) => a.id === id)
-
-        if (!foundAgent) {
-          throw new Error("Agent not found")
-        }
-
-        setAgent(foundAgent)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-        setAgent(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (id) {
-      fetchAgent()
-    }
-  }, [id])
-
-  return { agent, loading, error }
+  return {
+    agent: data ?? null,
+    loading: isLoading,
+    error: error ? "Agent not found" : null,
+  }
 }
 
 // Helper function to get agent by name (for backward compatibility with properties)
 export function useAgentByName(name: string) {
-  const [agent, setAgent] = useState<Agent | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["agents"],
+    queryFn: fetchAgents,
+    select: (agents) => agents.find((a) => a.name === name) ?? null,
+    enabled: !!name,
+  })
 
-  useEffect(() => {
-    const fetchAgent = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch("/agents.json")
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch agent")
-        }
-
-        const data = await response.json()
-        const foundAgent = data.agents.find((a: Agent) => a.name === name)
-
-        if (!foundAgent) {
-          throw new Error("Agent not found")
-        }
-
-        setAgent(foundAgent)
-        setError(null)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred")
-        setAgent(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (name) {
-      fetchAgent()
-    }
-  }, [name])
-
-  return { agent, loading, error }
+  return {
+    agent: data ?? null,
+    loading: isLoading,
+    error: error ? "Agent not found" : null,
+  }
 }

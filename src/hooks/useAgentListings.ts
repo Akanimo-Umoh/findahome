@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
 import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
+import { useQuery } from "@tanstack/react-query"
 
 export type AgentListing = {
   _id: string
@@ -26,27 +26,19 @@ export type AgentListing = {
 
 export function useAgentListings() {
   const { user } = useAuthContext()
-  const [listings, setListings] = useState<AgentListing[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (!user?.id) return
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["agentListings", user?.id],
+    queryFn: async () => {
+      const res = await api.get(`/property/agent/${user!.id}`)
+      return res.data.properties as AgentListing[]
+    },
+    enabled: !!user?.id,
+  })
 
-    async function fetchListings() {
-      setIsLoading(true)
-      try {
-        const res = await api.get(`/property/agent/${user!.id}`)
-        setListings(res.data.properties)
-      } catch {
-        setError("Failed to load listings")
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchListings()
-  }, [user?.id])
-
-  return { listings, isLoading, error }
+  return {
+    listings: data ?? [],
+    isLoading,
+    error: error ? "Failed to load agent listings" : null,
+  }
 }

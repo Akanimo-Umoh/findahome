@@ -25,7 +25,7 @@ export default function Footer() {
   ]
 
   return (
-    <div className="mx-auto mt-6 max-w-7xl px-6 font-ssPro md:mt-20 md:px-8">
+    <div className="mx-auto mt-6 w-full max-w-7xl px-6 font-ssPro md:mt-20 md:px-8">
       <div className="flex items-center justify-between md:flex-col md:items-start">
         <div className="flex max-w-41 flex-col gap-1 md:max-w-full md:gap-2">
           <Logo />

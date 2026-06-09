@@ -6,7 +6,7 @@ import bed from "@/assets/images/bed.svg"
 import tubs from "@/assets/images/tubs.svg"
 import agentAvatar from "@/assets/images/agentAvatar.jpg"
 import favoriteIcon from "@/assets/images/icon-add-to-favorite.svg"
-import verifiedIcon from "@/assets/images/icon-verified.svg"
+// import verifiedIcon from "@/assets/images/icon-verified.svg"
 // import heartIcon from "@/assets/images/icon-heart.svg";
 
 export default function FeaturedProps() {
