@@ -17,7 +17,25 @@ import MainLayout from "@/layouts/MainLayout"
 
 // User Pages (buyers)
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
-import { AgentProfile, Agents } from "@/pages/user/agents"
+import { FindAgents } from "@/pages/user/agents/find-agents"
+import { FundWallet, Wallet } from "@/pages/user/wallet"
+import {
+  PropertyEscrowTransaction,
+  PropertyPayment,
+} from "@/pages/user/propertyPayment"
+import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover"
+import { ConfirmHandover } from "@/pages/user/confirmHandover"
+import { TransactionReceipt } from "@/pages/user/receipt"
+import { Recent } from "@/pages/user/recent"
+import { SavedProperties } from "@/pages/user/saved-properties"
+import { UserTransactionDetails } from "@/pages/user/transaction/transaction-details"
+import { UserVisitDetails } from "@/pages/user/transaction/visit-details"
+import { UserConfirmVisit } from "@/pages/user/transaction/confirm-visit"
+import { UserTransactionReceipt } from "@/pages/user/transaction/transaction-receipt"
+import { UserPropertyPayment } from "@/pages/user/transaction/property-payment"
+import { AgentProfile } from "@/pages/user/agents/agent-profile"
+import { Profile } from "@/pages/user/profile/my-profile"
+import { EditPersonalInfo } from "@/pages/user/profile/edit-personal-info"
 
 // Agent Pages
 import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard"
@@ -36,40 +54,16 @@ import { AllProperties } from "@/pages/properties"
 import { SearchResults } from "@/pages/search"
 import { PropertyDetails } from "@/pages/propertyDetails"
 import NormalLayout from "@/layouts/NormalLayout"
-// import { ChatMessages, Chats } from "@/pages/user/chats";
-import {
-  // EscrowTransactionsDetails,
-  FundWallet,
-  Wallet,
-} from "@/pages/user/wallet"
-import {
-  Inspection,
-  InspectionConfirmation,
-  InspectionVisitDetails,
-} from "@/pages/user/inspection"
-import {
-  PropertyEscrowTransaction,
-  PropertyPayment,
-} from "@/pages/user/propertyPayment"
-import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover"
-import { PropertyVisitDetails } from "@/pages/user/visitDetails"
-import { ConfirmHandover } from "@/pages/user/confirmHandover"
-import { TransactionReceipt } from "@/pages/user/receipt"
-import { Recent } from "@/pages/user/recent"
-import { Profile } from "@/pages/user/profile"
-import {
-  DisputeDetail,
-  Disputes,
-  DisputeSubmitted,
-  OpenDispute,
-} from "@/pages/user/disputes"
+
 import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
 import { MyTransactions } from "@/pages/agent/my-transaction"
-import { SavedProperties } from "@/pages/user/saved-properties"
 import Chats from "@/components/shared/Chats"
-// import ChatMessages from "@/components/shared/ChatMessages"
 import { TransactionDetails } from "@/pages/agent/transaction-details"
+import { MyDisputes } from "@/pages/user/dispute/my-dispute"
+// import { DisputeDetails } from "@/pages/user/dispute/dispute-detail"
+import { OpenDispute } from "@/pages/user/dispute/open-dispute"
+import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 
 export default function AppRoutes() {
   return (
@@ -124,16 +118,45 @@ export default function AppRoutes() {
         <Route element={<NormalLayout />}>
           <Route path="/saved-properties" element={<SavedProperties />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/edit" element={<EditPersonalInfo />} />
         </Route>
       </Route>
 
       <Route element={<NormalLayout />}>
-        <Route path="/my-dispute" element={<Disputes />} />
-        <Route path="/dispute-detail" element={<DisputeDetail />} />
+        {/* user transactions */}
+        <Route
+          path="/transactions/:transactionId"
+          element={<UserTransactionDetails />}
+        />
+        <Route
+          path="/transactions/:transactionId/visit"
+          element={<UserVisitDetails />}
+        />
+        <Route
+          path="/transactions/:transactionId/confirm-inspection"
+          element={<UserConfirmVisit />}
+        />
+        <Route
+          path="/transactions/:transactionId/confirm-handover"
+          element={<UserConfirmVisit />}
+        />
+        <Route
+          path="/transactions/:transactionId/payment"
+          element={<UserPropertyPayment />}
+        />
+        <Route
+          path="/transactions/:transactionId/receipt"
+          element={<UserTransactionReceipt />}
+        />
+
+        <Route path="/recent-activities" element={<Recent />} />
+
+        <Route path="/disputes" element={<MyDisputes />} />
+        <Route path="/disputes/:disputeId" element={<MyDisputes />} />
+
         <Route path="/open-dispute" element={<OpenDispute />} />
         <Route path="/open-dispute/submitted" element={<DisputeSubmitted />} />
-        <Route path="/recent-activities" element={<Recent />} />
-        <Route path="/agents" element={<Agents />} />
+        <Route path="/agents" element={<FindAgents />} />
         <Route path="/agent-profile" element={<AgentProfile />} />
 
         {/* wallet */}
@@ -145,16 +168,13 @@ export default function AppRoutes() {
           path="/escrow-transactions-details"
           element={<PropertyEscrowTransaction />}
         />
-        <Route path="/inspection" element={<Inspection />} />
-        <Route path="/visit-details" element={<InspectionVisitDetails />} />
-        <Route
-          path="/property-visit-details"
-          element={<PropertyVisitDetails />}
-        />
-        <Route
+        {/* <Route path="/visit-details" element={<InspectionVisitDetails />} /> */}
+
+        {/* <Route
           path="/confirm-inspection"
           element={<InspectionConfirmation />}
-        />
+        /> */}
+
         <Route path="/confirm-handover" element={<ConfirmHandover />} />
         <Route path="/property-payment" element={<PropertyPayment />} />
         <Route
@@ -162,6 +182,12 @@ export default function AppRoutes() {
           element={<PropertyHandoverSchedule />}
         />
         <Route path="/transaction-receipt" element={<TransactionReceipt />} />
+
+        {/* user transaction details */}
+        {/* <Route
+          path="/transaction-details"
+          element={<UserTransactionDetails />}
+        /> */}
       </Route>
 
       {/* ==================== AGENT ROUTES ==================== */}

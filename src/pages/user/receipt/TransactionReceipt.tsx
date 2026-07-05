@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import goBack from "@/assets/images/icon-back.svg"
 import propertyImg from "@/assets/images/property.jpg"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
@@ -8,6 +8,7 @@ import downloadIcon from "@/assets/images/icon-white-download.svg"
 import whatsappIcon from "@/assets/images/icon-whatsapp.svg"
 import PartiesInvolved from "./PartiesInvolved"
 import Timeline from "./Timeline"
+import { Button } from "@/components/ui/button"
 
 export default function TransactionReceipt() {
   const navigate = useNavigate()
@@ -83,20 +84,22 @@ export default function TransactionReceipt() {
         {/* links */}
         <div className="mt-8 mb-10 space-y-3">
           <div className="flex flex-col items-center justify-center gap-3">
-            <button className="button-style flex h-[45px] w-full items-center justify-center gap-2 rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white">
+            <Button variant="app-primary" size="full">
               <img src={downloadIcon} alt="" />
               <p>Download Receipt(PDF)</p>
-            </button>
+            </Button>
 
-            <button className="flex h-[45px] w-full items-center justify-center gap-2 rounded-lg border border-text-secondary bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px]">
+            <Button variant="app-secondary" size="full">
               <img src={homeIcon} alt="" />
               <p>Go to Dashboard</p>
-            </button>
+            </Button>
           </div>
 
           <p className="text-center text-[12px] leading-4 text-text-secondary">
             Having issues with agent?&nbsp;
-            <span className="text-button-bg">Open a dispute</span>
+            <Link to="/dispute" className="text-button-bg">
+              Open a dispute
+            </Link>
           </p>
         </div>
       </main>

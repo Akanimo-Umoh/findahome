@@ -29,23 +29,23 @@
 //       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
 //       {/* modal */}
-//       <div className="absolute bottom-0 left-0 right-0 bg-white pt-[50px] px-6 rounded-t-[24px]">
-//         <img src={successImg} alt="" className="w-25 h-25 mx-auto" />
+// <div className="absolute bottom-0 left-0 right-0 bg-white pt-[50px] px-6 rounded-t-[24px]">
+//   <img src={successImg} alt="" className="w-25 h-25 mx-auto" />
 
-//         <div className="flex flex-col items-center justify-center gap-2 mt-4 max-w-[317px] mx-auto text-center">
-//           <p className="font-raleway font-medium text-[24px] tracking-[1px]">
-//             Your agent has received your inspection request
-//           </p>
-//           <p className="text-text-secondary text-[12px] leading-4">
-//             You will receive a notification for an inspection schedule
-//           </p>
-//         </div>
+//   <div className="flex flex-col items-center justify-center gap-2 mt-4 max-w-[317px] mx-auto text-center">
+//     <p className="font-raleway font-medium text-[24px] tracking-[1px]">
+//       Your agent has received your inspection request
+//     </p>
+//     <p className="text-text-secondary text-[12px] leading-4">
+//       You will receive a notification for an inspection schedule
+//     </p>
+//   </div>
 
-//         <div className="mt-[34px] flex flex-col gap-4 mb-8">
-//           <button className="text-[14px] tracking-[1px] font-raleway font-semibold text-white flex items-center justify-center button-style w-full rounded-lg h-[45px] cursor-pointer">
-//             Go to Dashboard
-//           </button>
-//         </div>
+//   <div className="mt-[34px] flex flex-col gap-4 mb-8">
+//     <button className="text-[14px] tracking-[1px] font-raleway font-semibold text-white flex items-center justify-center button-style w-full rounded-lg h-[45px] cursor-pointer">
+//       Go to Dashboard
+//     </button>
+//   </div>
 //       </div>
 //     </div>
 //   );

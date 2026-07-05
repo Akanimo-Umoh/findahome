@@ -1,182 +1,178 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import leftArrow from "@/assets/agentImages/icon-leftArrow.svg"
 import rightArrow from "@/assets/images/icon-right-carousel.svg"
-
-type Slide = { type: "image"; url: string } | { type: "video"; url: string }
+import Spinner from "@/components/Spinner"
+import ImageFullscreen from "@/components/ImageFullscreen"
 
 type ImageCarouselProps = {
   images: string[]
-  video?: string | string[] | null
 }
 
-export default function ImageCarousel({ images, video }: ImageCarouselProps) {
-  const videoUrl = Array.isArray(video) ? (video[0] ?? null) : (video ?? null)
-
-  const imageSlides: Slide[] = images.map((url) => ({
-    type: "image" as const,
-    url,
-  }))
-
-  const videoSlide: Slide[] = videoUrl
-    ? [{ type: "video" as const, url: videoUrl }]
-    : []
-
-  // video first
-  const slides: Slide[] = [...videoSlide, ...imageSlides]
-
-  // image-only slides for fullscreen navigation
-  const imageOnlySlides = imageSlides
-
+export default function ImageCarousel({ images }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [fullscreenIndex, setFullscreenIndex] = useState(0)
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([]))
+  const [fadeKey, setFadeKey] = useState(0)
+  const preloadedRef = useRef<Set<number>>(new Set())
 
-  const currentSlide = slides[currentIndex]
-  const isVideoSlide = currentSlide?.type === "video"
+  useEffect(() => {
+    if (!images.length) return
+    images.forEach((url, index) => {
+      if (preloadedRef.current.has(index)) return
+      const img = new Image()
+      img.src = url
+      img.onload = () => {
+        preloadedRef.current.add(index)
+        setLoadedImages((prev) => new Set([...prev, index]))
+      }
+      img.onerror = () => {
+        preloadedRef.current.add(index)
+        setLoadedImages((prev) => new Set([...prev, index]))
+      }
+    })
+  }, [images])
 
-  const goToPrev = () =>
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1))
-
-  const goToNext = () =>
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
-
-  const openFullscreen = (imageUrl: string) => {
-    const index = imageOnlySlides.findIndex((s) => s.url === imageUrl)
-    setFullscreenIndex(index >= 0 ? index : 0)
-    setIsFullscreen(true)
-  }
-
-  const fullscreenPrev = () =>
-    setFullscreenIndex((prev) =>
-      prev === 0 ? imageOnlySlides.length - 1 : prev - 1
-    )
-
-  const fullscreenNext = () =>
-    setFullscreenIndex((prev) =>
-      prev === imageOnlySlides.length - 1 ? 0 : prev + 1
-    )
-
-  // if somehow images is empty and no video, show nothing
-  if (slides.length === 0) {
+  if (!images.length) {
     return (
-      <div className="flex h-[202px] w-full items-center justify-center rounded-2xl bg-bg-accent">
+      <div className="flex h-50.5 w-full items-center justify-center rounded-2xl bg-bg-accent md:h-62.5 lg:h-[380px]">
         <p className="text-[12px] text-text-secondary">No images available</p>
       </div>
     )
   }
 
-  const showCarouselNav = slides.length > 1
+  const showNav = images.length > 1
+  const isCurrentLoaded = loadedImages.has(currentIndex)
+
+  const goTo = (index: number) => {
+    setCurrentIndex(index)
+    setFadeKey((k) => k + 1)
+  }
+
+  const goToPrev = () =>
+    goTo(currentIndex === 0 ? images.length - 1 : currentIndex - 1)
+
+  const goToNext = () =>
+    goTo(currentIndex === images.length - 1 ? 0 : currentIndex + 1)
+
+  const openFullscreen = () => {
+    setFullscreenIndex(currentIndex)
+    setIsFullscreen(true)
+  }
+
+  const fullscreenPrev = () =>
+    setFullscreenIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+
+  const fullscreenNext = () =>
+    setFullscreenIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
 
   return (
     <>
-      {/* carousel */}
-      <div className="relative">
-        {isVideoSlide ? (
-          // video — plays inline, no fullscreen on click
-          <video
-            src={currentSlide.url}
-            controls
-            className="h-[202px] w-full rounded-2xl bg-black object-contain"
-          />
-        ) : (
-          // image — opens fullscreen on click
-          <img
-            src={currentSlide.url}
-            alt={`Property image ${currentIndex + 1}`}
-            onClick={() => openFullscreen(currentSlide.url)}
-            className="h-[202px] w-full cursor-zoom-in rounded-2xl bg-black object-contain"
-          />
-        )}
-
-        {/* prev button — hidden when only one slide */}
-        {showCarouselNav && (
-          <button
-            type="button"
-            onClick={goToPrev}
-            className="absolute top-1/2 left-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
-          >
-            <img src={leftArrow} alt="Previous" />
-          </button>
-        )}
-
-        {/* next button — hidden when only one slide */}
-        {showCarouselNav && (
-          <button
-            type="button"
-            onClick={goToNext}
-            className="absolute top-1/2 right-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
-          >
-            <img src={rightArrow} alt="Next" />
-          </button>
-        )}
-
-        {/* counter — only shown when more than one slide */}
-        {showCarouselNav && (
-          <div className="absolute bottom-[21px] left-1/2 flex h-8 w-[33px] -translate-x-1/2 items-center justify-center rounded-2xl bg-bg-accent">
-            <p className="text-[12px] text-text-primary">
-              {currentIndex + 1}/{slides.length}
-            </p>
+      {/* main carousel */}
+      <div className="relative h-50.5 w-full overflow-hidden rounded-2xl bg-black md:h-62.5 lg:h-[380px]">
+        {!isCurrentLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-bg-accent">
+            <Spinner />
           </div>
+        )}
+
+        <img
+          key={fadeKey}
+          src={images[currentIndex]}
+          alt={`Property image ${currentIndex + 1}`}
+          onClick={openFullscreen}
+          onLoad={() =>
+            setLoadedImages((prev) => new Set([...prev, currentIndex]))
+          }
+          className={`h-full w-full cursor-zoom-in object-cover transition-opacity duration-300 ${
+            isCurrentLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+
+        {showNav && (
+          <>
+            <button
+              type="button"
+              onClick={goToPrev}
+              className="absolute top-1/2 left-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
+            >
+              <img src={leftArrow} alt="Previous" />
+            </button>
+            <button
+              type="button"
+              onClick={goToNext}
+              className="absolute top-1/2 right-[11px] -translate-y-1/2 cursor-pointer rounded-full bg-bg-accent p-2"
+            >
+              <img src={rightArrow} alt="Next" />
+            </button>
+            <div className="absolute bottom-[21px] left-1/2 flex h-8 w-[33px] -translate-x-1/2 items-center justify-center rounded-2xl bg-bg-accent">
+              <p className="text-[12px] text-text-primary">
+                {currentIndex + 1}/{images.length}
+              </p>
+            </div>
+          </>
         )}
       </div>
 
-      {/* fullscreen overlay — images only */}
-      {isFullscreen && imageOnlySlides.length > 0 && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black">
-          {/* header */}
-          <div className="flex shrink-0 items-center justify-between px-4 pt-4 pb-2">
-            <p className="text-[12px] text-white">
-              {imageOnlySlides.length > 1
-                ? `${fullscreenIndex + 1} / ${imageOnlySlides.length}`
-                : ""}
-            </p>
+      {/* thumbnail strip — md only */}
+      {images.length > 1 && (
+        <div className="mt-3 hidden gap-2 overflow-x-auto md:flex lg:hidden">
+          {images.map((url, index) => (
             <button
+              key={index}
               type="button"
-              onClick={() => setIsFullscreen(false)}
-              className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-[18px] text-white"
+              onClick={() => goTo(index)}
+              className={`h-15 w-20 shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 ${
+                currentIndex === index
+                  ? "border-button-bg"
+                  : "border-transparent"
+              }`}
             >
-              ✕
+              <img
+                src={url}
+                alt={`Thumbnail ${index + 1}`}
+                className="h-full w-full object-cover"
+              />
             </button>
-          </div>
-
-          {/* image */}
-          <div className="flex flex-1 items-center justify-center px-2">
-            <img
-              src={imageOnlySlides[fullscreenIndex].url}
-              alt={`Property image ${fullscreenIndex + 1}`}
-              className="max-h-full max-w-full object-contain"
-            />
-          </div>
-
-          {/* navigation — only shown when more than one image */}
-          {imageOnlySlides.length > 1 && (
-            <div className="flex shrink-0 items-center justify-between px-4 py-6">
-              <button
-                type="button"
-                onClick={fullscreenPrev}
-                className="cursor-pointer rounded-full bg-white/20 p-2"
-              >
-                <img
-                  src={leftArrow}
-                  alt="Previous"
-                  className="brightness-0 invert"
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={fullscreenNext}
-                className="cursor-pointer rounded-full bg-white/20 p-2"
-              >
-                <img
-                  src={rightArrow}
-                  alt="Next"
-                  className="brightness-0 invert"
-                />
-              </button>
-            </div>
-          )}
+          ))}
         </div>
+      )}
+
+      {/* thumbnail strip — lg */}
+      {images.length > 1 && (
+        <div className="mt-3 hidden gap-2 overflow-x-auto lg:flex">
+          {images.map((url, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => goTo(index)}
+              className={`h-20 w-[calc(25%-6px)] shrink-0 cursor-pointer overflow-hidden rounded-xl border-2 ${
+                currentIndex === index
+                  ? "border-button-bg"
+                  : "border-transparent"
+              }`}
+            >
+              <img
+                src={url}
+                alt={`Thumbnail ${index + 1}`}
+                className="h-full w-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* fullscreen */}
+      {isFullscreen && (
+        <ImageFullscreen
+          images={images}
+          currentIndex={fullscreenIndex}
+          loadedImages={loadedImages}
+          onClose={() => setIsFullscreen(false)}
+          onPrev={fullscreenPrev}
+          onNext={fullscreenNext}
+          onThumbnailClick={setFullscreenIndex}
+        />
       )}
     </>
   )

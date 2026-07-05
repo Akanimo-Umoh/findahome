@@ -33,17 +33,10 @@ export default function PartiesInvolved() {
       title: "Total Amount Paid",
       text: "3,060,000",
     },
-    {
-      title: "Agent Name:",
-      text: "Maryann Kikomu",
-    },
+
     {
       title: "Payment Method",
-      text: "Escrow Wallet",
-    },
-    {
-      title: "Escrow Duration",
-      text: "7 Days",
+      text: "Card Payment",
     },
     {
       title: "Transaction Status",
@@ -53,7 +46,7 @@ export default function PartiesInvolved() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col justify-center gap-2 rounded-xl bg-[#FAF3E0] p-2">
+      <div className="flex flex-col justify-center gap-2 rounded-xl bg-bg-warm-section p-2">
         {users.map((user, index) => (
           <div key={index} className="flex items-center justify-between">
             <p className="text-[12px] leading-4 text-text-primary">

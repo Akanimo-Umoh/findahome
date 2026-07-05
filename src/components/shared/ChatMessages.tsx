@@ -19,6 +19,7 @@ import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "../Avatar"
 import { formatChatDateLabel } from "@/lib/utils"
+import RequestSuccessful from "./RequestSuccessful"
 
 type ChatMessagesProps = {
   chatId?: string
@@ -36,44 +37,32 @@ export default function ChatMessages({
   const [inputText, setInputText] = useState("")
   const [isPayModalOpen, setIsPayModalOpen] = useState(false)
   const [isEscrowOpen, setIsEscrowOpen] = useState(false)
-  const [isOptions, setIsOptions] = useState(false)
+  const [isRequestSuccessOpen, setIsRequestSuccessOpen] = useState(false)
   const optionsRef = useRef<HTMLDivElement>(null)
-  const linkRef = useRef<HTMLAnchorElement>(null)
+  const [isOptions, setIsOptions] = useState(false)
 
   useEffect(() => {
     if (!isOptions) return
 
-    // Focus the first element when opened
-    linkRef.current?.focus()
-
-    const handleClickOutside = (event: MouseEvent) => {
+    function handleClickOutside(e: MouseEvent) {
       if (
         optionsRef.current &&
-        !optionsRef.current.contains(event.target as Node)
+        !optionsRef.current.contains(e.target as Node)
       ) {
         setIsOptions(false)
       }
     }
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Close on Escape
-      if (event.key === "Escape") {
-        setIsOptions(false)
-      }
-
-      // Trap focus
-      if (event.key === "Tab") {
-        event.preventDefault()
-        linkRef.current?.focus()
-      }
+    function handleEscape(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsOptions(false)
     }
 
     document.addEventListener("mousedown", handleClickOutside)
-    document.addEventListener("keydown", handleKeyDown)
+    document.addEventListener("keydown", handleEscape)
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
-      document.removeEventListener("keydown", handleKeyDown)
+      document.removeEventListener("keydown", handleEscape)
     }
   }, [isOptions])
 
@@ -254,29 +243,39 @@ export default function ChatMessages({
               </p>
             </div>
           </div>
+
           {/* options - report agent */}
-          <div ref={optionsRef} className="relative">
+          <div className="relative" ref={optionsRef}>
             <button
               onClick={() => setIsOptions((prev) => !prev)}
               className="cursor-pointer"
+              aria-haspopup="true"
+              aria-expanded={isOptions}
+              aria-label="Chat options"
             >
-              <img src={iconOptions} alt="" />
+              <img src={iconOptions} alt="" aria-hidden="true" />
             </button>
 
             {isOptions && (
-              <Link
-                ref={linkRef}
-                to="/"
-                className="absolute top-9 right-0 flex w-fit min-w-28.75 items-center justify-center rounded-lg bg-white p-2 font-raleway text-[14px] font-semibold text-text-primary shadow-sm"
+              <div
+                role="menu"
+                className="absolute top-9 right-0 w-fit min-w-28.75 rounded-lg bg-white shadow-sm"
               >
-                Report Agent
-              </Link>
+                <Link
+                  to="/open-dispute"
+                  role="menuitem"
+                  onClick={() => setIsOptions(false)}
+                  className="flex w-full items-center justify-center rounded-lg p-2 font-raleway text-[14px] font-semibold text-text-primary hover:bg-bg-accent focus:bg-bg-accent focus:outline-none"
+                >
+                  Report Agent
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="mx-auto flex w-full flex-1 flex-col justify-between overflow-hidden border">
+      <div className="mx-auto flex w-full flex-1 flex-col justify-between overflow-hidden">
         {/* property info bar */}
         <div className="mx-auto w-full px-5.5 md:px-8 lg:hidden">
           <div className="mx-auto flex items-center gap-2 py-4">
@@ -394,14 +393,7 @@ export default function ChatMessages({
                   onClick={() => {
                     if (link.action === "pay") setIsPayModalOpen(true)
                     if (link.action === "escrow") setIsEscrowOpen(true)
-                    if (link.action === "visit")
-                      navigate("/inspection", {
-                        state: {
-                          propertyId: property?._id,
-                          propertyTitle: property?.title,
-                          agentId: isAgent ? user?.id : otherParty?._id,
-                        },
-                      })
+                    if (link.action === "visit") setIsRequestSuccessOpen(true)
                   }}
                   className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}
                 >
@@ -423,6 +415,14 @@ export default function ChatMessages({
                 propertyImage={property?.images?.[0] ?? ""}
               />
             )}
+
+            <RequestSuccessful
+              open={isRequestSuccessOpen}
+              onOpenChange={setIsRequestSuccessOpen}
+              onGoToDashboard={() => navigate("/")}
+              title="Your agent has received your inspection request"
+              description="You will receive a notification for an inspection schedule"
+            />
 
             <EscrowProtectionTerms
               isOpen={isEscrowOpen}

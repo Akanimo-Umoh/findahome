@@ -58,6 +58,7 @@
   --color-bg-accent: #e2eeff;
   --color-bg-warm-section: #faf3e0;
   --color-bg-tertiary: #fafafa;
+  --color-agents-bg: #f39c12;
 
   /* text colors */
   --color-text-primary: #0a0a0a;
@@ -230,6 +231,18 @@
   @apply flex items-center justify-between;
 }
 
+.payment-summary-title {
+  @apply text-[12px] leading-4 md:text-[14px] md:leading-5.25;
+}
+
+.payment-summary-label {
+  @apply text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25;
+}
+
+.visit-summary-title {
+  @apply flex items-center justify-between text-[12px] leading-4 md:text-[14px] md:leading-5.25;
+}
+
 .agent-card {
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
 }
@@ -310,6 +323,18 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #cbd5e1;
+}
+
+.sortTrigger {
+  @apply h-8 md:h-14;
+}
+
+.editInput {
+  @apply h-11.25 rounded-xl border border-text-disabled px-2 text-[14px] outline-none focus:border-button-bg;
+}
+
+.select-issue {
+  @apply h-10 md:h-11.25;
 }
 
 @media (min-width: 768px) {

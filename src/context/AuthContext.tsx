@@ -10,6 +10,7 @@ export type User = {
   role: UserRole
   profilePicture?: string | null
   phoneNumber?: string
+  location?: string
 }
 
 type AuthContextType = {

@@ -420,7 +420,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
     {
       icon: agents,
       iconActive: agentsActive,
-      title: "Find agent",
+      title: "Find Agents",
       link: "/agents",
     },
     {
@@ -446,7 +446,7 @@ export default function Navbar({ variant = "dark" }: NavbarProps) {
   // ── TABLET LINKS ──
   const tabletUserLinks = [
     { title: "Home", link: "/" },
-    { title: "Find agent", link: "/agents" },
+    { title: "Find Agents", link: "/agents" },
     { title: "Chats", link: "/messages" },
     { title: "Recent Activities", link: "/recent-activities" },
     { title: "My Wallet", link: "/wallet" },

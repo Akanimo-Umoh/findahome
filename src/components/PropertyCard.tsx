@@ -63,7 +63,7 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
 
               {isLand ? (
                 <div className="flex h-5 items-center text-[12px] text-text-secondary md:text-[14px]">
-                  Land Type: {property.landType}
+                  Type: {property.landType}
                 </div>
               ) : (
                 <div className="flex h-5 items-center gap-2 text-[12px] text-text-secondary md:text-[14px]">
