@@ -1,4 +1,4 @@
-import Skeleton from "./shared/Skeleton"
+import Skeleton from "./ui/Skeleton"
 
 export default function ChatListSkeleton() {
   return (

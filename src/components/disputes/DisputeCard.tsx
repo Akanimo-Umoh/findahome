@@ -1,7 +1,7 @@
 import nairaIcon from "@/assets/images/icon-naira.svg"
 import { ChevronRight } from "lucide-react"
 import type { Dispute, DisputeStatus } from "./mockDisputes"
-import Skeleton from "../shared/Skeleton"
+import Skeleton from "../ui/Skeleton"
 
 // --- status badge ---
 const STATUS_STYLES: Record<DisputeStatus, { bg: string; label: string }> = {
