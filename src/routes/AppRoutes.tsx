@@ -64,6 +64,7 @@ import { MyDisputes } from "@/pages/user/dispute/my-dispute"
 // import { DisputeDetails } from "@/pages/user/dispute/dispute-detail"
 import { OpenDispute } from "@/pages/user/dispute/open-dispute"
 import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
+import AgentLayout from "@/layouts/AgentLayout"
 
 export default function AppRoutes() {
   return (
@@ -208,7 +209,7 @@ export default function AppRoutes() {
           <Route path="/agent/settings" element={<div>Agent Settings</div>} />
         </Route>
 
-        <Route element={<NormalLayout />}>
+        <Route element={<AgentLayout />}>
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
           <Route path="/agent/add-property" element={<AddProperty />} />
