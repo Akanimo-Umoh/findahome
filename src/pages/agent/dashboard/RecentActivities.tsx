@@ -101,7 +101,7 @@ export default function RecentActivities() {
   }
 
   return (
-    <div className="mx-6 md:mx-8">
+    <div className="">
       <p>Recent Activities</p>
 
       <div className="mt-2 space-y-4">

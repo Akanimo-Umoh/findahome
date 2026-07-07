@@ -295,7 +295,7 @@ const stats: StatCard[] = [
 
 export default function PerformanceSnapshot() {
   return (
-    <div className="mx-6 mt-6 md:mx-8 md:mt-8">
+    <div className="mt-6 md:mt-8">
       <p className="">Performance Snapshot</p>
 
       {/*

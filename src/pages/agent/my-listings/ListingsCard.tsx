@@ -1,19 +1,20 @@
 import locationIcon from "@/assets/images/icon-location.svg"
 import bedIcon from "@/assets/images/bed.svg"
 import tubIcon from "@/assets/images/tubs.svg"
-import activeIcon from "@/assets/agentImages/icon-active-white.svg"
+// import activeIcon from "@/assets/agentImages/icon-active-white.svg"
 import visibilityIcon from "@/assets/agentImages/icon-visibility.svg"
 import chatIcon from "@/assets/agentImages/icon-chats.svg"
 import editIcon from "@/assets/agentImages/icon-edit.svg"
 import deleteIcon from "@/assets/agentImages/icon-delete-listing.svg"
 import shareIcon from "@/assets/agentImages/icon-share.svg"
 import nairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
-import pendingIcon from "@/assets/agentImages/icon-pending-listing.svg"
-import pendingApprovalIcon from "@/assets/agentImages/icon-pending-approval.svg"
-import soldIcon from "@/assets/agentImages/icon-sold.svg"
-import checkboxIcon from "@/assets/agentImages/icon-filled-checkbox.svg"
-import cancelIcon from "@/assets/agentImages/icon-filled-cancel.svg"
-import rejectedIcon from "@/assets/agentImages/icon-cancel.svg"
+// import pendingIcon from "@/assets/agentImages/icon-pending-listing.svg"
+import pendingApprovalIcon from "@/assets/agentImages/icon-listing-pending.svg"
+import listingApprovedIcon from "@/assets/agentImages/icon-listing-approved.svg"
+// import soldIcon from "@/assets/agentImages/icon-sold.svg"
+import soldIcon from "@/assets/agentImages/icon-listing-sold.svg"
+import rejectedIcon from "@/assets/agentImages/icon-listing-canceled.svg"
+// import rejectedIcon from "@/assets/agentImages/icon-cancel.svg"
 import type { FilterStatus, ListingStatus } from "./MyListings"
 import type { AgentListing } from "@/hooks/useAgentListings"
 import Spinner from "@/components/Spinner"
@@ -27,36 +28,42 @@ interface ListingsCardProps {
   error: string | null
 }
 
-const statusConfig: Record<
-  ListingStatus,
-  { label: string; bg: string; icon: string }
-> = {
-  active: { label: "Active", bg: "bg-[#10B981]", icon: activeIcon },
-  pending: { label: "Pending", bg: "bg-[#F39C12]", icon: pendingIcon },
-  sold: { label: "Sold", bg: "bg-button-bg", icon: soldIcon },
-  rejected: { label: "Rejected", bg: "bg-[#D02727]", icon: rejectedIcon },
-}
-
 function StatusBanner({ status }: { status: ListingStatus }) {
-  if (status === "active") return null // active has no bottom banner
+  if (status === "active")
+    return (
+      <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#149D1833] p-2 md:mt-4 md:ml-0">
+        <img
+          src={listingApprovedIcon}
+          alt=""
+          className="h-4 w-4 md:h-6 md:w-6"
+        />
+
+        <p className="text-[12px] leading-4 text-success md:text-[14px] md:leading-5.25">
+          Your listing is approved.
+        </p>
+      </div>
+    )
+
   if (status === "pending")
     return (
-      <div className="mx-auto mt-2 flex w-fit items-center justify-center gap-1 rounded-lg bg-[#F39C12] p-2 md:mt-4 md:ml-0">
+      <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#F39C1233] p-2 md:mt-4 md:ml-0">
         <img
           src={pendingApprovalIcon}
           alt=""
           className="h-4 w-4 md:h-6 md:w-6"
         />
-        <p className="text-[12px] leading-4 text-white md:text-[14px] md:leading-5.25">
-          Your property is pending approval
+
+        <p className="text-[12px] leading-4 text-state-warning md:text-[14px] md:leading-5.25">
+          Pending approval
         </p>
       </div>
     )
 
   if (status === "sold")
     return (
-      <div className="mx-auto mt-2 flex w-fit items-center justify-center gap-1 rounded-lg bg-[#E2EEFF] p-2 md:mt-4 md:ml-0">
-        <img src={checkboxIcon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
+      <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#274AD033] p-2 md:mt-4 md:ml-0">
+        <img src={soldIcon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
+
         <p className="text-[12px] leading-4 text-button-bg md:text-[14px] md:leading-5.25">
           Congratulations! This property has been sold
         </p>
@@ -65,10 +72,11 @@ function StatusBanner({ status }: { status: ListingStatus }) {
 
   if (status === "rejected")
     return (
-      <div className="mx-auto mt-2 flex w-fit items-center justify-center gap-1 rounded-lg bg-[#D0272733] p-2 md:mt-4 md:ml-0">
-        <img src={cancelIcon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
+      <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#D0272733] p-2 md:mt-4 md:ml-0">
+        <img src={rejectedIcon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
+
         <p className="text-[12px] leading-4 text-[#D02727] md:text-[14px] md:leading-5.25">
-          This listing was rejected. Please review and resubmit.
+          Please review and resubmit.
         </p>
       </div>
     )
@@ -135,41 +143,30 @@ export default function ListingsCard({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="grid gap-6 sm:grid-cols-2">
       {filtered.map((listing) => {
         const status = listing.status as ListingStatus
-        const { label, bg, icon } = statusConfig[listing.status]
         const isLand = listing.propertyType === "land"
 
         return (
           <div
             key={listing._id}
-            className="rounded-t-2xl shadow-[4px_4px_4px_rgba(0,0,0,0.25)]"
+            className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
           >
-            <div className="relative">
-              {/* status */}
-              <div
-                className={`flex items-center gap-1 rounded-lg p-2 ${bg} absolute top-[11px] left-[11px]`}
-              >
-                <img src={icon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
-                <p className="text-[12px] leading-4 tracking-[1px] text-white md:text-[14px] md:leading-5.25">
-                  {label}
-                </p>
-              </div>
-
+            <div className="relative rounded-t-2xl">
               {/* property image */}
               {listing.images?.[0] ? (
                 <img
                   src={listing.images[0]}
                   alt={listing.title}
-                  className="h-50.5 w-full rounded-t-2xl object-cover md:h-67.5"
+                  className="h-37.5 w-full rounded-t-2xl object-cover md:h-50.5 xl:h-67.5"
                 />
               ) : (
-                <div className="h-50.5 w-full rounded-t-2xl bg-bg-accent md:h-67.5" />
+                <div className="h-37.5 w-full rounded-t-2xl bg-bg-accent md:h-50.5 lg:h-67.5" />
               )}
             </div>
 
-            <div className="p-3">
+            <div className="rounded-2xl rounded-t-none border border-bg-accent p-3">
               <div className="space-y-2">
                 <div className="flex flex-col justify-center">
                   <div className="flex h-10 items-center justify-between gap-2 md:h-12">
@@ -208,7 +205,7 @@ export default function ListingsCard({
 
                   {/* bed/bath for apartment only */}
                   {!isLand && (
-                    <div className="flex items-center gap-2 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25">
+                    <div className="flex items-center gap-2 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
                       {listing.bedroom != null && (
                         <div className="flex items-center gap-1">
                           <img
@@ -234,7 +231,7 @@ export default function ListingsCard({
 
                   {/* land size for land only */}
                   {isLand && listing.landSize && (
-                    <p className="text-[12px] text-text-secondary md:text-[14px]">
+                    <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
                       {listing.landSize} {listing.landUnit}
                     </p>
                   )}
@@ -270,7 +267,7 @@ export default function ListingsCard({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center justify-center gap-2">
                   {/* edit icon */}
                   <button className="cursor-pointer px-0.5 py-1">
                     <img
@@ -304,7 +301,9 @@ export default function ListingsCard({
                 </div>
               </div>
 
-              <StatusBanner status={status} />
+              <div className="mt-2">
+                <StatusBanner status={status} />
+              </div>
             </div>
           </div>
         )

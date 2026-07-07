@@ -211,8 +211,11 @@ export default function AppRoutes() {
 
         <Route element={<AgentLayout />}>
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
-          <Route path="/agent/profile" element={<MyAgentProfile />} />
+          <Route path="/agent/my-listings" element={<MyListings />} />
           <Route path="/agent/add-property" element={<AddProperty />} />
+
+          {/* any cleared or confirmed route goes up */}
+          <Route path="/agent/profile" element={<MyAgentProfile />} />
           <Route path="/agent/my-transactions" element={<MyTransactions />} />
           <Route
             path="/agent/my-transactions/1"
@@ -227,7 +230,7 @@ export default function AppRoutes() {
 
       <Route element={<NormalLayout />}>
         {/* don't forget to add the links for the different dashboards route */}
-        <Route path="/agent/my-listings" element={<MyListings />} />
+
         <Route path="/agent/mis" element={<Miscellaneous />} />
       </Route>
 

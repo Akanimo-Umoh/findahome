@@ -18,9 +18,11 @@ export default function AgentLayout() {
       {/* main content
           mobile/tablet: mt-18 to clear the fixed navbar
           lg: ml-[358px] to clear the fixed sidebar, no top margin needed */}
-      <main className="mt-18 lg:mt-0 lg:ml-[300px]">
-        <div className="mx-auto max-w-4xl">
-          <Outlet />
+      <main className="mt-18 md:mt-16.5 lg:mt-0 lg:ml-75">
+        <div className="px-6 md:px-8">
+          <div className="mx-auto max-w-245">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

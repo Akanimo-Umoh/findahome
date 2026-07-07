@@ -31,6 +31,7 @@ export function useAgentListings() {
     queryKey: ["agentListings", user?.id],
     queryFn: async () => {
       const res = await api.get(`/property/agent/${user!.id}`)
+      console.log(res)
       return res.data.properties as AgentListing[]
     },
     enabled: !!user?.id,

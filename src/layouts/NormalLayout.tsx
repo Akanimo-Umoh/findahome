@@ -6,7 +6,7 @@ export default function NormalLayout() {
     <div className="flex min-h-screen flex-col">
       <Navbar />
 
-      <main className="mt-18 flex-1 md:mt-[66px]">
+      <main className="mt-18 flex-1 md:mt-16.5">
         <Outlet />
       </main>
     </div>

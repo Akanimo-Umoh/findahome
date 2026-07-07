@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import goBack from "@/assets/images/icon-back.svg"
-// import addIcon from "@/assets/agentImages/icon-add-new-property.svg";
 import FilterButtons from "./FilterButtons"
-// import SearchListings from "./SearchListings";
 import ListingsCard from "./ListingsCard"
 import { useState } from "react"
 import { useAgentListings } from "@/hooks/useAgentListings"
@@ -26,7 +24,7 @@ export default function MyListings() {
   }
 
   return (
-    <div className="mx-6 mb-10 text-text-primary md:mx-8 md:mt-6">
+    <div className="mb-10 md:pt-6 lg:pt-8">
       {/* header */}
       <div className="relative flex items-center justify-center">
         <button
@@ -69,7 +67,7 @@ export default function MyListings() {
       </div> */}
 
       {/* listings card */}
-      <div className="mt-6 md:mt-12">
+      <div className="mt-6 md:mt-8">
         <ListingsCard
           activeFilter={activeFilter}
           activeTab={activeTab}
