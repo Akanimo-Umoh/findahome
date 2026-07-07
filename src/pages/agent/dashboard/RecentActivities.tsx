@@ -8,7 +8,7 @@ import nairaIcon from "@/assets/agentImages/icon-grey-naira.svg"
 type ActivityType =
   | "payment_released"
   | "inspection_scheduled"
-  | "funds_in_escrow"
+  | "inspection_requested"
   | "ads_performance"
   | "property_uploaded"
 
@@ -18,10 +18,9 @@ type Activity = {
   title: string
   description: string
   timestamp: string
-  amount?: string // Optional: for payment/escrow activities
+  amount?: string
 }
 
-// Activity configuration by type
 const activityConfig: Record<ActivityType, { icon: string; bgColor: string }> =
   {
     payment_released: {
@@ -32,7 +31,7 @@ const activityConfig: Record<ActivityType, { icon: string; bgColor: string }> =
       icon: inspectionIcon,
       bgColor: "bg-[#FF6B6B33]",
     },
-    funds_in_escrow: {
+    inspection_requested: {
       icon: escrowIcon,
       bgColor: "bg-[#274AD033]",
     },
@@ -65,8 +64,8 @@ export default function RecentActivities() {
     },
     {
       id: "3",
-      type: "funds_in_escrow",
-      title: "Funds in Escrow",
+      type: "inspection_requested",
+      title: "Inspection Requested",
       description: "200,000 held for Victoria Island property",
       timestamp: "5 hrs ago",
       amount: "200,000",
@@ -87,7 +86,6 @@ export default function RecentActivities() {
     },
   ]
 
-  // ✅ ADDED: Helper to render description with amount
   const renderDescription = (activity: Activity) => {
     if (activity.amount) {
       return (
@@ -106,7 +104,6 @@ export default function RecentActivities() {
     <div className="mx-6 md:mx-8">
       <p>Recent Activities</p>
 
-      {/* ✅ MODIFIED: Dynamic activities rendering */}
       <div className="mt-2 space-y-4">
         {activities.map((activity) => {
           const config = activityConfig[activity.type]
