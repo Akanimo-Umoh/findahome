@@ -59,7 +59,7 @@ const NAV_LINKS = [
   },
   {
     title: "Disputes",
-    link: "/agent/my-transactions",
+    link: "/agent/my-disputes",
     icon: disputesIcon,
     iconActive: disputesActiveIcon,
   },
@@ -71,45 +71,40 @@ export default function AgentSidebar() {
   const { handleLogout } = useLogout()
 
   return (
-    <aside className="fixed top-0 left-0 z-40 flex h-screen w-75 flex-col justify-between border-r border-bg-accent bg-white px-8 py-8">
-      {/* top — logo + nav links */}
-      <div className="flex flex-col gap-8">
-        {/* logo */}
-        <Link to="/agent/dashboard">
-          <img src={logoIcon} alt="" />
-        </Link>
+    <aside className="fixed top-0 left-0 z-40 flex h-screen w-75 flex-col border-r border-bg-accent bg-white px-8 py-8">
+      {/* logo */}
+      <Link to="/agent/dashboard" className="shrink-0">
+        <img src={logoIcon} alt="" />
+      </Link>
 
-        {/* nav links */}
-        <nav className="flex flex-col gap-2">
-          {NAV_LINKS.map((link) => {
-            const isActive = location.pathname === link.link
-            return (
-              <Link
-                key={link.link}
-                to={link.link}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2 transition-colors duration-200 ${
-                  isActive
-                    ? "bg-button-bg text-white"
-                    : "text-text-primary hover:bg-bg-accent"
-                }`}
-              >
-                <img
-                  src={isActive ? link.iconActive : link.icon}
-                  alt=""
-                  className="shrink-0"
-                />
+      {/* nav links */}
+      <nav className="mt-8 flex flex-1 flex-col gap-2 overflow-y-auto">
+        {NAV_LINKS.map((link) => {
+          const isActive = location.pathname === link.link
+          return (
+            <Link
+              key={link.link}
+              to={link.link}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 transition-colors duration-200 ${
+                isActive
+                  ? "bg-button-bg text-white"
+                  : "text-text-primary hover:bg-bg-accent"
+              }`}
+            >
+              <img
+                src={isActive ? link.iconActive : link.icon}
+                alt=""
+                className="shrink-0"
+              />
 
-                <p className="text-[18px] font-semibold tracking-[1px]">
-                  {link.title}
-                </p>
-              </Link>
-            )
-          })}
-        </nav>
-      </div>
+              <p className="font-semibold tracking-[1px]">{link.title}</p>
+            </Link>
+          )
+        })}
+      </nav>
 
       {/* bottom — business name + logout */}
-      <div className="flex flex-col gap-4">
+      <div className="mt-4 flex shrink-0 flex-col gap-4">
         <Link
           to="/agent/my-profile"
           className="flex items-center gap-3 rounded-xl bg-bg-warm-section px-2 py-2"
