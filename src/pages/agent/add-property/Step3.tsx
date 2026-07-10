@@ -14,6 +14,7 @@ import { toast } from "sonner"
 import { useState } from "react"
 import FormField from "./FormField"
 import type { AddPropertyFormData } from "@/types/addProperty"
+import { Button } from "@/components/ui/button"
 
 type Step3Props = {
   formData: AddPropertyFormData
@@ -228,21 +229,20 @@ export default function Step3({
           </div>
         </div>
 
-        <div className="mt-11 space-y-4 font-raleway text-[14px] font-semibold tracking-[1px]">
-          <button
+        <div className="mt-11 space-y-4">
+          <Button
+            variant="app-primary"
+            size="full"
             type="submit"
             disabled={isSubmitting}
-            className="button-style h-[45px] w-full rounded-lg text-white disabled:opacity-50"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
-          </button>
+          </Button>
 
-          <button
-            type="button"
-            className="h-[45px] w-full cursor-pointer rounded-lg border border-text-secondary bg-button-disabled"
-          >
+          {/* type for this is button for now until users can save as draft */}
+          <Button variant="app-secondary" size="full" type="button">
             Save as draft
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -59,9 +59,9 @@ export default function PropertyDetails() {
             <img src={goBackIcon} alt="" />
           </button>
 
-          <p className="text-center font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary md:text-[22px] lg:text-[36px]">
+          <h1 className="text-center font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary md:text-[22px]">
             Property Details
-          </p>
+          </h1>
 
           <button
             type="button"

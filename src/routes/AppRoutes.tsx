@@ -215,15 +215,15 @@ export default function AppRoutes() {
           <Route path="/agent/add-property" element={<AddProperty />} />
 
           {/* any cleared or confirmed route goes up */}
+          <Route
+            path="/agent/property-preview/:id"
+            element={<PropertyPreview />}
+          />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
           <Route path="/agent/my-transactions" element={<MyTransactions />} />
           <Route
             path="/agent/my-transactions/1"
             element={<TransactionDetails />}
-          />
-          <Route
-            path="/agent/property-preview/:id"
-            element={<PropertyPreview />}
           />
         </Route>
       </Route>

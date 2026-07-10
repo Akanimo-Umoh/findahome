@@ -38,10 +38,14 @@ export default function UploadImages({ value, onChange }: UploadImagesProps) {
               <img src={uploadIcon} alt="" />
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
-              <p className="text-[14px] text-[#4F95FF]">Tap to upload photos</p>
+              <p className="text-[14px] text-[#4F95FF]">
+                Tap to upload photos<span className="text-red-500">*</span>
+              </p>
+
               <p className="text-[12px] leading-4 text-text-secondary md:text-[14px]">
                 Add up to 10 photos. PNG, JPG, WEBP up to 10MB.
               </p>
+
               <p className="text-[12px] leading-4 text-button-bg md:text-[14px]">
                 Add clear, well-lit photos for better visibility
               </p>

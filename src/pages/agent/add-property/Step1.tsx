@@ -13,6 +13,7 @@ import type {
   ListingType,
   PropertyType,
 } from "@/types/addProperty"
+import { Button } from "@/components/ui/button"
 
 type Step1Props = {
   formData: AddPropertyFormData
@@ -30,6 +31,7 @@ type Step1Errors = {
   landDocType?: string
   price?: string
   serviceCharge?: string
+  landType?: string
 }
 
 export default function Step1({
@@ -61,6 +63,7 @@ export default function Step1({
         newErrors.landCondition = "Please select land condition"
       if (!formData.landDocType)
         newErrors.landDocType = "Please select document title"
+      if (!formData.landType) newErrors.landType = "Please select a land type"
     }
 
     setErrors(newErrors)
@@ -112,7 +115,7 @@ export default function Step1({
             }}
           >
             <SelectTrigger
-              className={`addPropType ${errors.propertyType ? "border-red-500" : ""}`}
+              className={`addPropType cursor-pointer ${errors.propertyType ? "border-red-500" : ""}`}
             >
               <SelectValue placeholder="Property Type" />
             </SelectTrigger>
@@ -143,6 +146,7 @@ export default function Step1({
                 For Sale
               </label>
             </div>
+
             <div className="flex items-center gap-3">
               <input
                 type="radio"
@@ -170,6 +174,32 @@ export default function Step1({
 
         {isLand && (
           <>
+            <FormField
+              label="Land Type"
+              error={errors.landType}
+              className="mt-6"
+            >
+              <Select
+                value={formData.landType}
+                onValueChange={(val) => {
+                  updateFormData({ landType: val })
+                  if (errors.landType)
+                    setErrors((prev) => ({ ...prev, landType: undefined }))
+                }}
+              >
+                <SelectTrigger
+                  className={`addPropType cursor-pointer ${errors.landType ? "border-red-500" : ""}`}
+                >
+                  <SelectValue placeholder="Land Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Residential">Residential</SelectItem>
+                  <SelectItem value="Commercial">Commercial</SelectItem>
+                  <SelectItem value="Agriculture">Agriculture</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormField>
+
             <div className="mt-6 flex items-center justify-between gap-6">
               <FormField
                 label="Plot Size"
@@ -322,15 +352,18 @@ export default function Step1({
           />
         </FormField>
 
-        <button
+        <Button
+          variant="app-primary"
+          size="full"
           type="submit"
-          className="mt-[37px] ml-auto flex h-[45px] cursor-pointer items-center gap-2 rounded-lg bg-button-bg px-2"
+          className="mt-6 ml-auto flex w-35 items-center justify-center gap-2"
         >
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
             Next
           </p>
+
           <img src={rightIcon} alt="" />
-        </button>
+        </Button>
       </form>
     </div>
   )

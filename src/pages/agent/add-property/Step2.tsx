@@ -11,6 +11,7 @@ import { nigerianStates } from "@/types/nigerianStates"
 import FormField from "./FormField"
 import { useState } from "react"
 import type { AddPropertyFormData } from "@/types/addProperty"
+import { Button } from "@/components/ui/button"
 
 type Step2Props = {
   formData: AddPropertyFormData
@@ -158,15 +159,17 @@ export default function Step2({
           </FormField>
         )}
 
-        <button
+        <Button
+          variant="app-primary"
+          size="full"
           type="submit"
-          className="mt-6 ml-auto flex h-[45px] cursor-pointer items-center gap-2 rounded-lg bg-button-bg px-2"
+          className="mt-6 ml-auto flex w-35 items-center justify-center gap-2"
         >
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
             Next
           </p>
           <img src={rightIcon} alt="" />
-        </button>
+        </Button>
       </form>
     </div>
   )

@@ -13,6 +13,7 @@ export type AddPropertyFormData = {
   plotUnit: string
   landCondition: string
   landDocType: string
+  landType?: string
   // Step 2
   state: string
   city: string
