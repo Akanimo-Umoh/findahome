@@ -17,21 +17,11 @@ type Transaction = {
   image: string
 }
 
-// derive filter category from status string
 function getCategory(status: string): "pending" | "completed" | "dispute" {
   const s = status.toLowerCase()
   if (s === "payment released") return "completed"
   if (s === "dispute opened") return "dispute"
-  return "pending" // in escrow, awaiting inspection, awaiting handover, etc.
-}
-
-// status badge styles
-const statusStyles: Record<string, string> = {
-  "payment released": "bg-[#149D18] text-white",
-  "dispute opened": "border border-text-secondary",
-  "in escrow": "bg-[#F39C12] text-white",
-  "awaiting inspection completion": "bg-[#FF6B6B]",
-  "awaiting property handover": "bg-[#FF6B6B]",
+  return "pending"
 }
 
 const tabs: { label: string; value: FilterTab }[] = [
@@ -41,7 +31,6 @@ const tabs: { label: string; value: FilterTab }[] = [
   { label: "Dispute", value: "dispute" },
 ]
 
-// hardcoded for now — replace with API data later
 const transactions: Transaction[] = [
   {
     id: "1",
@@ -98,15 +87,15 @@ export default function Transactions() {
   return (
     <div>
       {/* tab buttons */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center gap-5">
         {tabs.map((tab) => (
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
-            className={`rounded-lg px-2 py-1 text-[14px] transition-colors duration-300 ${
+            className={`cursor-pointer rounded-lg px-2 py-1 text-[14px] transition-colors duration-300 xs:text-[16px] ${
               activeTab === tab.value
                 ? "bg-button-bg text-white"
-                : "bg-button-sec text-text-primary"
+                : "bg-button-sec text-text-primary hover:bg-bg-accent"
             }`}
           >
             {tab.label}
@@ -121,57 +110,55 @@ export default function Transactions() {
             No {activeTab} transactions yet.
           </p>
         ) : (
-          filtered.map((transaction) => {
-            const statusKey = transaction.status.toLowerCase()
-            const badgeStyle = statusStyles[statusKey] ?? "bg-[#FF6B6B]"
+          filtered.map((transaction) => (
+            <Link
+              to="/agent/my-transactions/1"
+              key={transaction.id}
+              className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
+            >
+              <img
+                src={transaction.image}
+                alt=""
+                className="h-15 w-15 shrink-0 rounded-lg object-cover"
+              />
 
-            return (
-              <Link
-                to="/agent/my-transactions/1"
-                key={transaction.id}
-                className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
-              >
-                <img
-                  src={transaction.image}
-                  alt=""
-                  className="h-15 w-15 shrink-0 rounded-lg object-cover"
-                />
+              <div className="space-y-2">
+                <div className="space-y-1">
+                  <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
+                    {transaction.title}
+                  </p>
 
-                <div className="space-y-2">
-                  <div className="space-y-1">
-                    <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
-                      {transaction.title}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center">
-                        <img src={blueNairaIcon} alt="" className="h-4 w-4" />
-                        <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
-                          {transaction.price}
-                        </p>
-                      </div>
-                      <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
-                        Buyer: {transaction.buyer}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center">
+                      <img src={blueNairaIcon} alt="" className="h-4 w-4" />
+
+                      <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
+                        {transaction.price}
                       </p>
                     </div>
-                  </div>
 
-                  <div className="space-y-1">
-                    <p
-                      className={`w-fit rounded-2xl px-2 py-1 text-[12px] leading-4 ${badgeStyle}`}
-                    >
-                      {transaction.status}
-                    </p>
-                    <p className="text-[12px] leading-4 text-text-secondary">
-                      Ref ID: {transaction.refId}
-                    </p>
-                    <p className="text-[12px] leading-4 text-text-secondary">
-                      Last updated: {transaction.lastUpdated}
+                    <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
+                      Buyer: {transaction.buyer}
                     </p>
                   </div>
                 </div>
-              </Link>
-            )
-          })
+
+                <div className="space-y-1">
+                  <p className="w-fit rounded-2xl border border-text-disabled px-2 py-1 text-[12px] leading-4">
+                    {transaction.status}
+                  </p>
+
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    Ref ID: {transaction.refId}
+                  </p>
+
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    Last updated: {transaction.lastUpdated}
+                  </p>
+                </div>
+              </div>
+            </Link>
+          ))
         )}
       </section>
     </div>

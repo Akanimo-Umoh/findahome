@@ -126,51 +126,53 @@ export default function Step1({
           </Select>
         </FormField>
 
-        <div className="mt-6">
-          <label className="app-property-label">Listing Type</label>
-          <div className="mt-3 flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="listingType"
-                id="sale"
-                checked={formData.listingType === "sale"}
-                onChange={() => {
-                  updateFormData({ listingType: "sale" as ListingType })
-                  if (errors.listingType)
-                    setErrors((prev) => ({ ...prev, listingType: undefined }))
-                }}
-                className="h-5 w-5"
-              />
-              <label htmlFor="sale" className="text-[14px]">
-                For Sale
-              </label>
-            </div>
+        {!isLand && (
+          <div className="mt-6">
+            <label className="app-property-label">Listing Type</label>
+            <div className="mt-3 flex items-center gap-6">
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="listingType"
+                  id="sale"
+                  checked={formData.listingType === "sale"}
+                  onChange={() => {
+                    updateFormData({ listingType: "sale" as ListingType })
+                    if (errors.listingType)
+                      setErrors((prev) => ({ ...prev, listingType: undefined }))
+                  }}
+                  className="h-5 w-5"
+                />
+                <label htmlFor="sale" className="text-[14px]">
+                  For Sale
+                </label>
+              </div>
 
-            <div className="flex items-center gap-3">
-              <input
-                type="radio"
-                name="listingType"
-                id="rent"
-                checked={formData.listingType === "rent"}
-                onChange={() => {
-                  updateFormData({ listingType: "rent" as ListingType })
-                  if (errors.listingType)
-                    setErrors((prev) => ({ ...prev, listingType: undefined }))
-                }}
-                className="h-5 w-5"
-              />
-              <label htmlFor="rent" className="text-[14px]">
-                For Rent
-              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="listingType"
+                  id="rent"
+                  checked={formData.listingType === "rent"}
+                  onChange={() => {
+                    updateFormData({ listingType: "rent" as ListingType })
+                    if (errors.listingType)
+                      setErrors((prev) => ({ ...prev, listingType: undefined }))
+                  }}
+                  className="h-5 w-5"
+                />
+                <label htmlFor="rent" className="text-[14px]">
+                  For Rent
+                </label>
+              </div>
             </div>
+            {errors.listingType && (
+              <p className="mt-1 text-[11px] leading-4 text-red-500">
+                {errors.listingType}
+              </p>
+            )}
           </div>
-          {errors.listingType && (
-            <p className="mt-1 text-[11px] leading-4 text-red-500">
-              {errors.listingType}
-            </p>
-          )}
-        </div>
+        )}
 
         {isLand && (
           <>
