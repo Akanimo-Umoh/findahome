@@ -112,7 +112,7 @@ export default function Transactions() {
         ) : (
           filtered.map((transaction) => (
             <Link
-              to="/agent/my-transactions/1"
+              to="/agent/transactions/1"
               key={transaction.id}
               className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
             >

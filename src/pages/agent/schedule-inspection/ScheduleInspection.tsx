@@ -1,31 +1,19 @@
-import { useNavigate } from "react-router-dom"
-import goBack from "@/assets/images/icon-back.svg"
 import apartmentImg from "@/assets/images/img-apartment.png"
 import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
-import ytIcon from "@/assets/agentImages/icon-youtube.svg"
-import locationImg from "@/assets/agentImages/img-location-img.jpg"
-import locIcon from "@/assets/images/icon-inspection-visit-location.svg"
+// import ytIcon from "@/assets/agentImages/icon-youtube.svg"
 import PickDate from "./PickDate"
+import { Button } from "@/components/ui/button"
+import PageHeader from "@/components/shared/PageHeader"
 // import ScheduledSuccessfully from "./ScheduledSuccessfully";
 
 export default function ScheduleInspection() {
-  const navigate = useNavigate()
-
   return (
     // transaction details for inspection
-    <div className="mb-10 px-6 text-text-primary">
+    <div className="mb-10 md:pt-6 lg:pt-8">
       {/* header */}
-      <div className="relative flex items-center justify-center">
-        <button onClick={() => navigate(-1)} className="absolute left-0">
-          <img src={goBack} alt="" className="h-6 w-6" />
-        </button>
-
-        <p className="font-raleway text-[18px] font-semibold tracking-[1px]">
-          Schedule Inspection
-        </p>
-      </div>
+      <PageHeader title="Schedule Inspection" responsive />
 
       <div className="mt-6 flex items-center gap-1 rounded-lg border border-bg-accent bg-bg-accent px-3 py-2">
         <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-button-bg">
@@ -85,19 +73,27 @@ export default function ScheduleInspection() {
 
         {/* visit type */}
         <div className="mt-2 flex items-center justify-between gap-4">
-          <button className="flex w-full cursor-pointer items-center gap-2 rounded-lg bg-button-bg p-2 hover:bg-button-hover">
+          <Button
+            variant="app-primary"
+            size="full"
+            className="flex flex-1 items-center justify-center gap-1"
+          >
             <img src={locationIcon} alt="" />
             <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               Physical Visit
             </p>
-          </button>
+          </Button>
 
-          <button className="flex w-full cursor-pointer items-center gap-2 rounded-lg border border-text-secondary bg-button-disabled p-2">
+          {/* <Button
+            variant="app-secondary"
+            size="full"
+            className="flex flex-1 items-center justify-center gap-1"
+          >
             <img src={ytIcon} alt="" />
             <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
               Virtual Tour
             </p>
-          </button>
+          </Button> */}
         </div>
 
         {/* date picker */}
@@ -108,37 +104,23 @@ export default function ScheduleInspection() {
         {/* location */}
         <div className="mt-[21px]">
           <p>Property Location</p>
-          <div className="relative mt-2 flex items-center justify-center">
-            <img
-              src={locationImg}
-              alt=""
-              className="h-30.5 w-full rounded-xl object-cover"
+          <div className="relative mt-2">
+            <iframe
+              src={`https://maps.google.com/maps?q=${encodeURIComponent("Lekki Phase 1, Lagos State")}&output=embed`}
+              className="h-30.5 w-full rounded-xl"
+              loading="lazy"
+              title="Property location"
             />
-            <div className="absolute rounded-xl bg-button-bg px-2 py-3">
-              <img src={locIcon} alt="" />
-            </div>
           </div>
+
           <p className="mt-2 text-[12px] leading-4 text-black">
             Lekki Phase 1, Lagos State
           </p>
         </div>
       </div>
 
-      {/* additional notes */}
-      <div className="mt-[21px]">
-        <label htmlFor="notes">Additional Note(Optional)</label>
-
-        <div className="mt-2 h-25 rounded-xl border border-text-disabled p-2">
-          <textarea
-            name=""
-            id="notes"
-            placeholder="Any specific questions or requirement for the visit?"
-            className="w-full text-[12px] leading-4 outline-none"
-            rows={5}
-          />
-        </div>
-
-        <div className="mt-[21px] flex items-center gap-3">
+      <div className="mt-6 space-y-6">
+        <div className="flex items-center gap-3">
           <input
             type="checkbox"
             name=""
@@ -154,9 +136,9 @@ export default function ScheduleInspection() {
           </label>
         </div>
 
-        <button className="mt-8 h-[45px] w-full rounded-lg bg-button-bg font-raleway text-[14px] font-semibold tracking-[1px] text-white hover:bg-button-hover">
+        <Button variant="app-primary" size="full">
           Schedule Visit
-        </button>
+        </Button>
       </div>
 
       {/* if visit has been scheduled, this component shows */}

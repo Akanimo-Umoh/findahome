@@ -1,4 +1,3 @@
-// import google from "@/assets/images/icon-google.svg";
 import hide from "@/assets/images/icon-hide-password.svg"
 import show from "@/assets/images/icon-show-password.svg"
 import inputError from "@/assets/images/icon-email-error.svg"

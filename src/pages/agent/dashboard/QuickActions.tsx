@@ -255,7 +255,7 @@ const actions: Action[] = [
     icon: transactionsIcon,
     label: "Transactions",
     bg: "bg-button-bg",
-    link: "/agent/my-transactions",
+    link: "/agent/transactions",
   },
   {
     icon: messageIcon,

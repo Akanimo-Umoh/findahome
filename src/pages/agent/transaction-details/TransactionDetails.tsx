@@ -39,10 +39,13 @@ export default function TransactionDetails() {
 
   return (
     // transaction details for inspection
-    <div className="mb-10 px-6 text-text-primary">
+    <div className="mb-10 md:pt-6 lg:pt-8">
       {/* header */}
       <div className="relative flex items-center justify-center">
-        <button onClick={() => navigate(-1)} className="absolute left-0">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-0 cursor-pointer"
+        >
           <img src={goBack} alt="" className="h-6 w-6" />
         </button>
 

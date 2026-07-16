@@ -491,7 +491,19 @@ export default function Navbar() {
       icon: wallet,
       iconActive: walletActive,
       title: "My Ads",
-      link: "/agent/ads",
+      link: "/agent/my-ads",
+    },
+    {
+      icon: wallet,
+      iconActive: walletActive,
+      title: "Transactions",
+      link: "/agent/transactions",
+    },
+    {
+      icon: wallet,
+      iconActive: walletActive,
+      title: "Disputes",
+      link: "/agent/my-disputes",
     },
   ]
 
@@ -536,7 +548,8 @@ export default function Navbar() {
     { title: "Dashboard", link: "/agent/dashboard" },
     { title: "My Listings", link: "/agent/my-listings" },
     { title: "My Wallet", link: "/agent/wallet" },
-    { title: "My Ads", link: "/agent/ads" },
+    { title: "My Ads", link: "/agent/my-ads" },
+    { title: "Disputes", link: "/agent/my-disputes" },
   ]
 
   const tabletUnauthenticatedLinks = [

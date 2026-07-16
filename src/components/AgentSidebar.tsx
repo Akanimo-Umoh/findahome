@@ -47,13 +47,13 @@ const NAV_LINKS = [
   },
   {
     title: "My Ads",
-    link: "/agent/ads",
+    link: "/agent/my-ads",
     icon: adsIcon,
     iconActive: adsActiveIcon,
   },
   {
     title: "Transactions",
-    link: "/agent/my-transactions",
+    link: "/agent/transactions",
     icon: transactionsIcon,
     iconActive: transactionsActiveIcon,
   },

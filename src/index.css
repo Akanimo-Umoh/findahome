@@ -337,6 +337,15 @@
   @apply h-10 md:h-11.25;
 }
 
+.onboarding {
+  background: linear-gradient(
+    180deg,
+    #e2eeff 2.88%,
+    #e2eeff 50.96%,
+    #ffffff 99.04%
+  );
+}
+
 @media (min-width: 768px) {
   .auth-bg {
     background: url("./assets/images/img-auth-user-tablet-bg.jpg");

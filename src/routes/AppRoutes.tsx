@@ -39,10 +39,8 @@ import { EditPersonalInfo } from "@/pages/user/profile/edit-personal-info"
 
 // Agent Pages
 import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard"
-import { Properties as AgentProperties } from "@/pages/agent/properties"
 import { AddProperty, PropertyPreview } from "@/pages/agent/add-property"
-import { Clients as AgentClients } from "@/pages/agent/clients"
-import { Profile as MyAgentProfile } from "@/pages/agent/profile"
+import { Profile as MyAgentProfile } from "@/pages/agent/profile/my-profile"
 
 // Admin Pages
 import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard"
@@ -65,6 +63,11 @@ import { MyDisputes } from "@/pages/user/dispute/my-dispute"
 import { OpenDispute } from "@/pages/user/dispute/open-dispute"
 import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 import AgentLayout from "@/layouts/AgentLayout"
+import { ScheduleInspection } from "@/pages/agent/schedule-inspection"
+import { MyAds } from "@/pages/agent/ads/my-ads"
+import { ActiveDetails } from "@/pages/agent/ads/ad-details"
+import { ChangePassword } from "@/pages/agent/profile/change-password"
+import { AgentOnboarding } from "@/pages/agent/onboarding"
 
 export default function AppRoutes() {
   return (
@@ -195,18 +198,10 @@ export default function AppRoutes() {
       {/* Only for users with role: "agent" */}
       <Route element={<RoleBasedRoute allowedRoles={["agent"]} />}>
         <Route element={<MainLayout />}>
-          <Route path="/agent/properties" element={<AgentProperties />} />
           <Route
             path="/agent/properties/edit/:id"
             element={<div>Edit Property</div>}
           />
-          <Route path="/agent/clients" element={<AgentClients />} />
-          <Route
-            path="/agent/appointments"
-            element={<div>Agent Appointments</div>}
-          />
-          <Route path="/agent/analytics" element={<div>Agent Analytics</div>} />
-          <Route path="/agent/settings" element={<div>Agent Settings</div>} />
         </Route>
 
         <Route element={<AgentLayout />}>
@@ -220,12 +215,21 @@ export default function AppRoutes() {
             element={<PropertyPreview />}
           />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
-          <Route path="/agent/my-transactions" element={<MyTransactions />} />
+          <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
-            path="/agent/my-transactions/1"
+            path="/agent/transactions/1"
             element={<TransactionDetails />}
           />
+          <Route
+            path="/agent/schedule-inspection"
+            element={<ScheduleInspection />}
+          />
+          <Route path="/agent/my-ads" element={<MyAds />} />
+          <Route path="/agent/ad-details" element={<ActiveDetails />} />
+          <Route path="/agent/change-password" element={<ChangePassword />} />
         </Route>
+
+        <Route path="/agent/onboarding" element={<AgentOnboarding />} />
       </Route>
 
       <Route element={<NormalLayout />}>
