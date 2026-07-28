@@ -18,6 +18,10 @@ export default function PublicOnlyRoute() {
     // Check for return URL from location state (from protected routes)
     const returnUrl = location.state?.from || location.state?.returnUrl
 
+    if (user.role === "agent" && !user.isOnboarding) {
+      return <Navigate to="/agent/onboarding" replace />
+    }
+
     if (returnUrl) {
       return <Navigate to={returnUrl} replace />
     }

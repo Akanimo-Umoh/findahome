@@ -3,44 +3,47 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import FileUpload from "./FileUpload"
 import { ArrowLeft } from "lucide-react"
+import { AxiosError } from "axios"
 
 type Step3Props = {
+  governmentId: File | null
+  licenseDoc: File | null
+  setGovernmentId: (file: File | null) => void
+  setLicenseDoc: (file: File | null) => void
   onBack: () => void
-  onSuccess: () => void
+  onSubmit: () => Promise<void>
 }
 
-export default function Step3({ onBack, onSuccess }: Step3Props) {
-  const [governmentId, setGovernmentId] = useState<File | null>(null)
-  const [businessReg, setBusinessReg] = useState<File | null>(null)
+export default function Step3({
+  governmentId,
+  licenseDoc,
+  setGovernmentId,
+  setLicenseDoc,
+  onBack,
+  onSubmit,
+}: Step3Props) {
   const [errors, setErrors] = useState<{ governmentId?: string }>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const isValid = governmentId !== null
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    // validate required field
     if (!governmentId) {
-      setErrors({ governmentId: "Government ID is required." })
+      setErrors({ governmentId: "Can't be empty" })
       return
     }
     setErrors({})
     setIsSubmitting(true)
-
     try {
-      const formData = new FormData()
-      formData.append("governmentId", governmentId)
-      if (businessReg) {
-        formData.append("businessRegistration", businessReg)
-      }
-
-      // TODO: replace with real upload endpoint once backend is ready.
-      // await uploadDocuments(formData)
-      await new Promise((resolve) => setTimeout(resolve, 800))
-
-      //   toast.success("Documents uploaded successfully.")
-      onSuccess()
-    } catch {
-      toast.error("Upload failed. Please try again.")
+      await onSubmit()
+    } catch (err) {
+      const message =
+        err instanceof AxiosError
+          ? err.response?.data?.message ||
+            "Submission failed. Please try again."
+          : "Submission failed. Please try again."
+      toast.error(message)
     } finally {
       setIsSubmitting(false)
     }
@@ -65,8 +68,8 @@ export default function Step3({ onBack, onSuccess }: Step3Props) {
         label="Proof of Agency/Business Registration"
         hint="E.g Business License, Certificate of incorporation"
         optional
-        value={businessReg}
-        onChange={setBusinessReg}
+        value={licenseDoc}
+        onChange={setLicenseDoc}
       />
 
       <div className="mt-2 flex gap-3">
@@ -85,10 +88,10 @@ export default function Step3({ onBack, onSuccess }: Step3Props) {
           type="submit"
           variant="app-primary"
           size="full"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isValid}
           className="flex-1"
         >
-          {isSubmitting ? "Uploading..." : "Submit"}
+          {isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </div>
     </form>

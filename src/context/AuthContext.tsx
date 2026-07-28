@@ -7,6 +7,7 @@ export type User = {
   email: string
   name?: string
   isVerified: boolean
+  isOnboarding?: boolean
   role: UserRole
   profilePicture?: string | null
   phoneNumber?: string

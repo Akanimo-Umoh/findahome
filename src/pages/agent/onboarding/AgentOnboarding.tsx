@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
@@ -6,26 +6,89 @@ import Step3 from "./Step3"
 import ProgressBar from "./ProgressBar"
 import OnboardingSuccess from "./OnboardingSuccess"
 import infoIcon from "@/assets/agentImages/icon-filled-info.svg"
+import { useAuthContext } from "@/context/AuthContext"
+import { onboardAgent } from "@/services/user.service"
 
 const TOTAL_STEPS = 3
 
 export type AgentProfileData = {
-  aboutMe: string
-  experience: string
-  serviceAreas: string
-  languages: string
+  about: string
+  yearsOfExperience: string
+  serviceArea: string[]
+  languages: string[]
   businessName: string
-  licenseNum: string
+  licenceNumber: string
   officeAddress: string
-  link: string
+  socialLinkOrWebsite: string
+}
+
+const initialData: AgentProfileData = {
+  about: "",
+  yearsOfExperience: "",
+  serviceArea: [],
+  languages: [],
+  businessName: "",
+  licenceNumber: "",
+  officeAddress: "",
+  socialLinkOrWebsite: "",
 }
 
 export default function AgentOnboarding() {
   const [step, setStep] = useState(1)
   const [isComplete, setIsComplete] = useState(false)
+  const [formData, setFormData] = useState<AgentProfileData>(initialData)
+  const [governmentId, setGovernmentId] = useState<File | null>(null)
+  const [licenseDoc, setLicenseDoc] = useState<File | null>(null)
+
+  const { token, user, updateUser } = useAuthContext()
+
+  const updateField = (field: keyof AgentProfileData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const updateArrayField = (
+    field: "serviceArea" | "languages",
+    values: string[]
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: values }))
+  }
 
   const goNext = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS))
   const goBack = () => setStep((s) => Math.max(s - 1, 1))
+
+  // warn on tab close/refresh while onboarding isn't complete
+  useEffect(() => {
+    if (isComplete) return
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ""
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [isComplete])
+
+  const handleFinalSubmit = async () => {
+    if (!token) throw new Error("Not authenticated")
+
+    const payload = new FormData()
+    payload.append("about", formData.about)
+    payload.append("yearsOfExperience", formData.yearsOfExperience)
+    payload.append("serviceArea", JSON.stringify(formData.serviceArea))
+    payload.append("languages", JSON.stringify(formData.languages))
+    payload.append("businessName", formData.businessName)
+    payload.append("licenceNumber", formData.licenceNumber)
+    payload.append("officeAddress", formData.officeAddress)
+    payload.append("socialLinkOrWebsite", formData.socialLinkOrWebsite)
+    if (governmentId) payload.append("governmentId", governmentId)
+    if (licenseDoc) payload.append("licenseDoc", licenseDoc)
+
+    const { user: updatedUser } = await onboardAgent(payload)
+
+    if (user) {
+      updateUser({ ...user, ...updatedUser, isOnboarding: true })
+    }
+    setIsComplete(true)
+  }
 
   if (isComplete) {
     return <OnboardingSuccess />
@@ -58,10 +121,31 @@ export default function AgentOnboarding() {
         </div>
 
         <div className="mt-6 mb-10 w-full">
-          {step === 1 && <Step1 onNext={goNext} />}
-          {step === 2 && <Step2 onNext={goNext} onBack={goBack} />}
+          {step === 1 && (
+            <Step1
+              data={formData}
+              updateField={updateField}
+              updateArrayField={updateArrayField}
+              onNext={goNext}
+            />
+          )}
+          {step === 2 && (
+            <Step2
+              data={formData}
+              updateField={updateField}
+              onNext={goNext}
+              onBack={goBack}
+            />
+          )}
           {step === 3 && (
-            <Step3 onBack={goBack} onSuccess={() => setIsComplete(true)} />
+            <Step3
+              governmentId={governmentId}
+              licenseDoc={licenseDoc}
+              setGovernmentId={setGovernmentId}
+              setLicenseDoc={setLicenseDoc}
+              onBack={goBack}
+              onSubmit={handleFinalSubmit}
+            />
           )}
 
           <div className="mx-auto mt-4 flex w-full max-w-79.25 items-center justify-center gap-1">

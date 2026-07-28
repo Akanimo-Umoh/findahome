@@ -23,15 +23,12 @@ export default function OnboardingSuccess() {
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-button-bg">
         <img src={checkIcon} alt="" className="h-8 w-8" />
       </div>
-
       <h1 className="mt-4 font-raleway font-semibold tracking-[1px]">
         Profile Submitted
       </h1>
-
       <p className="mt-1 max-w-66.75 text-[14px] text-text-secondary">
         We're reviewing your details. You'll be taken to your dashboard shortly.
       </p>
-
       <button
         type="button"
         onClick={() => navigate("/agent/dashboard")}

@@ -12,6 +12,7 @@ import { AxiosError } from "axios"
 import { GoogleLogin } from "@react-oauth/google"
 import { useGoogleAuth } from "@/hooks/useGoogleAuth"
 import Loading from "@/components/Loading"
+import { getMe } from "@/services/user.service"
 
 type LocationState = {
   from?: string
@@ -54,27 +55,42 @@ export default function Login() {
         password: data.password,
       })
 
-      console.log("Full Response:", response)
-      console.log("User Object:", response.user)
-      console.log("Is Verified:", response.user.isVerified)
-      console.log("User Keys:", Object.keys(response.user))
+      //write token first so the interceptor can attach it to getMe()
+      localStorage.setItem("token", response.token)
+
+      let fullUser = response.user
+      try {
+        const meRes = await getMe()
+        fullUser = meRes.user
+      } catch (err) {
+        console.error("getMe fetch failed, falling back to login payload:", err)
+        localStorage.removeItem("token")
+      }
+
+      console.log("Full User:", fullUser)
 
       // check if user is verified before logging in
-      if (!response.user.isVerified) {
+      if (!fullUser.isVerified) {
         // redirect unverified users to verify-email
         navigate("/verify-email", {
-          state: { email: response.user.email, from: "login" },
+          state: { email: fullUser.email, from: "login" },
           replace: true,
         })
         return
       }
 
+      // check if user has completed onboarding
+      if (fullUser.role === "agent" && !fullUser.isOnboarding) {
+        login(fullUser, response.token)
+        navigate("/agent/onboarding", { replace: true })
+        return
+      }
+
       // determine redirect path
-      // Determine redirect path
       const redirectPath =
         from ||
         (() => {
-          switch (response.user.role) {
+          switch (fullUser.role) {
             case "user":
               return "/"
             case "agent":
@@ -87,7 +103,7 @@ export default function Login() {
         })()
 
       // update context
-      login(response.user, response.token)
+      login(fullUser, response.token)
 
       // redirect user to intended destination
       // Public route will handle the actual redirect
@@ -99,9 +115,6 @@ export default function Login() {
       if (error instanceof AxiosError) {
         const errorMessage =
           error.response?.data?.message || "Login failed. Please try again."
-
-        console.log("Error Message:", errorMessage) // Debug the error message
-        console.log("Error Status:", error.response?.status) // Debug the status code
 
         // check if the error is about unverified email
         if (

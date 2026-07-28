@@ -54,6 +54,20 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
       return
     }
 
+    // Agent hasn't completed onboarding — block access to agent-only pages except onboarding itself
+    if (
+      user.role === "agent" &&
+      !user.isOnboarding &&
+      location.pathname !== "/agent/onboarding"
+    ) {
+      hasShownToast.current = true
+      toast.warning("Please complete onboarding to continue")
+      setTimeout(() => {
+        navigate("/agent/onboarding", { replace: true })
+      }, 1000)
+      return
+    }
+
     // Check if user has the required role
     if (!allowedRoles.includes(user.role as UserRole)) {
       hasShownToast.current = true
@@ -95,6 +109,9 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
     !user ||
     !token ||
     !user.isVerified ||
+    (user.role === "agent" &&
+      !user.isOnboarding &&
+      location.pathname !== "/agent/onboarding") ||
     !allowedRoles.includes(user.role as UserRole)
   ) {
     return null
