@@ -157,6 +157,7 @@ export default function FileUpload({
           </div>
           <p className="text-[13px] font-semibold text-button-bg">
             Tap to upload file
+            {!optional && <span className="text-red-500">*</span>}
           </p>
           <p className="text-[12px] text-text-secondary">
             PNG, JPG, PDF up to {MAX_SIZE_MB}MB
