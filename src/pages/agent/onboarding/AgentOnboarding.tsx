@@ -8,6 +8,7 @@ import OnboardingSuccess from "./OnboardingSuccess"
 import infoIcon from "@/assets/agentImages/icon-filled-info.svg"
 import { useAuthContext } from "@/context/AuthContext"
 import { onboardAgent } from "@/services/user.service"
+import { useLogout } from "@/hooks/useLogout"
 
 const TOTAL_STEPS = 3
 
@@ -41,6 +42,7 @@ export default function AgentOnboarding() {
   const [licenseDoc, setLicenseDoc] = useState<File | null>(null)
 
   const { token, user, updateUser } = useAuthContext()
+  const { handleLogout } = useLogout()
 
   const updateField = (field: keyof AgentProfileData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -97,12 +99,22 @@ export default function AgentOnboarding() {
   return (
     <div className="onboarding min-h-screen px-6 md:px-8">
       <div className="mx-auto flex max-w-120 flex-col items-center justify-center">
-        <Link
-          to="/agent/dashboard"
-          className="mt-4 font-raleway text-[28px] font-bold text-button-bg"
-        >
-          FindaHome
-        </Link>
+        <div className="flex w-full items-center justify-between pt-4">
+          <Link
+            to="/agent/dashboard"
+            className="font-raleway text-[28px] font-bold text-button-bg"
+          >
+            FindaHome
+          </Link>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="text-[13px] font-semibold text-text-secondary underline"
+          >
+            Log out
+          </button>
+        </div>
 
         <div className="mt-4 flex w-full max-w-66.75 flex-col items-center justify-center gap-1 text-center">
           <h1 className="font-raleway font-semibold tracking-[1px]">

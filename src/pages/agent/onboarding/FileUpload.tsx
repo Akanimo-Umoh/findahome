@@ -1,7 +1,7 @@
 import { useRef, useState } from "react"
 import uploadIcon from "@/assets/images/icon-file-upload.svg"
 import inputError from "@/assets/images/icon-email-error.svg"
-import fileIcon from "@/assets/images/icon-file-upload.svg"
+import { File } from "lucide-react"
 
 const MAX_SIZE_MB = 2
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
@@ -103,12 +103,8 @@ export default function FileUpload({
       {value ? (
         /* ── uploaded state ── */
         <div className="flex items-center gap-3 rounded-xl border border-bg-accent bg-bg-accent px-4 py-3">
-          <img
-            src={fileIcon}
-            alt=""
-            aria-hidden="true"
-            className="h-8 w-8 shrink-0"
-          />
+          <File className="shrink-0" aria-hidden="true" />
+
           <div className="min-w-0 flex-1">
             <p className="truncate text-[13px] font-semibold text-text-primary">
               {value.name}

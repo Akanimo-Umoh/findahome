@@ -12,15 +12,18 @@ export default function AgentOnboardingGate({
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (
-      user &&
-      token &&
-      user.role === "agent" &&
-      user.isVerified &&
-      !user.isOnboarding &&
-      location.pathname !== "/agent/onboarding"
-    ) {
+    if (!user || !token || user.role !== "agent" || !user.isVerified) return
+
+    // not onboarded yet — force them into onboarding
+    if (!user.isOnboarding && location.pathname !== "/agent/onboarding") {
       navigate("/agent/onboarding", { replace: true })
+      return
+    }
+
+    // already onboarded — don't let them back into onboarding
+    if (user.isOnboarding && location.pathname === "/agent/onboarding") {
+      navigate("/agent/dashboard", { replace: true })
+      return
     }
   }, [user, token, location.pathname, navigate])
 

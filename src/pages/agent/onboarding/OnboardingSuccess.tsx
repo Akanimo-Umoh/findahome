@@ -1,19 +1,23 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import checkIcon from "@/assets/agentImages/icon-upload-successful.svg"
 
-const REDIRECT_SECONDS = 5
+const REDIRECT_SECONDS = 8000
 
 export default function OnboardingSuccess() {
   const navigate = useNavigate()
+  const hasShownToast = useRef(false)
 
   useEffect(() => {
-    toast.success("Profile submitted! Redirecting you to your dashboard...")
+    if (!hasShownToast.current) {
+      hasShownToast.current = true
+      toast.success("Profile submitted! Redirecting you to your dashboard...")
+    }
 
     const timer = setTimeout(() => {
       navigate("/agent/dashboard")
-    }, REDIRECT_SECONDS * 1000)
+    }, REDIRECT_SECONDS)
 
     return () => clearTimeout(timer)
   }, [navigate])

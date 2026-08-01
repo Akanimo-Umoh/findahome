@@ -10,7 +10,7 @@ type Step2Props = {
   onBack: () => void
 }
 
-const REQUIRED_FIELDS: (keyof AgentProfileData)[] = [
+const REQUIRED_FIELDS: ("businessName" | "officeAddress")[] = [
   "businessName",
   "officeAddress",
 ]
