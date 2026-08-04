@@ -28,7 +28,7 @@ type Step3Errors = {
   bathrooms?: string
   apartmentDescription?: string
   images?: string
-  documents?: string
+  legalDocuments?: string
   video?: string
 }
 
@@ -55,8 +55,8 @@ export default function Step3({
 
     if (formData.images.length === 0)
       newErrors.images = "Please upload at least one photo"
-    if (!isApartment && formData.documents.length === 0)
-      newErrors.documents = "Please upload at least one legal document"
+    if (!isApartment && formData.legalDocuments.length === 0)
+      newErrors.legalDocuments = "Please upload at least one legal document"
     if (!formData.video) newErrors.video = "Please upload a video tour"
 
     setErrors(newErrors)
@@ -193,23 +193,25 @@ export default function Step3({
               )}
             </div>
 
-            {!isApartment && (
-              <div className="mt-12">
-                <UploadDocuments
-                  value={formData.documents}
-                  onChange={(files) => {
-                    updateFormData({ documents: files })
-                    if (errors.documents)
-                      setErrors((prev) => ({ ...prev, documents: undefined }))
-                  }}
-                />
-                {errors.documents && (
-                  <p className="mt-1 text-[11px] leading-4 text-red-500">
-                    {errors.documents}
-                  </p>
-                )}
-              </div>
-            )}
+            <div className="mt-12">
+              <UploadDocuments
+                isApartment={isApartment}
+                value={formData.legalDocuments}
+                onChange={(files) => {
+                  updateFormData({ legalDocuments: files })
+                  if (errors.legalDocuments)
+                    setErrors((prev) => ({
+                      ...prev,
+                      legalDocuments: undefined,
+                    }))
+                }}
+              />
+              {errors.legalDocuments && (
+                <p className="mt-1 text-[11px] leading-4 text-red-500">
+                  {errors.legalDocuments}
+                </p>
+              )}
+            </div>
 
             <div className="mt-12">
               <UploadVideo

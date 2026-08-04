@@ -12,8 +12,8 @@ export type AddPropertyFormData = {
   plotSize: string
   plotUnit: string
   landCondition: string
-  landDocType: string
-  landType?: string
+  landDocTitle: string
+  landType: string
   // Step 2
   state: string
   city: string
@@ -26,6 +26,6 @@ export type AddPropertyFormData = {
   apartmentDescription: string
   // Step 3 — shared
   images: File[]
-  documents: File[]
+  legalDocuments: File[]
   video: File | null
 }

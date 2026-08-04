@@ -39,16 +39,18 @@ export function useAddProperty() {
         formDataToSend.append("landSize", formData.plotSize)
         formDataToSend.append("landUnit", formData.plotUnit)
         formDataToSend.append("landCondition", formData.landCondition)
-        formDataToSend.append("landDocType", formData.landDocType)
-        formData.documents.forEach((file) => {
-          formDataToSend.append("landDocuments", file)
-        })
+        formDataToSend.append("landDocTitle", formData.landDocTitle)
+        formDataToSend.append("landType", formData.landType)
       }
 
       if (formData.propertyType === "apartment") {
         formDataToSend.append("bedroom", formData.bedrooms)
         formDataToSend.append("bathroom", formData.bathrooms)
       }
+
+      formData.legalDocuments.forEach((file) => {
+        formDataToSend.append("legalDocuments", file)
+      })
 
       formData.images.forEach((file) => {
         formDataToSend.append("images", file)
@@ -59,7 +61,7 @@ export function useAddProperty() {
       }
 
       const response = await api.post("/property", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": undefined },
       })
 
       if (response.data.success) {

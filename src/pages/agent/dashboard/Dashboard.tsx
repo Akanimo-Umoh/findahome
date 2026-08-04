@@ -5,9 +5,12 @@ import QuickActions from "./QuickActions"
 import RecentActivities from "./RecentActivities"
 import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "@/components/Avatar"
+import { useAgentListings } from "@/hooks/useAgentListings"
 
 export default function Dashboard() {
   const { user } = useAuthContext()
+  const { activeListingsCount, isLoading: isLoadingListings } =
+    useAgentListings()
 
   return (
     <div className="mb-10 pt-0.5 md:pt-6 lg:pt-8">
@@ -62,7 +65,10 @@ export default function Dashboard() {
 
       {/* performance snapshot */}
       <div className="mt-6.5 md:mt-12">
-        <PerformanceSnapshot />
+        <PerformanceSnapshot
+          activeListingsCount={activeListingsCount}
+          isLoadingActiveListings={isLoadingListings}
+        />
       </div>
 
       {/* quick actions */}

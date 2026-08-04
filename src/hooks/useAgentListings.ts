@@ -1,6 +1,7 @@
 import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
 
 export type AgentListing = {
   _id: string
@@ -37,8 +38,14 @@ export function useAgentListings() {
     enabled: !!user?.id,
   })
 
+  const activeListingsCount = useMemo(
+    () => (data ?? []).filter((listing) => listing.status === "active").length,
+    [data]
+  )
+
   return {
     listings: data ?? [],
+    activeListingsCount,
     isLoading,
     error: error ? "Failed to load agent listings" : null,
   }

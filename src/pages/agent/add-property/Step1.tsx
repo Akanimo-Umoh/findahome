@@ -28,7 +28,7 @@ type Step1Errors = {
   plotSize?: string
   plotUnit?: string
   landCondition?: string
-  landDocType?: string
+  landDocTitle?: string
   price?: string
   serviceCharge?: string
   landType?: string
@@ -61,8 +61,8 @@ export default function Step1({
       if (!formData.plotUnit) newErrors.plotUnit = "Please select a unit"
       if (!formData.landCondition)
         newErrors.landCondition = "Please select land condition"
-      if (!formData.landDocType)
-        newErrors.landDocType = "Please select document title"
+      if (!formData.landDocTitle)
+        newErrors.landDocTitle = "Please select document title"
       if (!formData.landType) newErrors.landType = "Please select a land type"
     }
 
@@ -195,9 +195,9 @@ export default function Step1({
                   <SelectValue placeholder="Land Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Residential">Residential</SelectItem>
-                  <SelectItem value="Commercial">Commercial</SelectItem>
-                  <SelectItem value="Agriculture">Agriculture</SelectItem>
+                  <SelectItem value="residential">Residential</SelectItem>
+                  <SelectItem value="commercial">Commercial</SelectItem>
+                  <SelectItem value="agriculture">Agriculture</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
@@ -278,23 +278,23 @@ export default function Step1({
             </FormField>
 
             <FormField
-              error={errors.landDocType}
+              error={errors.landDocTitle}
               label="Document Title"
               className="mt-6"
             >
               <Select
-                value={formData.landDocType}
+                value={formData.landDocTitle}
                 onValueChange={(val) => {
-                  updateFormData({ landDocType: val })
-                  if (errors.landDocType)
+                  updateFormData({ landDocTitle: val })
+                  if (errors.landDocTitle)
                     setErrors((prev) => ({
                       ...prev,
-                      landDocType: undefined,
+                      landDocTitle: undefined,
                     }))
                 }}
               >
                 <SelectTrigger
-                  className={`addPropType ${errors.landDocType ? "border-red-500" : ""}`}
+                  className={`addPropType ${errors.landDocTitle ? "border-red-500" : ""}`}
                 >
                   <SelectValue placeholder="Document Title" />
                 </SelectTrigger>

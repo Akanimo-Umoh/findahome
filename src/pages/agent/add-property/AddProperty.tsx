@@ -17,7 +17,7 @@ const initialFormData: AddPropertyFormData = {
   plotSize: "",
   plotUnit: "",
   landCondition: "",
-  landDocType: "",
+  landDocTitle: "",
   landType: "",
   state: "",
   city: "",
@@ -27,7 +27,7 @@ const initialFormData: AddPropertyFormData = {
   bathrooms: "",
   apartmentDescription: "",
   images: [],
-  documents: [],
+  legalDocuments: [],
   video: null,
 }
 
