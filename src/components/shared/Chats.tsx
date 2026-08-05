@@ -33,7 +33,7 @@ export default function Chats() {
     const query = searchQuery.toLowerCase()
     if (!query) return true
 
-    const other = chat.participants.find((p) => p._id !== user?.id)
+    const other = chat.participants.find((p) => p._id !== user?._id)
     const otherName = (other?.name ?? other?.email ?? "").toLowerCase()
     const propertyTitle = chat.property.title.toLocaleLowerCase()
     const lastMessage = (chat.lastMessage?.text ?? "").toLowerCase()
@@ -124,7 +124,7 @@ export default function Chats() {
                 ) : (
                   filteredChats.map((chat) => {
                     const other = chat.participants.find(
-                      (p) => p._id !== user?.id
+                      (p) => p._id !== user?._id
                     )
                     const isSelected = selectedChatId === chat._id
                     return (

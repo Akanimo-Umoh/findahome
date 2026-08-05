@@ -151,7 +151,7 @@ export default function ListingsCard({
         return (
           <div
             key={listing._id}
-            className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
+            className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl border border-bg-accent transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
           >
             <div className="relative rounded-t-2xl">
               {/* property image */}
@@ -166,7 +166,7 @@ export default function ListingsCard({
               )}
             </div>
 
-            <div className="rounded-2xl rounded-t-none border border-bg-accent p-3">
+            <div className="p-3">
               <div className="space-y-2">
                 <div className="flex flex-col justify-center">
                   <div className="flex h-10 items-center justify-between gap-2 md:h-12">

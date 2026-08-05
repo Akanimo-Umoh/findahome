@@ -4,6 +4,7 @@ import FilterButtons from "./FilterButtons"
 import ListingsCard from "./ListingsCard"
 import { useState } from "react"
 import { useAgentListings } from "@/hooks/useAgentListings"
+import { useAuthContext } from "@/context/AuthContext"
 
 type Tab = "apartment" | "land"
 
@@ -14,6 +15,9 @@ export default function MyListings() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<Tab>("apartment")
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all")
+
+  const { user } = useAuthContext()
+  console.log("Current user:", user)
 
   const { listings, isLoading, error } = useAgentListings()
 

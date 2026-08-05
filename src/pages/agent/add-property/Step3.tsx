@@ -193,25 +193,26 @@ export default function Step3({
               )}
             </div>
 
-            <div className="mt-12">
-              <UploadDocuments
-                isApartment={isApartment}
-                value={formData.legalDocuments}
-                onChange={(files) => {
-                  updateFormData({ legalDocuments: files })
-                  if (errors.legalDocuments)
-                    setErrors((prev) => ({
-                      ...prev,
-                      legalDocuments: undefined,
-                    }))
-                }}
-              />
-              {errors.legalDocuments && (
-                <p className="mt-1 text-[11px] leading-4 text-red-500">
-                  {errors.legalDocuments}
-                </p>
-              )}
-            </div>
+            {!isApartment && (
+              <div className="mt-12">
+                <UploadDocuments
+                  value={formData.legalDocuments}
+                  onChange={(files) => {
+                    updateFormData({ legalDocuments: files })
+                    if (errors.legalDocuments)
+                      setErrors((prev) => ({
+                        ...prev,
+                        legalDocuments: undefined,
+                      }))
+                  }}
+                />
+                {errors.legalDocuments && (
+                  <p className="mt-1 text-[11px] leading-4 text-red-500">
+                    {errors.legalDocuments}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div className="mt-12">
               <UploadVideo

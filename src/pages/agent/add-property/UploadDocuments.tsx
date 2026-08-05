@@ -1,13 +1,11 @@
 import uploadIcon from "@/assets/agentImages/icon-upload-document.svg"
 
 type UploadDocumentsProps = {
-  isApartment: boolean
   value: File[]
   onChange: (files: File[]) => void
 }
 
 export default function UploadDocuments({
-  isApartment,
   value,
   onChange,
 }: UploadDocumentsProps) {
@@ -44,7 +42,7 @@ export default function UploadDocuments({
             <div className="flex flex-col items-center justify-center gap-1">
               <p className="text-[14px] text-[#4F95FF]">
                 Upload Property Legal Document
-                {!isApartment && <span className="text-red-500">*</span>}
+                <span className="text-red-500">*</span>
               </p>
               <p className="text-[12px] leading-4 text-text-secondary md:text-[14px]">
                 Max 3 files • PDF format

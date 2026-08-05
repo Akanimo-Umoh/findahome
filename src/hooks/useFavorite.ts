@@ -50,7 +50,7 @@ export function useFavorite(propertyId: string) {
           ...previousFavorites,
           {
             _id: "temp",
-            user: user.id,
+            user: user._id,
             property: { _id: propertyId } as Favorite["property"],
             createdAt: "",
             updatedAt: "",

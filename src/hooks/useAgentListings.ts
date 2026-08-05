@@ -29,13 +29,13 @@ export function useAgentListings() {
   const { user } = useAuthContext()
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["agentListings", user?.id],
+    queryKey: ["agentListings", user?._id],
     queryFn: async () => {
-      const res = await api.get(`/property/agent/${user!.id}`)
+      const res = await api.get(`/property/agent/${user!._id}`)
       console.log(res)
       return res.data.properties as AgentListing[]
     },
-    enabled: !!user?.id,
+    enabled: !!user?._id,
   })
 
   const activeListingsCount = useMemo(

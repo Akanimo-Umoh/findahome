@@ -59,12 +59,12 @@ export function useChatList() {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["chats", user?.id],
+    queryKey: ["chats", user?._id],
     queryFn: async () => {
       const res = await api.get("/chat/all-chats")
       return res.data as ChatItem[]
     },
-    enabled: !!user?.id,
+    enabled: !!user?._id,
   })
 
   return {
@@ -110,11 +110,11 @@ export function useChatMessages({ chatId }: { chatId: string }) {
 
   // socket — append incoming messages directly to the query cache
   useEffect(() => {
-    if (!user?.id) return
+    if (!user?._id) return
 
     const socket = getSocket()
     if (!socket.connected) socket.connect()
-    socket.emit("user_connected", user.id)
+    socket.emit("user_connected", user._id)
 
     socket.on("receive_message", (message: ChatMessage) => {
       queryClient.setQueryData<ChatMessage[]>(
@@ -126,10 +126,10 @@ export function useChatMessages({ chatId }: { chatId: string }) {
     return () => {
       socket.off("receive_message")
     }
-  }, [user?.id, chatId, queryClient])
+  }, [user?._id, chatId, queryClient])
 
   async function sendMessage(text: string) {
-    if (!chatDetail || !text.trim() || !user?.id) return
+    if (!chatDetail || !text.trim() || !user?._id) return
 
     setIsSending(true)
     try {
@@ -147,7 +147,7 @@ export function useChatMessages({ chatId }: { chatId: string }) {
       )
 
       // also update lastMessage in the chat list cache
-      queryClient.setQueryData<ChatItem[]>(["chats", user.id], (prev = []) =>
+      queryClient.setQueryData<ChatItem[]>(["chats", user._id], (prev = []) =>
         prev.map((chat) =>
           chat._id === chatId ? { ...chat, lastMessage: newMessage } : chat
         )
@@ -155,8 +155,8 @@ export function useChatMessages({ chatId }: { chatId: string }) {
 
       const socket = getSocket()
       socket.emit("send_message", {
-        from: user.id,
-        to: chatDetail.participants.find((p) => p._id !== user.id)?._id,
+        from: user._id,
+        to: chatDetail.participants.find((p) => p._id !== user._id)?._id,
         text: text.trim(),
         attachments: [],
       })
@@ -174,6 +174,6 @@ export function useChatMessages({ chatId }: { chatId: string }) {
     isSending,
     error: detailError || messagesError ? "Failed to load chat" : null,
     sendMessage,
-    currentUserId: user?.id,
+    currentUserId: user?._id,
   }
 }

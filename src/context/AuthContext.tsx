@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 export type UserRole = "user" | "agent" | "admin"
 
 export type User = {
-  id: string
+  _id: string
   email: string
   name?: string
   isVerified: boolean
