@@ -27,7 +27,7 @@ export default function RoleSelection() {
   return (
     <div className="mb-10 flex w-full flex-col items-center justify-center px-6 text-text-primary">
       <div>
-        <img src={roleImg} alt="" />
+        <img src={roleImg} alt="" className="h-full w-full" />
       </div>
 
       <p className="mx-auto mt-8 w-[157px] text-center text-[14px]">
