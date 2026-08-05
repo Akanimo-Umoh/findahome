@@ -110,7 +110,7 @@ export default function AgentOnboarding() {
           <button
             type="button"
             onClick={handleLogout}
-            className="text-[13px] font-semibold text-text-secondary underline"
+            className="cursor-pointer text-[13px] font-semibold text-text-secondary underline"
           >
             Log out
           </button>
