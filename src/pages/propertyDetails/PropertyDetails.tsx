@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import goBackIcon from "@/assets/images/icon-back.svg"
 import heartIcon from "@/assets/images/icon-heart.svg"
 import addFavoriteIcon from "@/assets/images/icon-add-to-favorite.svg"
 import nairaIcon from "@/assets/images/icon-naira.svg"
-import location from "@/assets/images/location.svg"
+import locationIcon from "@/assets/images/location.svg"
 import bed from "@/assets/images/bed.svg"
 import tubs from "@/assets/images/tubs.svg"
 import verifiedIcon from "@/assets/images/icon-verified-green.svg"
@@ -18,12 +18,25 @@ import { useFavorite } from "@/hooks/useFavorite"
 import Avatar from "@/components/Avatar"
 import ImageCarousel from "@/components/ImageCarousel"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
+import { toast } from "sonner"
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { property, loading, error } = useProperty(id || "")
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { isAuthenticated } = useAuthContext()
+  const location = useLocation()
+
+  const handleChatClick = () => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to chat with an agent")
+      navigate("/login", { state: { from: location.pathname } })
+      return
+    }
+    setIsModalOpen(true)
+  }
 
   const { isSaved, isLoading, toggleFavorite } = useFavorite(id || "")
 
@@ -118,7 +131,7 @@ export default function PropertyDetails() {
               <div className="mt-2 space-y-3 md:mt-3">
                 {/* address */}
                 <div className="flex gap-1">
-                  <img src={location} alt="" className="h-6 w-6" />
+                  <img src={locationIcon} alt="" className="h-6 w-6" />
                   <p className="text-[14px] text-text-secondary md:text-[16px]">
                     {property.address}
                   </p>
@@ -276,7 +289,7 @@ export default function PropertyDetails() {
             <Button
               variant="app-primary"
               size="full"
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleChatClick}
               className="mt-6 mb-8 gap-2 text-[14px] tracking-[1px]"
             >
               <img src={chatIcon} alt="" className="h-6 w-6" />

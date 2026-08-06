@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { useAuthContext } from "@/context/AuthContext"
 import { useCreateOrGetChat } from "@/hooks/useCreateOrGetChat"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { AxiosError } from "axios"
+import { useEffect, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
 
 type ChatAgentModalProps = {
   isOpen: boolean
@@ -29,14 +32,42 @@ export default function ChatAgentModal({
   agentId,
 }: ChatAgentModalProps) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { isAuthenticated } = useAuthContext()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const { createOrGetChat, isCreating } = useCreateOrGetChat()
 
-  const handleContinueToChat = async () => {
-    const chatId = await createOrGetChat(propertyId, agentId)
-    if (!chatId) return
+  const redirectToLogin = () => {
     onClose()
-    navigate(`/messages/${chatId}`)
+    toast.error("Please log in to chat with an agent")
+    navigate("/login", { state: { from: location.pathname } })
+  }
+
+  // catch the case where the modal is opened while logged out
+  useEffect(() => {
+    if (isOpen && !isAuthenticated) {
+      redirectToLogin()
+    }
+  }, [isOpen, isAuthenticated])
+
+  const handleContinueToChat = async () => {
+    // in case auth state changes mid-modal(e.g token expired)
+    if (!isAuthenticated) {
+      redirectToLogin()
+      return
+    }
+
+    try {
+      const chatId = await createOrGetChat(propertyId, agentId)
+      if (!chatId) return
+      onClose()
+      navigate(`/messages/${chatId}`)
+    } catch (err) {
+      if (err instanceof AxiosError && err.response?.status === 401) {
+        redirectToLogin()
+        return
+      }
+    }
   }
 
   return (

@@ -31,6 +31,12 @@ export default function Reviews() {
       name: "Adebayo Johnson",
       location: "Ikeja, Lagos",
     },
+    {
+      review:
+        "FindaHome made finding my dream apartment so easy. The verification badges gave me peace of mind throughout the process.",
+      name: "Adebayo Johnson",
+      location: "Ikeja, Lagos",
+    },
   ]
 
   // const handleLogout = () => {
@@ -76,7 +82,7 @@ export default function Reviews() {
       {isAuthenticated ? (
         ""
       ) : (
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-2xl bg-button-bg py-3 md:mt-10 md:rounded-2xl md:p-3">
+        <div className="mx-auto mt-8 flex w-full max-w-200 flex-col items-center justify-between gap-4 rounded-2xl bg-button-bg py-3 md:mt-10 md:rounded-2xl md:p-3">
           <div className="flex flex-col items-center justify-center gap-0.5 text-white md:gap-2">
             <p className="text-center font-raleway text-[18px] font-semibold tracking-[1px] md:text-[22px] md:font-medium">
               Ready to find your dream home?
