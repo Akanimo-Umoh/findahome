@@ -283,12 +283,13 @@
   @apply text-[14px] md:text-[16px];
 }
 
-/* .step3-slider [data-slot="slider-track"] {
+.step3-slider [data-slot="slider-track"] {
   @apply bg-text-disabled;
 }
+
 .step3-slider [data-slot="slider-range"] {
   @apply bg-text-secondary;
-} */
+}
 
 .step3-slider [data-slot="slider-thumb"] {
   @apply border-button-bg bg-button-bg;
