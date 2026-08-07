@@ -68,20 +68,25 @@ import { MyAds } from "@/pages/agent/ads/my-ads"
 import { ActiveDetails } from "@/pages/agent/ads/ad-details"
 import { ChangePassword } from "@/pages/agent/profile/change-password"
 import { AgentOnboarding } from "@/pages/agent/onboarding"
+import BlockRoleRoute from "./BlockedRoleRoute"
+import { CreateAd } from "@/pages/agent/ads/create-ad"
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* PUBLIC ROUTES */}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
-      </Route>
+      {/* PUBLIC ROUTES
+      cannot be accessed by the agent and admin*/}
+      <Route element={<BlockRoleRoute blockedRoles={["agent"]} />}>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+        </Route>
 
-      {/* public routes without the footer */}
-      <Route element={<NormalLayout />}>
-        <Route path="/available-properties" element={<AllProperties />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/property/:id" element={<PropertyDetails />} />
+        {/* public routes without the footer*/}
+        <Route element={<NormalLayout />}>
+          <Route path="/available-properties" element={<AllProperties />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/property/:id" element={<PropertyDetails />} />
+        </Route>
       </Route>
 
       {/* AUTH ROUTES */}
@@ -210,6 +215,7 @@ export default function AppRoutes() {
           <Route path="/agent/add-property" element={<AddProperty />} />
 
           {/* any cleared or confirmed route goes up */}
+          <Route path="/agent/create-ad" element={<CreateAd />} />
           <Route
             path="/agent/property-preview/:id"
             element={<PropertyPreview />}

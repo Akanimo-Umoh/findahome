@@ -17,7 +17,7 @@ export default function Step3() {
   const reachMax = Math.round(totalBudget * 1).toLocaleString()
 
   return (
-    <div className="mx-6">
+    <div className="">
       <p>Step 3: Set Budget</p>
 
       <div className="mt-2 space-y-4">

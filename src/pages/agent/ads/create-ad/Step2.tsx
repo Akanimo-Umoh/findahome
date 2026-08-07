@@ -35,34 +35,45 @@ const options: Option[] = [
   },
 ]
 
-export default function Step2() {
+type Step2Props = {
+  selectedObjective: number | null
+  onSelect: (id: number) => void
+}
+
+export default function Step2({ selectedObjective, onSelect }: Step2Props) {
   return (
     <div>
-      <p className="mx-6">Step 2: Choose Ad Objective</p>
+      <p className="">Step 2: Choose Ad Objective</p>
 
-      <div className="mt-2 scrollbar-hide flex items-center gap-5 overflow-x-auto px-6">
-        {options.map((option) => (
-          <div
-            key={option.id}
-            className="flex min-w-35.5 flex-col justify-center gap-4 rounded-lg border border-bg-accent px-2 py-4"
-          >
-            <div className="flex items-center justify-between">
-              <div
-                className={`flex h-7.5 w-7.5 items-center justify-center rounded-2xl ${option.bg}`}
-              >
-                <img src={option.icon} alt="" />
+      <div className="-mx-6 mt-2 scrollbar-hide flex items-center gap-5 overflow-x-auto px-6 md:mx-0 md:px-0">
+        {options.map((option) => {
+          const isSelected = selectedObjective === option.id
+
+          return (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => onSelect(option.id)}
+              className="flex min-w-35.5 cursor-pointer flex-col justify-center gap-4 rounded-lg border border-bg-accent px-2 py-4"
+            >
+              <div className="flex items-center justify-between">
+                <div
+                  className={`flex h-7.5 w-7.5 items-center justify-center rounded-2xl ${option.bg}`}
+                >
+                  <img src={option.icon} alt="" />
+                </div>
+
+                {isSelected && <img src={checkIcon} alt="" />}
               </div>
 
-              <img src={checkIcon} alt="" />
-            </div>
+              <div className="space-y-1 text-left">
+                <p className="text-[14px] text-[#10B981]">{option.title}</p>
 
-            <div className="space-y-1">
-              <p className="text-[14px] text-[#10B981]">{option.title}</p>
-
-              <p className="text-[12px] leading-4">{option.description}</p>
-            </div>
-          </div>
-        ))}
+                <p className="text-[12px] leading-4">{option.description}</p>
+              </div>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
