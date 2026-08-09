@@ -18,7 +18,8 @@ import rejectedIcon from "@/assets/agentImages/icon-listing-canceled.svg"
 import type { FilterStatus, ListingStatus } from "./MyListings"
 import type { AgentListing } from "@/hooks/useAgentListings"
 import Spinner from "@/components/Spinner"
-import { toast } from "sonner"
+import { useState } from "react"
+import ShareModal from "./ShareModal"
 
 interface ListingsCardProps {
   activeFilter: FilterStatus
@@ -84,27 +85,6 @@ function StatusBanner({ status }: { status: ListingStatus }) {
   return null
 }
 
-const handleShare = async (listing: AgentListing) => {
-  const url = `${window.location.origin}/properties/${listing._id}`
-
-  if (navigator.share) {
-    // native share sheet on mobile
-    try {
-      await navigator.share({
-        title: listing.title,
-        text: `Check out this property on FindaHome: ${listing.title} - ₦${listing.price.toLocaleString()}`,
-        url,
-      })
-    } catch {
-      // user cancelled — do nothing
-    }
-  } else {
-    // fallback for desktop: copy link to clipboard
-    await navigator.clipboard.writeText(url)
-    toast.success("Link copied to clipboard!")
-  }
-}
-
 export default function ListingsCard({
   activeFilter,
   activeTab,
@@ -112,6 +92,31 @@ export default function ListingsCard({
   isLoading,
   error,
 }: ListingsCardProps) {
+  const [shareTarget, setShareTarget] = useState<AgentListing | null>(null)
+
+  const isMobileDevice = () => {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+  }
+
+  const handleShare = async (listing: AgentListing) => {
+    const url = `${window.location.origin}/property/${listing._id}`
+
+    if (navigator.share && isMobileDevice()) {
+      // native share sheet on mobile
+      try {
+        await navigator.share({
+          title: listing.title,
+          text: `Check out this property on FindaHome: ${listing.title} - ₦${listing.price.toLocaleString()}`,
+          url,
+        })
+      } catch {
+        // user cancelled — do nothing
+      }
+    } else {
+      setShareTarget(listing)
+    }
+  }
+
   if (isLoading)
     return (
       <div className="-mt-20">
@@ -143,171 +148,182 @@ export default function ListingsCard({
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2">
-      {filtered.map((listing) => {
-        const status = listing.status as ListingStatus
-        const isLand = listing.propertyType === "land"
+    <>
+      <div className="grid gap-6 sm:grid-cols-2">
+        {filtered.map((listing) => {
+          const status = listing.status as ListingStatus
+          const isLand = listing.propertyType === "land"
 
-        return (
-          <div
-            key={listing._id}
-            className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl border border-bg-accent transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
-          >
-            <div className="relative rounded-t-2xl">
-              {/* property image */}
-              {listing.images?.[0] ? (
-                <img
-                  src={listing.images[0]}
-                  alt={listing.title}
-                  className="h-37.5 w-full rounded-t-2xl object-cover md:h-50.5 xl:h-67.5"
-                />
-              ) : (
-                <div className="h-37.5 w-full rounded-t-2xl bg-bg-accent md:h-50.5 lg:h-67.5" />
-              )}
-            </div>
+          return (
+            <div
+              key={listing._id}
+              className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl border border-bg-accent transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
+            >
+              <div className="relative rounded-t-2xl">
+                {/* property image */}
+                {listing.images?.[0] ? (
+                  <img
+                    src={listing.images[0]}
+                    alt={listing.title}
+                    className="h-37.5 w-full rounded-t-2xl object-cover md:h-50.5 xl:h-67.5"
+                  />
+                ) : (
+                  <div className="h-37.5 w-full rounded-t-2xl bg-bg-accent md:h-50.5 lg:h-67.5" />
+                )}
+              </div>
 
-            <div className="p-3">
-              <div className="space-y-2">
-                <div className="flex flex-col justify-center">
-                  <div className="flex h-10 items-center justify-between gap-2 md:h-12">
-                    {/* title */}
-                    <p className="line-clamp-2 flex-1 font-raleway text-[12px] font-semibold tracking-[1px] md:text-[16px]">
-                      {listing.title}
-                    </p>
-
-                    {/* price */}
-                    <p className="flex items-center">
-                      <img src={nairaIcon} alt="" className="h-4 w-4" />
-                      <span className="font-raleway text-[12px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
-                        {listing.price.toLocaleString()}
-                      </span>
-                    </p>
-                  </div>
-
-                  {/* listing type */}
-                  <p className="text-[12px] leading-4 text-[#10B98199] md:text-[14px] md:leading-5.25">
-                    For {listing.listingType}
-                  </p>
-                </div>
-
+              <div className="p-3">
                 <div className="space-y-2">
-                  {/* location */}
-                  <div className="flex items-center gap-1">
-                    <img
-                      src={locationIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                    <p className="line-clamp-1 text-[12px] leading-4.25 text-text-secondary md:text-[14px]">
-                      {listing.address}
-                    </p>
-                  </div>
+                  <div className="flex flex-col justify-center">
+                    <div className="flex h-10 items-center justify-between gap-2 md:h-12">
+                      {/* title */}
+                      <p className="line-clamp-2 flex-1 font-raleway text-[12px] font-semibold tracking-[1px] md:text-[16px]">
+                        {listing.title}
+                      </p>
 
-                  {/* bed/bath for apartment only */}
-                  {!isLand && (
-                    <div className="flex items-center gap-2 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
-                      {listing.bedroom != null && (
-                        <div className="flex items-center gap-1">
-                          <img
-                            src={bedIcon}
-                            alt=""
-                            className="h-4 w-4 md:h-6 md:w-6"
-                          />
-                          <p>{listing.bedroom} Beds</p>
-                        </div>
-                      )}
-                      {listing.bathroom != null && (
-                        <div className="flex items-center gap-1">
-                          <img
-                            src={tubIcon}
-                            alt=""
-                            className="h-4 w-4 md:h-6 md:w-6"
-                          />
-                          <p>{listing.bathroom} Baths</p>
-                        </div>
-                      )}
+                      {/* price */}
+                      <p className="flex items-center">
+                        <img src={nairaIcon} alt="" className="h-4 w-4" />
+                        <span className="font-raleway text-[12px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
+                          {listing.price.toLocaleString()}
+                        </span>
+                      </p>
                     </div>
-                  )}
 
-                  {/* land size for land only */}
-                  {isLand && listing.landSize && (
-                    <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
-                      {listing.landSize} {listing.landUnit}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <hr className="mt-2 md:mt-4" />
-
-              <div className="mt-1 flex items-center justify-between md:mt-2.5">
-                <div className="flex items-center justify-center gap-2">
-                  {/* number of views */}
-                  <div className="flex items-center gap-0.5">
-                    <img
-                      src={visibilityIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                    <p className="msd:leading-5.25 text-[12px] leading-4 text-text-secondary md:text-[14px]">
-                      0
+                    {/* listing type */}
+                    <p className="text-[12px] leading-4 text-[#10B98199] md:text-[14px] md:leading-5.25">
+                      For {listing.listingType}
                     </p>
                   </div>
 
-                  {/* number of chats for that property */}
-                  <div className="flex items-center justify-center gap-0.5">
-                    <img
-                      src={chatIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                    <p className="msd:leading-5.25 text-[12px] leading-4 text-text-secondary md:text-[14px]">
-                      0
-                    </p>
+                  <div className="space-y-2">
+                    {/* location */}
+                    <div className="flex items-center gap-1">
+                      <img
+                        src={locationIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                      <p className="line-clamp-1 text-[12px] leading-4.25 text-text-secondary md:text-[14px]">
+                        {listing.address}
+                      </p>
+                    </div>
+
+                    {/* bed/bath for apartment only */}
+                    {!isLand && (
+                      <div className="flex items-center gap-2 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
+                        {listing.bedroom != null && (
+                          <div className="flex items-center gap-1">
+                            <img
+                              src={bedIcon}
+                              alt=""
+                              className="h-4 w-4 md:h-6 md:w-6"
+                            />
+                            <p>{listing.bedroom} Beds</p>
+                          </div>
+                        )}
+                        {listing.bathroom != null && (
+                          <div className="flex items-center gap-1">
+                            <img
+                              src={tubIcon}
+                              alt=""
+                              className="h-4 w-4 md:h-6 md:w-6"
+                            />
+                            <p>{listing.bathroom} Baths</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* land size for land only */}
+                    {isLand && listing.landSize && (
+                      <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-6">
+                        {listing.landSize} {listing.landUnit}
+                      </p>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-2">
-                  {/* edit icon */}
-                  <button className="cursor-pointer px-0.5 py-1">
-                    <img
-                      src={editIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                  </button>
+                <hr className="mt-2 md:mt-4" />
 
-                  {/* delete icon */}
-                  <button className="cursor-pointer px-0.5 py-1">
-                    <img
-                      src={deleteIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                  </button>
+                <div className="mt-1 flex items-center justify-between md:mt-2.5">
+                  <div className="flex items-center justify-center gap-2">
+                    {/* number of views */}
+                    <div className="flex items-center gap-0.5">
+                      <img
+                        src={visibilityIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                      <p className="msd:leading-5.25 text-[12px] leading-4 text-text-secondary md:text-[14px]">
+                        0
+                      </p>
+                    </div>
 
-                  {/* share button */}
-                  <button
-                    onClick={() => handleShare(listing)}
-                    className="cursor-pointer px-0.5 py-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    disabled={listing.status === "rejected"}
-                  >
-                    <img
-                      src={shareIcon}
-                      alt=""
-                      className="h-4 w-4 md:h-6 md:w-6"
-                    />
-                  </button>
+                    {/* number of chats for that property */}
+                    <div className="flex items-center justify-center gap-0.5">
+                      <img
+                        src={chatIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                      <p className="msd:leading-5.25 text-[12px] leading-4 text-text-secondary md:text-[14px]">
+                        0
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-2">
+                    {/* edit icon */}
+                    <button className="cursor-pointer px-0.5 py-1">
+                      <img
+                        src={editIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                    </button>
+
+                    {/* delete icon */}
+                    <button className="cursor-pointer px-0.5 py-1">
+                      <img
+                        src={deleteIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                    </button>
+
+                    {/* share button */}
+                    <button
+                      onClick={() => handleShare(listing)}
+                      className="cursor-pointer px-0.5 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={listing.status === "rejected"}
+                    >
+                      <img
+                        src={shareIcon}
+                        alt=""
+                        className="h-4 w-4 md:h-6 md:w-6"
+                      />
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-2">
-                <StatusBanner status={status} />
+                <div className="mt-2">
+                  <StatusBanner status={status} />
+                </div>
               </div>
             </div>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+
+      {shareTarget && (
+        <ShareModal
+          isOpen={!!shareTarget}
+          onClose={() => setShareTarget(null)}
+          url={`${window.location.origin}/property/${shareTarget._id}`}
+          title={shareTarget.title}
+        />
+      )}
+    </>
   )
 }
