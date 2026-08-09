@@ -12,14 +12,14 @@ export default function MyAds() {
       <header className="">
         {/* header */}
         <div className="flex items-center justify-between">
-          <button onClick={() => navigate(-1)}>
+          <button onClick={() => navigate(-1)} className="cursor-pointer">
             <img src={goBack} alt="" className="" />
           </button>
 
           <p className="font-raleway text-[18px] font-semibold">My Ads</p>
 
           <Link
-            to="create-ad"
+            to="/agent/create-ad"
             className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full bg-button-bg"
           >
             <Plus className="h-5 w-5 text-white" />
