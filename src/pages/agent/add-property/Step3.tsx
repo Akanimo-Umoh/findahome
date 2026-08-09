@@ -98,11 +98,13 @@ export default function Step3({
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    {["1", "2", "3", "4", "5", "6+"].map((n) => (
-                      <SelectItem key={n} value={n}>
-                        {n}
-                      </SelectItem>
-                    ))}
+                    {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
+                      (n) => (
+                        <SelectItem key={n} value={n}>
+                          {n}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
                 {errors.bedrooms && (
@@ -130,11 +132,13 @@ export default function Step3({
                     </div>
                   </SelectTrigger>
                   <SelectContent>
-                    {["1", "2", "3", "4", "5", "6+"].map((n) => (
-                      <SelectItem key={n} value={n}>
-                        {n}
-                      </SelectItem>
-                    ))}
+                    {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map(
+                      (n) => (
+                        <SelectItem key={n} value={n}>
+                          {n}
+                        </SelectItem>
+                      )
+                    )}
                   </SelectContent>
                 </Select>
                 {errors.bathrooms && (

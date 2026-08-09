@@ -62,7 +62,7 @@ export default function ChangePassword() {
     resolver: zodResolver(ChangePasswordSchema),
   })
 
-  const onSubmit = async () => {
+  const onSubmit = async (_data: ChangePasswordFormData) => {
     try {
       setApiError(null)
 
