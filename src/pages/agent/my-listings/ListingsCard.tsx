@@ -4,9 +4,9 @@ import tubIcon from "@/assets/images/tubs.svg"
 // import activeIcon from "@/assets/agentImages/icon-active-white.svg"
 import visibilityIcon from "@/assets/agentImages/icon-visibility.svg"
 import chatIcon from "@/assets/agentImages/icon-chats.svg"
-import editIcon from "@/assets/agentImages/icon-edit.svg"
-import deleteIcon from "@/assets/agentImages/icon-delete-listing.svg"
-import shareIcon from "@/assets/agentImages/icon-share.svg"
+// import editIcon from "@/assets/agentImages/icon-edit.svg"
+// import deleteIcon from "@/assets/agentImages/icon-delete-listing.svg"
+// import shareIcon from "@/assets/agentImages/icon-share.svg"
 import nairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 // import pendingIcon from "@/assets/agentImages/icon-pending-listing.svg"
 import pendingApprovalIcon from "@/assets/agentImages/icon-listing-pending.svg"
@@ -20,6 +20,11 @@ import type { AgentListing } from "@/hooks/useAgentListings"
 import Spinner from "@/components/Spinner"
 import { useState } from "react"
 import ShareModal from "./ShareModal"
+import { useDeleteProperty } from "@/hooks/useDeleteProperty"
+import DeleteListingDialog from "./DeleteListingDialog"
+import EditIcon from "@/components/icons/EditIcon"
+import DeleteIcon from "@/components/icons/DeleteIcon"
+import ShareIcon from "@/components/icons/ShareIcon"
 
 interface ListingsCardProps {
   activeFilter: FilterStatus
@@ -93,6 +98,8 @@ export default function ListingsCard({
   error,
 }: ListingsCardProps) {
   const [shareTarget, setShareTarget] = useState<AgentListing | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<AgentListing | null>(null)
+  const { deleteProperty, isDeleting } = useDeleteProperty()
 
   const isMobileDevice = () => {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
@@ -115,6 +122,12 @@ export default function ListingsCard({
     } else {
       setShareTarget(listing)
     }
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return
+    const success = await deleteProperty(deleteTarget._id)
+    if (success) setDeleteTarget(null)
   }
 
   if (isLoading)
@@ -273,39 +286,31 @@ export default function ListingsCard({
                     </div>
                   </div>
 
+                  {/* action buttons */}
                   <div className="flex items-center justify-center gap-2">
                     {/* edit icon */}
-                    <button className="cursor-pointer px-0.5 py-1">
-                      <img
-                        src={editIcon}
-                        alt=""
-                        className="h-4 w-4 md:h-6 md:w-6"
-                      />
+                    <button className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-blue-50 hover:text-button-bg">
+                      <EditIcon className="h-4 w-4 md:h-6 md:w-6" />
                     </button>
 
                     {/* delete icon */}
-                    <button className="cursor-pointer px-0.5 py-1">
-                      <img
-                        src={deleteIcon}
-                        alt=""
-                        className="h-4 w-4 md:h-6 md:w-6"
-                      />
+                    <button
+                      onClick={() => setDeleteTarget(listing)}
+                      className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-red-50 hover:text-red-500"
+                    >
+                      <DeleteIcon className="h-4 w-4 md:h-6 md:w-6" />
                     </button>
 
                     {/* share button */}
                     <button
                       onClick={() => handleShare(listing)}
-                      className="cursor-pointer px-0.5 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
                       disabled={
                         listing.status === "rejected" ||
                         listing.status === "pending"
                       }
                     >
-                      <img
-                        src={shareIcon}
-                        alt=""
-                        className="h-4 w-4 md:h-6 md:w-6"
-                      />
+                      <ShareIcon className="h-4 w-4 md:h-6 md:w-6" />
                     </button>
                   </div>
                 </div>
@@ -318,6 +323,16 @@ export default function ListingsCard({
           )
         })}
       </div>
+
+      {deleteTarget && (
+        <DeleteListingDialog
+          isOpen={!!deleteTarget}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          isDeleting={isDeleting}
+          listingTitle={deleteTarget.title}
+        />
+      )}
 
       {shareTarget && (
         <ShareModal
