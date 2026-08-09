@@ -114,7 +114,7 @@ export default function ShareModal({
           <button
             type="button"
             onClick={handleCopy}
-            className="flex shrink-0 cursor-pointer items-center gap-1 rounded-md bg-button-bg px-3 py-1.5 text-[12px] font-semibold text-white"
+            className="flex shrink-0 cursor-pointer items-center gap-1 rounded-md bg-button-bg px-3 py-1.5 text-[12px] font-semibold text-white hover:opacity-85"
           >
             {copied ? (
               <Check className="h-3.5 w-3.5" />

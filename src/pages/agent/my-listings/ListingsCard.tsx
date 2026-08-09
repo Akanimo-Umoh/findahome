@@ -296,7 +296,10 @@ export default function ListingsCard({
                     <button
                       onClick={() => handleShare(listing)}
                       className="cursor-pointer px-0.5 py-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={listing.status === "rejected"}
+                      disabled={
+                        listing.status === "rejected" ||
+                        listing.status === "pending"
+                      }
                     >
                       <img
                         src={shareIcon}
