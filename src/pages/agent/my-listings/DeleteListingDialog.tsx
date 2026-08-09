@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type DeleteListingDialogProps = {
   isOpen: boolean
@@ -23,10 +28,10 @@ export default function DeleteListingDialog({
           Delete this listing?
         </DialogTitle>
 
-        <p className="mt-2 text-[13px] text-text-secondary">
+        <DialogDescription className="mt-2 text-[13px] text-text-secondary">
           Are you sure you want to delete "{listingTitle}"? This action can't be
           undone.
-        </p>
+        </DialogDescription>
 
         <div className="mt-6 flex gap-3">
           <Button

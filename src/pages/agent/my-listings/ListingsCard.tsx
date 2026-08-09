@@ -18,13 +18,14 @@ import rejectedIcon from "@/assets/agentImages/icon-listing-canceled.svg"
 import type { FilterStatus, ListingStatus } from "./MyListings"
 import type { AgentListing } from "@/hooks/useAgentListings"
 import Spinner from "@/components/Spinner"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import ShareModal from "./ShareModal"
 import { useDeleteProperty } from "@/hooks/useDeleteProperty"
 import DeleteListingDialog from "./DeleteListingDialog"
 import EditIcon from "@/components/icons/EditIcon"
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import ShareIcon from "@/components/icons/ShareIcon"
+import { useNavigate } from "react-router-dom"
 
 interface ListingsCardProps {
   activeFilter: FilterStatus
@@ -97,9 +98,14 @@ export default function ListingsCard({
   isLoading,
   error,
 }: ListingsCardProps) {
+  const navigate = useNavigate()
   const [shareTarget, setShareTarget] = useState<AgentListing | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<AgentListing | null>(null)
   const { deleteProperty, isDeleting } = useDeleteProperty()
+
+  // track which button triggered each dialog, so we can return focus on close
+  const deleteTriggerRef = useRef<HTMLButtonElement | null>(null)
+  const shareTriggerRef = useRef<HTMLButtonElement | null>(null)
 
   const isMobileDevice = () => {
     return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
@@ -122,6 +128,33 @@ export default function ListingsCard({
     } else {
       setShareTarget(listing)
     }
+  }
+
+  const handleDeleteClick = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    listing: AgentListing
+  ) => {
+    deleteTriggerRef.current = e.currentTarget
+    setDeleteTarget(listing)
+  }
+
+  const handleShareClick = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    listing: AgentListing
+  ) => {
+    shareTriggerRef.current = e.currentTarget
+    await handleShare(listing)
+  }
+
+  const closeDeleteDialog = () => {
+    setDeleteTarget(null)
+    // wait a tick for the dialog to unmount before refocusing
+    setTimeout(() => deleteTriggerRef.current?.focus(), 0)
+  }
+
+  const closeShareModal = () => {
+    setShareTarget(null)
+    setTimeout(() => shareTriggerRef.current?.focus(), 0)
   }
 
   const handleConfirmDelete = async () => {
@@ -170,6 +203,16 @@ export default function ListingsCard({
           return (
             <div
               key={listing._id}
+              role="button"
+              tabIndex={0}
+              onClick={() => navigate(`/agent/property-preview/${listing._id}`)}
+              onKeyDown={(e) => {
+                if (e.target !== e.currentTarget) return // let inner buttons handle their own Enter/Space
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault()
+                  navigate(`/agent/property-preview/${listing._id}`)
+                }
+              }}
               className="mx-auto w-full max-w-112.5 cursor-pointer rounded-2xl border border-bg-accent transition-shadow hover:shadow-lg sm:mx-0 md:max-w-117.5"
             >
               <div className="relative rounded-t-2xl">
@@ -287,23 +330,33 @@ export default function ListingsCard({
                   </div>
 
                   {/* action buttons */}
-                  <div className="flex items-center justify-center gap-2">
+                  <div
+                    className="flex items-center justify-center gap-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {/* edit icon */}
-                    <button className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-blue-50 hover:text-button-bg">
+                    <button
+                      aria-label={`Edit ${listing.title}`}
+                      className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-blue-50 hover:text-button-bg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
+                      disabled={listing.status === "sold"}
+                    >
                       <EditIcon className="h-4 w-4 md:h-6 md:w-6" />
                     </button>
 
                     {/* delete icon */}
                     <button
-                      onClick={() => setDeleteTarget(listing)}
-                      className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-red-50 hover:text-red-500"
+                      onClick={(e) => handleDeleteClick(e, listing)}
+                      aria-label={`Delete ${listing.title}`}
+                      className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
+                      disabled={listing.status === "sold"}
                     >
                       <DeleteIcon className="h-4 w-4 md:h-6 md:w-6" />
                     </button>
 
                     {/* share button */}
                     <button
-                      onClick={() => handleShare(listing)}
+                      onClick={(e) => handleShareClick(e, listing)}
+                      aria-label={`Share ${listing.title}`}
                       className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
                       disabled={
                         listing.status === "rejected" ||
@@ -327,7 +380,7 @@ export default function ListingsCard({
       {deleteTarget && (
         <DeleteListingDialog
           isOpen={!!deleteTarget}
-          onClose={() => setDeleteTarget(null)}
+          onClose={closeDeleteDialog}
           onConfirm={handleConfirmDelete}
           isDeleting={isDeleting}
           listingTitle={deleteTarget.title}
@@ -337,7 +390,7 @@ export default function ListingsCard({
       {shareTarget && (
         <ShareModal
           isOpen={!!shareTarget}
-          onClose={() => setShareTarget(null)}
+          onClose={closeShareModal}
           url={`${window.location.origin}/property/${shareTarget._id}`}
           title={shareTarget.title}
         />
