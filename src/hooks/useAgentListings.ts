@@ -12,7 +12,7 @@ export type AgentListing = {
   videos: string[]
   propertyType: "apartment" | "land"
   listingType: string
-  status: "active" | "pending" | "sold" | "rejected"
+  status: "approved" | "pending" | "sold" | "rejected"
   bedroom?: number | null
   bathroom?: number | null
   landSize?: string | null
@@ -39,7 +39,8 @@ export function useAgentListings() {
   })
 
   const activeListingsCount = useMemo(
-    () => (data ?? []).filter((listing) => listing.status === "active").length,
+    () =>
+      (data ?? []).filter((listing) => listing.status === "approved").length,
     [data]
   )
 

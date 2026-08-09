@@ -8,7 +8,7 @@ import { useAuthContext } from "@/context/AuthContext"
 
 type Tab = "apartment" | "land"
 
-export type ListingStatus = "active" | "sold" | "pending" | "rejected"
+export type ListingStatus = "approved" | "sold" | "pending" | "rejected"
 export type FilterStatus = "all" | ListingStatus
 
 export default function MyListings() {

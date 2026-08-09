@@ -17,7 +17,7 @@ export default function PropertySelectorModal({
   const { listings, isLoading, error } = useAgentListings()
 
   const activeListings = listings.filter(
-    (listing) => listing.status === "active"
+    (listing) => listing.status === "approved"
   )
 
   const handleSelect = (property: AgentListing) => {

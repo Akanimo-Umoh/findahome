@@ -7,7 +7,7 @@ interface FilterButtonsProps {
 
 const filters: { label: string; value: FilterStatus }[] = [
   { label: "All", value: "all" },
-  { label: "Active", value: "active" },
+  { label: "Active", value: "approved" },
   { label: "Sold", value: "sold" },
   { label: "Pending", value: "pending" },
   { label: "Rejected", value: "rejected" },

@@ -30,7 +30,7 @@ interface ListingsCardProps {
 }
 
 function StatusBanner({ status }: { status: ListingStatus }) {
-  if (status === "active")
+  if (status === "approved")
     return (
       <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#149D1833] p-2 md:mt-4 md:ml-0">
         <img
