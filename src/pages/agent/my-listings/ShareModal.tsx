@@ -67,7 +67,7 @@ export default function ShareModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100%-48px)] max-w-md rounded-2xl p-6 font-ssPro text-text-primary">
+      <DialogContent className="w-[calc(100%-48px)] max-w-md rounded-2xl p-6 pt-3 font-ssPro text-text-primary">
         <DialogTitle className="text-center font-raleway text-[16px] font-semibold tracking-[1px]">
           Share
         </DialogTitle>
