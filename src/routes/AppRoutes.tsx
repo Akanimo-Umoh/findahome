@@ -215,6 +215,7 @@ export default function AppRoutes() {
           <Route path="/agent/add-property" element={<AddProperty />} />
 
           {/* any cleared or confirmed route goes up */}
+          <Route path="/agent/edit-property/:id" element={<AddProperty />} />
           <Route path="/agent/create-ad" element={<CreateAd />} />
           <Route
             path="/agent/property-preview/:id"

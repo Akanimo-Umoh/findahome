@@ -336,6 +336,9 @@ export default function ListingsCard({
                   >
                     {/* edit icon */}
                     <button
+                      onClick={() =>
+                        navigate(`/agent/edit-property/${listing._id}`)
+                      }
                       aria-label={`Edit ${listing.title}`}
                       className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-blue-50 hover:text-button-bg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
                       disabled={listing.status === "sold"}

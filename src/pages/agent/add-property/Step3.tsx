@@ -15,12 +15,17 @@ import { useState } from "react"
 import FormField from "./FormField"
 import type { AddPropertyFormData } from "@/types/addProperty"
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 type Step3Props = {
   formData: AddPropertyFormData
   updateFormData: (fields: Partial<AddPropertyFormData>) => void
   onSubmit: () => Promise<void>
   isSubmitting: boolean
+  isEditMode?: boolean
+  existingImages?: string[]
+  existingLegalDocuments?: string[]
+  existingVideo?: string | null
 }
 
 type Step3Errors = {
@@ -37,6 +42,10 @@ export default function Step3({
   updateFormData,
   onSubmit,
   isSubmitting,
+  isEditMode = false,
+  existingImages = [],
+  existingLegalDocuments = [],
+  existingVideo = null,
 }: Step3Props) {
   const [errors, setErrors] = useState<Step3Errors>({})
   const isApartment = formData.propertyType === "apartment"
@@ -53,11 +62,14 @@ export default function Step3({
         newErrors.apartmentDescription = "Description can't be empty"
     }
 
-    if (formData.images.length === 0)
-      newErrors.images = "Please upload at least one photo"
-    if (!isApartment && formData.legalDocuments.length === 0)
-      newErrors.legalDocuments = "Please upload at least one legal document"
-    if (!formData.video) newErrors.video = "Please upload a video tour"
+    // skip media requirements in edit mode until upload editing is wired up
+    if (!isEditMode) {
+      if (formData.images.length === 0)
+        newErrors.images = "Please upload at least one photo"
+      if (!isApartment && formData.legalDocuments.length === 0)
+        newErrors.legalDocuments = "Please upload at least one legal document"
+      if (!formData.video) newErrors.video = "Please upload a video tour"
+    }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -180,60 +192,127 @@ export default function Step3({
         <div className="mt-6">
           <p>Upload Photos & Videos</p>
 
-          <div className="mx-4 mt-5">
-            <div>
-              <UploadImages
-                value={formData.images}
-                onChange={(files) => {
-                  updateFormData({ images: files })
-                  if (errors.images)
-                    setErrors((prev) => ({ ...prev, images: undefined }))
-                }}
-              />
-              {errors.images && (
-                <p className="mt-1 text-[11px] leading-4 text-red-500">
-                  {errors.images}
+          {isEditMode ? (
+            <div className="mx-4 mt-5 space-y-6">
+              <div className="rounded-lg border border-dashed border-text-secondary bg-button-disabled p-4">
+                <p className="text-[13px] font-semibold text-text-secondary">
+                  Media can't be changed here yet
                 </p>
+                <p className="mt-1 text-[12px] leading-4 text-text-secondary">
+                  To update photos, documents, or the video, delete this listing
+                  and create a new one. We're working on making this editable
+                  directly.
+                </p>
+              </div>
+
+              {existingImages.length > 0 && (
+                <div>
+                  <p className="mb-2 text-[13px] font-semibold">
+                    Current Photos
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {existingImages.map((url, i) => (
+                      <img
+                        key={i}
+                        src={url}
+                        alt={`Property photo ${i + 1}`}
+                        className="h-16 w-16 rounded-lg object-cover opacity-70"
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {!isApartment && existingLegalDocuments.length > 0 && (
+                <div>
+                  <p className="mb-2 text-[13px] font-semibold">
+                    Current Legal Documents
+                  </p>
+                  <div className="flex flex-col gap-1">
+                    {existingLegalDocuments.map((url, i) => (
+                      <Link
+                        key={i}
+                        to={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="line-clamp-1 rounded-lg bg-bg-accent px-3 py-2 text-[12px] text-button-bg underline"
+                      >
+                        Document {i + 1}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {existingVideo && (
+                <div>
+                  <p className="mb-2 text-[13px] font-semibold">
+                    Current Video
+                  </p>
+                  <video
+                    src={existingVideo}
+                    controls
+                    className="h-40 w-full rounded-lg bg-black object-contain opacity-70"
+                  />
+                </div>
               )}
             </div>
-
-            {!isApartment && (
-              <div className="mt-12">
-                <UploadDocuments
-                  value={formData.legalDocuments}
+          ) : (
+            <div className="mx-4 mt-5">
+              <div>
+                <UploadImages
+                  value={formData.images}
                   onChange={(files) => {
-                    updateFormData({ legalDocuments: files })
-                    if (errors.legalDocuments)
-                      setErrors((prev) => ({
-                        ...prev,
-                        legalDocuments: undefined,
-                      }))
+                    updateFormData({ images: files })
+                    if (errors.images)
+                      setErrors((prev) => ({ ...prev, images: undefined }))
                   }}
                 />
-                {errors.legalDocuments && (
+                {errors.images && (
                   <p className="mt-1 text-[11px] leading-4 text-red-500">
-                    {errors.legalDocuments}
+                    {errors.images}
                   </p>
                 )}
               </div>
-            )}
 
-            <div className="mt-12">
-              <UploadVideo
-                value={formData.video}
-                onChange={(file) => {
-                  updateFormData({ video: file })
-                  if (errors.video)
-                    setErrors((prev) => ({ ...prev, video: undefined }))
-                }}
-              />
-              {errors.video && (
-                <p className="mt-1 text-[11px] leading-4 text-red-500">
-                  {errors.video}
-                </p>
+              {!isApartment && (
+                <div className="mt-12">
+                  <UploadDocuments
+                    value={formData.legalDocuments}
+                    onChange={(files) => {
+                      updateFormData({ legalDocuments: files })
+                      if (errors.legalDocuments)
+                        setErrors((prev) => ({
+                          ...prev,
+                          legalDocuments: undefined,
+                        }))
+                    }}
+                  />
+                  {errors.legalDocuments && (
+                    <p className="mt-1 text-[11px] leading-4 text-red-500">
+                      {errors.legalDocuments}
+                    </p>
+                  )}
+                </div>
               )}
+
+              <div className="mt-12">
+                <UploadVideo
+                  value={formData.video}
+                  onChange={(file) => {
+                    updateFormData({ video: file })
+                    if (errors.video)
+                      setErrors((prev) => ({ ...prev, video: undefined }))
+                  }}
+                />
+                {errors.video && (
+                  <p className="mt-1 text-[11px] leading-4 text-red-500">
+                    {errors.video}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="mt-11 space-y-4">
@@ -243,13 +322,17 @@ export default function Step3({
             type="submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting
+              ? "Submitting..."
+              : isEditMode
+                ? "Save Changes"
+                : "Submit"}
           </Button>
 
           {/* type for this is button for now until users can save as draft */}
-          <Button variant="app-secondary" size="full" type="button">
+          {/* <Button variant="app-secondary" size="full" type="button">
             Save as draft
-          </Button>
+          </Button> */}
         </div>
       </form>
     </div>

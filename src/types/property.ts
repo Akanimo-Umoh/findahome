@@ -5,6 +5,7 @@ type BaseProperty = {
   address: string
   images: string[]
   videos: string[]
+  legalDocuments: string[]
   description: string
   inspectionFee: number
   serviceCharge: number

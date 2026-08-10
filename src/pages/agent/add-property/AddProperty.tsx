@@ -1,12 +1,15 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import goBack from "@/assets/images/icon-back.svg"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
 import Step3 from "./Step3"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SubmissionSuccessful from "./SubmissionSuccessful"
 import type { AddPropertyFormData } from "@/types/addProperty"
 import { useAddProperty } from "@/hooks/useAddProperty"
+import { useEditProperty } from "@/hooks/useEditProperty"
+import { useProperty } from "@/hooks/useProperties"
+import Spinner from "@/components/Spinner"
 
 const initialFormData: AddPropertyFormData = {
   propertyName: "",
@@ -33,11 +36,51 @@ const initialFormData: AddPropertyFormData = {
 
 export default function AddProperty() {
   const navigate = useNavigate()
-  const { addProperty, isSubmitting } = useAddProperty()
+  const { id } = useParams<{ id: string }>()
+  const isEditMode = !!id
+
+  const { addProperty, isSubmitting: isAdding } = useAddProperty()
+  const { editProperty, isSubmitting: isEditing } = useEditProperty()
+  const { property, loading: isLoadingProperty } = useProperty(id || "")
+
   const [currentStep, setCurrentStep] = useState(1)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [propertyId, setPropertyId] = useState<string | null>(null)
   const [formData, setFormData] = useState<AddPropertyFormData>(initialFormData)
+  const [hasPrefilled, setHasPrefilled] = useState(false)
+
+  const isSubmitting = isEditMode ? isEditing : isAdding
+
+  // prefill form when editing, once property data arrives
+  useEffect(() => {
+    if (isEditMode && property && !hasPrefilled) {
+      const isLand = property.propertyType === "land"
+
+      setFormData({
+        propertyName: property.title,
+        propertyType: isLand ? "land" : "apartment",
+        listingType: property.listingType as "sale" | "rent",
+        price: String(property.price),
+        serviceCharge: String(property.serviceCharge ?? ""),
+        plotSize: isLand ? (property.landSize ?? "") : "",
+        plotUnit: isLand ? (property.landUnit ?? "") : "",
+        landCondition: isLand ? (property.landCondition ?? "") : "",
+        landDocTitle: isLand ? (property.landDocTitle ?? "") : "",
+        landType: isLand ? property.landType : "",
+        state: property.address?.split(",")[1]?.trim() ?? "",
+        city: property.address?.split(",")[0]?.trim() ?? "",
+        landmarks: property.nearbyPlaces?.length ? property.nearbyPlaces : [""],
+        description: isLand ? (property.description ?? "") : "",
+        bedrooms: !isLand ? String(property.bedroom) : "",
+        bathrooms: !isLand ? String(property.bathroom) : "",
+        apartmentDescription: !isLand ? (property.description ?? "") : "",
+        images: [],
+        legalDocuments: [],
+        video: null,
+      })
+      setHasPrefilled(true)
+    }
+  }, [isEditMode, property, hasPrefilled])
 
   const updateFormData = (fields: Partial<AddPropertyFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }))
@@ -47,11 +90,21 @@ export default function AddProperty() {
   const goToPrevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1))
 
   const handleSubmit = async () => {
-    const id = await addProperty(formData)
-    if (id) {
-      setPropertyId(id)
+    if (isEditMode && id) {
+      const success = await editProperty(id, formData)
+      if (success) navigate(`/agent/property-preview/${id}`)
+      return
+    }
+
+    const newId = await addProperty(formData)
+    if (newId) {
+      setPropertyId(newId)
       setIsSuccessOpen(true)
     }
+  }
+
+  if (isEditMode && isLoadingProperty) {
+    return <Spinner />
   }
 
   return (
@@ -66,7 +119,7 @@ export default function AddProperty() {
         </button>
 
         <p className="font-raleway text-[18px] font-semibold tracking-[1px] md:text-[22px]">
-          Add Property
+          {isEditMode ? "Edit Property" : "Add Property"}
         </p>
 
         {/* <button className="absolute right-0 font-raleway font-semibold text-[14px] tracking-[1px] text-button-bg">
@@ -88,7 +141,9 @@ export default function AddProperty() {
 
       <div className="mx-auto mt-6 max-w-137.5">
         <p className="text-center text-[14px] text-text-secondary md:text-[16px] md:font-semibold md:tracking-[1px]">
-          Create a compelling listing to attract potential buyers
+          {isEditMode
+            ? "Update your listing details"
+            : "Create a compelling listing to attract potential buyers"}
         </p>
 
         {/* form for step 1 */}
@@ -121,6 +176,10 @@ export default function AddProperty() {
               updateFormData={updateFormData}
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
+              isEditMode={isEditMode}
+              existingImages={property?.images ?? []}
+              existingLegalDocuments={property?.legalDocuments ?? []}
+              existingVideo={property?.videos?.[0] ?? null}
             />
           )}
         </section>
