@@ -3,7 +3,7 @@ import goBack from "@/assets/images/icon-back.svg"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
 import Step3 from "./Step3"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import SubmissionSuccessful from "./SubmissionSuccessful"
 import type { AddPropertyFormData } from "@/types/addProperty"
 import { useAddProperty } from "@/hooks/useAddProperty"
@@ -34,53 +34,85 @@ const initialFormData: AddPropertyFormData = {
   video: null,
 }
 
+const buildInitialFormData = (
+  property?: ReturnType<typeof useProperty>["property"]
+): AddPropertyFormData => {
+  if (!property) return initialFormData
+
+  const isLand = property.propertyType === "land"
+
+  return {
+    propertyName: property.title,
+    propertyType: isLand ? "land" : "apartment",
+    listingType: property.listingType as "sale" | "rent",
+    price: String(property.price),
+    serviceCharge: String(property.serviceCharge ?? ""),
+    plotSize: isLand ? (property.landSize ?? "") : "",
+    plotUnit: isLand ? (property.landUnit ?? "") : "",
+    landCondition: isLand ? (property.landCondition ?? "") : "",
+    landDocTitle: isLand ? (property.landDocTitle ?? "") : "",
+    landType: isLand ? property.landType : "",
+    state: property.address?.split(",")[1]?.trim() ?? "",
+    city: property.address?.split(",")[0]?.trim() ?? "",
+    landmarks: property.nearbyPlaces?.length ? property.nearbyPlaces : [""],
+    description: isLand ? (property.description ?? "") : "",
+    bedrooms: !isLand ? String(property.bedroom) : "",
+    bathrooms: !isLand ? String(property.bathroom) : "",
+    apartmentDescription: !isLand ? (property.description ?? "") : "",
+    images: [],
+    legalDocuments: [],
+    video: null,
+  }
+}
+
 export default function AddProperty() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const isEditMode = !!id
 
+  const { property, loading: isLoadingProperty } = useProperty(id || "")
+
+  if (isEditMode && isLoadingProperty) {
+    return <Spinner />
+  }
+
+  if (isEditMode && !property) {
+    return <Spinner />
+  }
+
+  return (
+    <AddPropertyForm
+      key={property?._id ?? "new"}
+      isEditMode={isEditMode}
+      id={id}
+      property={property}
+      navigate={navigate}
+    />
+  )
+}
+
+function AddPropertyForm({
+  isEditMode,
+  id,
+  property,
+  navigate,
+}: {
+  isEditMode: boolean
+  id?: string
+  property: ReturnType<typeof useProperty>["property"]
+  navigate: ReturnType<typeof useNavigate>
+}) {
   const { addProperty, isSubmitting: isAdding } = useAddProperty()
   const { editProperty, isSubmitting: isEditing } = useEditProperty()
-  const { property, loading: isLoadingProperty } = useProperty(id || "")
+  const isSubmitting = isEditMode ? isEditing : isAdding
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
   const [propertyId, setPropertyId] = useState<string | null>(null)
-  const [formData, setFormData] = useState<AddPropertyFormData>(initialFormData)
-  const [hasPrefilled, setHasPrefilled] = useState(false)
 
-  const isSubmitting = isEditMode ? isEditing : isAdding
-
-  // prefill form when editing, once property data arrives
-  useEffect(() => {
-    if (isEditMode && property && !hasPrefilled) {
-      const isLand = property.propertyType === "land"
-
-      setFormData({
-        propertyName: property.title,
-        propertyType: isLand ? "land" : "apartment",
-        listingType: property.listingType as "sale" | "rent",
-        price: String(property.price),
-        serviceCharge: String(property.serviceCharge ?? ""),
-        plotSize: isLand ? (property.landSize ?? "") : "",
-        plotUnit: isLand ? (property.landUnit ?? "") : "",
-        landCondition: isLand ? (property.landCondition ?? "") : "",
-        landDocTitle: isLand ? (property.landDocTitle ?? "") : "",
-        landType: isLand ? property.landType : "",
-        state: property.address?.split(",")[1]?.trim() ?? "",
-        city: property.address?.split(",")[0]?.trim() ?? "",
-        landmarks: property.nearbyPlaces?.length ? property.nearbyPlaces : [""],
-        description: isLand ? (property.description ?? "") : "",
-        bedrooms: !isLand ? String(property.bedroom) : "",
-        bathrooms: !isLand ? String(property.bathroom) : "",
-        apartmentDescription: !isLand ? (property.description ?? "") : "",
-        images: [],
-        legalDocuments: [],
-        video: null,
-      })
-      setHasPrefilled(true)
-    }
-  }, [isEditMode, property, hasPrefilled])
+  const [formData, setFormData] = useState<AddPropertyFormData>(() =>
+    buildInitialFormData(property)
+  )
 
   const updateFormData = (fields: Partial<AddPropertyFormData>) => {
     setFormData((prev) => ({ ...prev, ...fields }))
@@ -101,10 +133,6 @@ export default function AddProperty() {
       setPropertyId(newId)
       setIsSuccessOpen(true)
     }
-  }
-
-  if (isEditMode && isLoadingProperty) {
-    return <Spinner />
   }
 
   return (
@@ -164,6 +192,7 @@ export default function AddProperty() {
               formData={formData}
               updateFormData={updateFormData}
               onNext={goToNextStep}
+              onBack={goToPrevStep}
             />
           )}
         </section>
@@ -175,6 +204,7 @@ export default function AddProperty() {
               formData={formData}
               updateFormData={updateFormData}
               onSubmit={handleSubmit}
+              onBack={goToPrevStep}
               isSubmitting={isSubmitting}
               isEditMode={isEditMode}
               existingImages={property?.images ?? []}

@@ -21,6 +21,7 @@ type Step3Props = {
   formData: AddPropertyFormData
   updateFormData: (fields: Partial<AddPropertyFormData>) => void
   onSubmit: () => Promise<void>
+  onBack: () => void
   isSubmitting: boolean
   isEditMode?: boolean
   existingImages?: string[]
@@ -41,6 +42,7 @@ export default function Step3({
   formData,
   updateFormData,
   onSubmit,
+  onBack,
   isSubmitting,
   isEditMode = false,
   existingImages = [],
@@ -327,6 +329,16 @@ export default function Step3({
               : isEditMode
                 ? "Save Changes"
                 : "Submit"}
+          </Button>
+
+          <Button
+            variant="app-secondary"
+            size="full"
+            type="button"
+            onClick={onBack}
+            disabled={isSubmitting}
+          >
+            Previous
           </Button>
 
           {/* type for this is button for now until users can save as draft */}

@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
+// import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
 import FormField from "./FormField"
 import { useState } from "react"
 import type {
@@ -363,8 +363,6 @@ export default function Step1({
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
             Next
           </p>
-
-          <img src={rightIcon} alt="" />
         </Button>
       </form>
     </div>

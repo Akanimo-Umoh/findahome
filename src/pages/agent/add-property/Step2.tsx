@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
+// import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
 import addIcon from "@/assets/agentImages/icon-add-landmarks.svg"
 import { nigerianStates } from "@/types/nigerianStates"
 import FormField from "./FormField"
@@ -17,6 +17,7 @@ type Step2Props = {
   formData: AddPropertyFormData
   updateFormData: (fields: Partial<AddPropertyFormData>) => void
   onNext: () => void
+  onBack: () => void
 }
 
 type Step2Errors = {
@@ -29,6 +30,7 @@ export default function Step2({
   formData,
   updateFormData,
   onNext,
+  onBack,
 }: Step2Props) {
   const [errors, setErrors] = useState<Step2Errors>({})
   const isApartment = formData.propertyType === "apartment"
@@ -159,17 +161,30 @@ export default function Step2({
           </FormField>
         )}
 
-        <Button
-          variant="app-primary"
-          size="full"
-          type="submit"
-          className="mt-6 ml-auto flex w-35 items-center justify-center gap-2"
-        >
-          <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
-            Next
-          </p>
-          <img src={rightIcon} alt="" />
-        </Button>
+        <div className="mt-6 flex items-center justify-between gap-4">
+          <Button
+            variant="app-secondary"
+            size="full"
+            type="button"
+            onClick={onBack}
+            className="flex w-35 items-center justify-center"
+          >
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px] md:text-[16px]">
+              Previous
+            </p>
+          </Button>
+
+          <Button
+            variant="app-primary"
+            size="full"
+            type="submit"
+            className="flex w-35 items-center justify-center gap-2"
+          >
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white md:text-[16px]">
+              Next
+            </p>
+          </Button>
+        </div>
       </form>
     </div>
   )
