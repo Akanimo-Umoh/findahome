@@ -2,33 +2,16 @@ import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import { useMemo } from "react"
+import type { Property } from "@/types/property"
 
-export type AgentListing = {
-  _id: string
-  title: string
-  price: number
-  address: string
-  images: string[]
-  videos: string[]
-  propertyType: "apartment" | "land"
-  listingType: string
+export type AgentListing = Property & {
   status: "approved" | "pending" | "sold" | "rejected"
-  bedroom?: number | null
-  bathroom?: number | null
-  landSize?: string | null
-  landUnit?: string | null
-  description?: string
-  inspectionFee?: number
-  serviceCharge?: number
-  nearbyPlaces?: string[]
-  createdAt: string
-  updatedAt: string
 }
 
 export function useAgentListings() {
   const { user } = useAuthContext()
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<AgentListing[]>({
     queryKey: ["agentListings", user?._id],
     queryFn: async () => {
       const res = await api.get(`/property/agent/${user!._id}`)

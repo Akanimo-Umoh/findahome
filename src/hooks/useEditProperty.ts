@@ -26,7 +26,13 @@ export function useEditProperty() {
             : formData.description,
         nearbyPlaces: formData.landmarks.filter((l) => l.trim()),
         ...(formData.propertyType === "land"
-          ? { landType: formData.landType }
+          ? {
+              landType: formData.landType,
+              landDocTitle: formData.landDocTitle,
+              landCondition: formData.landCondition,
+              landSize: formData.plotSize,
+              landUnit: formData.plotUnit,
+            }
           : {
               bedroom: formData.bedrooms,
               bathroom: formData.bathrooms,

@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { getAllProperties, getPropertyById } from "@/services/property.service"
-// import type { Property } from "@/types/property"
+import type { Property } from "@/types/property"
 
 export const useProperties = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Property[]>({
     queryKey: ["properties"],
     queryFn: async () => {
       const data = await getAllProperties()
@@ -19,7 +19,7 @@ export const useProperties = () => {
 }
 
 export const useProperty = (id: string) => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Property>({
     queryKey: ["property", id],
     queryFn: () => getPropertyById(id),
     enabled: !!id,
