@@ -106,7 +106,7 @@ export default function AgentSidebar() {
       {/* bottom — business name + logout */}
       <div className="mt-4 flex shrink-0 flex-col gap-4">
         <Link
-          to="/agent/my-profile"
+          to="/agent/profile"
           className="flex items-center gap-3 rounded-xl bg-bg-warm-section px-2 py-2"
         >
           <Avatar
