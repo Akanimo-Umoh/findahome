@@ -57,19 +57,22 @@ import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
 import { MyTransactions } from "@/pages/agent/my-transaction"
 import Chats from "@/components/shared/Chats"
-import { TransactionDetails } from "@/pages/agent/transaction-details"
+// import { TransactionDetails } from "@/pages/agent/transaction-details"
 import { MyDisputes } from "@/pages/user/dispute/my-dispute"
 // import { DisputeDetails } from "@/pages/user/dispute/dispute-detail"
 import { OpenDispute } from "@/pages/user/dispute/open-dispute"
 import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 import AgentLayout from "@/layouts/AgentLayout"
-import { ScheduleInspection } from "@/pages/agent/schedule-inspection"
 import { MyAds } from "@/pages/agent/ads/my-ads"
 import { ActiveDetails } from "@/pages/agent/ads/ad-details"
 import { ChangePassword } from "@/pages/agent/profile/change-password"
 import { AgentOnboarding } from "@/pages/agent/onboarding"
 import BlockRoleRoute from "./BlockedRoleRoute"
 import { CreateAd } from "@/pages/agent/ads/create-ad"
+import AgentTransactionDetails from "@/pages/agent/my-transaction/AgentTransactionDetails"
+import AgentVisitDetails from "@/pages/agent/my-transaction/AgentVisitDetails"
+import AgentConfirmVisit from "@/pages/agent/my-transaction/AgentConfirmVisit"
+import ScheduleInspection from "@/pages/agent/my-transaction/ScheduleInspection"
 
 export default function AppRoutes() {
   return (
@@ -213,24 +216,42 @@ export default function AppRoutes() {
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
           <Route path="/agent/my-listings" element={<MyListings />} />
           <Route path="/agent/add-property" element={<AddProperty />} />
+          <Route path="/agent/edit-property/:id" element={<AddProperty />} />
 
           {/* any cleared or confirmed route goes up */}
-          <Route path="/agent/edit-property/:id" element={<AddProperty />} />
+          <Route path="/agent/transactions" element={<MyTransactions />} />
+          <Route
+            path="/agent/transactions/:transactionId"
+            element={<AgentTransactionDetails />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/schedule-inspection"
+            element={<ScheduleInspection />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/schedule-handover"
+            element={<ScheduleInspection />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/visit"
+            element={<AgentVisitDetails />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/confirm-inspection"
+            element={<AgentConfirmVisit />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/confirm-handover"
+            element={<AgentConfirmVisit />}
+          />
+
           <Route path="/agent/create-ad" element={<CreateAd />} />
           <Route
             path="/agent/property-preview/:id"
             element={<PropertyPreview />}
           />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
-          <Route path="/agent/transactions" element={<MyTransactions />} />
-          <Route
-            path="/agent/transactions/1"
-            element={<TransactionDetails />}
-          />
-          <Route
-            path="/agent/schedule-inspection"
-            element={<ScheduleInspection />}
-          />
+
           <Route path="/agent/my-ads" element={<MyAds />} />
           <Route path="/agent/ad-details" element={<ActiveDetails />} />
           <Route path="/agent/change-password" element={<ChangePassword />} />

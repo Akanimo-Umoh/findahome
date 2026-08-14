@@ -3,6 +3,7 @@ import type { TransactionStatus } from "@/types/transactions"
 export type MockTransaction = {
   transactionId: string
   status: TransactionStatus
+  image?: string
 }
 
 export const MOCK_TRANSACTIONS: MockTransaction[] = [

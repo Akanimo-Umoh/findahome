@@ -16,6 +16,7 @@ type SuccessModalProps = {
   description: ReactNode
   primaryAction: SuccessModalAction
   secondaryAction: SuccessModalAction
+  replace?: boolean
 }
 
 export default function SuccessModal({
@@ -25,6 +26,7 @@ export default function SuccessModal({
   description,
   primaryAction,
   secondaryAction,
+  replace = false,
 }: SuccessModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -49,11 +51,15 @@ export default function SuccessModal({
 
           <div className="flex w-full flex-col gap-3">
             <Button variant="app-primary" size="full" asChild>
-              <Link to={primaryAction.to}>{primaryAction.label}</Link>
+              <Link to={primaryAction.to} replace={replace}>
+                {primaryAction.label}
+              </Link>
             </Button>
 
             <Button variant="app-secondary" size="full" asChild>
-              <Link to={secondaryAction.to}>{secondaryAction.label}</Link>
+              <Link to={secondaryAction.to} replace={replace}>
+                {secondaryAction.label}
+              </Link>
             </Button>
           </div>
         </div>

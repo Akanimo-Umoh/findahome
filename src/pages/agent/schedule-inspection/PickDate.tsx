@@ -1,3 +1,4 @@
+// PickDate.tsx — remove the max-w cap, let parent control width
 import { useState } from "react"
 import { Clock2Icon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
@@ -13,17 +14,17 @@ export default function PickDate() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
 
   return (
-    <Card className="mx-auto w-full max-w-112.5">
-      <CardContent className="mx-auto">
+    <Card className="mx-auto w-full">
+      <CardContent className="mx-auto w-full">
         <Calendar
           mode="single"
           selected={selectedDate}
           onSelect={setSelectedDate}
-          className="p-0"
+          className="w-full p-0 [&_table]:w-full"
         />
       </CardContent>
       <CardFooter className="border-t bg-card">
-        <FieldGroup>
+        <FieldGroup className="w-full">
           <Field>
             <FieldLabel htmlFor="time-from">Start Time</FieldLabel>
             <InputGroup>
