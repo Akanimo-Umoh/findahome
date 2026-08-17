@@ -1,18 +1,29 @@
 import viewsIcon from "@/assets/agentImages/icon-visibility.svg"
+import type { Ad } from "@/types/ad"
 
-export default function PerformanceOverview() {
+type PerformanceOverviewProps = {
+  ad: Ad
+}
+
+export default function PerformanceOverview({ ad }: PerformanceOverviewProps) {
+  const views = ad.views ?? 0
+  const clicks = ad.clicks ?? 0
+  const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : "0"
+  // TODO: no "leads" field in schema yet
+  const leads = 0
+
   return (
     <div>
       <p>Performance Overview</p>
 
-      <div className="grid grid-cols-2 gap-x-[21px] gap-y-2">
+      <div className="grid grid-cols-2 gap-x-5 gap-y-2">
         <div className="rounded-lg bg-bg-accent px-4 py-3">
           <div className="flex items-center gap-2">
             <img src={viewsIcon} alt="" className="h-4 w-4" />
             <p className="text-[14px] text-text-secondary">Impressions</p>
           </div>
 
-          <p className="text-[14px] font-semibold">12.5k</p>
+          <p className="text-[14px] font-semibold">{views.toLocaleString()}</p>
         </div>
 
         <div className="rounded-lg bg-bg-accent px-4 py-3">
@@ -21,7 +32,7 @@ export default function PerformanceOverview() {
             <p className="text-[14px] text-text-secondary">Clicks</p>
           </div>
 
-          <p className="text-[14px] font-semibold">432</p>
+          <p className="text-[14px] font-semibold">{clicks.toLocaleString()}</p>
         </div>
 
         <div className="rounded-lg bg-bg-accent px-4 py-3">
@@ -30,7 +41,7 @@ export default function PerformanceOverview() {
             <p className="text-[14px] text-text-secondary">CTR</p>
           </div>
 
-          <p className="text-[14px] font-semibold">3.5%</p>
+          <p className="text-[14px] font-semibold">{ctr}%</p>
         </div>
 
         <div className="rounded-lg bg-bg-accent px-4 py-3">
@@ -39,7 +50,7 @@ export default function PerformanceOverview() {
             <p className="text-[14px] text-text-secondary">Leads</p>
           </div>
 
-          <p className="text-[14px] font-semibold">20</p>
+          <p className="text-[14px] font-semibold">{leads}</p>
         </div>
       </div>
     </div>

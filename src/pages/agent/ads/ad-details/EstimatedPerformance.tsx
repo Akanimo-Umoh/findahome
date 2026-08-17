@@ -1,6 +1,18 @@
 import viewsIcon from "@/assets/agentImages/icon-visibility.svg"
+import type { Ad } from "@/types/ad"
 
-export default function EstimatedPerformance() {
+type EstimatedPerformanceProps = {
+  ad: Ad
+}
+
+export default function EstimatedPerformance({
+  ad,
+}: EstimatedPerformanceProps) {
+  const reachMin = Math.round(ad.adBudget * 0.6)
+  const reachMax = Math.round(ad.adBudget * 2)
+  const clickMin = Math.round(ad.adBudget * 0.03)
+  const clickMax = Math.round(ad.adBudget * 0.06)
+
   return (
     <div>
       <div className="mt-8">
@@ -13,10 +25,9 @@ export default function EstimatedPerformance() {
               <p className="text-[14px] text-text-secondary">Est. Views</p>
             </div>
 
-            <p className="text-[14px]">2.5k - 4.8k</p>
-
-            {/* progress bar */}
-            <div>{/* blue progress and white track h-1 rounded-xl */}</div>
+            <p className="text-[14px]">
+              {reachMin.toLocaleString()} - {reachMax.toLocaleString()}
+            </p>
           </div>
 
           <div className="rounded-lg bg-bg-accent px-4 py-3">
@@ -25,10 +36,9 @@ export default function EstimatedPerformance() {
               <p className="text-[14px] text-text-secondary">Est. Views</p>
             </div>
 
-            <p className="text-[14px]">120 -260</p>
-
-            {/* progress bar */}
-            <div>{/* blue progress and white track h-1 rounded-xl */}</div>
+            <p className="text-[14px]">
+              {clickMin.toLocaleString()} - {clickMax.toLocaleString()}
+            </p>
           </div>
         </div>
       </div>

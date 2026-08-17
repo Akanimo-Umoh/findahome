@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -7,13 +7,57 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import blackNaira from "@/assets/agentImages/icon-black-naira.svg"
-import type { DateRange } from "@/types/ads"
-import { adsStatsData } from "./MockData"
+import { useAgentAds } from "@/hooks/useAgentAds"
+
+type DateRange = "this-week" | "this-month" | "last-30-days" | "this-year"
+
+function isWithinRange(dateString: string, range: DateRange): boolean {
+  const date = new Date(dateString)
+  const now = new Date()
+
+  switch (range) {
+    case "this-week": {
+      const startOfWeek = new Date(now)
+      startOfWeek.setDate(now.getDate() - now.getDay())
+      startOfWeek.setHours(0, 0, 0, 0)
+      return date >= startOfWeek
+    }
+    case "this-month": {
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+      return date >= startOfMonth
+    }
+    case "last-30-days": {
+      const thirtyDaysAgo = new Date(now)
+      thirtyDaysAgo.setDate(now.getDate() - 30)
+      return date >= thirtyDaysAgo
+    }
+    case "this-year": {
+      const startOfYear = new Date(now.getFullYear(), 0, 1)
+      return date >= startOfYear
+    }
+  }
+}
 
 export default function AdsOverview() {
   const [range, setRange] = useState<DateRange>("this-month")
+  const { ads } = useAgentAds()
 
-  const stats = adsStatsData[range]
+  console.log("ads:", ads)
+
+  const stats = useMemo(() => {
+    const inRange = ads.filter((ad) => isWithinRange(ad.createdAt, range))
+
+    const totalAdsRun = inRange.length
+    const activeAds = inRange.filter((ad) => ad.status === "active").length
+    const amountSpent = inRange.reduce((sum, ad) => sum + (ad.spent ?? 0), 0)
+
+    const totalViews = inRange.reduce((sum, ad) => sum + (ad.views ?? 0), 0)
+    const totalClicks = inRange.reduce((sum, ad) => sum + (ad.clicks ?? 0), 0)
+    const ctr =
+      totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(1) : "0"
+
+    return { totalAdsRun, activeAds, amountSpent, ctr }
+  }, [ads, range])
 
   return (
     <div className="space-y-2">

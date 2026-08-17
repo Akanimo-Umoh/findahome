@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { useAgentListings, type AgentListing } from "@/hooks/useAgentListings"
 import Spinner from "@/components/Spinner"
 import nairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
+import { useAgentAds } from "@/hooks/useAgentAds"
 
 type PropertySelectorModalProps = {
   isOpen: boolean
@@ -14,10 +15,32 @@ export default function PropertySelectorModal({
   onClose,
   onSelect,
 }: PropertySelectorModalProps) {
-  const { listings, isLoading, error } = useAgentListings()
+  const {
+    listings,
+    isLoading: isLoadingListings,
+    error: listingsError,
+  } = useAgentListings()
+  const { ads, isLoading: isLoadingAds } = useAgentAds()
 
-  const activeListings = listings.filter(
-    (listing) => listing.status === "approved"
+  const isLoading = isLoadingListings || isLoadingAds
+  const error = listingsError
+
+  // properties that already have a non-completed/non-rejected ad running
+  // (i.e. still occupying the "one active ad per property" slot)
+  const advertisedPropertyIds = new Set(
+    ads
+      .filter(
+        (ad) =>
+          ad.status === "pending" ||
+          ad.status === "active" ||
+          ad.status === "paused"
+      )
+      .map((ad) => ad.property._id)
+  )
+
+  const eligibleListings = listings.filter(
+    (listing) =>
+      listing.status === "approved" && !advertisedPropertyIds.has(listing._id)
   )
 
   const handleSelect = (property: AgentListing) => {
@@ -45,30 +68,26 @@ export default function PropertySelectorModal({
             </p>
           )}
 
-          {!isLoading && !error && activeListings.length === 0 && (
+          {!isLoading && !error && eligibleListings.length === 0 && (
             <p className="py-10 text-center text-[14px] text-text-secondary">
               You don't have any active listings yet.
             </p>
           )}
 
-          {!isLoading && !error && activeListings.length > 0 && (
+          {!isLoading && !error && eligibleListings.length > 0 && (
             <div className="flex flex-col gap-3">
-              {activeListings.map((property) => (
+              {eligibleListings.map((property) => (
                 <button
                   key={property._id}
                   type="button"
                   onClick={() => handleSelect(property)}
                   className="flex cursor-pointer items-center gap-3 rounded-xl border border-bg-accent p-2 text-left transition-colors hover:border-button-bg"
                 >
-                  {property.images?.[0] ? (
-                    <img
-                      src={property.images[0]}
-                      alt={property.title}
-                      className="h-16 w-16 shrink-0 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <div className="h-16 w-16 shrink-0 rounded-lg bg-bg-accent" />
-                  )}
+                  <img
+                    src={property.images?.[0]}
+                    alt={property.title}
+                    className="h-16 w-16 shrink-0 rounded-lg object-cover"
+                  />
 
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-1 text-[13px] font-semibold">

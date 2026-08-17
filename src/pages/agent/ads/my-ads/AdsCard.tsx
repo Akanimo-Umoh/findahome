@@ -1,87 +1,15 @@
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import visibilityIcon from "@/assets/agentImages/icon-eye.svg"
-import propertyImg from "@/assets/images/property.jpg"
 import trendIcon from "@/assets/agentImages/icon-trend-up.svg"
 import rightArrow from "@/assets/agentImages/icon-blue-right-arrow.svg"
 import greyNaira from "@/assets/agentImages/icon-grey-naira.svg"
 import clicksIcon from "@/assets/agentImages/icon-clicks.svg"
 import { Link } from "react-router-dom"
+import type { Ad, AdStatus } from "@/types/ad"
+import { useAgentAds } from "@/hooks/useAgentAds"
+import Spinner from "@/components/Spinner"
 
-type AdStatus = "active" | "pending" | "paused" | "completed"
 type FilterStatus = "all" | AdStatus
-
-interface Ad {
-  id: number
-  status: AdStatus
-  title: string
-  views: number
-  clicks: number
-  ctr: string
-  lastUpdated: string
-  spent: number
-  budget: number
-  pauseReason?: "budget" | "manual"
-}
-
-const ads: Ad[] = [
-  {
-    id: 1,
-    status: "active",
-    title: "3 Bed-room Apartment, Lekki phase 1",
-    views: 2800,
-    clicks: 500,
-    ctr: "8.3%",
-    lastUpdated: "2hrs ago",
-    spent: 3000,
-    budget: 10000,
-  },
-  {
-    id: 2,
-    status: "pending",
-    title: "3 Bed-room Apartment, Lekki phase 1",
-    views: 0,
-    clicks: 0,
-    ctr: "0%",
-    lastUpdated: "2hrs ago",
-    spent: 0,
-    budget: 10000,
-  },
-  {
-    id: 3,
-    status: "paused",
-    title: "3 Bed-room Apartment, Lekki phase 1",
-    views: 2800,
-    clicks: 500,
-    ctr: "8.3%",
-    lastUpdated: "2hrs ago",
-    spent: 3000,
-    budget: 10000,
-    pauseReason: "budget",
-  },
-  {
-    id: 4,
-    status: "paused",
-    title: "3 Bed-room Apartment, Lekki phase 1",
-    views: 2800,
-    clicks: 500,
-    ctr: "8.3%",
-    lastUpdated: "2hrs ago",
-    spent: 3000,
-    budget: 10000,
-    pauseReason: "manual",
-  },
-  {
-    id: 5,
-    status: "completed",
-    title: "3 Bed-room Apartment, Lekki phase 1",
-    views: 2800,
-    clicks: 500,
-    ctr: "8.3%",
-    lastUpdated: "2hrs ago",
-    spent: 3000,
-    budget: 10000,
-  },
-]
 
 const statusConfig: Record<
   AdStatus,
@@ -95,6 +23,7 @@ const statusConfig: Record<
     bg: "bg-button-sec",
     text: "text-text-primary",
   },
+  rejected: { label: "Rejected", bg: "bg-[#D02727]", text: "text-bg-tertiary" },
 }
 
 const filters: { label: string; value: FilterStatus }[] = [
@@ -103,23 +32,41 @@ const filters: { label: string; value: FilterStatus }[] = [
   { label: "Paused", value: "paused" },
   { label: "Completed", value: "completed" },
   { label: "Pending", value: "pending" },
+  { label: "Rejected", value: "rejected" },
 ]
+
+function formatRelativeTime(dateString: string) {
+  const diffMs = Date.now() - new Date(dateString).getTime()
+  const diffHrs = Math.floor(diffMs / (1000 * 60 * 60))
+  if (diffHrs < 1) return "Just now"
+  if (diffHrs < 24) return `${diffHrs}hr${diffHrs > 1 ? "s" : ""} ago`
+  const diffDays = Math.floor(diffHrs / 24)
+  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`
+}
 
 function AdCard({ ad }: { ad: Ad }) {
   const { label, bg, text } = statusConfig[ad.status]
   const showStats = ad.status !== "pending"
+  const spent = ad.spent ?? 0
+  const views = ad.views ?? 0
+  const clicks = ad.clicks ?? 0
+  const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : "0"
 
   return (
     <Link
-      to="/agent/ad-details"
+      to={`/agent/ad-details/${ad._id}`}
       className="flex items-center justify-between gap-4 rounded-lg border border-bg-accent p-2"
     >
-      <img src={propertyImg} alt="" className="h-15 w-15 rounded-lg" />
+      <img
+        src={ad.property.images?.[0]}
+        alt={ad.property.title}
+        className="h-15 w-15 rounded-lg object-cover"
+      />
 
       <div className="flex w-full flex-col gap-2">
         <div className="flex items-start justify-between">
           <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px]">
-            {ad.title}
+            {ad.property.title}
           </p>
           <p
             className={`text-[12px] leading-4 ${bg} ${text} shrink-0 rounded-2xl px-3 py-1 text-center`}
@@ -134,40 +81,40 @@ function AdCard({ ad }: { ad: Ad }) {
               <div className="flex items-center gap-1">
                 <img src={visibilityIcon} alt="" />
                 <p className="text-[12px] leading-4 text-text-secondary">
-                  {ad.views.toLocaleString()}
+                  {views.toLocaleString()}
                 </p>
               </div>
               <div className="flex items-center gap-1">
                 <img src={clicksIcon} alt="" />
                 <p className="text-[12px] leading-4 text-text-secondary">
-                  {ad.clicks.toLocaleString()}
+                  {clicks.toLocaleString()}
                 </p>
               </div>
               <div className="flex items-center gap-1">
                 <img src={trendIcon} alt="" />
                 <p className="text-[12px] leading-4 text-text-secondary">
-                  {ad.ctr}
+                  {ctr}%
                 </p>
               </div>
             </div>
           )}
 
           <p className="text-[12px] leading-4 text-text-secondary">
-            Last updated: {ad.lastUpdated}
+            Last updated: {formatRelativeTime(ad.createdAt)}
           </p>
 
           <div className="flex items-center gap-1">
             <div className="flex items-center justify-center">
               <img src={greyNaira} alt="" />
               <p className="text-[12px] leading-4 text-text-secondary">
-                {ad.spent.toLocaleString()}
+                {spent.toLocaleString()}
               </p>
             </div>
             <p className="text-[12px] leading-4 text-text-secondary">/</p>
             <div className="flex items-center justify-center">
               <img src={greyNaira} alt="" />
               <p className="text-[12px] leading-4 text-text-secondary">
-                {ad.budget.toLocaleString()}
+                {ad.adBudget.toLocaleString()}
               </p>
             </div>
           </div>
@@ -176,6 +123,14 @@ function AdCard({ ad }: { ad: Ad }) {
             <p className="text-[12px] leading-4 text-button-bg">View Details</p>
             <img src={rightArrow} alt="" />
           </div>
+
+          {/* {ad.status === "paused" && (
+            <p className="text-[12px] leading-4 text-[#D02727]">
+              {ad.pauseReason === "budget"
+                ? "Budget limit reached. Add funds to resume"
+                : "You paused this ad."}
+            </p>
+          )} */}
 
           {ad.status === "paused" && (
             <p className="text-[12px] leading-4 text-[#D02727]">
@@ -192,20 +147,39 @@ function AdCard({ ad }: { ad: Ad }) {
 
 export default function AdsCard() {
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all")
-  const activeRef = useRef<HTMLButtonElement | null>(null)
+  const { ads, isLoading, error } = useAgentAds()
 
   const filtered =
     activeFilter === "all"
       ? ads
       : ads.filter((ad) => ad.status === activeFilter)
 
-  useEffect(() => {
-    activeRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    })
-  }, [activeFilter])
+  if (isLoading) {
+    return (
+      <div className="mt-10">
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <p className="mt-10 text-center text-[14px] text-text-secondary">
+        {error}
+      </p>
+    )
+  }
+
+  if (ads.length === 0) {
+    return (
+      <div className="mt-10 flex flex-col items-center justify-center gap-2 text-center">
+        <p className="text-[14px] font-semibold">No ads yet</p>
+        <p className="max-w-70 text-[12px] leading-4 text-text-secondary">
+          Create your first ad campaign to boost visibility for your listings.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -214,7 +188,6 @@ export default function AdsCard() {
         {filters.map(({ label, value }) => (
           <button
             key={value}
-            ref={activeFilter === value ? activeRef : null}
             onClick={() => setActiveFilter(value)}
             className={`shrink-0 cursor-pointer px-2 py-1 transition-colors duration-300 ${
               activeFilter === value
@@ -231,10 +204,10 @@ export default function AdsCard() {
       <div className="mt-5 space-y-6">
         {filtered.length === 0 ? (
           <p className="mt-10 text-center text-[14px] text-text-secondary">
-            No ads found.
+            No {activeFilter} ads found.
           </p>
         ) : (
-          filtered.map((ad) => <AdCard key={ad.id} ad={ad} />)
+          filtered.map((ad) => <AdCard key={ad._id} ad={ad} />)
         )}
       </div>
     </div>

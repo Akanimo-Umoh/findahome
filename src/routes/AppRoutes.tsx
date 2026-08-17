@@ -64,7 +64,6 @@ import { OpenDispute } from "@/pages/user/dispute/open-dispute"
 import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 import AgentLayout from "@/layouts/AgentLayout"
 import { MyAds } from "@/pages/agent/ads/my-ads"
-import { ActiveDetails } from "@/pages/agent/ads/ad-details"
 import { ChangePassword } from "@/pages/agent/profile/change-password"
 import { AgentOnboarding } from "@/pages/agent/onboarding"
 import BlockRoleRoute from "./BlockedRoleRoute"
@@ -73,6 +72,10 @@ import AgentTransactionDetails from "@/pages/agent/my-transaction/AgentTransacti
 import AgentVisitDetails from "@/pages/agent/my-transaction/AgentVisitDetails"
 import AgentConfirmVisit from "@/pages/agent/my-transaction/AgentConfirmVisit"
 import ScheduleInspection from "@/pages/agent/my-transaction/ScheduleInspection"
+import AdPreview from "@/pages/agent/ads/create-ad/AdPreview"
+import AdPaymentSummary from "@/pages/agent/ads/create-ad/AdPaymentSummary"
+import AdCampaignConfirmed from "@/pages/agent/ads/create-ad/AdCampaignConfirmed"
+import { AdDetails } from "@/pages/agent/ads/ad-details"
 
 export default function AppRoutes() {
   return (
@@ -219,6 +222,19 @@ export default function AppRoutes() {
           <Route path="/agent/edit-property/:id" element={<AddProperty />} />
 
           {/* any cleared or confirmed route goes up */}
+          <Route path="/agent/my-ads" element={<MyAds />} />
+          <Route path="/agent/ad-details/:id" element={<AdDetails />} />
+          <Route path="/agent/create-ad" element={<CreateAd />} />
+          <Route path="/agent/ad-preview" element={<AdPreview />} />
+          <Route
+            path="/agent/ad-payment-summary"
+            element={<AdPaymentSummary />}
+          />
+          <Route
+            path="/agent/ad-campaign-confirmed"
+            element={<AdCampaignConfirmed />}
+          />
+
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
             path="/agent/transactions/:transactionId"
@@ -245,15 +261,12 @@ export default function AppRoutes() {
             element={<AgentConfirmVisit />}
           />
 
-          <Route path="/agent/create-ad" element={<CreateAd />} />
           <Route
             path="/agent/property-preview/:id"
             element={<PropertyPreview />}
           />
           <Route path="/agent/profile" element={<MyAgentProfile />} />
 
-          <Route path="/agent/my-ads" element={<MyAds />} />
-          <Route path="/agent/ad-details" element={<ActiveDetails />} />
           <Route path="/agent/change-password" element={<ChangePassword />} />
         </Route>
 

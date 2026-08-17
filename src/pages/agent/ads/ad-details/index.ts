@@ -1,1 +1,1 @@
-export { default as ActiveDetails } from "./ActiveDetails"
+export { default as AdDetails } from "./AdDetails"
