@@ -219,8 +219,6 @@ export default function AppRoutes() {
           <Route path="/agent/my-listings" element={<MyListings />} />
           <Route path="/agent/add-property" element={<AddProperty />} />
           <Route path="/agent/edit-property/:id" element={<AddProperty />} />
-
-          {/* any cleared or confirmed route goes up */}
           <Route path="/agent/my-ads" element={<MyAds />} />
           <Route path="/agent/ad-details/:id" element={<AdDetails />} />
           <Route path="/agent/create-ad" element={<CreateAd />} />
@@ -230,6 +228,7 @@ export default function AppRoutes() {
             element={<AdPaymentSummary />}
           />
 
+          {/* any cleared or confirmed route goes up */}
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
             path="/agent/transactions/:transactionId"
