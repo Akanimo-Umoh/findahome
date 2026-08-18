@@ -8,8 +8,6 @@ import BudgetSpend from "./BudgetSpend"
 import CampaignDetails from "./CampaignDetails"
 import ManageAd from "./ManageAd"
 import Tips from "./Tips"
-import CampaignSummary from "./CampaignSummary"
-import EstimatedPerformance from "./EstimatedPerformance"
 import { useAd } from "@/hooks/useAd"
 import type { AdStatus } from "@/types/ad"
 
@@ -35,24 +33,16 @@ const BANNER_CONFIG: Record<AdStatus, BannerConfig> = {
       "Your Ad is being paused, click on the continue button to continue Ad.",
   },
   pending: {
-    bg: "bg-[#D0272780]",
-    iconBg: "bg-[#D02727]",
-    title: "Your Ad is pending",
-    subtitle: "Your property is currently being reviewed by the Ad team.",
+    bg: "bg-[#4F95FF33]",
+    iconBg: "bg-[#4F95FF]",
+    title: "Ready to Launch",
+    subtitle: "Launch your ad to start promoting this listing to buyers.",
   },
   completed: {
     bg: "bg-[#F8B40080]",
     iconBg: "bg-[#F8B400]",
     title: "Your Ad is completed.",
     subtitle: "You have successfully completed this Ad campaign",
-  },
-  // TODO: confirm exact copy/color with design — placeholder for now
-  rejected: {
-    bg: "bg-[#D0272780]",
-    iconBg: "bg-[#D02727]",
-    title: "Your Ad was rejected",
-    subtitle:
-      "This campaign didn't meet our review requirements. Contact support for details.",
   },
 }
 
@@ -82,14 +72,17 @@ export default function AdDetails() {
   }
 
   const banner = BANNER_CONFIG[ad.status]
-  const showFullDetails = ad.status !== "pending" && ad.status !== "rejected"
-  const showPendingLayout = ad.status === "pending"
+  // all statuses use the full layout now, ManageAd branches internally
+  const showFullDetails = true
 
   return (
-    <div className="mx-6 mb-10 flex flex-col font-ssPro">
+    <div className="mb-10 flex flex-col md:pt-6 lg:pt-8">
       <header className="">
         <div className="relative flex items-center justify-center">
-          <button className="absolute left-0" onClick={() => navigate(-1)}>
+          <button
+            className="absolute left-0 cursor-pointer"
+            onClick={() => navigate(-1)}
+          >
             <img src={goBack} alt="" />
           </button>
           <p className="font-raleway text-[18px] font-semibold">Ad Details</p>
@@ -113,9 +106,7 @@ export default function AdDetails() {
       </div>
 
       <main className="mt-6">
-        <p>Live Ad Preview</p>
-
-        <div className="mt-4">
+        <div>
           <Preview ad={ad} />
         </div>
 
@@ -142,33 +133,7 @@ export default function AdDetails() {
             </div>
           </>
         )}
-
-        {showPendingLayout && (
-          <>
-            <div className="mt-6">
-              <p>Campaign Summary</p>
-              <div className="mt-4">
-                <CampaignSummary ad={ad} />
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <EstimatedPerformance ad={ad} />
-            </div>
-          </>
-        )}
       </main>
-
-      {showPendingLayout && (
-        <div className="mt-8">
-          <button
-            onClick={() => navigate("/agent/my-ads", { replace: true })}
-            className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
-          >
-            Go to Ads Dashboard
-          </button>
-        </div>
-      )}
     </div>
   )
 }

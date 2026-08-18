@@ -21,3 +21,8 @@ export const getAdById = async (id: string): Promise<Ad> => {
   const { data } = await api.get(`/ads/${id}`)
   return data.data
 }
+
+export const payForAd = async (id: string): Promise<Ad> => {
+  const { data } = await api.post(`/ads/${id}/pay`)
+  return data.data
+}

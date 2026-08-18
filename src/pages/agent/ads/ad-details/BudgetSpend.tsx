@@ -9,6 +9,23 @@ type BudgetSpendProps = {
 }
 
 export default function BudgetSpend({ ad }: BudgetSpendProps) {
+  if (ad.status === "pending") {
+    return (
+      <div>
+        <p>Budget & Spend</p>
+        <div className="mt-2 rounded-lg bg-bg-accent p-2">
+          <p className="text-[14px] text-text-secondary">Total Budget</p>
+          <div className="flex items-center">
+            <img src={blackNaira} alt="" className="h-4 w-4" />
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
+              {ad.adBudget.toLocaleString()}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const spent = ad.spent ?? 0
   const remaining = Math.max(ad.adBudget - spent, 0)
   const percentUsed =

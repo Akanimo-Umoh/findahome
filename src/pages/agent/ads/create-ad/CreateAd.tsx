@@ -68,7 +68,10 @@ export default function CreateAd() {
     <div className="mb-10 flex flex-col md:pt-6 lg:pt-8">
       <header className="">
         <div className="relative flex items-center justify-center">
-          <button className="absolute left-0" onClick={() => navigate(-1)}>
+          <button
+            className="absolute left-0 cursor-pointer"
+            onClick={() => navigate(-1)}
+          >
             <img src={goBack} alt="" />
           </button>
           <p className="font-raleway text-[18px] font-semibold">Create Ad</p>

@@ -74,7 +74,6 @@ import AgentConfirmVisit from "@/pages/agent/my-transaction/AgentConfirmVisit"
 import ScheduleInspection from "@/pages/agent/my-transaction/ScheduleInspection"
 import AdPreview from "@/pages/agent/ads/create-ad/AdPreview"
 import AdPaymentSummary from "@/pages/agent/ads/create-ad/AdPaymentSummary"
-import AdCampaignConfirmed from "@/pages/agent/ads/create-ad/AdCampaignConfirmed"
 import { AdDetails } from "@/pages/agent/ads/ad-details"
 
 export default function AppRoutes() {
@@ -229,10 +228,6 @@ export default function AppRoutes() {
           <Route
             path="/agent/ad-payment-summary"
             element={<AdPaymentSummary />}
-          />
-          <Route
-            path="/agent/ad-campaign-confirmed"
-            element={<AdCampaignConfirmed />}
           />
 
           <Route path="/agent/transactions" element={<MyTransactions />} />

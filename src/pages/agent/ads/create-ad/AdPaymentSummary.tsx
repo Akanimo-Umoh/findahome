@@ -9,6 +9,7 @@ import { useAdDraft } from "@/hooks/useAdDraft"
 import { createAd } from "@/services/ad.service"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import AdCreatedModal from "./AdCreatedModal"
 
 const OBJECTIVE_LABEL: Record<string, string> = {
   views: "More Views",
@@ -23,18 +24,17 @@ export default function AdPaymentSummary() {
   const navigate = useNavigate()
   const { draft, hasPropertyAndObjective, clearDraft } = useAdDraft()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [createdAdId, setCreatedAdId] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!hasPropertyAndObjective) {
+    if (!hasPropertyAndObjective && !createdAdId) {
       navigate("/agent/create-ad", { replace: true })
     }
-  }, [hasPropertyAndObjective, navigate])
+  }, [hasPropertyAndObjective, createdAdId, navigate])
 
   if (!hasPropertyAndObjective) return null
 
   const adCost = draft.dailyBudget * draft.duration
-  const amountNeeded = adCost - walletBalance
-  const hasSufficientFunds = walletBalance >= adCost
   const reachMin = Math.round(adCost * 0.6).toLocaleString()
   const reachMax = Math.round(adCost * 2).toLocaleString()
   const clickMin = Math.round(adCost * 0.03).toLocaleString()
@@ -44,13 +44,9 @@ export default function AdPaymentSummary() {
     setIsSubmitting(true)
     try {
       const ad = await createAd(draft)
-      clearDraft()
-      navigate("/agent/ad-campaign-confirmed", {
-        replace: true,
-        state: { ad, propertyTitle: draft.propertyTitle },
-      })
+      setCreatedAdId(ad._id)
     } catch (err) {
-      toast.error("Failed to launch campaign. Please try again.")
+      toast.error("Failed to create ad. Please try again.")
       console.error("createAd error:", err)
     } finally {
       setIsSubmitting(false)
@@ -154,86 +150,41 @@ export default function AdPaymentSummary() {
           </div>
         </div>
 
-        {hasSufficientFunds ? (
-          <div className="mt-8 rounded-lg bg-[#149D1814] p-4">
-            <div className="flex items-center justify-between">
-              <p className="text-[13px] text-text-secondary">Wallet Balance</p>
-              <p className="text-[13px] font-semibold">
-                ₦{walletBalance.toLocaleString()}
-              </p>
-            </div>
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-[13px] text-text-secondary">Ad cost</p>
-              <p className="text-[13px] font-semibold">
-                ₦{adCost.toLocaleString()}
-              </p>
-            </div>
-            <p className="mt-3 text-[11px] text-text-secondary">
-              Funds will be deducted as Ad progresses
+        <div className="mt-8 rounded-lg bg-[#149D1814] p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-[13px] text-text-secondary">Wallet Balance</p>
+            <p className="text-[13px] font-semibold">
+              ₦{walletBalance.toLocaleString()}
             </p>
           </div>
-        ) : (
-          <div className="mt-8 rounded-lg bg-[#D0272714] p-4">
-            <p className="text-[13px] font-semibold text-[#D02727]">
-              Insufficient Funds
-            </p>
-            <p className="mt-1 text-[12px] leading-4 text-text-secondary">
-              You don't have enough funds to launch this ad
-            </p>
-
-            <div className="mt-3 flex items-center justify-between">
-              <p className="text-[13px] text-text-secondary">Wallet Balance</p>
-              <p className="text-[13px] font-semibold">
-                ₦{walletBalance.toLocaleString()}
-              </p>
-            </div>
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-[13px] text-text-secondary">Ad cost</p>
-              <p className="text-[13px] font-semibold">
-                ₦{adCost.toLocaleString()}
-              </p>
-            </div>
-            <div className="mt-2 flex items-center justify-between">
-              <p className="text-[13px] font-semibold text-[#D02727]">
-                Amount Needed
-              </p>
-              <p className="text-[13px] font-semibold text-[#D02727]">
-                ₦{amountNeeded.toLocaleString()}
-              </p>
-            </div>
-
-            <p className="mt-3 text-[11px] text-text-secondary">
-              Please top up your wallet to continue
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-[13px] text-text-secondary">Ad cost</p>
+            <p className="text-[13px] font-semibold">
+              ₦{adCost.toLocaleString()}
             </p>
           </div>
-        )}
+          <p className="mt-3 text-[11px] text-text-secondary">
+            Funds will be deducted once your ad is launched
+          </p>
+        </div>
 
-        <div className="mt-8 flex flex-col gap-4">
-          {hasSufficientFunds ? (
-            <button
-              onClick={handleRunAd}
-              disabled={isSubmitting}
-              className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white disabled:opacity-50"
-            >
-              {isSubmitting ? "Launching..." : "Run Ad"}
-            </button>
-          ) : (
-            <>
-              <Button variant="app-primary" size="full" disabled>
-                Top-up Wallet
-              </Button>
-
-              <Button
-                variant="app-secondary"
-                size="full"
-                onClick={() => navigate("/agent/create-ad")}
-              >
-                Edit Ad setup
-              </Button>
-            </>
-          )}
+        <div className="mt-8 flex flex-col">
+          <Button
+            variant="app-primary"
+            size="full"
+            onClick={handleRunAd}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creating..." : "Create Ad"}
+          </Button>
         </div>
       </main>
+
+      <AdCreatedModal
+        open={!!createdAdId}
+        adId={createdAdId ?? ""}
+        onNavigate={clearDraft}
+      />
     </div>
   )
 }

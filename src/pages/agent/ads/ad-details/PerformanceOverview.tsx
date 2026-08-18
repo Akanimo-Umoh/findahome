@@ -6,6 +6,19 @@ type PerformanceOverviewProps = {
 }
 
 export default function PerformanceOverview({ ad }: PerformanceOverviewProps) {
+  if (ad.status === "pending") {
+    return (
+      <div>
+        <p>Performance Overview</p>
+        <div className="rounded-lg bg-bg-accent px-4 py-3 text-center">
+          <p className="text-[13px] text-text-secondary">
+            Performance data will appear here once your ad is live.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   const views = ad.views ?? 0
   const clicks = ad.clicks ?? 0
   const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : "0"

@@ -38,10 +38,17 @@ export default function PropertySelectorModal({
       .map((ad) => ad.property._id)
   )
 
-  const eligibleListings = listings.filter(
-    (listing) =>
-      listing.status === "approved" && !advertisedPropertyIds.has(listing._id)
+  const approvedListings = listings.filter(
+    (listing) => listing.status === "approved"
   )
+
+  const eligibleListings = approvedListings.filter(
+    (listing) => !advertisedPropertyIds.has(listing._id)
+  )
+
+  const hasNoApprovedListings = approvedListings.length === 0
+  const allListingsAlreadyAdvertised =
+    approvedListings.length > 0 && eligibleListings.length === 0
 
   const handleSelect = (property: AgentListing) => {
     onSelect(property)
@@ -68,9 +75,16 @@ export default function PropertySelectorModal({
             </p>
           )}
 
-          {!isLoading && !error && eligibleListings.length === 0 && (
+          {!isLoading && !error && hasNoApprovedListings && (
             <p className="py-10 text-center text-[14px] text-text-secondary">
               You don't have any active listings yet.
+            </p>
+          )}
+
+          {!isLoading && !error && allListingsAlreadyAdvertised && (
+            <p className="py-10 text-center text-[14px] text-text-secondary">
+              All your listings already have an ad running. Pause or finish an
+              existing campaign to advertise a different property.
             </p>
           )}
 

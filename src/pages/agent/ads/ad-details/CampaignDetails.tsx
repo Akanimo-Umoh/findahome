@@ -1,5 +1,5 @@
 import type { Ad } from "@/types/ad"
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 const OBJECTIVE_LABEL: Record<string, string> = {
   views: "More Views",
@@ -12,11 +12,7 @@ type CampaignDetailsProps = {
 }
 
 export default function CampaignDetails({ ad }: CampaignDetailsProps) {
-  const [now, setNow] = useState<number | null>(null)
-
-  useEffect(() => {
-    setNow(Date.now())
-  }, [])
+  const [now] = useState(() => Date.now())
 
   const { daysLeft, formattedStartDate } = useMemo(() => {
     const startDate = new Date(ad.createdAt)

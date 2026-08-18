@@ -16,14 +16,13 @@ const statusConfig: Record<
   { label: string; bg: string; text: string }
 > = {
   active: { label: "Active", bg: "bg-success", text: "text-bg-tertiary" },
-  pending: { label: "Pending", bg: "bg-[#D02727]", text: "text-bg-tertiary" },
+  pending: { label: "Pending", bg: "bg-[#4F95FF]", text: "text-bg-tertiary" },
   paused: { label: "Paused", bg: "bg-[#F8B400]", text: "text-text-primary" },
   completed: {
     label: "Completed",
     bg: "bg-button-sec",
     text: "text-text-primary",
   },
-  rejected: { label: "Rejected", bg: "bg-[#D02727]", text: "text-bg-tertiary" },
 }
 
 const filters: { label: string; value: FilterStatus }[] = [
@@ -32,7 +31,6 @@ const filters: { label: string; value: FilterStatus }[] = [
   { label: "Paused", value: "paused" },
   { label: "Completed", value: "completed" },
   { label: "Pending", value: "pending" },
-  { label: "Rejected", value: "rejected" },
 ]
 
 function formatRelativeTime(dateString: string) {

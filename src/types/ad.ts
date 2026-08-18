@@ -1,10 +1,5 @@
 export type AdObjective = "views" | "leads" | "sales"
-export type AdStatus =
-  | "pending"
-  | "active"
-  | "paused"
-  | "completed"
-  | "rejected"
+export type AdStatus = "pending" | "active" | "paused" | "completed"
 export type PauseReason = "budget" | "manual"
 
 export type Ad = {
@@ -30,9 +25,7 @@ export type Ad = {
   isPaid: boolean
   paymentReference: string | null
   createdAt: string
-  // TODO: not in schema yet — needed for the "paused" pill's message
   pauseReason?: PauseReason
-  // TODO: confirm exact field names for these once analytics/tracking exists on the backend
   views?: number
   clicks?: number
   spent?: number
@@ -48,5 +41,4 @@ export type AdDraft = {
   duration: number
 }
 
-// kept for backward compat with AdCampaignConfirmed — same shape as Ad
 export type CreatedAd = Ad

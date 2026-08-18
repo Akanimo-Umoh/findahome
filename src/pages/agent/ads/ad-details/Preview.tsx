@@ -20,7 +20,7 @@ export default function Preview({ ad }: PreviewProps) {
         <img
           src={ad.property.images?.[0]}
           alt={ad.property.title}
-          className="h-75 rounded-xl object-cover"
+          className="h-75 w-full rounded-xl object-cover"
         />
 
         <p className="absolute top-0 left-0 rounded-xl bg-button-bg px-2 py-1 font-raleway text-[14px] font-semibold tracking-[1px] text-white">
