@@ -1,5 +1,5 @@
 import api from "./api"
-import type { Ad, AdDraft } from "@/types/ad"
+import type { Ad, AdDraft, AdObjective } from "@/types/ad"
 
 export const createAd = async (draft: AdDraft): Promise<Ad> => {
   const { data } = await api.post("/ads", {
@@ -24,5 +24,22 @@ export const getAdById = async (id: string): Promise<Ad> => {
 
 export const payForAd = async (id: string): Promise<Ad> => {
   const { data } = await api.post(`/ads/${id}/pay`)
+  return data.data
+}
+
+type UpdateAdFields = Partial<{
+  objective: AdObjective
+  dailyBudget: number
+  duration: number
+  adBudget: number
+  status: "active" | "paused"
+  pauseReason: "budget" | "manual"
+}>
+
+export const updateAd = async (
+  id: string,
+  fields: UpdateAdFields
+): Promise<Ad> => {
+  const { data } = await api.patch(`/ads/${id}`, fields)
   return data.data
 }
