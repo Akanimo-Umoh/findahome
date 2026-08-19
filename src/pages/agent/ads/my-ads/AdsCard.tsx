@@ -98,7 +98,7 @@ function AdCard({ ad }: { ad: Ad }) {
           )}
 
           <p className="text-[12px] leading-4 text-text-secondary">
-            Last updated: {formatRelativeTime(ad.createdAt)}
+            Created: {formatRelativeTime(ad.createdAt)}
           </p>
 
           <div className="flex items-center gap-1">
