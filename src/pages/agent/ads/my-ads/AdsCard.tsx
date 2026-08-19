@@ -122,14 +122,6 @@ function AdCard({ ad }: { ad: Ad }) {
             <img src={rightArrow} alt="" />
           </div>
 
-          {/* {ad.status === "paused" && (
-            <p className="text-[12px] leading-4 text-[#D02727]">
-              {ad.pauseReason === "budget"
-                ? "Budget limit reached. Add funds to resume"
-                : "You paused this ad."}
-            </p>
-          )} */}
-
           {ad.status === "paused" && (
             <p className="text-[12px] leading-4 text-[#D02727]">
               {ad.pauseReason === "budget"

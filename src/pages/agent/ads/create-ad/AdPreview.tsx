@@ -162,7 +162,7 @@ export default function AdPreview() {
             size="full"
             onClick={() => navigate("/agent/ad-payment-summary")}
           >
-            Launch Campaign
+            Create Ad
           </Button>
         </div>
       </main>

@@ -75,6 +75,7 @@ import ScheduleInspection from "@/pages/agent/my-transaction/ScheduleInspection"
 import AdPreview from "@/pages/agent/ads/create-ad/AdPreview"
 import AdPaymentSummary from "@/pages/agent/ads/create-ad/AdPaymentSummary"
 import { AdDetails } from "@/pages/agent/ads/ad-details"
+import { EditAd } from "@/pages/agent/ads/edit-ad"
 
 export default function AppRoutes() {
   return (
@@ -229,6 +230,8 @@ export default function AppRoutes() {
           />
 
           {/* any cleared or confirmed route goes up */}
+          <Route path="/agent/edit-ad/:id" element={<EditAd />} />
+
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
             path="/agent/transactions/:transactionId"

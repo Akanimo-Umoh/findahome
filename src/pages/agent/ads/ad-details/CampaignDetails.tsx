@@ -58,11 +58,6 @@ export default function CampaignDetails({ ad }: CampaignDetailsProps) {
           <p className="text-[14px] text-text-secondary">Start Date</p>
           <p className="text-[14px]">{formattedStartDate}</p>
         </div>
-
-        <div className="flex items-center justify-between">
-          <p className="text-[14px] text-text-secondary">Target Location</p>
-          <p className="text-[14px]">Enugu, Lagos</p>
-        </div>
       </div>
     </div>
   )

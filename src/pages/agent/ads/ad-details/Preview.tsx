@@ -54,7 +54,7 @@ export default function Preview({ ad }: PreviewProps) {
             onClick={() =>
               navigate(`/agent/property-preview/${ad.property._id}`)
             }
-            className="rounded-lg border border-button-bg p-2 font-raleway text-[14px] font-semibold tracking-[1px]"
+            className="cursor-pointer rounded-lg border border-button-bg p-2 font-raleway text-[14px] font-semibold tracking-[1px]"
           >
             View Listing
           </button>
