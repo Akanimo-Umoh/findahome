@@ -30,7 +30,7 @@ const BANNER_CONFIG: Record<AdStatus, BannerConfig> = {
     iconBg: "bg-[#F8B400]",
     title: "You paused this Ad",
     subtitle:
-      "Your Ad is being paused, click on the continue button to continue Ad.",
+      "Your Ad is being paused, click on the resume button to continue Ad.",
   },
   pending: {
     bg: "bg-[#4F95FF33]",
