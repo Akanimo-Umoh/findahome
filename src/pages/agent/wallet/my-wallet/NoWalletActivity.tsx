@@ -1,9 +1,9 @@
-import walletHand from "@/assets/agentImages/img-hand-holding-wallet.png"
+// import walletHand from "@/assets/agentImages/img-hand-holding-wallet.png"
 
 export default function NoWalletActivity() {
   return (
     <div className="flex flex-col items-center justify-center">
-      <img src={walletHand} alt="" />
+      {/* <img src={walletHand} alt="" /> */}
 
       <div className="mt-6 flex max-w-66 flex-col items-center justify-center gap-2">
         <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
