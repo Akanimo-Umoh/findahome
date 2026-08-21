@@ -76,6 +76,13 @@ import AdPreview from "@/pages/agent/ads/create-ad/AdPreview"
 import AdPaymentSummary from "@/pages/agent/ads/create-ad/AdPaymentSummary"
 import { AdDetails } from "@/pages/agent/ads/ad-details"
 import { EditAd } from "@/pages/agent/ads/edit-ad"
+import { MyWallet } from "@/pages/agent/wallet/my-wallet"
+import { ManageAccount } from "@/pages/agent/wallet/manage-account"
+import { AddAccount } from "@/pages/agent/wallet/add-account"
+import {
+  ReviewWithdrawal,
+  WithdrawFunds,
+} from "@/pages/agent/wallet/withdraw-funds"
 
 export default function AppRoutes() {
   return (
@@ -228,9 +235,18 @@ export default function AppRoutes() {
             path="/agent/ad-payment-summary"
             element={<AdPaymentSummary />}
           />
+          <Route path="/agent/edit-ad/:id" element={<EditAd />} />
 
           {/* any cleared or confirmed route goes up */}
-          <Route path="/agent/edit-ad/:id" element={<EditAd />} />
+
+          <Route path="/agent/wallet" element={<MyWallet />} />
+          <Route path="/agent/manage-account" element={<ManageAccount />} />
+          <Route path="/agent/add-account" element={<AddAccount />} />
+          <Route path="/agent/withdraw-funds" element={<WithdrawFunds />} />
+          <Route
+            path="/agent/review-withdrawal"
+            element={<ReviewWithdrawal />}
+          />
 
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route

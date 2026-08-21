@@ -2,16 +2,49 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import pauseIcon from "@/assets/agentImages/icon-pause-ad.svg"
+import resumeIcon from "@/assets/agentImages/icon-resume-ad.svg"
 import editIcon from "@/assets/agentImages/icon-edit-ad.svg"
 import extendIcon from "@/assets/agentImages/icon-magnifying-glass.svg"
-import pauseIcon from "@/assets/agentImages/icon-pause-ad.svg"
 import { payForAd, updateAd } from "@/services/ad.service"
 import type { Ad } from "@/types/ad"
-import ExtendAdModal from "./ExtendAdModal"
 import PauseAdDialog from "./PauseAdDialog"
+import { Button } from "@/components/ui/button"
 
 type ManageAdProps = {
   ad: Ad
+}
+
+// single shared button shape — change styling here once, it applies everywhere
+function ManageAdActionButton({
+  icon,
+  iconBg,
+  label,
+  onClick,
+  disabled = false,
+}: {
+  icon: string
+  iconBg: string
+  label: string
+  onClick: () => void
+  disabled?: boolean
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="flex w-fit cursor-pointer items-center gap-3 rounded-xl border border-bg-accent bg-button-sec px-4 py-3 text-left transition-colors hover:bg-bg-accent disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <div
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${iconBg}`}
+      >
+        <img src={icon} alt="" className="h-4 w-4" />
+      </div>
+
+      <p className="text-[14px] font-semibold text-text-primary">{label}</p>
+    </button>
+  )
 }
 
 export default function ManageAd({ ad }: ManageAdProps) {
@@ -19,7 +52,6 @@ export default function ManageAd({ ad }: ManageAdProps) {
   const queryClient = useQueryClient()
   const [isLaunching, setIsLaunching] = useState(false)
   const [isTogglingPause, setIsTogglingPause] = useState(false)
-  const [isExtendModalOpen, setIsExtendModalOpen] = useState(false)
   const [isPauseDialogOpen, setIsPauseDialogOpen] = useState(false)
 
   const handleLaunch = async () => {
@@ -64,99 +96,62 @@ export default function ManageAd({ ad }: ManageAdProps) {
 
   const handlePauseButtonClick = () => {
     if (ad.status === "paused") {
-      runPauseToggle("active") // resume — no confirmation needed
+      runPauseToggle("active")
     } else {
-      setIsPauseDialogOpen(true) // pause — confirm first
+      setIsPauseDialogOpen(true)
     }
-  }
-
-  const handleEditBudget = () => {
-    if (ad.isPaid) {
-      toast.error("This ad has already been paid for and can't be edited.")
-      return
-    }
-    navigate(`/agent/edit-ad/${ad._id}`)
-  }
-
-  const handleExtend = () => {
-    if (ad.isPaid) {
-      toast.error("This ad has already been paid for and can't be extended.")
-      return
-    }
-    setIsExtendModalOpen(true)
-  }
-
-  if (ad.status === "pending") {
-    return (
-      <div>
-        <p>Manage Ad</p>
-        <button
-          type="button"
-          onClick={handleLaunch}
-          disabled={isLaunching}
-          className="button-style mt-2 h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white disabled:opacity-50"
-        >
-          {isLaunching ? "Launching..." : "Launch Ad"}
-        </button>
-      </div>
-    )
   }
 
   return (
     <div>
       <p>Manage Ad</p>
 
-      <div className="mt-2 grid grid-cols-3 gap-5">
-        <button
-          type="button"
-          onClick={handlePauseButtonClick}
-          disabled={isTogglingPause}
-          className="manage-ad flex cursor-pointer flex-col items-center justify-center gap-1 bg-button-sec py-3 disabled:opacity-50"
-        >
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#F8B400]">
-            <img src={pauseIcon} alt="" />
-          </div>
-          <p className="text-[12px] font-semibold text-text-secondary">
-            {ad.status === "paused"
-              ? isTogglingPause
-                ? "Resuming..."
-                : "Resume Ad"
-              : "Pause Ad"}
-          </p>
-        </button>
+      <div className="mt-2 flex flex-col gap-3">
+        {ad.status === "pending" && (
+          <>
+            <ManageAdActionButton
+              icon={editIcon}
+              iconBg="bg-[#149D18]"
+              label="Edit Ad"
+              onClick={() => navigate(`/agent/edit-ad/${ad._id}`)}
+            />
+            <Button
+              variant="app-primary"
+              size="full"
+              type="button"
+              onClick={handleLaunch}
+              disabled={isLaunching}
+            >
+              {isLaunching ? "Launching..." : "Launch Ad"}
+            </Button>
+          </>
+        )}
 
-        <button
-          type="button"
-          onClick={handleEditBudget}
-          className="manage-ad flex cursor-pointer flex-col items-center justify-center gap-1 bg-button-sec py-3"
-        >
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#149D18]">
-            <img src={editIcon} alt="" />
-          </div>
-          <p className="text-[12px] font-semibold text-text-secondary">
-            Edit Budget
-          </p>
-        </button>
+        {(ad.status === "active" || ad.status === "paused") && (
+          <ManageAdActionButton
+            icon={ad.status === "paused" ? resumeIcon : pauseIcon}
+            iconBg={ad.status === "paused" ? "bg-[#149D18]" : "bg-[#F8B400]"}
+            label={
+              ad.status === "paused"
+                ? isTogglingPause
+                  ? "Resuming..."
+                  : "Resume Ad"
+                : "Pause Ad"
+            }
+            onClick={handlePauseButtonClick}
+            disabled={isTogglingPause}
+          />
+        )}
 
-        <button
-          type="button"
-          onClick={handleExtend}
-          className="manage-ad flex cursor-pointer flex-col items-center justify-center gap-1 bg-button-sec py-3"
-        >
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#4F95FF]">
-            <img src={extendIcon} alt="" />
-          </div>
-          <p className="text-[12px] font-semibold text-text-secondary">
-            Extend
-          </p>
-        </button>
+        {ad.status === "completed" && (
+          <ManageAdActionButton
+            icon={extendIcon}
+            iconBg="bg-[#4F95FF]"
+            label="Extend Campaign"
+            onClick={() => navigate(`/agent/edit-ad/${ad._id}`)}
+          />
+        )}
       </div>
-
-      <ExtendAdModal
-        ad={ad}
-        isOpen={isExtendModalOpen}
-        onClose={() => setIsExtendModalOpen(false)}
-      />
 
       <PauseAdDialog
         isOpen={isPauseDialogOpen}

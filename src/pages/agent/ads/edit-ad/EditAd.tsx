@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import Spinner from "@/components/Spinner"
 import { useAd } from "@/hooks/useAd"
-import { updateAd } from "@/services/ad.service"
+import { createAd, updateAd } from "@/services/ad.service"
 import type { AdObjective } from "@/types/ad"
 import Step2 from "../create-ad/Step2"
 import Step3 from "../create-ad/Step3"
@@ -58,8 +58,11 @@ export default function EditAd() {
     )
   }
 
-  // paid ads can't be edited — bounce back to details with an explanation
-  if (ad.isPaid) {
+  const isExtending = ad.status === "completed"
+
+  // editing a pending ad is only valid pre-payment; completed ads go through
+  // "extend" (a fresh ad), so this guard only applies to the edit path
+  if (!isExtending && ad.isPaid) {
     return (
       <div className="flex min-h-screen items-center justify-center px-6 text-center font-ssPro">
         <div>
@@ -94,19 +97,39 @@ export default function EditAd() {
 
     setIsSubmitting(true)
     try {
-      await updateAd(ad._id, {
-        objective,
-        dailyBudget,
-        duration,
-        adBudget: dailyBudget * duration,
-      })
-      queryClient.invalidateQueries({ queryKey: ["ad", ad._id] })
-      queryClient.invalidateQueries({ queryKey: ["agentAds"] })
-      toast.success("Ad updated successfully")
-      navigate(`/agent/ad-details/${ad._id}`, { replace: true })
+      if (isExtending) {
+        // extending a completed ad = creating a fresh ad for the same property
+        const newAd = await createAd({
+          propertyId: ad.property._id,
+          propertyTitle: ad.property.title,
+          propertyImage: ad.property.images?.[0] ?? null,
+          propertyPrice: ad.property.price,
+          objective,
+          dailyBudget,
+          duration,
+        })
+        queryClient.invalidateQueries({ queryKey: ["agentAds"] })
+        toast.success("New campaign created — launch it when you're ready")
+        navigate(`/agent/ad-details/${newAd._id}`, { replace: true })
+      } else {
+        await updateAd(ad._id, {
+          objective,
+          dailyBudget,
+          duration,
+          adBudget: dailyBudget * duration,
+        })
+        queryClient.invalidateQueries({ queryKey: ["ad", ad._id] })
+        queryClient.invalidateQueries({ queryKey: ["agentAds"] })
+        toast.success("Ad updated successfully")
+        navigate(`/agent/ad-details/${ad._id}`, { replace: true })
+      }
     } catch (err) {
-      toast.error("Failed to update ad. Please try again.")
-      console.error("updateAd error:", err)
+      toast.error(
+        isExtending
+          ? "Failed to create new campaign. Please try again."
+          : "Failed to update ad. Please try again."
+      )
+      console.error("save error:", err)
     } finally {
       setIsSubmitting(false)
     }
@@ -122,7 +145,9 @@ export default function EditAd() {
           >
             <img src={goBack} alt="" />
           </button>
-          <p className="font-raleway text-[18px] font-semibold">Edit Ad</p>
+          <p className="font-raleway text-[18px] font-semibold">
+            {isExtending ? "Extend Campaign" : "Edit Ad"}
+          </p>
         </div>
       </header>
 
@@ -143,14 +168,20 @@ export default function EditAd() {
           />
         </div>
 
-        <div className="mt-8 flex flex-col gap-4">
+        <div className="mt-8 flex flex-col">
           <Button
             variant="app-primary"
             size="full"
             onClick={handleSave}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Saving..." : "Save Changes"}
+            {isSubmitting
+              ? isExtending
+                ? "Creating..."
+                : "Saving..."
+              : isExtending
+                ? "Create New Campaign"
+                : "Save Changes"}
           </Button>
         </div>
       </main>
