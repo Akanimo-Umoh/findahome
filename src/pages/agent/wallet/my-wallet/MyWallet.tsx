@@ -39,6 +39,15 @@ export default function MyWallet() {
               Funds are available for withdrawal
             </p>
           </div>
+
+          <button
+            onClick={() => navigate("/agent/fund-wallet")}
+            className="flex h-[45px] w-fit items-center justify-center gap-2 rounded-lg border border-bg-tertiary text-bg-tertiary"
+          >
+            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
+              Fund Wallet
+            </p>
+          </button>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-2">

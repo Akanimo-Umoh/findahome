@@ -18,7 +18,7 @@ import MainLayout from "@/layouts/MainLayout"
 // User Pages (buyers)
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
 import { FindAgents } from "@/pages/user/agents/find-agents"
-import { FundWallet, Wallet } from "@/pages/user/wallet"
+// import { FundWallet, Wallet } from "@/pages/user/wallet"
 import {
   PropertyEscrowTransaction,
   PropertyPayment,
@@ -83,6 +83,10 @@ import {
   ReviewWithdrawal,
   WithdrawFunds,
 } from "@/pages/agent/wallet/withdraw-funds"
+import {
+  FundWallet,
+  FundWalletCallback,
+} from "@/pages/agent/wallet/fund-wallet"
 
 export default function AppRoutes() {
   return (
@@ -182,9 +186,9 @@ export default function AppRoutes() {
         <Route path="/agent-profile" element={<AgentProfile />} />
 
         {/* wallet */}
-        <Route path="/wallet" element={<Wallet />} />
+        {/* <Route path="/wallet" element={<Wallet />} /> */}
         {/* fund wallet */}
-        <Route path="/fund-wallet" element={<FundWallet />} />
+        {/* <Route path="/fund-wallet" element={<FundWallet />} /> */}
         {/* escrow transaction details */}
         <Route
           path="/escrow-transactions-details"
@@ -246,6 +250,11 @@ export default function AppRoutes() {
           <Route
             path="/agent/review-withdrawal"
             element={<ReviewWithdrawal />}
+          />
+          <Route path="/agent/fund-wallet" element={<FundWallet />} />
+          <Route
+            path="/agent/fund-wallet/callback"
+            element={<FundWalletCallback />}
           />
 
           <Route path="/agent/transactions" element={<MyTransactions />} />
