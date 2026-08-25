@@ -12,20 +12,42 @@ import {
 import { NIGERIAN_BANKS } from "@/data/nigerianBanks"
 import AddAccountSuccessful from "./AddAccountSuccessful"
 import { useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { useResolveBankAccount } from "@/hooks/useResolveBankAccount"
+import { addBankAccount } from "@/services/bank.service"
+import { toast } from "sonner"
 
 export default function AddAccount() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [bankName, setBankName] = useState("")
   const [accountNumber, setAccountNumber] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
 
-  const isValid = !!bankName && accountNumber.trim().length === 10
+  const { resolved, isResolving, error } = useResolveBankAccount(
+    bankName,
+    accountNumber
+  )
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isValid = !!resolved
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isValid) return
-    // TODO: replace with a real mutation (POST /bank-accounts) once endpoint exists
-    setIsSuccessOpen(true)
+    if (!resolved) return
+
+    setIsSubmitting(true)
+
+    try {
+      await addBankAccount(resolved)
+      queryClient.invalidateQueries({ queryKey: ["bankAccounts"] })
+      setIsSuccessOpen(true)
+    } catch (err) {
+      toast.error("Failed to save bank details. Please try again.")
+      console.error("addBankAccount error:", err)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -91,19 +113,35 @@ export default function AddAccount() {
                     e.target.value.replace(/\D/g, "").slice(0, 10)
                   )
                 }
-                className="addBank outline-none"
+                className={`addBank outline-none ${error ? "border-red-500" : ""}`}
                 placeholder="Enter 10-digit account Number"
                 inputMode="numeric"
               />
+
+              {isResolving && (
+                <p className="text-[12px] text-text-secondary">
+                  Verifying account...
+                </p>
+              )}
+
+              {resolved && (
+                <div className="flex items-center gap-2 rounded-lg bg-[#149D1814] px-3 py-2">
+                  <p className="text-[13px] font-semibold text-[#149D18]">
+                    {resolved.accountName}
+                  </p>
+                </div>
+              )}
+
+              {error && <p className="text-[12px] text-red-500">{error}</p>}
             </div>
 
             <div className="mt-8">
               <button
                 type="submit"
-                disabled={!isValid}
+                disabled={!isValid || isSubmitting}
                 className="button-style h-[45px] w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white disabled:opacity-50"
               >
-                Save Bank Details
+                {isSubmitting ? "Saving..." : "Save Bank Details"}
               </button>
 
               <div className="mx-auto mt-4 flex w-67.5 items-start gap-2 bg-button-sec p-2">

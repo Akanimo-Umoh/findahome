@@ -5,38 +5,21 @@ import shieldIcon from "@/assets/agentImages/icon-shield.svg"
 import withdrawIcon from "@/assets/agentImages/icon-blue-withdraw.svg"
 import addIcon from "@/assets/agentImages/icon-add-property.svg"
 import { Button } from "@/components/ui/button"
-import type { BankAccount } from "@/types/wallet"
-import { useState } from "react"
-
-// TODO: static placeholder — replace with useQuery(["bankAccounts"]) once endpoint exists
-const MOCK_ACCOUNTS: BankAccount[] = [
-  {
-    id: "1",
-    bankName: "Access Bank",
-    accountNumber: "0123456789",
-    accountName: "Adetokunbo Samuel James",
-    accountType: "Savings",
-    isDefault: true,
-  },
-  {
-    id: "2",
-    bankName: "GT Bank",
-    accountNumber: "0987654321",
-    accountName: "Adetokunbo Samuel James",
-    accountType: "Savings",
-    isDefault: false,
-  },
-]
+import { useBankAccounts } from "@/hooks/useBankAccounts"
+import { toast } from "sonner"
+import Skeleton from "@/components/ui/Skeleton"
 
 export default function ManageAccount() {
   const navigate = useNavigate()
-  const [accounts, setAccounts] = useState(MOCK_ACCOUNTS)
+  const { accounts, isLoading, error, setDefault } = useBankAccounts()
 
-  const handleSetDefault = (id: string) => {
-    // TODO: replace with a real mutation (PATCH /bank-accounts/:id/default) once endpoint exists
-    setAccounts((prev) =>
-      prev.map((acc) => ({ ...acc, isDefault: acc.id === id }))
-    )
+  const handleSetDefault = async (id: string) => {
+    try {
+      await setDefault(id)
+    } catch (err) {
+      toast.error("Failed to update default account.")
+      console.error("setDefault error:", err)
+    }
   }
 
   return (
@@ -72,11 +55,38 @@ export default function ManageAccount() {
 
         {/* accounts */}
         <div className="mt-[36px] space-y-4">
+          {isLoading &&
+            Array.from({ length: 2 }).map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 rounded-lg border border-bg-accent p-3"
+              >
+                <Skeleton className="h-12.5 w-12.5 shrink-0 rounded-3xl" />
+                <div className="flex flex-1 flex-col gap-2">
+                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-3 w-32" />
+                  <Skeleton className="h-3 w-40" />
+                </div>
+              </div>
+            ))}
+
+          {error && (
+            <p className="text-center text-[14px] text-text-secondary">
+              {error}
+            </p>
+          )}
+
+          {!isLoading && !error && accounts.length === 0 && (
+            <p className="text-center text-[14px] text-text-secondary">
+              You haven't added a bank account yet.
+            </p>
+          )}
+
           {accounts.map((account) => (
             <button
-              key={account.id}
+              key={account._id}
               type="button"
-              onClick={() => handleSetDefault(account.id)}
+              onClick={() => handleSetDefault(account._id)}
               className="flex w-full cursor-pointer items-center gap-4 rounded-xl border border-bg-accent p-3 transition-colors hover:border-button-bg"
             >
               <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-3xl bg-button-bg">
@@ -88,10 +98,18 @@ export default function ManageAccount() {
                   <p className="text-[18px] tracking-[1px]">
                     {account.bankName}
                   </p>
-                  {account.isDefault && (
+                  {account.isDefault ? (
                     <p className="w-fit rounded-2xl bg-button-bg px-2 py-0.5 text-[12px] leading-4 text-white">
                       Default
                     </p>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleSetDefault(account._id)}
+                      className="text-[12px] font-semibold text-button-bg underline"
+                    >
+                      Set as default
+                    </button>
                   )}
                 </div>
 

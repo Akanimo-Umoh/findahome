@@ -27,8 +27,20 @@ export default function MyWallet() {
       {/* available balance */}
       <div className="mt-6 space-y-4 rounded-2xl bg-button-bg p-3">
         <div className="flex justify-between">
-          <div className="space-y-2">
-            <p className="text-[14px] text-bg-accent">Available Balance</p>
+          <div className="w-full space-y-2">
+            <div className="flex items-center justify-between">
+              <p className="text-[14px] text-bg-accent">Available Balance</p>
+
+              <button
+                onClick={() => navigate("/agent/fund-wallet")}
+                className="flex w-fit cursor-pointer items-center justify-center rounded-lg px-1 text-[14px] text-agents-bg"
+              >
+                <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
+                  Fund Wallet
+                </p>
+              </button>
+            </div>
+
             <div className="flex items-center">
               <img src={whiteNairaIcon} alt="" />
               <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-bg-tertiary">
@@ -39,15 +51,6 @@ export default function MyWallet() {
               Funds are available for withdrawal
             </p>
           </div>
-
-          <button
-            onClick={() => navigate("/agent/fund-wallet")}
-            className="flex h-[45px] w-fit items-center justify-center gap-2 rounded-lg border border-bg-tertiary text-bg-tertiary"
-          >
-            <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
-              Fund Wallet
-            </p>
-          </button>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-2">
