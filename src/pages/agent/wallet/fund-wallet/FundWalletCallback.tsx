@@ -19,25 +19,28 @@ export default function FundWalletCallback() {
   const [balance, setBalance] = useState<number | null>(null)
 
   useEffect(() => {
-    const reference =
-      searchParams.get("reference") ??
-      sessionStorage.getItem("pending-wallet-funding-reference")
+    const verify = async () => {
+      const reference =
+        searchParams.get("reference") ??
+        sessionStorage.getItem("pending-wallet-funding-reference")
 
-    if (!reference) {
-      setStatus("failed")
-      return
-    }
+      if (!reference) {
+        setStatus("failed")
+        return
+      }
 
-    verifyWalletFunding(reference)
-      .then((res) => {
+      try {
+        const res = await verifyWalletFunding(reference)
         sessionStorage.removeItem("pending-wallet-funding-reference")
         setBalance(res.balance)
         setStatus("success")
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("verifyWalletFunding error:", err)
         setStatus("failed")
-      })
+      }
+    }
+
+    verify()
   }, [searchParams])
 
   if (status === "verifying") {
