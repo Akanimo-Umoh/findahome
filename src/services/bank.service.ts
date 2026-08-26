@@ -1,3 +1,4 @@
+import { AxiosError } from "axios"
 import api from "./api"
 
 export type ResolvedAccount = {
@@ -37,10 +38,11 @@ export const getBankAccounts = async (
   try {
     const { data } = await api.get(`/bank/user/${userId}`)
     return data.data
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    // backend 404s when the agent has no accounts yet — treat as an empty list, not an error
-    return []
+    if (err instanceof AxiosError && err.response?.status === 404) {
+      return []
+    }
+    throw err
   }
 }
 
