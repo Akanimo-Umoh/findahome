@@ -31,11 +31,17 @@ export const addBankAccount = async (
   return data.data
 }
 
-// TODO: backend currently uses Bank.findOne, only returns ONE account even
-// though agents can have multiple — flagged to backend dev, awaiting fix
-export const getBankAccounts = async (): Promise<BankAccount[]> => {
-  const { data } = await api.get("/bank")
-  return data.data ? [data.data] : []
+export const getBankAccounts = async (
+  userId: string
+): Promise<BankAccount[]> => {
+  try {
+    const { data } = await api.get(`/bank/user/${userId}`)
+    return data.data
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    // backend 404s when the agent has no accounts yet — treat as an empty list, not an error
+    return []
+  }
 }
 
 export const setDefaultBankAccount = async (

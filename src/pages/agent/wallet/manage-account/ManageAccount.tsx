@@ -94,8 +94,8 @@ export default function ManageAccount() {
               </div>
 
               <div className="flex flex-1 flex-col items-start gap-1">
-                <div className="flex w-full items-center justify-between">
-                  <p className="text-[18px] tracking-[1px]">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <p className="line-clamp-1 flex-1 text-left text-[14px] tracking-[1px]">
                     {account.bankName}
                   </p>
                   {account.isDefault ? (
