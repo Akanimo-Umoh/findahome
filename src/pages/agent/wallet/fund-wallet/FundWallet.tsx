@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import goBack from "@/assets/images/icon-back.svg"
 import blueNaira from "@/assets/agentImages/icon-blue-naira.svg"
@@ -13,6 +13,17 @@ export default function FundWallet() {
   const navigate = useNavigate()
   const [amountInput, setAmountInput] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        // page was restored from bfcache (e.g. user hit back/cancel from Paystack)
+        setIsSubmitting(false)
+      }
+    }
+    window.addEventListener("pageshow", handlePageShow)
+    return () => window.removeEventListener("pageshow", handlePageShow)
+  }, [])
 
   const amount = Number(amountInput) || 0
 

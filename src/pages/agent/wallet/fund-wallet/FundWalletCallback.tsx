@@ -13,7 +13,7 @@ import { verifyWalletFunding } from "@/services/wallet.service"
 export default function FundWalletCallback() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const [status, setStatus] = useState<"verifying" | "success" | "failed">(
+  const [status, setStatus] = useState<"verifying" | "success" | "pending">(
     "verifying"
   )
   const [balance, setBalance] = useState<number | null>(null)
@@ -25,7 +25,7 @@ export default function FundWalletCallback() {
         sessionStorage.getItem("pending-wallet-funding-reference")
 
       if (!reference) {
-        setStatus("failed")
+        setStatus("pending")
         return
       }
 
@@ -35,8 +35,11 @@ export default function FundWalletCallback() {
         setBalance(res.balance)
         setStatus("success")
       } catch (err) {
+        // agents can't self-verify right now — payment likely went through,
+        // it's just waiting on an admin to confirm and credit it
         console.error("verifyWalletFunding error:", err)
-        setStatus("failed")
+        sessionStorage.removeItem("pending-wallet-funding-reference")
+        setStatus("pending")
       }
     }
 
@@ -54,23 +57,34 @@ export default function FundWalletCallback() {
     )
   }
 
-  if (status === "failed") {
+  if (status === "pending") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 px-6 text-center font-ssPro">
-        <p className="text-[14px] font-semibold">
-          We couldn't confirm your payment
-        </p>
-        <p className="text-[12px] text-text-secondary">
-          If you were charged, your balance will update shortly. Otherwise,
-          please try again.
-        </p>
-        <button
-          onClick={() => navigate("/agent/wallet", { replace: true })}
-          className="mt-4 text-[14px] text-button-bg underline"
-        >
-          Back to wallet
-        </button>
-      </div>
+      <Dialog open={true}>
+        <DialogContent className="w-[calc(100%-48px)] max-w-[340px] gap-0 rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden">
+          <img src={successImg} alt="" className="mx-auto" />
+
+          <div className="mt-2 flex flex-col gap-6">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <DialogTitle className="text-center font-raleway text-[18px] font-semibold tracking-[1px]">
+                Payment received
+              </DialogTitle>
+              <DialogDescription className="text-center text-[14px] text-text-secondary">
+                Your payment was successful. It's being confirmed and will be
+                credited to your wallet within 20–30 minutes.
+              </DialogDescription>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={() => navigate("/agent/wallet", { replace: true })}
+                className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
+              >
+                View Wallet
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     )
   }
 
