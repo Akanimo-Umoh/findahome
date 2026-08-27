@@ -7,17 +7,19 @@ import creditIcon from "@/assets/agentImages/icon-white-credit-card.svg"
 import { toast } from "sonner"
 import { useWithdrawalDraft } from "@/hooks/useWithdrawalDraft"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
 
 // TODO: static placeholders — replace with real balance + default account once endpoints exist
-const walletBalance = 3000000
 const defaultAccount = { bankName: "Access Bank", accountNumber: "****4810" }
 const MIN_WITHDRAWAL = 1000
 
 export default function WithdrawFunds() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const { updateDraft } = useWithdrawalDraft()
   const [amountInput, setAmountInput] = useState("")
 
+  const walletBalance = user?.balance ?? 0
   const amount = Number(amountInput) || 0
 
   const handleContinue = () => {

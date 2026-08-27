@@ -10,6 +10,7 @@ import { createAd } from "@/services/ad.service"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import AdCreatedModal from "./AdCreatedModal"
+import { useAuthContext } from "@/context/AuthContext"
 
 const OBJECTIVE_LABEL: Record<string, string> = {
   views: "More Views",
@@ -17,11 +18,9 @@ const OBJECTIVE_LABEL: Record<string, string> = {
   sales: "Quick Sales",
 }
 
-// TODO: replace with real wallet balance once that endpoint exists
-const walletBalance = 4000
-
 export default function AdPaymentSummary() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const { draft, hasPropertyAndObjective, clearDraft } = useAdDraft()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [createdAdId, setCreatedAdId] = useState<string | null>(null)
@@ -34,6 +33,7 @@ export default function AdPaymentSummary() {
 
   if (!hasPropertyAndObjective) return null
 
+  const walletBalance = user?.balance ?? 0
   const adCost = draft.dailyBudget * draft.duration
   const reachMin = Math.round(adCost * 0.6).toLocaleString()
   const reachMax = Math.round(adCost * 2).toLocaleString()

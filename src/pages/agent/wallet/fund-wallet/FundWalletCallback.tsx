@@ -9,9 +9,11 @@ import {
 import successImg from "@/assets/images/img-pay-inspection-fee.png"
 import Spinner from "@/components/Spinner"
 import { verifyWalletFunding } from "@/services/wallet.service"
+import { useRefreshUser } from "@/hooks/useRefreshUser"
 
 export default function FundWalletCallback() {
   const navigate = useNavigate()
+  const { refreshUser } = useRefreshUser()
   const [searchParams] = useSearchParams()
   const [status, setStatus] = useState<"verifying" | "success" | "pending">(
     "verifying"
@@ -34,6 +36,7 @@ export default function FundWalletCallback() {
         sessionStorage.removeItem("pending-wallet-funding-reference")
         setBalance(res.balance)
         setStatus("success")
+        await refreshUser()
       } catch (err) {
         // agents can't self-verify right now — payment likely went through,
         // it's just waiting on an admin to confirm and credit it
@@ -44,7 +47,7 @@ export default function FundWalletCallback() {
     }
 
     verify()
-  }, [searchParams])
+  }, [searchParams, refreshUser])
 
   if (status === "verifying") {
     return (

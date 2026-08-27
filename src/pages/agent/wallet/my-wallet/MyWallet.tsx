@@ -3,10 +3,12 @@ import goBack from "@/assets/images/icon-back.svg"
 import withdrawIcon from "@/assets/agentImages/icon-withdraw.svg"
 import whiteNairaIcon from "@/assets/agentImages/icon-white-naira.svg"
 import Activities from "./Activities"
+import { useAuthContext } from "@/context/AuthContext"
 // import NoWalletActivity from "./NoWalletActivity";
 
 export default function MyWallet() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
 
   return (
     <div className="mb-10 md:pt-6 lg:pt-8">
@@ -44,7 +46,7 @@ export default function MyWallet() {
             <div className="flex items-center">
               <img src={whiteNairaIcon} alt="" />
               <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-bg-tertiary">
-                3,000,000
+                {(user?.balance ?? 0).toLocaleString()}
               </p>
             </div>
             <p className="text-[12px] leading-4 text-bg-accent">

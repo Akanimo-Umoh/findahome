@@ -9,9 +9,11 @@ import cancelIcon from "@/assets/agentImages/icon-red-cancel.svg"
 import { useWithdrawalDraft } from "@/hooks/useWithdrawalDraft"
 import WithdrawalSuccessful from "./WithdrawalSuccessful"
 import { Button } from "@/components/ui/button"
+import { useRefreshUser } from "@/hooks/useRefreshUser"
 
 export default function ReviewWithdrawal() {
   const navigate = useNavigate()
+  const { refreshUser } = useRefreshUser()
   const { draft, isValid, clearDraft } = useWithdrawalDraft()
   const [isSuccessOpen, setIsSuccessOpen] = useState(false)
 
@@ -23,9 +25,10 @@ export default function ReviewWithdrawal() {
 
   if (!isValid) return null
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     // TODO: replace with a real mutation (POST /wallet/withdraw) once endpoint exists
     clearDraft()
+    await refreshUser()
     setIsSuccessOpen(true)
   }
 

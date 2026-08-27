@@ -12,6 +12,7 @@ export type User = {
   profilePicture?: string | null
   phoneNumber?: string
   location?: string
+  balance: number
 }
 
 type AuthContextType = {

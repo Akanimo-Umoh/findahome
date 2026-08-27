@@ -10,6 +10,7 @@ import { payForAd, updateAd } from "@/services/ad.service"
 import type { Ad } from "@/types/ad"
 import PauseAdDialog from "./PauseAdDialog"
 import { Button } from "@/components/ui/button"
+import { useRefreshUser } from "@/hooks/useRefreshUser"
 
 type ManageAdProps = {
   ad: Ad
@@ -50,6 +51,7 @@ function ManageAdActionButton({
 export default function ManageAd({ ad }: ManageAdProps) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { refreshUser } = useRefreshUser()
   const [isLaunching, setIsLaunching] = useState(false)
   const [isTogglingPause, setIsTogglingPause] = useState(false)
   const [isPauseDialogOpen, setIsPauseDialogOpen] = useState(false)
@@ -60,6 +62,7 @@ export default function ManageAd({ ad }: ManageAdProps) {
       await payForAd(ad._id)
       queryClient.invalidateQueries({ queryKey: ["ad", ad._id] })
       queryClient.invalidateQueries({ queryKey: ["agentAds"] })
+      await refreshUser()
       toast.success("Your ad is now live!")
     } catch (err) {
       toast.error(

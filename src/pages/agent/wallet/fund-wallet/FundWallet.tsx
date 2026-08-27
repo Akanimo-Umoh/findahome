@@ -6,11 +6,13 @@ import greyNaira from "@/assets/agentImages/icon-grey-naira.svg"
 import { toast } from "sonner"
 import { fundWallet } from "@/services/wallet.service"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
 
 const MIN_DEPOSIT = 1000
 
 export default function FundWallet() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   const [amountInput, setAmountInput] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -64,9 +66,9 @@ export default function FundWallet() {
         <p>Available Balance</p>
         <div className="flex items-center">
           <img src={blueNaira} alt="" />
-          {/* TODO: static — replace with real balance once endpoint exists */}
+
           <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-button-bg">
-            3,000,000
+            {(user?.balance ?? 0).toLocaleString()}
           </p>
         </div>
         <p className="text-[12px] leading-4 text-text-secondary">
