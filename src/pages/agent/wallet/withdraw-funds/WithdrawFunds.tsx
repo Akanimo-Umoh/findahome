@@ -8,21 +8,36 @@ import { toast } from "sonner"
 import { useWithdrawalDraft } from "@/hooks/useWithdrawalDraft"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
+import { useBankAccounts } from "@/hooks/useBankAccounts"
+import Skeleton from "@/components/ui/Skeleton"
+import SelectAccountModal from "./SelectAccountModal"
 
-// TODO: static placeholders — replace with real balance + default account once endpoints exist
-const defaultAccount = { bankName: "Access Bank", accountNumber: "****4810" }
 const MIN_WITHDRAWAL = 1000
 
 export default function WithdrawFunds() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const { updateDraft } = useWithdrawalDraft()
+  const { accounts, isLoading } = useBankAccounts()
   const [amountInput, setAmountInput] = useState("")
+  const [isSelectModalOpen, setIsSelectModalOpen] = useState(false)
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
+    null
+  )
 
   const walletBalance = user?.balance ?? 0
   const amount = Number(amountInput) || 0
 
+  const defaultAccount =
+    accounts.find((a) => a.isDefault) ?? accounts[0] ?? null
+  const selectedAccount =
+    accounts.find((a) => a._id === selectedAccountId) ?? defaultAccount
+
   const handleContinue = () => {
+    if (!selectedAccount) {
+      toast.error("Please add a bank account first")
+      return
+    }
     if (amount < MIN_WITHDRAWAL) {
       toast.error(
         `Minimum withdrawal amount is ₦${MIN_WITHDRAWAL.toLocaleString()}`
@@ -33,7 +48,7 @@ export default function WithdrawFunds() {
       toast.error("Amount exceeds your available balance")
       return
     }
-    updateDraft({ amount, accountId: "1" })
+    updateDraft({ amount, accountId: selectedAccount._id })
     navigate("/agent/review-withdrawal")
   }
 
@@ -94,28 +109,58 @@ export default function WithdrawFunds() {
 
             <div className="mt-4">
               <p className="text-[14px]">Withdraw to</p>
-              <div className="mt-2 flex items-center justify-between gap-4 rounded-lg border border-bg-accent px-2 py-3">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-button-bg">
-                    <img src={creditIcon} alt="" />
-                  </div>
-                  <div className="space-y-0.5">
-                    <p className="line-clamp-1 text-[14px]">
-                      {defaultAccount.bankName}
-                    </p>
-                    <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
-                      {defaultAccount.accountNumber}
-                    </p>
+
+              {isLoading && (
+                <div className="mt-2 flex items-center gap-4 rounded-lg border border-bg-accent px-2 py-3">
+                  <Skeleton className="h-7.5 w-7.5 shrink-0 rounded-full" />
+                  <div className="flex flex-1 flex-col gap-1.5">
+                    <Skeleton className="h-3.5 w-24" />
+                    <Skeleton className="h-3 w-20" />
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => navigate("/agent/manage-account")}
-                  className="cursor-pointer text-[12px] leading-4 text-button-bg"
-                >
-                  Change
-                </button>
-              </div>
+              )}
+
+              {!isLoading && !selectedAccount && (
+                <div className="mt-2 flex flex-col items-center gap-2 rounded-lg border border-dashed border-bg-accent px-2 py-4 text-center">
+                  <p className="text-[13px] text-text-secondary">
+                    You haven't added a withdrawal account yet.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => navigate("/agent/add-account")}
+                    className="text-[13px] font-semibold text-button-bg underline"
+                  >
+                    Add a bank account
+                  </button>
+                </div>
+              )}
+
+              {!isLoading && selectedAccount && (
+                <div className="mt-2 flex items-center justify-between gap-4 rounded-lg border border-bg-accent px-2 py-3">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-button-bg">
+                      <img src={creditIcon} alt="" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="line-clamp-1 text-[14px]">
+                        {selectedAccount.bankName}
+                      </p>
+                      <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
+                        ****{selectedAccount.accountNumber.slice(-4)}
+                      </p>
+                    </div>
+                  </div>
+                  {accounts.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setIsSelectModalOpen(true)}
+                      className="cursor-pointer text-[12px] leading-4 text-button-bg"
+                    >
+                      Change
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -123,12 +168,24 @@ export default function WithdrawFunds() {
             <Button variant="app-primary" size="full" onClick={handleContinue}>
               Continue
             </Button>
+
             <p className="mt-2 text-center text-[12px] leading-4 text-text-secondary">
               Withdrawal may take a few minutes to reflect.
             </p>
           </div>
         </div>
       </div>
+
+      <SelectAccountModal
+        isOpen={isSelectModalOpen}
+        onClose={() => setIsSelectModalOpen(false)}
+        accounts={accounts}
+        selectedId={selectedAccount?._id ?? null}
+        onSelect={(id) => {
+          setSelectedAccountId(id)
+          setIsSelectModalOpen(false)
+        }}
+      />
     </div>
   )
 }

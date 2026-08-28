@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import successImg from "@/assets/images/img-pay-inspection-fee.png"
+import { Button } from "@/components/ui/button"
 
 type AddAccountSuccessfulProps = {
   open: boolean
@@ -18,8 +19,23 @@ export default function AddAccountSuccessful({
 }: AddAccountSuccessfulProps) {
   const navigate = useNavigate()
 
+  const goToManageAccount = () => {
+    onOpenChange(false)
+    navigate("/agent/manage-account", { replace: true })
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) {
+          // any dismissal (outside click, Escape, etc.) should land somewhere real
+          goToManageAccount()
+          return
+        }
+        onOpenChange(next)
+      }}
+    >
       <DialogContent className="w-[calc(100%-48px)] max-w-[340px] gap-0 rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden">
         <img src={successImg} alt="" className="mx-auto" />
 
@@ -34,18 +50,21 @@ export default function AddAccountSuccessful({
           </div>
 
           <div className="flex flex-col gap-3">
-            <button
+            <Button
+              variant="app-primary"
+              size="full"
+              onClick={goToManageAccount}
+            >
+              Back to Manage Account
+            </Button>
+
+            <Button
+              variant="app-secondary"
+              size="full"
               onClick={() => navigate("/agent/wallet", { replace: true })}
-              className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
             >
               View Wallet
-            </button>
-            <button
-              onClick={() => navigate("/agent/dashboard", { replace: true })}
-              className="h-11.25 w-full rounded-lg border border-text-secondary font-raleway text-[14px] font-semibold tracking-[1px]"
-            >
-              Go to dashboard
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>

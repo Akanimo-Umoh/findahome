@@ -8,17 +8,44 @@ import { Button } from "@/components/ui/button"
 import { useBankAccounts } from "@/hooks/useBankAccounts"
 import { toast } from "sonner"
 import Skeleton from "@/components/ui/Skeleton"
+import { useState } from "react"
+import DeleteBankAccountDialog from "./DeleteBankAccountDialog"
+import { Trash2 } from "lucide-react"
 
 export default function ManageAccount() {
   const navigate = useNavigate()
-  const { accounts, isLoading, error, setDefault } = useBankAccounts()
+  const { accounts, isLoading, error, setDefault, remove } = useBankAccounts()
+  const [accountPendingDelete, setAccountPendingDelete] = useState<{
+    id: string
+    bankName: string
+  } | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [settingDefaultId, setSettingDefaultId] = useState<string | null>(null)
 
   const handleSetDefault = async (id: string) => {
+    setSettingDefaultId(id)
     try {
       await setDefault(id)
     } catch (err) {
       toast.error("Failed to update default account.")
       console.error("setDefault error:", err)
+    } finally {
+      setSettingDefaultId(null)
+    }
+  }
+
+  const handleConfirmDelete = async () => {
+    if (!accountPendingDelete) return
+    setIsDeleting(true)
+    try {
+      await remove(accountPendingDelete.id)
+      toast.success("Account removed")
+      setAccountPendingDelete(null)
+    } catch (err) {
+      toast.error("Failed to remove account.")
+      console.error("remove account error:", err)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -83,11 +110,9 @@ export default function ManageAccount() {
           )}
 
           {accounts.map((account) => (
-            <button
+            <div
               key={account._id}
-              type="button"
-              onClick={() => handleSetDefault(account._id)}
-              className="flex w-full cursor-pointer items-center gap-4 rounded-xl border border-bg-accent p-3 transition-colors hover:border-button-bg"
+              className="flex w-full items-center gap-4 rounded-xl border border-bg-accent p-3"
             >
               <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-3xl bg-button-bg">
                 <img src={accountIcon} alt="" />
@@ -98,19 +123,39 @@ export default function ManageAccount() {
                   <p className="line-clamp-1 flex-1 text-left text-[14px] tracking-[1px]">
                     {account.bankName}
                   </p>
-                  {account.isDefault ? (
-                    <p className="w-fit rounded-2xl bg-button-bg px-2 py-0.5 text-[12px] leading-4 text-white">
-                      Default
-                    </p>
-                  ) : (
+
+                  <div className="flex shrink-0 items-center gap-3">
+                    {account.isDefault ? (
+                      <p className="w-fit rounded-2xl bg-button-bg px-2 py-0.5 text-[12px] leading-4 text-white">
+                        Default
+                      </p>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleSetDefault(account._id)}
+                        disabled={settingDefaultId === account._id}
+                        className="text-[12px] font-semibold text-button-bg underline disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        {settingDefaultId === account._id
+                          ? "Setting..."
+                          : "Set as default"}
+                      </button>
+                    )}
+
                     <button
                       type="button"
-                      onClick={() => handleSetDefault(account._id)}
-                      className="text-[12px] font-semibold text-button-bg underline"
+                      onClick={() =>
+                        setAccountPendingDelete({
+                          id: account._id,
+                          bankName: account.bankName,
+                        })
+                      }
+                      aria-label="Remove account"
+                      className="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-text-secondary transition-colors hover:bg-red-50 hover:text-red-500"
                     >
-                      Set as default
+                      <Trash2 size={16} />
                     </button>
-                  )}
+                  </div>
                 </div>
 
                 {/* account number */}
@@ -122,7 +167,7 @@ export default function ManageAccount() {
                   {account.accountName}
                 </p>
               </div>
-            </button>
+            </div>
           ))}
         </div>
 
@@ -146,6 +191,14 @@ export default function ManageAccount() {
           </Button>
         </div>
       </div>
+
+      <DeleteBankAccountDialog
+        isOpen={!!accountPendingDelete}
+        onClose={() => setAccountPendingDelete(null)}
+        onConfirm={handleConfirmDelete}
+        isDeleting={isDeleting}
+        bankName={accountPendingDelete?.bankName ?? ""}
+      />
     </div>
   )
 }
