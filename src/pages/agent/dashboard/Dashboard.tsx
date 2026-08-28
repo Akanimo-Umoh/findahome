@@ -6,8 +6,10 @@ import RecentActivities from "./RecentActivities"
 import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "@/components/Avatar"
 import { useAgentListings } from "@/hooks/useAgentListings"
+import { useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
+  const navigate = useNavigate()
   const { user } = useAuthContext()
   const { activeListingsCount, isLoading: isLoadingListings } =
     useAgentListings()
@@ -46,7 +48,7 @@ export default function Dashboard() {
           <div className="flex items-center">
             <img src={whiteNairaIcon} alt="" />
             <p className="font-raleway text-[18px] font-semibold tracking-[1px] text-bg-tertiary md:text-[28px] md:font-medium">
-              3,000,000
+              {(user?.balance ?? 0).toLocaleString()}
             </p>
           </div>
 
@@ -55,7 +57,10 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <button className="flex h-11.25 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-bg-tertiary md:h-12">
+        <button
+          onClick={() => navigate("/agent/withdraw-funds")}
+          className="flex h-11.25 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-bg-tertiary md:h-12"
+        >
           <img src={withdrawIcon} alt="" />
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
             Withdraw Funds

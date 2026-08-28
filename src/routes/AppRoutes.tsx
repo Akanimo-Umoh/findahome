@@ -240,21 +240,20 @@ export default function AppRoutes() {
             element={<AdPaymentSummary />}
           />
           <Route path="/agent/edit-ad/:id" element={<EditAd />} />
-
-          {/* any cleared or confirmed route goes up */}
-
           <Route path="/agent/wallet" element={<MyWallet />} />
           <Route path="/agent/manage-account" element={<ManageAccount />} />
           <Route path="/agent/add-account" element={<AddAccount />} />
           <Route path="/agent/withdraw-funds" element={<WithdrawFunds />} />
-          <Route
-            path="/agent/review-withdrawal"
-            element={<ReviewWithdrawal />}
-          />
           <Route path="/agent/fund-wallet" element={<FundWallet />} />
           <Route
             path="/agent/fund-wallet/callback"
             element={<FundWalletCallback />}
+          />
+
+          {/* any cleared or confirmed route goes up */}
+          <Route
+            path="/agent/review-withdrawal"
+            element={<ReviewWithdrawal />}
           />
 
           <Route path="/agent/transactions" element={<MyTransactions />} />

@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom"
-// import logoIcon from "@/assets/images/icon-logo-tablet.svg"
 import dashboardIcon from "@/assets/agentImages/icon-mydashboard.svg"
 import dashboardActiveIcon from "@/assets/agentImages/icon-mydashboardActive.svg"
 import chatsIcon from "@/assets/agentImages/icon-mychat.svg"

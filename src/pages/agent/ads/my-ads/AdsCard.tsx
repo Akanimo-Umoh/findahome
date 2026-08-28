@@ -7,7 +7,7 @@ import clicksIcon from "@/assets/agentImages/icon-clicks.svg"
 import { Link } from "react-router-dom"
 import type { Ad, AdStatus } from "@/types/ad"
 import { useAgentAds } from "@/hooks/useAgentAds"
-import Spinner from "@/components/Spinner"
+import Skeleton from "@/components/ui/Skeleton"
 
 type FilterStatus = "all" | AdStatus
 
@@ -135,6 +135,31 @@ function AdCard({ ad }: { ad: Ad }) {
   )
 }
 
+// skeleton for the cards
+function AdCardSkeleton() {
+  return (
+    <div className="flex items-center gap-4 rounded-lg border border-bg-accent p-2">
+      <Skeleton className="h-15 w-15 shrink-0 rounded-lg" />
+
+      <div className="flex w-full flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-5 w-16 shrink-0 rounded-2xl" />
+        </div>
+
+        <div className="flex items-center gap-4">
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-3 w-10" />
+          <Skeleton className="h-3 w-10" />
+        </div>
+
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="h-3 w-28" />
+      </div>
+    </div>
+  )
+}
+
 export default function AdsCard() {
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all")
   const { ads, isLoading, error } = useAgentAds()
@@ -146,8 +171,10 @@ export default function AdsCard() {
 
   if (isLoading) {
     return (
-      <div className="mt-10">
-        <Spinner />
+      <div className="mt-5 space-y-6">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <AdCardSkeleton key={i} />
+        ))}
       </div>
     )
   }

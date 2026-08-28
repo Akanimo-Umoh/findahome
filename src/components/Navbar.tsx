@@ -21,11 +21,7 @@
 // import Avatar from "./Avatar"
 // import { useLogout } from "@/hooks/useLogout"
 
-// type NavbarProps = {
-//   variant?: "light" | "dark"
-// }
-
-// export default function Navbar({ variant = "dark" }: NavbarProps) {
+// export default function Navbar() {
 //   const [openMenu, setOpenMenu] = useState(false)
 //   const [scrollY, setScrollY] = useState(0)
 //   const [hidden, setHidden] = useState(false)
@@ -33,14 +29,16 @@
 //   const { isAuthenticated, user } = useAuthContext()
 //   const { handleLogout } = useLogout()
 
+//   const isAgent = user?.role === "agent"
+
+//   // logo destination — agents go to their dashboard, everyone else goes home
+//   const logoLink = isAuthenticated && isAgent ? "/agent/dashboard" : "/"
+
+//   const profileLink = isAgent ? "/agent/profile" : "/profile"
+
 //   // ── MOBILE LINKS ──
 //   const mobileUserLinks = [
-//     {
-//       icon: dashboard,
-//       iconActive: dashboardActive,
-//       title: "Home",
-//       link: "/",
-//     },
+//     { icon: dashboard, iconActive: dashboardActive, title: "Home", link: "/" },
 //     {
 //       icon: agents,
 //       iconActive: agentsActive,
@@ -75,12 +73,7 @@
 //       title: "My Listings",
 //       link: "/agent/my-listings",
 //     },
-//     {
-//       icon: chats,
-//       iconActive: chatsActive,
-//       title: "Chats",
-//       link: "/messages",
-//     },
+//     { icon: chats, iconActive: chatsActive, title: "Chats", link: "/messages" },
 //     {
 //       icon: wallet,
 //       iconActive: walletActive,
@@ -91,7 +84,19 @@
 //       icon: wallet,
 //       iconActive: walletActive,
 //       title: "My Ads",
-//       link: "/agent/ads",
+//       link: "/agent/my-ads",
+//     },
+//     {
+//       icon: wallet,
+//       iconActive: walletActive,
+//       title: "Transactions",
+//       link: "/agent/transactions",
+//     },
+//     {
+//       icon: wallet,
+//       iconActive: walletActive,
+//       title: "Disputes",
+//       link: "/agent/my-disputes",
 //     },
 //   ]
 
@@ -118,7 +123,7 @@
 //     {
 //       icon: wallet,
 //       iconActive: walletActive,
-//       title: "My wallet",
+//       title: "My Wallet",
 //       link: "/wallet",
 //     },
 //   ]
@@ -136,7 +141,8 @@
 //     { title: "Dashboard", link: "/agent/dashboard" },
 //     { title: "My Listings", link: "/agent/my-listings" },
 //     { title: "My Wallet", link: "/agent/wallet" },
-//     { title: "My Ads", link: "/agent/ads" },
+//     { title: "My Ads", link: "/agent/my-ads" },
+//     { title: "Disputes", link: "/agent/my-disputes" },
 //   ]
 
 //   const tabletUnauthenticatedLinks = [
@@ -147,15 +153,15 @@
 //     { title: "Create account", link: "/signup" },
 //   ]
 
-//   // pick correct sets based on auth + role
+//   // pick correct link sets based on auth + role
 //   const mobileLinks = isAuthenticated
-//     ? user?.role === "agent"
+//     ? isAgent
 //       ? mobileAgentLinks
 //       : mobileUserLinks
 //     : mobileUnauthenticatedLinks
 
 //   const tabletLinks = isAuthenticated
-//     ? user?.role === "agent"
+//     ? isAgent
 //       ? tabletAgentLinks
 //       : tabletUserLinks
 //     : tabletUnauthenticatedLinks
@@ -186,25 +192,18 @@
 //   const handleMenu = () => setOpenMenu((prev) => !prev)
 //   const closeMenu = () => setOpenMenu(false)
 
-//   const profileLink = user?.role === "agent" ? "/agent/profile" : "/profile"
-
-//   const isLight = variant === "light"
-//   const linkTextClass = isLight ? "text-white" : "text-text-primary"
-//   const logoTextClass = isLight ? "text-white" : "text-[#274AD0]"
-//   const navBgClass = isLight ? "bg-transparent" : "bg-white md:bg-bg-accent"
-
 //   return (
 //     <motion.nav
 //       initial={{ y: 0 }}
 //       animate={{ y: hidden ? -72 : 0 }}
 //       transition={{ duration: 0.3, ease: "easeInOut" }}
-//       className={`fixed top-0 left-0 z-50 h-18 w-full px-6 font-ssPro transition-colors duration-300 md:h-16.5 md:p-8 ${navBgClass}`}
+//       className="fixed top-0 left-0 z-50 h-18 w-full bg-white px-6 font-ssPro transition-colors duration-300 md:h-16.5 md:bg-bg-accent md:p-8"
 //     >
 //       <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
 //         {/* Logo */}
 //         <Link
-//           to="/"
-//           className={`flex items-center gap-2 font-raleway text-[24px] leading-6 font-bold ${logoTextClass}`}
+//           to={logoLink}
+//           className="flex items-center gap-2 font-raleway text-[24px] leading-6 font-bold text-[#274AD0]"
 //         >
 //           <img src={logoIcon} alt="" />
 //           <p>
@@ -224,7 +223,7 @@
 //                   className={`rounded-lg px-2 py-1 text-[14px] transition-colors duration-200 ${
 //                     isActive
 //                       ? "bg-button-bg text-white"
-//                       : `${linkTextClass} hover:opacity-70`
+//                       : "text-text-primary hover:opacity-70"
 //                   }`}
 //                 >
 //                   {link.title}
@@ -248,11 +247,7 @@
 
 //         {/* ── MOBILE HAMBURGER (below md) ── */}
 //         <button className="cursor-pointer md:hidden" onClick={handleMenu}>
-//           <img
-//             src={menu}
-//             alt="menu"
-//             className={isLight ? "brightness-0 invert" : ""}
-//           />
+//           <img src={menu} alt="menu" />
 //         </button>
 //       </div>
 
@@ -305,81 +300,54 @@
 
 //                   {/* mobile nav links */}
 //                   <div className="mt-6 space-y-2">
-//                     {isAuthenticated ? (
-//                       mobileLinks.map((link, index) => {
-//                         const isActive = location.pathname === link.link
-//                         return (
-//                           <Link
-//                             key={index}
-//                             to={link.link}
-//                             onClick={closeMenu}
-//                             className={`flex items-center justify-between p-1 ${isActive ? "rounded-lg bg-button-bg" : ""}`}
-//                           >
-//                             <div className="flex items-center justify-center gap-1 p-1">
-//                               <img
-//                                 src={isActive ? link.iconActive : link.icon}
-//                                 alt=""
-//                               />
-//                               <p
-//                                 className={`text-[12px] ${isActive ? "text-white" : "text-text-100"}`}
-//                               >
-//                                 {link.title}
-//                               </p>
-//                             </div>
+//                     {mobileLinks.map((link, index) => {
+//                       const isActive = location.pathname === link.link
+//                       return (
+//                         <Link
+//                           key={index}
+//                           to={link.link}
+//                           onClick={closeMenu}
+//                           className={`flex items-center justify-between p-1 ${
+//                             isActive ? "rounded-lg bg-button-bg" : ""
+//                           }`}
+//                         >
+//                           <div className="flex items-center justify-center gap-1 p-1">
 //                             <img
-//                               src={isActive ? activeRightArrowIcon : rightArrow}
+//                               src={isActive ? link.iconActive : link.icon}
 //                               alt=""
 //                             />
-//                           </Link>
-//                         )
-//                       })
-//                     ) : (
-//                       <>
-//                         {mobileUnauthenticatedLinks.map((link, index) => {
-//                           const isActive = location.pathname === link.link
-//                           return (
-//                             <Link
-//                               key={index}
-//                               to={link.link}
-//                               onClick={closeMenu}
-//                               className={`flex items-center justify-between p-1 ${isActive ? "rounded-lg bg-button-bg" : ""}`}
+//                             <p
+//                               className={`text-[12px] ${
+//                                 isActive ? "text-white" : "text-text-100"
+//                               }`}
 //                             >
-//                               <div className="flex items-center justify-center gap-1">
-//                                 <img
-//                                   src={isActive ? link.iconActive : link.icon}
-//                                   alt=""
-//                                 />
-//                                 <p
-//                                   className={`text-[12px] ${isActive ? "text-white" : "text-text-100"}`}
-//                                 >
-//                                   {link.title}
-//                                 </p>
-//                               </div>
-//                               <img
-//                                 src={
-//                                   isActive ? activeRightArrowIcon : rightArrow
-//                                 }
-//                                 alt=""
-//                               />
-//                             </Link>
-//                           )
-//                         })}
+//                               {link.title}
+//                             </p>
+//                           </div>
+//                           <img
+//                             src={isActive ? activeRightArrowIcon : rightArrow}
+//                             alt=""
+//                           />
+//                         </Link>
+//                       )
+//                     })}
 
-//                         <div className="mt-6 flex items-center justify-between">
-//                           <Link
-//                             to="/login"
-//                             className="flex h-6 w-[70px] items-center justify-center rounded-lg border border-button-bg bg-button-disabled text-[12px] text-text-primary"
-//                           >
-//                             Sign in
-//                           </Link>
-//                           <Link
-//                             to="/signup"
-//                             className="flex h-6 w-[70px] items-center justify-center rounded-lg bg-button-bg text-[12px] text-white"
-//                           >
-//                             Sign up
-//                           </Link>
-//                         </div>
-//                       </>
+//                     {/* sign in / sign up — unauthenticated only */}
+//                     {!isAuthenticated && (
+//                       <div className="mt-6 flex items-center justify-between">
+//                         <Link
+//                           to="/login"
+//                           className="flex h-6 w-[70px] items-center justify-center rounded-lg border border-button-bg bg-button-disabled text-[12px] text-text-primary"
+//                         >
+//                           Sign in
+//                         </Link>
+//                         <Link
+//                           to="/signup"
+//                           className="flex h-6 w-[70px] items-center justify-center rounded-lg bg-button-bg text-[12px] text-white"
+//                         >
+//                           Sign up
+//                         </Link>
+//                       </div>
 //                     )}
 //                   </div>
 //                 </div>
@@ -428,6 +396,22 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "./Avatar"
 import { useLogout } from "@/hooks/useLogout"
 
+// agent-specific icons — same source as AgentSidebar, so nav stays visually consistent
+import agentDashboardIcon from "@/assets/agentImages/icon-mydashboard.svg"
+import agentDashboardActiveIcon from "@/assets/agentImages/icon-mydashboardActive.svg"
+import agentChatsIcon from "@/assets/agentImages/icon-mychat.svg"
+import agentChatsActiveIcon from "@/assets/agentImages/icon-mychatActive.svg"
+import agentListingsIcon from "@/assets/agentImages/icon-mylisting.svg"
+import agentListingsActiveIcon from "@/assets/agentImages/icon-mylistingActive.svg"
+import agentWalletIcon from "@/assets/agentImages/icon-mywallet.svg"
+import agentWalletActiveIcon from "@/assets/agentImages/icon-mywalletActive.svg"
+import agentAdsIcon from "@/assets/agentImages/icon-myads.svg"
+import agentAdsActiveIcon from "@/assets/agentImages/icon-myadsActive.svg"
+import agentTransactionsIcon from "@/assets/agentImages/icon-mytransactions.svg"
+import agentTransactionsActiveIcon from "@/assets/agentImages/icon-mytransactionsActive.svg"
+import agentDisputesIcon from "@/assets/agentImages/icon-mydisputes.svg"
+import agentDisputesActiveIcon from "@/assets/agentImages/icon-mydisputesActive.svg"
+
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(false)
   const [scrollY, setScrollY] = useState(0)
@@ -438,9 +422,7 @@ export default function Navbar() {
 
   const isAgent = user?.role === "agent"
 
-  // logo destination — agents go to their dashboard, everyone else goes home
   const logoLink = isAuthenticated && isAgent ? "/agent/dashboard" : "/"
-
   const profileLink = isAgent ? "/agent/profile" : "/profile"
 
   // ── MOBILE LINKS ──
@@ -469,39 +451,44 @@ export default function Navbar() {
 
   const mobileAgentLinks = [
     {
-      icon: dashboard,
-      iconActive: dashboardActive,
+      icon: agentDashboardIcon,
+      iconActive: agentDashboardActiveIcon,
       title: "Dashboard",
       link: "/agent/dashboard",
     },
     {
-      icon: wallet,
-      iconActive: walletActive,
+      icon: agentListingsIcon,
+      iconActive: agentListingsActiveIcon,
       title: "My Listings",
       link: "/agent/my-listings",
     },
-    { icon: chats, iconActive: chatsActive, title: "Chats", link: "/messages" },
     {
-      icon: wallet,
-      iconActive: walletActive,
+      icon: agentChatsIcon,
+      iconActive: agentChatsActiveIcon,
+      title: "Chats",
+      link: "/messages",
+    },
+    {
+      icon: agentWalletIcon,
+      iconActive: agentWalletActiveIcon,
       title: "My Wallet",
       link: "/agent/wallet",
     },
     {
-      icon: wallet,
-      iconActive: walletActive,
+      icon: agentAdsIcon,
+      iconActive: agentAdsActiveIcon,
       title: "My Ads",
       link: "/agent/my-ads",
     },
     {
-      icon: wallet,
-      iconActive: walletActive,
+      icon: agentTransactionsIcon,
+      iconActive: agentTransactionsActiveIcon,
       title: "Transactions",
       link: "/agent/transactions",
     },
     {
-      icon: wallet,
-      iconActive: walletActive,
+      icon: agentDisputesIcon,
+      iconActive: agentDisputesActiveIcon,
       title: "Disputes",
       link: "/agent/my-disputes",
     },
@@ -560,7 +547,6 @@ export default function Navbar() {
     { title: "Create account", link: "/signup" },
   ]
 
-  // pick correct link sets based on auth + role
   const mobileLinks = isAuthenticated
     ? isAgent
       ? mobileAgentLinks
@@ -573,7 +559,6 @@ export default function Navbar() {
       : tabletUserLinks
     : tabletUnauthenticatedLinks
 
-  // scroll hide/show
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY
@@ -588,7 +573,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [scrollY])
 
-  // lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = openMenu ? "hidden" : "unset"
     return () => {
@@ -607,7 +591,6 @@ export default function Navbar() {
       className="fixed top-0 left-0 z-50 h-18 w-full bg-white px-6 font-ssPro transition-colors duration-300 md:h-16.5 md:bg-bg-accent md:p-8"
     >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between">
-        {/* Logo */}
         <Link
           to={logoLink}
           className="flex items-center gap-2 font-raleway text-[24px] leading-6 font-bold text-[#274AD0]"
@@ -618,7 +601,6 @@ export default function Navbar() {
           </p>
         </Link>
 
-        {/* ── TABLET NAV (md+) ── */}
         <div className="hidden items-center gap-2 md:flex">
           <div className="flex items-center gap-2">
             {tabletLinks.map((link, index) => {
@@ -652,13 +634,11 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* ── MOBILE HAMBURGER (below md) ── */}
         <button className="cursor-pointer md:hidden" onClick={handleMenu}>
           <img src={menu} alt="menu" />
         </button>
       </div>
 
-      {/* ── MOBILE MENU DRAWER ── */}
       <AnimatePresence>
         {openMenu && (
           <>
@@ -705,7 +685,6 @@ export default function Navbar() {
                     />
                   </div>
 
-                  {/* mobile nav links */}
                   <div className="mt-6 space-y-2">
                     {mobileLinks.map((link, index) => {
                       const isActive = location.pathname === link.link
@@ -739,7 +718,6 @@ export default function Navbar() {
                       )
                     })}
 
-                    {/* sign in / sign up — unauthenticated only */}
                     {!isAuthenticated && (
                       <div className="mt-6 flex items-center justify-between">
                         <Link
