@@ -58,12 +58,14 @@ export default function SelectAccountModal({
                       <p className="line-clamp-1 text-[14px] font-semibold">
                         {account.bankName}
                       </p>
+
                       {account.isDefault && (
                         <span className="shrink-0 rounded-full bg-button-bg px-2 py-0.5 text-[10px] text-white">
                           Default
                         </span>
                       )}
                     </div>
+
                     <p className="text-[12px] text-text-secondary">
                       ****{account.accountNumber.slice(-4)} &middot;{" "}
                       {account.accountName}

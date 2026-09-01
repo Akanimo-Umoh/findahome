@@ -79,10 +79,7 @@ import { EditAd } from "@/pages/agent/ads/edit-ad"
 import { MyWallet } from "@/pages/agent/wallet/my-wallet"
 import { ManageAccount } from "@/pages/agent/wallet/manage-account"
 import { AddAccount } from "@/pages/agent/wallet/add-account"
-import {
-  ReviewWithdrawal,
-  WithdrawFunds,
-} from "@/pages/agent/wallet/withdraw-funds"
+import { WithdrawFunds } from "@/pages/agent/wallet/withdraw-funds"
 import {
   FundWallet,
   FundWalletCallback,
@@ -251,14 +248,10 @@ export default function AppRoutes() {
           />
 
           {/* any cleared or confirmed route goes up */}
-          <Route
-            path="/agent/review-withdrawal"
-            element={<ReviewWithdrawal />}
-          />
 
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
-            path="/agent/transactions/:transactionId"
+            path="/agent/transactions/:id"
             element={<AgentTransactionDetails />}
           />
           <Route

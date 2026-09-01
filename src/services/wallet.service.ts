@@ -24,3 +24,24 @@ export const verifyWalletFunding = async (reference: string) => {
     balance: number
   }
 }
+
+export const withdrawFunds = async (payload: {
+  amount: number
+  accountId: string
+}) => {
+  const { data } = await api.post("/transaction/withdraw", {
+    amount: payload.amount,
+    bankId: payload.accountId,
+  })
+  return data as {
+    success: boolean
+    message: string
+    balance: number
+    transaction: {
+      _id: string
+      amount: number
+      status: "pending" | "approved" | "declined" | "failed"
+      reference: string
+    }
+  }
+}

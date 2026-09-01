@@ -1,18 +1,28 @@
 import { Link } from "react-router-dom"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import { useState } from "react"
-import { MOCK_TRANSACTIONS } from "@/data/mockTransactions"
-import type { TransactionStatus } from "@/types/transactions"
-import propertyImg from "@/assets/images/property.jpg"
+import type { PurchaseStatus } from "@/types/purchase"
+import { useAgentPurchases } from "@/hooks/useAgentPurchase"
+import Skeleton from "@/components/ui/Skeleton"
 
-type FilterTab = "all" | "pending" | "completed"
+type FilterStatus = "all" | "pending" | "completed"
 
-const STATUS_LABEL: Record<TransactionStatus, string> = {
-  inspection_requested: "Awaiting Inspection Schedule",
-  inspection_scheduled: "Awaiting Buyer Confirmation",
-  inspection_confirmed: "Inspection Upcoming",
-  inspection_completed: "Awaiting Property Payment",
-  property_payment_pending: "Property Payment Made",
+// const STATUS_LABEL: Record<TransactionStatus, string> = {
+//   inspection_requested: "Awaiting Inspection Schedule",
+//   inspection_scheduled: "Awaiting Buyer Confirmation",
+//   inspection_confirmed: "Inspection Upcoming",
+//   inspection_completed: "Awaiting Property Payment",
+//   property_payment_pending: "Property Payment Made",
+//   handover_requested: "Awaiting Handover Schedule",
+//   handover_scheduled: "Awaiting Buyer Confirmation",
+//   handover_confirmed: "Handover Upcoming",
+//   handover_completed: "Handover Completed",
+//   funds_released: "Payment Released",
+// }
+
+const STATUS_LABEL: Record<PurchaseStatus, string> = {
+  none: "Awaiting Inspection",
+  property_payment_made: "Property Payment Made",
   handover_requested: "Awaiting Handover Schedule",
   handover_scheduled: "Awaiting Buyer Confirmation",
   handover_confirmed: "Handover Upcoming",
@@ -20,25 +30,26 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
   funds_released: "Payment Released",
 }
 
-function getCategory(status: TransactionStatus): "pending" | "completed" {
+function getCategory(status: PurchaseStatus): "pending" | "completed" {
   return status === "funds_released" ? "completed" : "pending"
 }
 
-const tabs: { label: string; value: FilterTab }[] = [
+const tabs: { label: string; value: FilterStatus }[] = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Completed", value: "completed" },
 ]
 
 export default function Transactions() {
-  const [activeTab, setActiveTab] = useState<FilterTab>("all")
+  const [activeTab, setActiveTab] = useState<FilterStatus>("all")
+  const { purchases, isLoading, error } = useAgentPurchases()
 
   // TODO: replace with useQuery(["agentTransactions"]) once endpoint exists —
   // backend should only return transactions where payment has been made
   const filtered =
     activeTab === "all"
-      ? MOCK_TRANSACTIONS
-      : MOCK_TRANSACTIONS.filter((t) => getCategory(t.status) === activeTab)
+      ? purchases
+      : purchases.filter((p) => getCategory(p.status) === activeTab)
 
   return (
     <div>
@@ -59,59 +70,70 @@ export default function Transactions() {
       </div>
 
       <section className="mt-6 space-y-4">
-        {filtered.length === 0 ? (
-          <p className="mt-10 text-center text-[12px] text-text-secondary">
-            No {activeTab} transactions yet.
-          </p>
-        ) : (
-          filtered.map((transaction) => (
-            <Link
-              to={`/agent/transactions/${transaction.transactionId}`}
-              key={transaction.transactionId}
+        {isLoading &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
               className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
             >
-              <img
-                src={transaction.image ?? propertyImg}
-                className="h-15 w-15 shrink-0 rounded-lg object-cover"
-              />
+              <Skeleton className="h-15 w-15 shrink-0 rounded-lg" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+                <Skeleton className="h-3 w-1/3" />
+              </div>
+            </div>
+          ))}
+
+        {error && (
+          <p className="mt-10 text-center text-[12px] text-text-secondary">
+            {error}
+          </p>
+        )}
+
+        {!isLoading && !error && filtered.length === 0 && (
+          <p className="mt-10 text-center text-[12px] text-text-secondary">
+            No {activeTab === "all" ? "" : activeTab} transactions yet.
+          </p>
+        )}
+
+        {!isLoading &&
+          !error &&
+          filtered.map((purchase) => (
+            <Link
+              to={`/agent/transactions/${purchase._id}`}
+              key={purchase._id}
+              className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
+            >
+              <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
 
               <div className="space-y-2">
                 <div className="space-y-1">
                   <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
-                    Luxury 4 Bed-room Apartment
+                    {purchase.property.title}
                   </p>
 
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">
                       <img src={blueNairaIcon} alt="" className="h-4 w-4" />
                       <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
-                        3,000,000
+                        {purchase.price.toLocaleString()}
                       </p>
                     </div>
-
                     <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
-                      Buyer: Victoria Ntekim
+                      Buyer: {purchase.buyer.name}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-1">
                   <p className="w-fit rounded-2xl border border-text-disabled px-2 py-1 text-[12px] leading-4">
-                    {STATUS_LABEL[transaction.status]}
-                  </p>
-
-                  <p className="text-[12px] leading-4 text-text-secondary">
-                    Ref ID: FH-TRX-002834
-                  </p>
-
-                  <p className="text-[12px] leading-4 text-text-secondary">
-                    Last updated: 2hrs ago
+                    {STATUS_LABEL[purchase.status]}
                   </p>
                 </div>
               </div>
             </Link>
-          ))
-        )}
+          ))}
       </section>
     </div>
   )
