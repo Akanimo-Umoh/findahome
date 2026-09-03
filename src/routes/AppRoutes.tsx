@@ -84,6 +84,7 @@ import {
   FundWallet,
   FundWalletCallback,
 } from "@/pages/agent/wallet/fund-wallet"
+import InspectionPaymentCallback from "@/components/shared/InspectionPaymentCallback"
 
 export default function AppRoutes() {
   return (
@@ -142,6 +143,10 @@ export default function AppRoutes() {
           <Route path="/saved-properties" element={<SavedProperties />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditPersonalInfo />} />
+          <Route
+            path="/inspection-payment/callback"
+            element={<InspectionPaymentCallback />}
+          />
         </Route>
       </Route>
 

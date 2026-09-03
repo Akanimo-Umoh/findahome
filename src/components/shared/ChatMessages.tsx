@@ -10,7 +10,7 @@ import iconEscrow from "@/assets/images/icon-chat-escrow.svg"
 import iconEmoji from "@/assets/images/icon-chat-emoji.svg"
 import iconAttach from "@/assets/images/icon-chat-attach-files.svg"
 import iconSend from "@/assets/images/icon-chat-sendMessage.svg"
-import PayInspectionModal from "../PayInspectionModal"
+import PayInspectionModal from "./PayInspectionModal"
 // import agentAvatarFallback from "@/assets/images/agentAvatar.jpg";
 import { useEffect, useRef, useState } from "react"
 import EscrowProtectionTerms from "@/components/EscrowProtectionTerms"
@@ -20,6 +20,8 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "../Avatar"
 import { formatChatDateLabel } from "@/lib/utils"
 import RequestSuccessful from "./RequestSuccessful"
+import { useInspectionStatus } from "@/hooks/useInspectionStatus"
+import { toast } from "sonner"
 
 type ChatMessagesProps = {
   chatId?: string
@@ -110,6 +112,7 @@ export default function ChatMessages({
   // console.log("chat detail: ", chatDetail?.participants);
 
   const property = chatDetail?.property
+  const { stage: inspectionStage } = useInspectionStatus(property?._id)
 
   // header display
   const headerName = isAgent
@@ -123,16 +126,34 @@ export default function ChatMessages({
 
   const refId = property?._id?.slice(-4).toUpperCase()
 
-  // quick action buttons — users get all three, agents skip "Pay inspection fee"
+  // miniLinks — swap label + button behavior based on paid state
   const miniLinks = [
     ...(!isAgent
       ? [
           {
             icon: iconPay,
-            title: "Pay inspection fee",
-            bg: "bg-[#DCFBE9]",
-            color: "text-[#237142]",
-            action: "pay",
+            title:
+              inspectionStage === "none" ||
+              inspectionStage === "awaiting_payment"
+                ? "Pay inspection fee"
+                : inspectionStage === "awaiting_confirmation"
+                  ? "Payment under review"
+                  : "Request inspection schedule",
+            bg:
+              inspectionStage === "awaiting_confirmation"
+                ? "bg-bg-accent"
+                : "bg-[#DCFBE9]",
+            color:
+              inspectionStage === "awaiting_confirmation"
+                ? "text-text-secondary"
+                : "text-[#237142]",
+            action:
+              inspectionStage === "none" ||
+              inspectionStage === "awaiting_payment"
+                ? "pay"
+                : inspectionStage === "awaiting_confirmation"
+                  ? "noop"
+                  : "request-schedule",
           },
         ]
       : []),
@@ -391,9 +412,23 @@ export default function ChatMessages({
                 <button
                   key={link.title}
                   onClick={() => {
+                    if (link.action === "noop") return
                     if (link.action === "pay") setIsPayModalOpen(true)
                     if (link.action === "escrow") setIsEscrowOpen(true)
-                    if (link.action === "visit") setIsRequestSuccessOpen(true)
+                    if (link.action === "visit") {
+                      if (!isAgent && inspectionStage !== "scheduled") {
+                        toast.error(
+                          "Pay the inspection fee before requesting a visit."
+                        )
+                        return
+                      }
+                      setIsRequestSuccessOpen(true)
+                    }
+                    if (link.action === "request-schedule") {
+                      // manual nudge only — agent already gets this automatically once
+                      // admin confirms payment
+                      setIsRequestSuccessOpen(true)
+                    }
                   }}
                   className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}
                 >
@@ -409,6 +444,7 @@ export default function ChatMessages({
               <PayInspectionModal
                 isOpen={isPayModalOpen}
                 onClose={() => setIsPayModalOpen(false)}
+                propertyId={property?._id ?? ""}
                 propertyTitle={property?.title ?? ""}
                 propertyAddress={property?.address ?? ""}
                 propertyPrice={property?.price ?? 0}

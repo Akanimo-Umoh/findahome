@@ -4,7 +4,7 @@ import withdrawIcon from "@/assets/agentImages/icon-withdraw.svg"
 import whiteNairaIcon from "@/assets/agentImages/icon-white-naira.svg"
 import Activities from "./Activities"
 import { useAuthContext } from "@/context/AuthContext"
-// import NoWalletActivity from "./NoWalletActivity";
+import NoWalletActivity from "./NoWalletActivity"
 
 export default function MyWallet() {
   const navigate = useNavigate()
@@ -82,9 +82,9 @@ export default function MyWallet() {
       </section>
 
       {/* no wallet activity */}
-      {/* <section className="mt-1">
+      <section className="mt-1">
         <NoWalletActivity />
-      </section> */}
+      </section>
     </div>
   )
 }
