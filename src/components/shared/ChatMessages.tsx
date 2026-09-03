@@ -128,7 +128,7 @@ export default function ChatMessages({
 
   // miniLinks — swap label + button behavior based on paid state
   const miniLinks = [
-    ...(!isAgent
+    ...(!isAgent && inspectionStage !== "scheduled"
       ? [
           {
             icon: iconPay,
@@ -138,7 +138,7 @@ export default function ChatMessages({
                 ? "Pay inspection fee"
                 : inspectionStage === "awaiting_confirmation"
                   ? "Payment under review"
-                  : "Request inspection schedule",
+                  : "Purchase Property", // "completed"
             bg:
               inspectionStage === "awaiting_confirmation"
                 ? "bg-bg-accent"
@@ -153,7 +153,7 @@ export default function ChatMessages({
                 ? "pay"
                 : inspectionStage === "awaiting_confirmation"
                   ? "noop"
-                  : "request-schedule",
+                  : "purchase-property", // "completed"
           },
         ]
       : []),
@@ -445,6 +445,7 @@ export default function ChatMessages({
                 isOpen={isPayModalOpen}
                 onClose={() => setIsPayModalOpen(false)}
                 propertyId={property?._id ?? ""}
+                chatId={chatId ?? ""}
                 propertyTitle={property?.title ?? ""}
                 propertyAddress={property?.address ?? ""}
                 propertyPrice={property?.price ?? 0}

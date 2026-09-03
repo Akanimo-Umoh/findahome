@@ -2,8 +2,10 @@ import api from "@/services/api"
 
 export type Inspection = {
   _id: string
-  property: string
-  owner: string
+  property:
+    | string
+    | { _id: string; title: string; price: number; address: string }
+  owner: string | { _id: string; name?: string; email: string }
   user: string
   code: string
   status:

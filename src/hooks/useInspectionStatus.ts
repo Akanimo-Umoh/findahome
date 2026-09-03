@@ -9,7 +9,12 @@ type InspectionStage =
   | "none" // no inspection requested yet for this property
   | "awaiting_payment" // requested, fee not paid yet
   | "awaiting_confirmation" // paid, waiting on admin to confirm (agent notified automatically)
-  | "scheduled" // agent has moved status past inspection_requested
+  | "scheduled" // agent has moved things past inspection_requested — no button needed here
+  | "completed" // inspection done — buyer can now purchase
+
+function getPropertyId(property: Inspection["property"]): string {
+  return typeof property === "string" ? property : property?._id
+}
 
 export function useInspectionStatus(propertyId?: string) {
   const { user } = useAuthContext()
@@ -24,7 +29,7 @@ export function useInspectionStatus(propertyId?: string) {
   })
 
   const inspection: Inspection | undefined = propertyId
-    ? inspections.find((i) => i.property === propertyId)
+    ? inspections.find((i) => getPropertyId(i.property) === propertyId)
     : undefined
 
   const stage: InspectionStage = !inspection
@@ -33,7 +38,9 @@ export function useInspectionStatus(propertyId?: string) {
       ? "awaiting_payment"
       : inspection.status === "inspection_requested"
         ? "awaiting_confirmation"
-        : "scheduled"
+        : inspection.status === "inspection_completed"
+          ? "completed"
+          : "scheduled" // inspection_scheduled / inspection_confirmed
 
   return {
     inspection,

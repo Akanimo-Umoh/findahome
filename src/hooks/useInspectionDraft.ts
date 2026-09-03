@@ -6,6 +6,7 @@ type InspectionDraft = {
   inspectionId: string
   reference: string
   propertyId: string
+  chatId: string
 }
 
 export function useInspectionDraft() {
