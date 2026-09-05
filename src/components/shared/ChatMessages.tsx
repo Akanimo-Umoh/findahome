@@ -20,7 +20,10 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "../Avatar"
 import { formatChatDateLabel } from "@/lib/utils"
 import RequestSuccessful from "./RequestSuccessful"
-import { useInspectionStatus } from "@/hooks/useInspectionStatus"
+import {
+  useInspectionStatus,
+  type InspectionStage,
+} from "@/hooks/useInspectionStatus"
 import { toast } from "sonner"
 
 type ChatMessagesProps = {
@@ -126,34 +129,54 @@ export default function ChatMessages({
 
   const refId = property?._id?.slice(-4).toUpperCase()
 
+  const payButtonConfig: Record<
+    Exclude<InspectionStage, "confirmed" | "cancelled">,
+    { title: string; action: string; clickable: boolean }
+  > = {
+    none: { title: "Pay inspection fee", action: "pay", clickable: true },
+    awaiting_payment: {
+      title: "Pay inspection fee",
+      action: "pay",
+      clickable: true,
+    },
+    awaiting_confirmation: {
+      title: "Payment under review",
+      action: "noop",
+      clickable: false,
+    },
+    awaiting_schedule: {
+      title: "Awaiting agent schedule",
+      action: "noop",
+      clickable: false,
+    },
+    awaiting_buyer_confirm: {
+      title: "Confirm inspection date",
+      action: "noop",
+      clickable: false,
+    }, // wired later
+    completed: {
+      title: "Purchase Property",
+      action: "purchase-property",
+      clickable: true,
+    },
+  }
+
   // miniLinks — swap label + button behavior based on paid state
   const miniLinks = [
-    ...(!isAgent && inspectionStage !== "scheduled"
+    ...(!isAgent &&
+    inspectionStage !== "confirmed" &&
+    inspectionStage !== "cancelled"
       ? [
           {
             icon: iconPay,
-            title:
-              inspectionStage === "none" ||
-              inspectionStage === "awaiting_payment"
-                ? "Pay inspection fee"
-                : inspectionStage === "awaiting_confirmation"
-                  ? "Payment under review"
-                  : "Purchase Property", // "completed"
-            bg:
-              inspectionStage === "awaiting_confirmation"
-                ? "bg-bg-accent"
-                : "bg-[#DCFBE9]",
-            color:
-              inspectionStage === "awaiting_confirmation"
-                ? "text-text-secondary"
-                : "text-[#237142]",
-            action:
-              inspectionStage === "none" ||
-              inspectionStage === "awaiting_payment"
-                ? "pay"
-                : inspectionStage === "awaiting_confirmation"
-                  ? "noop"
-                  : "purchase-property", // "completed"
+            title: payButtonConfig[inspectionStage].title,
+            bg: payButtonConfig[inspectionStage].clickable
+              ? "bg-[#DCFBE9]"
+              : "bg-bg-accent",
+            color: payButtonConfig[inspectionStage].clickable
+              ? "text-[#237142]"
+              : "text-text-secondary",
+            action: payButtonConfig[inspectionStage].action,
           },
         ]
       : []),
@@ -416,18 +439,16 @@ export default function ChatMessages({
                     if (link.action === "pay") setIsPayModalOpen(true)
                     if (link.action === "escrow") setIsEscrowOpen(true)
                     if (link.action === "visit") {
-                      if (!isAgent && inspectionStage !== "scheduled") {
+                      if (!isAgent && inspectionStage !== "confirmed") {
                         toast.error(
-                          "Pay the inspection fee before requesting a visit."
+                          "Complete the inspection process before requesting a visit."
                         )
                         return
                       }
                       setIsRequestSuccessOpen(true)
                     }
-                    if (link.action === "request-schedule") {
-                      // manual nudge only — agent already gets this automatically once
-                      // admin confirms payment
-                      setIsRequestSuccessOpen(true)
+                    if (link.action === "purchase-property") {
+                      // TODO: route to purchase flow once that's built
                     }
                   }}
                   className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}

@@ -11,14 +11,17 @@ export type Inspection = {
   status:
     | "none"
     | "inspection_requested"
+    | "inspection_initialized"
+    | "inspection_paid"
     | "inspection_scheduled"
     | "inspection_confirmed"
     | "inspection_completed"
+    | "inspection_cancelled"
   fee: number
   escrowHeldBy?: string
   feePaid: boolean
   feeReleased: boolean
-  scheduledDate?: string
+  scheduledDate?: string | null
   createdAt: string
   updatedAt: string
 }
@@ -28,9 +31,11 @@ export async function requestInspection(propertyId: string) {
   const res = await api.post("/inspection/request", { propertyId })
   return res.data as {
     success: boolean
+    resumed: boolean
     message: string
     inspectionId: string
-    code: string
+    code?: string
+    status?: string
   }
 }
 
@@ -54,7 +59,6 @@ export async function initializeInspectionPayment(
     authorizationUrl: string
     reference: string
     inspectionId: string
-    escrowId: string
     callback_url: string
   }
 }

@@ -60,7 +60,7 @@ export default function Chats() {
           <div className="relative flex items-center justify-center lg:justify-start">
             <button
               onClick={() => navigate(-1)}
-              className="absolute left-0 lg:hidden"
+              className="absolute left-0 cursor-pointer lg:hidden"
             >
               <img src={goBack} alt="" />
             </button>

@@ -9,12 +9,10 @@ import {
 import successImg from "@/assets/images/img-pay-inspection-fee.png"
 import { Button } from "@/components/ui/button"
 import { useInspectionDraft } from "@/hooks/useInspectionDraft"
-import RequestSuccessful from "@/components/shared/RequestSuccessful"
 
 export default function InspectionPaymentCallback() {
   const navigate = useNavigate()
   const { getDraft, clearDraft } = useInspectionDraft()
-  const [isRequestSuccessOpen, setIsRequestSuccessOpen] = useState(false)
 
   // read once, before it gets cleared — this is also how we detect a refresh
   const [draft] = useState(() => getDraft())
@@ -51,35 +49,20 @@ export default function InspectionPaymentCallback() {
                 Payment received
               </DialogTitle>
               <DialogDescription className="text-center text-[14px] text-text-secondary">
-                Your inspection fee payment is being confirmed. You will receive
-                an email once it is verified, and your agent will automatically
-                get your inspection request at that time as well.
+                Your inspection fee payment is being confirmed. Once verified,
+                your agent will automatically be notified to schedule your
+                inspection date.
               </DialogDescription>
             </div>
 
             <div className="flex flex-col gap-3">
-              <Button
-                variant="app-primary"
-                size="full"
-                onClick={() => setIsRequestSuccessOpen(true)}
-              >
-                Schedule Inspection
-              </Button>
-              <Button variant="app-secondary" size="full" onClick={goToChat}>
+              <Button variant="app-primary" size="full" onClick={goToChat}>
                 Return to chat
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
-
-      <RequestSuccessful
-        open={isRequestSuccessOpen}
-        onOpenChange={setIsRequestSuccessOpen}
-        onGoToDashboard={() => navigate("/")}
-        title="Your agent has received your inspection request"
-        description="You will receive a notification for an inspection schedule"
-      />
     </>
   )
 }

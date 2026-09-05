@@ -14,6 +14,7 @@ import {
 } from "@/services/inspection.service"
 import { useInspectionDraft } from "@/hooks/useInspectionDraft"
 import axios from "axios"
+import { useInspectionStatus } from "@/hooks/useInspectionStatus"
 
 type PayInspectionProps = {
   isOpen: boolean
@@ -37,6 +38,7 @@ export default function PayInspectionModal({
   propertyImage,
 }: PayInspectionProps) {
   const { saveDraft } = useInspectionDraft()
+  const { stage: inspectionStage } = useInspectionStatus(propertyId)
   const [isRequesting, setIsRequesting] = useState(false)
   const [isPaying, setIsPaying] = useState(false)
   const [inspectionId, setInspectionId] = useState<string | null>(null)
@@ -54,10 +56,33 @@ export default function PayInspectionModal({
     return () => window.removeEventListener("pageshow", handlePageShow)
   }, [])
 
+  useEffect(() => {
+    if (!isOpen) return
+    if (inspectionStage === "awaiting_confirmation") {
+      toast.error(
+        "Your payment is already under review. We'll notify you once it's confirmed."
+      )
+      onClose()
+      return
+    }
+    if (
+      inspectionStage === "awaiting_schedule" ||
+      inspectionStage === "awaiting_buyer_confirm" ||
+      inspectionStage === "completed"
+    ) {
+      toast.error("You've already paid the inspection fee for this property.")
+      onClose()
+      return
+    }
+    // only proceed to requestInspection if stage is "none" or "awaiting_payment"
+  }, [isOpen, inspectionStage])
+
   // create the Inspection record the moment the modal opens — buyer never
   // sees the code step, it's generated server-side and used later by the agent
   useEffect(() => {
     if (!isOpen || inspectionId) return
+    if (inspectionStage !== "none" && inspectionStage !== "awaiting_payment")
+      return
 
     const init = async () => {
       setIsRequesting(true)
@@ -85,7 +110,7 @@ export default function PayInspectionModal({
 
     init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, propertyId])
+  }, [isOpen, propertyId, inspectionStage])
 
   const handlePay = async () => {
     if (!inspectionId) return
