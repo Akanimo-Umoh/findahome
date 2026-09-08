@@ -4,7 +4,6 @@ import withdrawIcon from "@/assets/agentImages/icon-withdraw.svg"
 import whiteNairaIcon from "@/assets/agentImages/icon-white-naira.svg"
 import Activities from "./Activities"
 import { useAuthContext } from "@/context/AuthContext"
-import NoWalletActivity from "./NoWalletActivity"
 
 export default function MyWallet() {
   const navigate = useNavigate()
@@ -79,11 +78,6 @@ export default function MyWallet() {
       {/* Recent Activities/Notifications */}
       <section className="mt-8.5">
         <Activities />
-      </section>
-
-      {/* no wallet activity */}
-      <section className="mt-1">
-        <NoWalletActivity />
       </section>
     </div>
   )

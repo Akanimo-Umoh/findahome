@@ -1,55 +1,68 @@
 import { Link } from "react-router-dom"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import { useState } from "react"
-import type { PurchaseStatus } from "@/types/purchase"
+import type { Purchase } from "@/types/purchase"
 import { useAgentPurchases } from "@/hooks/useAgentPurchase"
 import Skeleton from "@/components/ui/Skeleton"
-
-type FilterStatus = "all" | "pending" | "completed"
-
-// const STATUS_LABEL: Record<TransactionStatus, string> = {
-//   inspection_requested: "Awaiting Inspection Schedule",
-//   inspection_scheduled: "Awaiting Buyer Confirmation",
-//   inspection_confirmed: "Inspection Upcoming",
-//   inspection_completed: "Awaiting Property Payment",
-//   property_payment_pending: "Property Payment Made",
-//   handover_requested: "Awaiting Handover Schedule",
-//   handover_scheduled: "Awaiting Buyer Confirmation",
-//   handover_confirmed: "Handover Upcoming",
-//   handover_completed: "Handover Completed",
-//   funds_released: "Payment Released",
-// }
-
-const STATUS_LABEL: Record<PurchaseStatus, string> = {
-  none: "Awaiting Inspection",
-  property_payment_made: "Property Payment Made",
-  handover_requested: "Awaiting Handover Schedule",
-  handover_scheduled: "Awaiting Buyer Confirmation",
-  handover_confirmed: "Handover Upcoming",
-  handover_completed: "Handover Completed",
-  funds_released: "Payment Released",
-}
-
-function getCategory(status: PurchaseStatus): "pending" | "completed" {
-  return status === "funds_released" ? "completed" : "pending"
-}
-
-const tabs: { label: string; value: FilterStatus }[] = [
-  { label: "All", value: "all" },
-  { label: "Pending", value: "pending" },
-  { label: "Completed", value: "completed" },
-]
+import { useAgentInspections } from "@/hooks/useAgentInspection"
+import type { Inspection } from "@/services/inspection.service"
+import {
+  PURCHASE_STATUS_LABEL,
+  INSPECTION_STATUS_LABEL,
+  getPurchaseCategory,
+  getInspectionCategory,
+  getPropertyId,
+  getPersonName,
+  getPropertyImage,
+  tabs,
+  type MergedItem,
+} from "./transactionHelpers"
 
 export default function Transactions() {
-  const [activeTab, setActiveTab] = useState<FilterStatus>("all")
-  const { purchases, isLoading, error } = useAgentPurchases()
+  const [activeTab, setActiveTab] = useState<"all" | "pending" | "completed">(
+    "all"
+  )
+  const {
+    purchases,
+    isLoading: purchaseLoading,
+    error: purchasesError,
+  } = useAgentPurchases()
+  const {
+    inspections,
+    isLoading: inspectionsLoading,
+    error: inspectionsError,
+  } = useAgentInspections()
 
-  // TODO: replace with useQuery(["agentTransactions"]) once endpoint exists —
-  // backend should only return transactions where payment has been made
+  const isLoading = purchaseLoading || inspectionsLoading
+  const error = purchasesError || inspectionsError
+
+  const purchasedPropertyIds = new Set(
+    purchases.map((p) => getPropertyId(p.property))
+  )
+  const visibleInspections = inspections.filter(
+    (i) => !purchasedPropertyIds.has(getPropertyId(i.property))
+  )
+
+  const merged: MergedItem[] = [
+    ...visibleInspections.map((i) => ({
+      kind: "inspection" as const,
+      data: i,
+    })),
+    ...purchases.map((p) => ({ kind: "purchase" as const, data: p })),
+  ].sort(
+    (a, b) =>
+      new Date(b.data.updatedAt).getTime() -
+      new Date(a.data.updatedAt).getTime()
+  )
+
   const filtered =
     activeTab === "all"
-      ? purchases
-      : purchases.filter((p) => getCategory(p.status) === activeTab)
+      ? merged
+      : merged.filter((item) =>
+          item.kind === "purchase"
+            ? getPurchaseCategory(item.data.status) === activeTab
+            : getInspectionCategory() === activeTab
+        )
 
   return (
     <div>
@@ -99,41 +112,88 @@ export default function Transactions() {
 
         {!isLoading &&
           !error &&
-          filtered.map((purchase) => (
-            <Link
-              to={`/agent/transactions/${purchase._id}`}
-              key={purchase._id}
-              className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
-            >
-              <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+          filtered.map((item) => {
+            const isPurchase = item.kind === "purchase"
+            const property = item.data.property
+            const propertyTitle =
+              typeof property === "string" ? "" : property?.title
+            const propertyImage = getPropertyImage(
+              typeof property === "string"
+                ? undefined
+                : (property as { firstImage?: string; image?: string })
+            )
+            const buyerName = isPurchase
+              ? getPersonName((item.data as Purchase).buyer)
+              : getPersonName((item.data as Inspection).user)
+            const price = isPurchase
+              ? (item.data as Purchase).price
+              : (item.data as Inspection).fee
+            const statusLabel = isPurchase
+              ? PURCHASE_STATUS_LABEL[(item.data as Purchase).status]
+              : INSPECTION_STATUS_LABEL[(item.data as Inspection).status]
+            const linkTo = isPurchase
+              ? `/agent/transactions/${item.data._id}`
+              : `/agent/transactions/${item.data._id}/schedule-inspection`
 
-              <div className="space-y-2">
-                <div className="space-y-1">
-                  <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
-                    {purchase.property.title}
-                  </p>
+            return (
+              <Link
+                to={linkTo}
+                key={item.data._id}
+                className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
+              >
+                {propertyImage ? (
+                  <img
+                    src={propertyImage}
+                    alt={propertyTitle}
+                    className="h-15 w-15 shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+                )}
 
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      <img src={blueNairaIcon} alt="" className="h-4 w-4" />
-                      <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
-                        {purchase.price.toLocaleString()}
-                      </p>
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
+                      {propertyTitle}
+                    </p>
+
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center">
+                        <img src={blueNairaIcon} alt="" className="h-4 w-4" />
+                        <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
+                          {price.toLocaleString()}
+                        </p>
+                      </div>
+                      {buyerName && (
+                        <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
+                          Buyer: {buyerName}
+                        </p>
+                      )}
                     </div>
-                    <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
-                      Buyer: {purchase.buyer.name}
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="w-fit rounded-2xl border border-text-disabled px-2 py-1 text-[12px] leading-4">
+                      {statusLabel}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[12px] leading-4 text-text-secondary">
+                      Last updated:{" "}
+                      {new Date(item.data.updatedAt).toLocaleDateString(
+                        "en-US",
+                        {
+                          day: "numeric",
+                          month: "short",
+                        }
+                      )}
                     </p>
                   </div>
                 </div>
-
-                <div className="space-y-1">
-                  <p className="w-fit rounded-2xl border border-text-disabled px-2 py-1 text-[12px] leading-4">
-                    {STATUS_LABEL[purchase.status]}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
       </section>
     </div>
   )

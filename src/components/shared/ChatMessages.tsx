@@ -24,7 +24,6 @@ import {
   useInspectionStatus,
   type InspectionStage,
 } from "@/hooks/useInspectionStatus"
-import { toast } from "sonner"
 
 type ChatMessagesProps = {
   chatId?: string
@@ -115,7 +114,9 @@ export default function ChatMessages({
   // console.log("chat detail: ", chatDetail?.participants);
 
   const property = chatDetail?.property
-  const { stage: inspectionStage } = useInspectionStatus(property?._id)
+  const { inspection, stage: inspectionStage } = useInspectionStatus(
+    property?._id
+  )
 
   // header display
   const headerName = isAgent
@@ -180,13 +181,17 @@ export default function ChatMessages({
           },
         ]
       : []),
-    {
-      icon: iconVisit,
-      title: "Schedule visit",
-      bg: "bg-[#E2EEFF]",
-      color: "text-[#274AD0]",
-      action: "visit",
-    },
+    ...(isAgent
+      ? [
+          {
+            icon: iconVisit,
+            title: "Schedule visit",
+            bg: "bg-[#E2EEFF]",
+            color: "text-[#274AD0]",
+            action: "visit",
+          },
+        ]
+      : []),
     {
       icon: iconEscrow,
       title: "Escrow terms",
@@ -439,13 +444,13 @@ export default function ChatMessages({
                     if (link.action === "pay") setIsPayModalOpen(true)
                     if (link.action === "escrow") setIsEscrowOpen(true)
                     if (link.action === "visit") {
-                      if (!isAgent && inspectionStage !== "confirmed") {
-                        toast.error(
-                          "Complete the inspection process before requesting a visit."
+                      if (inspection?._id) {
+                        navigate(
+                          `/agent/transactions/${inspection._id}/schedule-inspection`
                         )
-                        return
+                      } else {
+                        navigate("/agent/my-transactions")
                       }
-                      setIsRequestSuccessOpen(true)
                     }
                     if (link.action === "purchase-property") {
                       // TODO: route to purchase flow once that's built
