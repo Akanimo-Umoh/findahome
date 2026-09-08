@@ -48,10 +48,15 @@ export function getPersonName(
 }
 
 export function getPropertyImage(
-  property: string | { firstImage?: string; image?: string } | undefined
+  property: string | Record<string, unknown> | undefined
 ): string | undefined {
   if (typeof property === "string" || !property) return undefined
-  return property.firstImage ?? property.image
+  const firstImage = property.firstImage
+  const image = property.image
+  return (
+    (typeof firstImage === "string" ? firstImage : undefined) ??
+    (typeof image === "string" ? image : undefined)
+  )
 }
 
 export type MergedItem =

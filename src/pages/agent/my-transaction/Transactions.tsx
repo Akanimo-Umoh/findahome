@@ -117,11 +117,7 @@ export default function Transactions() {
             const property = item.data.property
             const propertyTitle =
               typeof property === "string" ? "" : property?.title
-            const propertyImage = getPropertyImage(
-              typeof property === "string"
-                ? undefined
-                : (property as { firstImage?: string; image?: string })
-            )
+            const propertyImage = getPropertyImage(property)
             const buyerName = isPurchase
               ? getPersonName((item.data as Purchase).buyer)
               : getPersonName((item.data as Inspection).user)
