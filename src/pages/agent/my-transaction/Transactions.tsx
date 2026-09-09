@@ -1,68 +1,25 @@
 import { Link } from "react-router-dom"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import { useState } from "react"
-import type { Purchase } from "@/types/purchase"
-import { useAgentPurchases } from "@/hooks/useAgentPurchase"
 import Skeleton from "@/components/ui/Skeleton"
-import { useAgentInspections } from "@/hooks/useAgentInspection"
-import type { Inspection } from "@/services/inspection.service"
 import {
-  PURCHASE_STATUS_LABEL,
-  INSPECTION_STATUS_LABEL,
-  getPurchaseCategory,
-  getInspectionCategory,
-  getPropertyId,
+  getStatusLabel,
+  getCategory,
   getPersonName,
   getPropertyImage,
   tabs,
-  type MergedItem,
+  type FilterStatus,
 } from "./transactionHelpers"
+import { useAgentTransactionsList } from "@/hooks/useAgentTransactions"
 
 export default function Transactions() {
-  const [activeTab, setActiveTab] = useState<"all" | "pending" | "completed">(
-    "all"
-  )
-  const {
-    purchases,
-    isLoading: purchaseLoading,
-    error: purchasesError,
-  } = useAgentPurchases()
-  const {
-    inspections,
-    isLoading: inspectionsLoading,
-    error: inspectionsError,
-  } = useAgentInspections()
-
-  const isLoading = purchaseLoading || inspectionsLoading
-  const error = purchasesError || inspectionsError
-
-  const purchasedPropertyIds = new Set(
-    purchases.map((p) => getPropertyId(p.property))
-  )
-  const visibleInspections = inspections.filter(
-    (i) => !purchasedPropertyIds.has(getPropertyId(i.property))
-  )
-
-  const merged: MergedItem[] = [
-    ...visibleInspections.map((i) => ({
-      kind: "inspection" as const,
-      data: i,
-    })),
-    ...purchases.map((p) => ({ kind: "purchase" as const, data: p })),
-  ].sort(
-    (a, b) =>
-      new Date(b.data.updatedAt).getTime() -
-      new Date(a.data.updatedAt).getTime()
-  )
+  const [activeTab, setActiveTab] = useState<FilterStatus>("all")
+  const { items, isLoading, error } = useAgentTransactionsList()
 
   const filtered =
     activeTab === "all"
-      ? merged
-      : merged.filter((item) =>
-          item.kind === "purchase"
-            ? getPurchaseCategory(item.data.status) === activeTab
-            : getInspectionCategory() === activeTab
-        )
+      ? items
+      : items.filter((item) => getCategory(item) === activeTab)
 
   return (
     <div>
@@ -113,28 +70,21 @@ export default function Transactions() {
         {!isLoading &&
           !error &&
           filtered.map((item) => {
-            const isPurchase = item.kind === "purchase"
-            const property = item.data.property
-            const propertyTitle =
-              typeof property === "string" ? "" : property?.title
-            const propertyImage = getPropertyImage(property)
+            const isPurchase = item.recordType === "purchase"
+            const propertyTitle = item.property?.title ?? ""
+            const propertyImage = getPropertyImage(item.property)
             const buyerName = isPurchase
-              ? getPersonName((item.data as Purchase).buyer)
-              : getPersonName((item.data as Inspection).user)
-            const price = isPurchase
-              ? (item.data as Purchase).price
-              : (item.data as Inspection).fee
-            const statusLabel = isPurchase
-              ? PURCHASE_STATUS_LABEL[(item.data as Purchase).status]
-              : INSPECTION_STATUS_LABEL[(item.data as Inspection).status]
+              ? getPersonName(item.buyer)
+              : getPersonName(item.user)
+            const price = isPurchase ? item.price : item.fee
             const linkTo = isPurchase
-              ? `/agent/transactions/${item.data._id}`
-              : `/agent/transactions/${item.data._id}/schedule-inspection`
+              ? `/agent/transactions/${item._id}`
+              : `/agent/transactions/${item._id}/schedule-inspection`
 
             return (
               <Link
                 to={linkTo}
-                key={item.data._id}
+                key={item._id}
                 className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
               >
                 {propertyImage ? (
@@ -157,7 +107,7 @@ export default function Transactions() {
                       <div className="flex items-center">
                         <img src={blueNairaIcon} alt="" className="h-4 w-4" />
                         <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
-                          {price.toLocaleString()}
+                          {(price ?? 0).toLocaleString()}
                         </p>
                       </div>
                       {buyerName && (
@@ -170,20 +120,17 @@ export default function Transactions() {
 
                   <div className="space-y-1">
                     <p className="w-fit rounded-2xl border border-text-disabled px-2 py-1 text-[12px] leading-4">
-                      {statusLabel}
+                      {getStatusLabel(item)}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-[12px] leading-4 text-text-secondary">
                       Last updated:{" "}
-                      {new Date(item.data.updatedAt).toLocaleDateString(
-                        "en-US",
-                        {
-                          day: "numeric",
-                          month: "short",
-                        }
-                      )}
+                      {new Date(item.updatedAt).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                      })}
                     </p>
                   </div>
                 </div>

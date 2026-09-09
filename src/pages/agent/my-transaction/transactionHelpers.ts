@@ -1,9 +1,8 @@
-import type { Purchase, PurchaseStatus } from "@/types/purchase"
-import type { Inspection } from "@/services/inspection.service"
+import type { MergedTransaction } from "@/services/transaction.service"
 
 export type FilterStatus = "all" | "pending" | "completed"
 
-export const PURCHASE_STATUS_LABEL: Record<PurchaseStatus, string> = {
+const PURCHASE_STATUS_LABEL: Record<string, string> = {
   none: "Awaiting Inspection",
   property_payment_made: "Property Payment Made",
   handover_requested: "Awaiting Handover Schedule",
@@ -13,7 +12,7 @@ export const PURCHASE_STATUS_LABEL: Record<PurchaseStatus, string> = {
   funds_released: "Payment Released",
 }
 
-export const INSPECTION_STATUS_LABEL: Record<Inspection["status"], string> = {
+const INSPECTION_STATUS_LABEL: Record<string, string> = {
   none: "Not Started",
   inspection_requested: "Awaiting Payment",
   inspection_initialized: "Payment Under Review",
@@ -24,18 +23,23 @@ export const INSPECTION_STATUS_LABEL: Record<Inspection["status"], string> = {
   inspection_cancelled: "Cancelled",
 }
 
-export function getPurchaseCategory(
-  status: PurchaseStatus
-): "pending" | "completed" {
-  return status === "funds_released" ? "completed" : "pending"
+export function getStatusLabel(item: MergedTransaction): string {
+  const map =
+    item.recordType === "purchase"
+      ? PURCHASE_STATUS_LABEL
+      : INSPECTION_STATUS_LABEL
+  return map[item.status] ?? item.status
 }
 
-export function getInspectionCategory(): "pending" | "completed" {
-  return "pending"
+export function getCategory(item: MergedTransaction): "pending" | "completed" {
+  if (item.recordType === "purchase") {
+    return item.status === "funds_released" ? "completed" : "pending"
+  }
+  return "pending" // inspections never reach a "completed" bucket in this list
 }
 
 export function getPropertyId(
-  property: string | { _id: string } | undefined
+  property: { _id: string } | string | undefined
 ): string {
   return typeof property === "string" ? property : (property?._id ?? "")
 }
@@ -48,20 +52,11 @@ export function getPersonName(
 }
 
 export function getPropertyImage(
-  property: string | Record<string, unknown> | undefined
+  property: { image?: string; firstImage?: string } | string | undefined
 ): string | undefined {
   if (typeof property === "string" || !property) return undefined
-  const firstImage = property.firstImage
-  const image = property.image
-  return (
-    (typeof firstImage === "string" ? firstImage : undefined) ??
-    (typeof image === "string" ? image : undefined)
-  )
+  return property.image ?? property.firstImage
 }
-
-export type MergedItem =
-  | { kind: "inspection"; data: Inspection }
-  | { kind: "purchase"; data: Purchase }
 
 export const tabs: { label: string; value: FilterStatus }[] = [
   { label: "All", value: "all" },

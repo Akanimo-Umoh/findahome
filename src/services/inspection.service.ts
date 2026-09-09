@@ -6,7 +6,7 @@ export type Inspection = {
     | string
     | { _id: string; title: string; price: number; address: string }
   owner: string | { _id: string; name?: string; email: string }
-  user: string | { _id: string; name?: string; email: string } // CHANGED: was string only — getAgentInspections populates this with name/email
+  user: string | { _id: string; name?: string; email: string }
   code: string
   status:
     | "none"
@@ -63,20 +63,8 @@ export async function initializeInspectionPayment(
   }
 }
 
-// Get all inspections for the logged-in buyer — used to check whether an
-// inspection already exists for a given property before creating a new one
+// Get all inspections for the logged-in buyer — used to check whether an inspection already exists for a given property before creating a new one
 export async function getUserInspections() {
   const res = await api.get("/inspection/user-inspections")
   return res.data.inspections as Inspection[]
-}
-
-// Get all inspections for properties managed by the logged-in agent.
-// Note: response also includes `properties`, not just `inspections`.
-export async function getAgentInspections() {
-  const res = await api.get("/inspection/agent-inspections")
-  return res.data as {
-    success: boolean
-    properties: { _id: string; title: string; price: number; address: string }[]
-    inspections: Inspection[]
-  }
 }
