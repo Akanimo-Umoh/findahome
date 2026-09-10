@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import { useState } from "react"
 import Skeleton from "@/components/ui/Skeleton"
@@ -11,9 +11,14 @@ import {
   type FilterStatus,
 } from "./transactionHelpers"
 import { useAgentTransactionsList } from "@/hooks/useAgentTransactions"
+import Pagination from "@/components/shared/Pagination"
+
+const ITEMS_PER_PAGE = 24
 
 export default function Transactions() {
   const [activeTab, setActiveTab] = useState<FilterStatus>("all")
+  const [searchParams, setSearchParams] = useSearchParams()
+  const currentPage = Number(searchParams.get("page")) || 1
   const { items, isLoading, error } = useAgentTransactionsList()
 
   const filtered =
@@ -21,13 +26,28 @@ export default function Transactions() {
       ? items
       : items.filter((item) => getCategory(item) === activeTab)
 
+  // client-side pagination over the filtered list
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+  const paginatedItems = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE)
+
+  const goToPage = (page: number) => {
+    setSearchParams({ page: page.toString() })
+  }
+
+  // switching tabs resets to page 1, since the filtered set changes size
+  const handleTabChange = (tab: FilterStatus) => {
+    setActiveTab(tab)
+    setSearchParams({ page: "1" })
+  }
+
   return (
     <div>
       <div className="flex items-center justify-center gap-5">
         {tabs.map((tab) => (
           <button
             key={tab.value}
-            onClick={() => setActiveTab(tab.value)}
+            onClick={() => handleTabChange(tab.value)}
             className={`cursor-pointer rounded-lg px-2 py-1 text-[14px] transition-colors duration-300 xs:text-[16px] ${
               activeTab === tab.value
                 ? "bg-button-bg text-white"
@@ -41,7 +61,7 @@ export default function Transactions() {
 
       <section className="mt-6 space-y-4">
         {isLoading &&
-          Array.from({ length: 3 }).map((_, i) => (
+          Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
             <div
               key={i}
               className="flex items-center gap-3 rounded-xl border border-bg-accent p-2"
@@ -69,7 +89,7 @@ export default function Transactions() {
 
         {!isLoading &&
           !error &&
-          filtered.map((item) => {
+          paginatedItems.map((item) => {
             const isPurchase = item.recordType === "purchase"
             const propertyTitle = item.property?.title ?? ""
             const propertyImage = getPropertyImage(item.property)
@@ -138,6 +158,15 @@ export default function Transactions() {
             )
           })}
       </section>
+
+      {/* pagination control */}
+      {!isLoading && !error && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={goToPage}
+        />
+      )}
     </div>
   )
 }

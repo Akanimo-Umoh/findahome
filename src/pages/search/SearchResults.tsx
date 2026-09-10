@@ -1,8 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { useMemo, useRef, useState } from "react"
-import leftArrow from "@/assets/images/icon-left-arrow.svg"
-import rightArrow from "@/assets/images/icon-right-arrow.svg"
-import filterIcon from "@/assets/images/icon-filter.svg"
+// import filterIcon from "@/assets/images/icon-filter.svg"
 import goBack from "@/assets/images/icon-back.svg"
 import { useProperties } from "@/hooks/useProperties"
 import {
@@ -15,16 +13,14 @@ import {
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 import Search from "../home/Search"
 import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
+import Pagination from "@/components/shared/Pagination"
 
 type SortOption = "low-to-high" | "high-to-low" | "newest" | ""
-type FilterOption = "all" | "verified"
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const [sortBy, setSortBy] = useState<SortOption>("")
-  const [filterBy, setFilterBy] = useState<FilterOption>("all")
-  const [showFilter, setShowFilter] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -38,7 +34,6 @@ export default function SearchResults() {
   const displayProperties = useMemo(() => {
     let result = [...properties]
 
-    // text search for title and address
     if (query.trim()) {
       const search = query.toLowerCase()
       result = result.filter(
@@ -48,12 +43,6 @@ export default function SearchResults() {
       )
     }
 
-    // verified filter
-    if (filterBy === "verified") {
-      result = result.filter((p) => p.owner.isVerified)
-    }
-
-    // sort
     if (sortBy === "low-to-high") {
       result = [...result].sort((a, b) => a.price - b.price)
     } else if (sortBy === "high-to-low") {
@@ -66,7 +55,7 @@ export default function SearchResults() {
     }
 
     return result
-  }, [properties, query, filterBy, sortBy])
+  }, [properties, query, sortBy])
 
   const totalPages = Math.ceil(displayProperties.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
@@ -83,32 +72,11 @@ export default function SearchResults() {
     }, 150)
   }
 
+  // goToPage now just updates params — Pagination handles bounds/scroll
   const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      const params = new URLSearchParams(searchParams)
-      params.set("page", page.toString())
-      setSearchParams(params)
-      window.scrollTo({ top: 0, behavior: "smooth" })
-    }
-  }
-
-  const getPageNumbers = () => {
-    const pages: (number | string)[] = []
-
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-      }
-    } else {
-      pages.push(1)
-      if (currentPage > 3) pages.push("...")
-      const start = Math.max(2, currentPage - 1)
-      const end = Math.min(totalPages - 1, currentPage + 1)
-      for (let i = start; i <= end; i++) pages.push(i)
-      if (currentPage < totalPages - 2) pages.push("...")
-      pages.push(totalPages)
-    }
-    return pages
+    const params = new URLSearchParams(searchParams)
+    params.set("page", page.toString())
+    setSearchParams(params)
   }
 
   return (
@@ -156,7 +124,7 @@ export default function SearchResults() {
         </div>
 
         {/* sort and filter by */}
-        <div className="mt-1 flex items-center justify-between gap-2">
+        <div className="mt-1 flex items-center justify-start">
           <Select
             value={sortBy}
             onValueChange={(value) => {
@@ -173,57 +141,17 @@ export default function SearchResults() {
               {/* <SelectItem value="most-popular">Most Popular</SelectItem> */}
             </SelectContent>
           </Select>
-
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowFilter((prev) => !prev)}
-              className={`filter-shadow flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white ${filterBy !== "all" ? "ring-1 ring-button-bg" : ""}`}
-            >
-              <img src={filterIcon} alt="" />
-              {/* we can filter by verified only and all */}
-            </button>
-
-            {showFilter && (
-              <>
-                {/* backdrop — closes dropdown when clicking outside */}
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowFilter(false)}
-                />
-
-                {/* dropdown */}
-                <div className="absolute top-10 right-0 z-20 min-w-35 overflow-hidden rounded-xl border border-bg-accent bg-white py-1 shadow-sm">
-                  {(["all", "verified"] as FilterOption[]).map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      onClick={() => {
-                        triggerTransition(() => setFilterBy(option))
-                        setShowFilter(false)
-                      }}
-                      className={`w-full px-4 py-2 text-left text-[13px] transition-colors ${
-                        filterBy === option
-                          ? "bg-bg-tertiary font-semibold text-button-bg"
-                          : "text-text-primary hover:bg-bg-tertiary"
-                      }`}
-                    >
-                      {option === "all" ? "All" : "Verified only"}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
         </div>
 
         {/* Results */}
         <div className="mt-6 space-y-8">
           {loading || isTransitioning ? (
             // initial load
-            Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
-              <PropertyCardSkeleton key={index} />
-            ))
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <PropertyCardSkeleton key={index} />
+              ))}
+            </div>
           ) : error ? (
             // api error
             <div className="py-12 text-center">
@@ -233,7 +161,7 @@ export default function SearchResults() {
             </div>
           ) : currentProperties.length > 0 ? (
             // results
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {currentProperties.map((property) => (
                 <PropertyCardCtn key={property._id} property={property} />
               ))}
@@ -248,57 +176,13 @@ export default function SearchResults() {
           )}
 
           {/* Pagination */}
-          {!loading &&
-            !isTransitioning &&
-            !error &&
-            displayProperties.length > ITEMS_PER_PAGE && (
-              <div className="flex items-center justify-center gap-2 py-4">
-                <button
-                  onClick={() => goToPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`p-2 ${
-                    currentPage === 1
-                      ? "cursor-not-allowed opacity-40"
-                      : "cursor-pointer"
-                  }`}
-                >
-                  <img src={leftArrow} alt="Previous" className="h-6 w-6" />
-                </button>
-
-                <div className="flex items-center gap-2">
-                  {getPageNumbers().map((pageNum, index) => (
-                    <button
-                      key={index}
-                      onClick={() =>
-                        typeof pageNum === "number" && goToPage(pageNum)
-                      }
-                      disabled={pageNum === "..."}
-                      className={`flex h-8 min-w-8 items-center justify-center rounded-md text-[14px] font-medium transition-colors ${
-                        pageNum === currentPage
-                          ? "bg-[#274AD0] text-white"
-                          : pageNum === "..."
-                            ? "cursor-default text-text-secondary"
-                            : "cursor-pointer text-text-primary hover:bg-gray-100"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => goToPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`p-2 ${
-                    currentPage === totalPages
-                      ? "cursor-not-allowed opacity-40"
-                      : "cursor-pointer"
-                  }`}
-                >
-                  <img src={rightArrow} alt="Next" className="h-6 w-6" />
-                </button>
-              </div>
-            )}
+          {!loading && !isTransitioning && !error && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+            />
+          )}
         </div>
       </main>
     </div>
