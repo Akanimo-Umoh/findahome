@@ -68,3 +68,19 @@ export async function getUserInspections() {
   const res = await api.get("/inspection/user-inspections")
   return res.data.inspections as Inspection[]
 }
+
+// user reschedules inspection
+export async function rescheduleInspection(
+  inspectionId: string,
+  reason?: string
+) {
+  const res = await api.patch("/inspection/reschedule", {
+    inspectionId,
+    reason,
+  })
+  return res.data as {
+    success: boolean
+    message: string
+    inspection: Inspection
+  }
+}

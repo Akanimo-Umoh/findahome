@@ -654,8 +654,8 @@ import {
 import { getMockTransaction } from "@/data/mockTransactions"
 import type { TransactionStatus } from "@/types/transactions"
 import PageHeader from "@/components/shared/PageHeader"
-
-const AGENT_CHAT_PATH = "/chat"
+import { useAgentChatForProperty } from "@/hooks/useAgentChatForProperty"
+import { rescheduleInspection } from "@/services/inspection.service"
 
 export default function TransactionDetails() {
   const { transactionId } = useParams()
@@ -673,12 +673,24 @@ export default function TransactionDetails() {
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status] // undefined → hide section
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
 
-  const handleSuggestNewTime = () => {
-    toast.success("Agent notified", {
-      description:
-        "We've informed your agent about the reschedule. Please chat to coordinate the new time.",
-    })
-    navigate(AGENT_CHAT_PATH)
+  const { chatId } = useAgentChatForProperty(transaction?.property?._id)
+  const agentChatPath = chatId ? `/messages/${chatId}` : "/messages"
+
+  const handleSuggestNewTime = async () => {
+    if (!inspectionId) return
+    setIsRescheduling(true)
+    try {
+      await rescheduleInspection(inspectionId)
+      setIsRescheduleModalOpen(false)
+      navigate(agentChatPath)
+      toast.success("Let your agent know a new time that works for you", {
+        description: "Suggest a new date and time directly in chat.",
+      })
+    } catch (err) {
+      toast.error("Couldn't reject the schedule. Please try again.")
+    } finally {
+      setIsRescheduling(false)
+    }
   }
 
   // Shared props for TransactionActions — rendered twice (lg + mobile),

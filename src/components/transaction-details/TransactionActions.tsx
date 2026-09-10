@@ -47,6 +47,7 @@ export default function TransactionActions({
             <Button variant="app-primary" size="full" onClick={onRequestAction}>
               Request Inspection Schedule
             </Button>
+
             <RequestSuccessful
               open={isRequestSuccessOpen}
               onOpenChange={onRequestSuccessOpenChange}
@@ -63,6 +64,7 @@ export default function TransactionActions({
             <Button variant="app-primary" size="full" onClick={onConfirmAction}>
               Confirm Inspection Schedule
             </Button>
+
             <ScheduleConfirmedOverlay
               open={isConfirmedOverlayOpen}
               onOpenChange={onConfirmedOverlayOpenChange}
