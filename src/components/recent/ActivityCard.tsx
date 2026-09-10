@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+// import verifiedIcon from "@/assets/images/icon-verified-green.svg"
 import { Button } from "@/components/ui/button"
 import type { Activity } from "@/types/transactions"
 
@@ -9,7 +9,7 @@ type ActivityCardProps = {
 
 export default function ActivityCard({ activity }: ActivityCardProps) {
   return (
-    <div className="space-y-4 rounded-lg border border-bg-accent px-3 pt-4 pb-2 shadow-sm hover:shadow-lg">
+    <div className="space-y-4 rounded-lg border border-bg-accent px-3 pt-4 pb-2 hover:shadow-sm">
       <div className="flex items-center gap-3">
         <img
           src={activity.propertyImg}
@@ -18,21 +18,21 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
         />
 
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-2">
+          <div className="">
             <p className="line-clamp-1 font-raleway text-[14px] font-semibold tracking-[1px] md:text-[16px]">
               {activity.type}
             </p>
-            {activity.agentVerified && (
+            {/* {activity.agentVerified && (
               <img
                 src={verifiedIcon}
                 alt="Verified Agent"
                 className="shrink-0"
               />
-            )}
+            )} */}
           </div>
 
           <p className="line-clamp-1 text-[12px] leading-4 text-[#10B981] md:text-[14px]">
-            {activity.statusLabel}{" "}
+            {activity.statusLabel}&nbsp;-&nbsp;
             <span className="text-text-secondary">{activity.date}</span>
           </p>
 
