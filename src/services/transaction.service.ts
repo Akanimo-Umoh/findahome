@@ -34,6 +34,8 @@ export type MergedTransaction = {
   updatedAt: string
   buyer?: { _id: string; name?: string; email: string } | string
   user?: { _id: string; name?: string; email: string } | string
+  owner?: { _id: string; name?: string; email: string } | string
+  seller?: { _id: string; name?: string; email: string } | string
   property?: {
     _id: string
     title: string
@@ -55,6 +57,16 @@ export async function getAgentTransactionsAndEscrows() {
 
 export async function getAgentPurchasesAndInspections() {
   const res = await api.get("/transaction/agent-transactions")
+  return res.data as {
+    success: boolean
+    count: number
+    activities: MergedTransaction[]
+  }
+}
+
+// get user transactions (purchases + inspections)
+export async function getUserPurchasesAndInspections() {
+  const res = await api.get("/transaction/user-transactions")
   return res.data as {
     success: boolean
     count: number

@@ -53,7 +53,7 @@ export default function Chats() {
     <div className="flex h-[calc(100vh-72px)] overflow-hidden font-ssPro md:h-[calc(100vh-66px)]">
       {/* left panel */}
       <div
-        className={`flex w-full flex-col lg:max-w-[420px] lg:min-w-[280px] lg:shrink-0 lg:basis-[35%] lg:border-r lg:border-bg-accent ${selectedChatId ? "hidden lg:flex" : "flex"}`}
+        className={`flex w-full flex-col md:mt-4 lg:mt-0 lg:max-w-[420px] lg:min-w-[280px] lg:shrink-0 lg:basis-[35%] lg:border-r lg:border-bg-accent ${selectedChatId ? "hidden lg:flex" : "flex"}`}
       >
         <header className="mx-6 shrink-0 lg:pt-3">
           {/* header */}
