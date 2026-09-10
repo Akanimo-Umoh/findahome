@@ -22,25 +22,16 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
   const isLand = property.propertyType === "land"
 
   return (
-    <div className="max-w-112.5 overflow-hidden rounded-2xl transition hover:shadow-lg">
+    <div className="max-w-112.5 overflow-hidden rounded-2xl border border-bg-accent transition hover:shadow-lg">
       <div className="relative">
         <img
           src={property.images[0]}
           alt={property.title}
           className="h-50 w-full object-cover md:h-62.5"
         />
-
-        {/* {property.owner.isVerified && (
-          <div className="absolute top-2.75 left-2.75 flex items-center justify-center gap-1 rounded-lg bg-[#10B981] p-2 md:top-0 md:left-0 md:rounded-t-xl md:bg-linear-to-b md:from-[#149D18] md:to-white md:shadow-[4px_4px_4px_#00000080]">
-            <img src={verified} alt="" className="md:hidden" />
-            <p className="font-raleway text-[14px] tracking-[1px] text-white md:text-[16px] md:text-text-primary">
-              Verified
-            </p>
-          </div>
-        )} */}
       </div>
 
-      <div className="space-y-6 rounded-b-2xl border border-bg-accent px-4 py-3 md:space-y-0 md:p-3">
+      <div className="space-y-6 px-4 py-3 md:space-y-0 md:p-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-2">
             <p className="line-clamp-1 flex-1 font-raleway text-[12px] font-semibold tracking-[1px] text-black md:text-[16px]">
