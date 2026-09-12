@@ -6,28 +6,61 @@ import PaymentSummary from "@/components/transaction-details/PaymentSummary"
 import ScheduleDetails from "@/components/transaction-details/ScheduleDetails"
 import ContactDetails from "@/components/transaction-details/ContactDetails"
 import AgentTransactionActions from "./AgentTransactionActions"
-import {
-  getTimelineSteps,
-  BANNER_CONFIG,
-  SCHEDULE_SECTION_LABEL,
-  PAYMENT_TYPE_LABEL,
-} from "./transactionConfig"
-import { getMockTransaction } from "@/data/mockTransactions"
-import type { TransactionStatus } from "@/types/transactions"
+
 import PageHeader from "@/components/shared/PageHeader"
+import { useAgentTransactionDetails } from "@/hooks/useAgentTransactionDetails"
+import Spinner from "@/components/Spinner"
+import type { Inspection } from "@/services/inspection.service"
+import { getPersonDisplay } from "@/lib/personDisplay"
+import {
+  AGENT_BANNER_CONFIG,
+  getInspectionPaymentStatusLabel,
+  getTimelineSteps,
+  mapInspectionStatusToTransactionStatus,
+  PAYMENT_TYPE_LABEL,
+  SCHEDULE_SECTION_LABEL,
+} from "@/components/transaction-details/transactionConfig"
 
 export default function AgentTransactionDetails() {
   const { transactionId } = useParams()
+  const { transaction, recordType, isLoading, error } =
+    useAgentTransactionDetails(transactionId ?? "")
 
-  // TODO: replace with useQuery(["agentTransaction", transactionId]) once endpoint exists
-  const transaction = getMockTransaction(transactionId ?? "")
-  const status: TransactionStatus =
-    transaction?.status ?? "inspection_requested"
+  if (isLoading) return <Spinner />
 
-  const timelineSteps = getTimelineSteps(status)
-  const banner = BANNER_CONFIG[status]
+  if (error || !transaction) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center">
+        <p className="text-[14px] text-text-secondary">
+          Couldn't load this transaction.
+        </p>
+      </div>
+    )
+  }
+
+  const status =
+    recordType === "inspection"
+      ? mapInspectionStatusToTransactionStatus(
+          (transaction as Inspection).status
+        )
+      : "property_payment_pending" // purchase path not wired yet
+
+  const timelineSteps = getTimelineSteps(
+    status,
+    recordType === "inspection" ? (transaction as Inspection) : undefined
+  )
+  const banner = AGENT_BANNER_CONFIG[status]
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
+
+  const property =
+    typeof transaction.property === "string" ? undefined : transaction.property
+  const buyer = getPersonDisplay(
+    recordType === "inspection" ? (transaction as Inspection).user : undefined,
+    "Buyer"
+  )
+  const amount =
+    recordType === "inspection" ? (transaction as Inspection).fee : 0
 
   const actionsProps = {
     status,
@@ -35,7 +68,7 @@ export default function AgentTransactionDetails() {
   }
 
   return (
-    <div className="px-6 md:px-8 md:pt-6 lg:pb-10">
+    <div className="md:pt-6 lg:pb-10">
       <div className="mx-auto max-w-7xl">
         <PageHeader title="Transaction Details" responsive />
 
@@ -43,10 +76,27 @@ export default function AgentTransactionDetails() {
           <section className="mt-6 space-y-6 lg:mt-0 lg:flex-1">
             <TransactionPropertyCard
               variant="default"
-              title="Luxury 4 Bed-room Apartment"
-              price="3,000,000"
-              paymentStatus="Paid"
-              lastUpdated="2hrs ago"
+              title={property?.title ?? ""}
+              image={
+                property && "image" in property ? property.image : undefined
+              }
+              price={amount.toLocaleString()}
+              paymentStatus={
+                recordType === "inspection"
+                  ? getInspectionPaymentStatusLabel(
+                      (transaction as Inspection).status
+                    )
+                  : undefined
+              }
+              lastUpdated={new Date(transaction.updatedAt).toLocaleString(
+                "en-US",
+                {
+                  day: "numeric",
+                  month: "short",
+                  hour: "numeric",
+                  minute: "2-digit",
+                }
+              )}
             />
 
             {banner && (
@@ -69,10 +119,21 @@ export default function AgentTransactionDetails() {
 
           <section className="mt-8 space-y-6 lg:mt-0 lg:flex-1">
             <PaymentSummary
-              amountInEscrow="3,000,000"
+              amountInEscrow={amount.toLocaleString()}
               paymentType={paymentTypeLabel}
-              referenceNumber="FH-TRX-002834"
-              datePaid="15th Nov, 2025"
+              referenceNumber={
+                recordType === "inspection"
+                  ? ((transaction as Inspection).reference ?? "")
+                  : ""
+              }
+              datePaid={new Date(transaction.createdAt).toLocaleDateString(
+                "en-US",
+                {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                }
+              )}
             />
 
             <div className="lg:hidden">
@@ -81,17 +142,40 @@ export default function AgentTransactionDetails() {
 
             <ContactDetails
               label="Buyer Details"
-              name="Victoria Ntekim"
-              phone="08167288115"
-              email="victoria.ntekim@gmail.com"
+              name={buyer.name}
+              phone={buyer.phone}
+              email={buyer.email}
             />
 
-            {scheduleLabel && (
+            {scheduleLabel && recordType === "inspection" && (
               <ScheduleDetails
                 label={scheduleLabel}
-                date="14th Nov, 2025"
-                time="10:00am"
-                location="Lekki Toll Gate"
+                date={
+                  (transaction as Inspection).scheduledDate
+                    ? new Date(
+                        (transaction as Inspection).scheduledDate as string
+                      ).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "—"
+                }
+                time={
+                  (transaction as Inspection).scheduledDate
+                    ? new Date(
+                        (transaction as Inspection).scheduledDate as string
+                      ).toLocaleTimeString("en-US", {
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })
+                    : "—"
+                }
+                location={
+                  property && "address" in property
+                    ? (property.address ?? "—")
+                    : "—"
+                }
               />
             )}
           </section>

@@ -1,26 +1,27 @@
 import { useQuery } from "@tanstack/react-query"
-import { getInspectionDetails } from "@/services/inspection.service"
-import { getPurchaseDetails } from "@/services/purchase.service"
 import { useSearchParams } from "react-router-dom"
+import {
+  getInspectionDetails,
+  type Inspection,
+} from "@/services/inspection.service"
+import { getPurchaseDetails, type Purchase } from "@/services/purchase.service"
 
-// recordType comes through the URL as a query param set by Recent.tsx's detailsRoute, since the raw id alone doesn't say which collection it's from
 export function useTransactionDetails(id: string) {
   const [searchParams] = useSearchParams()
-  const recordType = searchParams.get("type") // "inspection" | "purchase"
+  const recordType = (searchParams.get("type") ?? "inspection") as
+    | "inspection"
+    | "purchase"
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<Inspection | Purchase>({
     queryKey: ["transactionDetails", id, recordType],
     queryFn: () =>
       recordType === "purchase"
         ? getPurchaseDetails(id)
         : getInspectionDetails(id),
-    enabled: !!id && !!recordType,
+    enabled: !!id,
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
-  return {
-    transaction: data,
-    recordType,
-    isLoading,
-    error: error ? "Failed to load transaction" : null,
-  }
+  return { transaction: data, recordType, isLoading, error }
 }

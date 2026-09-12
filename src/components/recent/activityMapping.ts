@@ -67,27 +67,11 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
   funds_released: "Payment Released",
 }
 
-// route pattern reused from the existing /transactions/:transactionId/* pages
 function getDetailsRoute(
   id: string,
-  status: TransactionStatus,
   recordType: "inspection" | "purchase"
 ): string {
-  const base = (() => {
-    switch (status) {
-      case "inspection_scheduled":
-      case "inspection_confirmed":
-        return `/transactions/${id}/visit`
-      case "handover_scheduled":
-      case "handover_confirmed":
-        return `/transactions/${id}/confirm-handover`
-      case "funds_released":
-        return `/transactions/${id}/receipt`
-      default:
-        return `/transactions/${id}`
-    }
-  })()
-  return `${base}?type=${recordType}`
+  return `/transactions/${id}?type=${recordType}`
 }
 
 function formatDate(dateStr: string): string {
@@ -120,6 +104,6 @@ export function mapToActivity(item: MergedTransaction): Activity {
     agentVerified: false, // not returned by the backend yet
     propertyName: item.property?.title ?? "",
     propertyImg: item.property?.image ?? "",
-    detailsRoute: getDetailsRoute(item._id, status, item.recordType),
+    detailsRoute: getDetailsRoute(item._id, item.recordType),
   }
 }

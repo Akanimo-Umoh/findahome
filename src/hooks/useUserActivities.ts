@@ -9,6 +9,8 @@ export function useUserActivities() {
     queryKey: ["userPurchasesAndInspections", user?._id],
     queryFn: getUserPurchasesAndInspections,
     enabled: !!user?._id,
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
   return {

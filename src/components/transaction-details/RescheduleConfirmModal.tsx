@@ -39,6 +39,7 @@ export default function RescheduleConfirmModal({
           >
             {isSubmitting ? "Rejecting..." : "Yes, suggest a new time"}
           </Button>
+
           <Button
             variant="app-secondary"
             size="full"

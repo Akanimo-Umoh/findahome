@@ -1,7 +1,6 @@
+import type { Inspection } from "@/services/inspection.service"
 import type { TransactionStatus, TimelineStep } from "@/types/transactions"
 
-// Inspection-only phases show steps 0–4 (no property payment or handover steps)
-// Handover phases show all steps
 const INSPECTION_STEPS = [
   "Payment Made by Buyer",
   "Funds held in Escrow",
@@ -18,21 +17,6 @@ const ALL_STEPS = [
   "Property Handover Completed",
 ]
 
-// How many steps are complete at each status
-const COMPLETED_COUNT: Record<TransactionStatus, number> = {
-  inspection_requested: 1, // Payment Made by Buyer
-  inspection_scheduled: 2, // + Funds held in Escrow (agent has scheduled)
-  inspection_confirmed: 3, // + Agent scheduled an inspection
-  inspection_completed: 4, // + Inspection schedule confirmed
-  property_payment_pending: 5, // + Inspection Completed
-  handover_requested: 6, // + Property Payment Made
-  handover_scheduled: 6, // same — agent scheduled but user hasn't confirmed
-  handover_confirmed: 7, // + Agent scheduled handover
-  handover_completed: 8, // + Handover schedule confirmed
-  funds_released: 9, // + Property Handover Completed (all done)
-}
-
-// Inspection phases only show the first 5 steps — no property payment / handover noise
 const VISIBLE_STEPS: Record<TransactionStatus, string[]> = {
   inspection_requested: INSPECTION_STEPS,
   inspection_scheduled: INSPECTION_STEPS,
@@ -46,14 +30,38 @@ const VISIBLE_STEPS: Record<TransactionStatus, string[]> = {
   funds_released: ALL_STEPS,
 }
 
-export function getTimelineSteps(status: TransactionStatus): TimelineStep[] {
+function formatTimelineDate(dateStr?: string | null): string | undefined {
+  if (!dateStr) return undefined
+  return new Date(dateStr).toLocaleString("en-US", {
+    day: "numeric",
+    month: "short",
+    hour: "numeric",
+    minute: "2-digit",
+  })
+}
+
+export function getTimelineSteps(
+  status: TransactionStatus,
+  inspection?: Pick<
+    Inspection,
+    "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt"
+  >
+): TimelineStep[] {
   const visible = VISIBLE_STEPS[status]
-  const completedCount = COMPLETED_COUNT[status]
+
+  const inspectionDates = [
+    inspection?.paidAt,
+    inspection?.paidAt,
+    inspection?.scheduledAt,
+    inspection?.confirmedAt,
+    inspection?.completedAt,
+  ]
 
   return visible.map((label, index) => ({
     label,
-    completedAt: index < completedCount ? "11 Nov · 3:22 PM" : undefined,
-    // TODO: replace hardcoded date with real timestamp from API
+    completedAt: formatTimelineDate(
+      index < inspectionDates.length ? inspectionDates[index] : undefined
+    ),
   }))
 }
 
@@ -62,13 +70,7 @@ export type BannerConfig = {
   subtitle: string
 }
 
-// CHANGED banners — review notes below:
-// • inspection_requested: NEW — lets user know they're waiting on the agent
-// • inspection_scheduled: EDITED — was "Awaiting Your Confirmation", now more action-oriented
-// • inspection_confirmed: NEW — reminds user their visit is coming up
-// • handover_requested: NEW — lets user know they're waiting on the agent
-// • handover_scheduled: EDITED — was "Awaiting Your Confirmation", now more action-oriented
-// • handover_confirmed: NEW — reminds user their handover is coming up
+// buyer-facing banners
 export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
   inspection_requested: {
     title: "Inspection Request Sent",
@@ -96,10 +98,37 @@ export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
   },
 }
 
-// No entry for inspection_requested / handover_requested — at those
-// statuses no schedule exists yet (agent hasn't picked a date), so the
-// schedule details section should not render. Absence of a key here is
-// the signal TransactionDetails uses to hide the section.
+// CHANGED: agent-facing banners, added as a second named export in the same
+// shared file instead of duplicating the whole config file
+export const AGENT_BANNER_CONFIG: Partial<
+  Record<TransactionStatus, BannerConfig>
+> = {
+  inspection_requested: {
+    title: "Buyer Paid Inspection Fee",
+    subtitle: "Schedule an inspection date for the buyer below.",
+  },
+  inspection_scheduled: {
+    title: "Awaiting Buyer Confirmation",
+    subtitle: "The buyer needs to confirm or reschedule the date you set.",
+  },
+  inspection_confirmed: {
+    title: "Inspection Confirmed — Upcoming",
+    subtitle: "The buyer has confirmed. Check the visit details below.",
+  },
+  handover_requested: {
+    title: "Buyer Paid for Property",
+    subtitle: "Schedule a handover date for the buyer below.",
+  },
+  handover_scheduled: {
+    title: "Awaiting Buyer Confirmation",
+    subtitle: "The buyer needs to confirm or reschedule the date you set.",
+  },
+  handover_confirmed: {
+    title: "Handover Confirmed — Upcoming",
+    subtitle: "The buyer has confirmed. Check the handover details below.",
+  },
+}
+
 export const SCHEDULE_SECTION_LABEL: Partial<
   Record<TransactionStatus, string>
 > = {
@@ -124,4 +153,48 @@ export const PAYMENT_TYPE_LABEL: Partial<Record<TransactionStatus, string>> = {
   handover_confirmed: "Property Payment",
   handover_completed: "Property Payment",
   funds_released: "Property Payment",
+}
+
+export function mapInspectionStatusToTransactionStatus(
+  status: Inspection["status"]
+): TransactionStatus {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+    case "inspection_initialized":
+    case "inspection_paid":
+      return "inspection_requested"
+    case "inspection_scheduled":
+      return "inspection_scheduled"
+    case "inspection_confirmed":
+      return "inspection_confirmed"
+    case "inspection_completed":
+    case "inspection_cancelled":
+      return "inspection_completed"
+    default:
+      return "inspection_requested"
+  }
+}
+
+// add this export
+export function getInspectionPaymentStatusLabel(
+  status: Inspection["status"]
+): string {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+    case "inspection_initialized":
+      return "Awaiting Payment"
+    case "inspection_paid":
+      return "In Escrow"
+    case "inspection_scheduled":
+    case "inspection_confirmed":
+      return "In Escrow"
+    case "inspection_completed":
+      return "Completed"
+    case "inspection_cancelled":
+      return "Cancelled"
+    default:
+      return "Pending"
+  }
 }

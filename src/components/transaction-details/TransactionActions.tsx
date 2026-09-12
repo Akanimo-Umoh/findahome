@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import RequestSuccessful from "@/components/shared/RequestSuccessful"
+// import RequestSuccessful from "@/components/shared/RequestSuccessful"
 import ScheduleConfirmedOverlay from "@/components/transaction-details/ScheduleConfirmedOverlay"
 import type { TransactionStatus } from "@/types/transactions"
 
@@ -10,6 +10,7 @@ interface TransactionActionsProps {
   isRequestSuccessOpen: boolean
   onRequestSuccessOpenChange: (open: boolean) => void
   isConfirmedOverlayOpen: boolean
+  isConfirming?: boolean
   onConfirmedOverlayOpenChange: (open: boolean) => void
   onRequestAction: () => void
   onConfirmAction: () => void
@@ -20,20 +21,21 @@ interface TransactionActionsProps {
 export default function TransactionActions({
   status,
   transactionId,
-  isRequestSuccessOpen,
-  onRequestSuccessOpenChange,
+  // isRequestSuccessOpen,
+  // onRequestSuccessOpenChange,
   isConfirmedOverlayOpen,
+  isConfirming,
   onConfirmedOverlayOpenChange,
-  onRequestAction,
+  // onRequestAction,
   onConfirmAction,
   onSuggestNewTime,
-  onGoToDashboard,
+  // onGoToDashboard,
 }: TransactionActionsProps) {
-  const showRequestInspection = status === "inspection_requested"
+  // const showRequestInspection = status === "inspection_requested"
   const showConfirmInspection = status === "inspection_scheduled"
   const showViewVisitDetails = status === "inspection_confirmed"
   const showSecureProperty = status === "inspection_completed"
-  const showRequestHandover = status === "handover_requested"
+  // const showRequestHandover = status === "handover_requested"
   const showConfirmHandover = status === "handover_scheduled"
   const showViewHandoverDetails = status === "handover_confirmed"
   const showViewReceipt = status === "funds_released"
@@ -42,7 +44,7 @@ export default function TransactionActions({
     <div className="mt-6 mb-8 lg:mt-0 lg:mb-0">
       <div className="flex flex-col items-center justify-center gap-4">
         {/* Phase 1 — waiting for agent to schedule */}
-        {showRequestInspection && (
+        {/* {showRequestInspection && (
           <>
             <Button variant="app-primary" size="full" onClick={onRequestAction}>
               Request Inspection Schedule
@@ -56,13 +58,18 @@ export default function TransactionActions({
               description="You will receive a notification for an inspection schedule"
             />
           </>
-        )}
+        )} */}
 
         {/* Phase 2 — agent scheduled, user confirms or reschedules */}
         {showConfirmInspection && (
           <>
-            <Button variant="app-primary" size="full" onClick={onConfirmAction}>
-              Confirm Inspection Schedule
+            <Button
+              variant="app-primary"
+              size="full"
+              onClick={onConfirmAction}
+              disabled={isConfirming}
+            >
+              {isConfirming ? "Confirming..." : "Confirm Inspection Schedule"}
             </Button>
 
             <ScheduleConfirmedOverlay
@@ -102,7 +109,7 @@ export default function TransactionActions({
         )}
 
         {/* Phase 6 — waiting for agent to schedule handover */}
-        {showRequestHandover && (
+        {/* {showRequestHandover && (
           <>
             <Button variant="app-primary" size="full" onClick={onRequestAction}>
               Request Handover Schedule
@@ -115,7 +122,7 @@ export default function TransactionActions({
               description="You will receive a notification for a handover schedule"
             />
           </>
-        )}
+        )} */}
 
         {/* Phase 7 — agent scheduled handover, user confirms or reschedules */}
         {showConfirmHandover && (

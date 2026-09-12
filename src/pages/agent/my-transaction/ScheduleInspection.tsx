@@ -1,27 +1,81 @@
 import { useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import apartmentImg from "@/assets/images/img-apartment.png"
 import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
 import PickDate from "./PickDate"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
-import { getMockTransaction } from "@/data/mockTransactions"
 import ScheduledSuccessfully from "./ScheduledSuccessfully"
+import {
+  getInspectionDetails,
+  scheduleInspection,
+} from "@/services/inspection.service"
+import { toast } from "sonner"
+import Spinner from "@/components/Spinner"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
+// only these statuses represent a genuinely schedulable inspection — anything else means this page was reached incorrectly
+const SCHEDULABLE_STATUSES = ["inspection_paid"]
 
 export default function ScheduleInspection() {
   const { transactionId } = useParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient() // CHANGED
   const [isConfirmed, setIsConfirmed] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState("10:30")
+  const [hasScheduled, setHasScheduled] = useState(false)
 
-  // TODO: replace with useQuery once endpoint exists
-  const transaction = getMockTransaction(transactionId ?? "")
-  const status = transaction?.status ?? "inspection_requested"
-  const isHandover = status === "handover_requested"
+  const { data: inspection, isLoading } = useQuery({
+    queryKey: ["inspectionDetails", transactionId],
+    queryFn: () => getInspectionDetails(transactionId ?? ""),
+    enabled: !!transactionId,
+  })
+
+  if (isLoading) return <Spinner />
+
+  if (!inspection) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center">
+        <p className="text-[14px] text-text-secondary">
+          Couldn't load this transaction.
+        </p>
+      </div>
+    )
+  }
+
+  // guard — this page only makes sense for an inspection that's actually awaiting a schedule. Anything else, send them back to the details page instead of letting them submit into an invalid state.
+  if (!hasScheduled && !SCHEDULABLE_STATUSES.includes(inspection.status)) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="text-[14px] text-text-secondary">
+          This inspection has already been scheduled.
+        </p>
+        <Button
+          variant="app-primary"
+          onClick={() =>
+            navigate(`/agent/transactions/${transactionId}?type=inspection`, {
+              replace: true,
+            })
+          }
+        >
+          View Transaction Details
+        </Button>
+      </div>
+    )
+  }
+
+  const property =
+    typeof inspection.property === "string" ? undefined : inspection.property
+  const buyer =
+    typeof inspection.user === "string"
+      ? { name: "Buyer" }
+      : { name: inspection.user?.name ?? inspection.user?.email }
+
+  const isHandover = false // handover scheduling not wired yet — inspection only per current scope
 
   const pageTitle = isHandover ? "Schedule Handover" : "Schedule Inspection"
   const bannerLabel = isHandover ? "Handover Schedule" : "Inspection Schedule"
@@ -33,13 +87,43 @@ export default function ScheduleInspection() {
     ? "Your handover has been scheduled!"
     : "Your inspection has been scheduled!"
 
-  const handleSubmit = () => {
-    // TODO: fire mutation (schedule inspection/handover), then setShowSuccess(true) in onSuccess
-    setShowSuccess(true)
+  const handleSubmit = async () => {
+    if (!selectedDate || !transactionId) return
+
+    const [hours, minutes] = selectedTime.split(":").map(Number)
+    const combined = new Date(selectedDate)
+    combined.setHours(hours, minutes, 0, 0)
+
+    setIsSubmitting(true)
+    try {
+      await scheduleInspection(transactionId, combined.toISOString())
+
+      // invalidate every cache key that could be showing stale status/actions for this inspection, so the details page's button updates the moment the agent lands back on it — no manual refresh
+      queryClient.invalidateQueries({
+        queryKey: ["inspectionDetails", transactionId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["agentTransactionDetails", transactionId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["agentPurchasesAndInspections"],
+      })
+
+      setHasScheduled(true)
+      setShowSuccess(true)
+    } catch (err) {
+      toast.error("Couldn't schedule the inspection. Please try again.")
+      console.error("scheduleInspection error:", err)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleGoToDashboard = () => {
-    navigate("/agent/dashboard", { replace: true })
+  // redirect to the transaction details page, not the dashboard — the agent should immediately see the schedule they just set
+  const handleGoToDetails = () => {
+    navigate(`/agent/transactions/${transactionId}?type=inspection`, {
+      replace: true,
+    })
   }
 
   return (
@@ -73,37 +157,53 @@ export default function ScheduleInspection() {
 
           <div className="mt-6">
             <div className="flex items-center gap-3 rounded-xl border border-bg-accent p-2">
-              <img
-                src={apartmentImg}
-                alt=""
-                className="h-15 w-15 rounded-lg object-cover"
-              />
+              {property?.image ? (
+                <img
+                  src={property.image}
+                  alt=""
+                  className="h-15 w-15 rounded-lg object-cover"
+                />
+              ) : (
+                <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+              )}
+
               <div className="space-y-2">
                 <div className="space-y-1">
                   <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px]">
-                    3 Bed-room Apartment, Lekki phase 1
+                    {property?.title ?? ""}
                   </p>
+
                   <div className="flex items-center gap-2">
                     <div className="flex items-center">
                       <img src={blueNairaIcon} alt="" className="h-4 w-4" />
                       <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg">
-                        3,000,000
+                        {inspection.fee.toLocaleString()}
                       </p>
                     </div>
+
                     <p className="line-clamp-1 flex-1 text-[12px] leading-4 text-text-secondary">
-                      Buyer: Victoria Ntekim
+                      Buyer: {buyer.name}
                     </p>
                   </div>
                 </div>
+
                 <div className="space-y-1">
                   <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-[12px] leading-4 text-white">
                     In Escrow
                   </p>
+
                   <p className="text-[12px] leading-4 text-text-secondary">
-                    Ref ID: FH-TRX-002834
+                    Ref ID: {inspection._id}
                   </p>
+
                   <p className="text-[12px] leading-4 text-text-secondary">
-                    Last updated: 2hrs ago
+                    Last updated:{" "}
+                    {new Date(inspection.updatedAt).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
                   </p>
                 </div>
               </div>
@@ -139,14 +239,16 @@ export default function ScheduleInspection() {
               <p>Property Location</p>
               <div className="relative mt-2">
                 <iframe
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent("Lekki Phase 1, Lagos State")}&output=embed`}
+                  src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                    property?.address ?? ""
+                  )}&output=embed`}
                   className="h-30.5 w-full rounded-xl"
                   loading="lazy"
                   title="Property location"
                 />
               </div>
               <p className="mt-2 text-[12px] leading-4 text-black">
-                Lekki Phase 1, Lagos State
+                {property?.address ?? "—"}
               </p>
             </div>
           </div>
@@ -160,6 +262,7 @@ export default function ScheduleInspection() {
                 onChange={(e) => setIsConfirmed(e.target.checked)}
                 className="h-5 w-5 shrink-0"
               />
+
               <label
                 htmlFor="confirmation"
                 className="text-[12px] leading-4 text-text-secondary"
@@ -168,13 +271,14 @@ export default function ScheduleInspection() {
                 be notified accordingly.
               </label>
             </div>
+
             <Button
               variant="app-primary"
               size="full"
-              disabled={!isConfirmed || !selectedDate}
+              disabled={!isConfirmed || !selectedDate || isSubmitting}
               onClick={handleSubmit}
             >
-              {submitLabel}
+              {isSubmitting ? "Scheduling..." : submitLabel}
             </Button>
           </div>
         </section>
@@ -187,7 +291,7 @@ export default function ScheduleInspection() {
           title={successTitle}
           date={selectedDate}
           time={selectedTime}
-          onGoToDashboard={handleGoToDashboard}
+          onGoToDetails={handleGoToDetails}
         />
       )}
     </div>

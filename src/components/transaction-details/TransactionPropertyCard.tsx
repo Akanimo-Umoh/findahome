@@ -1,4 +1,3 @@
-import propertyImg from "@/assets/images/property.jpg"
 import blueNaira from "@/assets/images/icon-naira.svg"
 
 interface BaseProps {
@@ -25,7 +24,7 @@ type TransactionPropertyCardProps = DefaultVariantProps | Phase5VariantProps
 export default function TransactionPropertyCard(
   props: TransactionPropertyCardProps
 ) {
-  const { image = propertyImg, title } = props
+  const { image, title } = props
 
   if (props.variant === "phase5") {
     const {
@@ -36,7 +35,15 @@ export default function TransactionPropertyCard(
 
     return (
       <div className="flex items-center gap-3 rounded-xl border border-bg-accent p-2">
-        <img src={image} alt="" className="h-15 w-15 rounded-lg object-cover" />
+        {image ? (
+          <img
+            src={image}
+            alt=""
+            className="h-15 w-15 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+        )}
         <div className="flex w-full flex-col justify-center gap-1">
           <p className="line-clamp-1 font-raleway text-[12px] font-semibold tracking-[1px] md:text-[16px]">
             {title}
@@ -48,6 +55,7 @@ export default function TransactionPropertyCard(
               <span className="text-button-bg">(Verified)</span>
             )}
           </p>
+
           <p className="w-fit rounded-2xl bg-success px-2 py-1 text-[12px] leading-4 text-bg-tertiary">
             {inspectionStatus}
           </p>
@@ -57,12 +65,20 @@ export default function TransactionPropertyCard(
   }
 
   // default variant
-  const { price, paymentStatus = "Paid", lastUpdated } = props
+  const { price, paymentStatus, lastUpdated } = props
 
   return (
     <div className="flex items-center gap-3 rounded-xl border border-bg-accent p-2 lg:p-3">
       <div className="shrink-0">
-        <img src={image} alt="" className="h-15 w-15 rounded-lg object-cover" />
+        {image ? (
+          <img
+            src={image}
+            alt=""
+            className="h-15 w-15 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="h-15 w-15 rounded-lg bg-bg-accent" />
+        )}
       </div>
 
       <div>
@@ -78,9 +94,11 @@ export default function TransactionPropertyCard(
         </div>
 
         <div className="mt-1">
-          <p className="w-fit rounded-2xl bg-agents-bg px-2 text-[12px] leading-4 text-bg-tertiary md:text-[14px] md:leading-5.25">
-            {paymentStatus}
-          </p>
+          {paymentStatus && (
+            <p className="w-fit rounded-2xl bg-agents-bg px-2 text-[12px] leading-4 text-bg-tertiary md:text-[14px] md:leading-5.25">
+              {paymentStatus}
+            </p>
+          )}
 
           {lastUpdated && (
             <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25">

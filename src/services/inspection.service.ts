@@ -2,11 +2,23 @@ import api from "@/services/api"
 
 export type Inspection = {
   _id: string
+  reference?: string
   property:
     | string
-    | { _id: string; title: string; price: number; address: string }
-  owner: string | { _id: string; name?: string; email: string }
-  user: string | { _id: string; name?: string; email: string }
+    | {
+        _id: string
+        title: string
+        price: number
+        address: string
+        image?: string
+        images?: string[]
+      }
+  owner:
+    | string
+    | { _id: string; name?: string; email: string; phoneNumber?: string | null }
+  user:
+    | string
+    | { _id: string; name?: string; email: string; phoneNumber?: string | null }
   code: string
   status:
     | "none"
@@ -22,6 +34,11 @@ export type Inspection = {
   feePaid: boolean
   feeReleased: boolean
   scheduledDate?: string | null
+  initializedAt?: string | null
+  paidAt?: string | null
+  scheduledAt?: string | null
+  confirmedAt?: string | null
+  completedAt?: string | null
   createdAt: string
   updatedAt: string
 }
@@ -42,7 +59,14 @@ export async function requestInspection(propertyId: string) {
 // 2️⃣ Get single inspection details
 export async function getInspectionDetails(inspectionId: string) {
   const res = await api.get(`/inspection/${inspectionId}`)
-  return res.data.inspection as Inspection
+  const inspection = res.data.inspection as Inspection
+
+  if (inspection.property && typeof inspection.property !== "string") {
+    inspection.property.image =
+      inspection.property.image ?? inspection.property.images?.[0]
+  }
+
+  return inspection
 }
 
 // 3️⃣ Initialize inspection payment — returns Paystack authorizationUrl + backend-generated reference
@@ -69,7 +93,23 @@ export async function getUserInspections() {
   return res.data.inspections as Inspection[]
 }
 
-// user reschedules inspection
+// agent schedule inspection endpoint
+export async function scheduleInspection(
+  inspectionId: string,
+  scheduledDate: string
+) {
+  const res = await api.patch("/inspection/schedule", {
+    inspectionId,
+    scheduledDate,
+  })
+  return res.data as {
+    success: boolean
+    message: string
+    inspection: Inspection
+  }
+}
+
+// user(buyer) reschedule inspection
 export async function rescheduleInspection(
   inspectionId: string,
   reason?: string
@@ -78,6 +118,26 @@ export async function rescheduleInspection(
     inspectionId,
     reason,
   })
+  return res.data as {
+    success: boolean
+    message: string
+    inspection: Inspection
+  }
+}
+
+// user(buyer) confirms inspection schedule
+export async function confirmInspection(inspectionId: string) {
+  const res = await api.patch(`/inspection/${inspectionId}/confirm`)
+  return res.data as {
+    success: boolean
+    message: string
+    inspection: Inspection
+  }
+}
+
+// user(buyer) completes inspection
+export async function completeInspection(inspectionId: string) {
+  const res = await api.patch(`/inspection/${inspectionId}/complete`)
   return res.data as {
     success: boolean
     message: string

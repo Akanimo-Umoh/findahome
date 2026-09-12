@@ -90,15 +90,24 @@ function ActivityItem({ item }: { item: MergedActivity }) {
     )
   }
 
+  // escrow branch — explicit status handling instead of a binary isHold guess
+  if (item.status === "pending" || item.status === "cancelled") {
+    return null // defensive filter — these shouldn't be shown as activity at all
+  }
+
   // escrow branch
   const isHold = item.status === "approved"
+  const isRelease = item.status === "released"
+
   const icon = isHold ? escrowHoldIcon : escrowReleaseIcon
   const bg = isHold ? "bg-[#F8B400]" : "bg-[#149D18]"
   const sign = isHold ? "" : "+"
   const title = `Escrow ${isHold ? "hold" : "release"} — ${getPropertyTitle(item.property)}`
   const subtitle = isHold
     ? "Funds held pending release"
-    : "Funds released to you"
+    : isRelease
+      ? "Funds released to you"
+      : ""
 
   return (
     <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
@@ -143,6 +152,13 @@ function ActivitiesWrapper({ children }: { children: React.ReactNode }) {
 export default function Activities() {
   const { activities, isLoading, error } = useAgentActivities()
 
+  const visibleActivities = activities.filter(
+    (item) =>
+      item.recordType !== "escrow" ||
+      item.status === "approved" ||
+      item.status === "released"
+  )
+
   if (isLoading) {
     return (
       <ActivitiesWrapper>
@@ -174,7 +190,7 @@ export default function Activities() {
     )
   }
 
-  if (activities.length === 0) {
+  if (visibleActivities.length === 0) {
     return (
       <ActivitiesWrapper>
         <NoWalletActivity />
@@ -185,7 +201,7 @@ export default function Activities() {
   return (
     <ActivitiesWrapper>
       <div className="mt-4 space-y-4">
-        {activities.map((item) => (
+        {visibleActivities.map((item) => (
           <ActivityItem key={item._id} item={item} />
         ))}
       </div>

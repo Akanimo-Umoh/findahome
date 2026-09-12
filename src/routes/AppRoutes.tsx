@@ -256,7 +256,7 @@ export default function AppRoutes() {
 
           <Route path="/agent/transactions" element={<MyTransactions />} />
           <Route
-            path="/agent/transactions/:id"
+            path="/agent/transactions/:transactionId"
             element={<AgentTransactionDetails />}
           />
           <Route

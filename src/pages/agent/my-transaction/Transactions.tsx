@@ -10,7 +10,7 @@ import {
   tabs,
   type FilterStatus,
 } from "./transactionHelpers"
-import { useAgentTransactionsList } from "@/hooks/useAgentTransactions"
+import { useAgentTransactionsList } from "@/hooks/useAgentTransactionsList"
 import Pagination from "@/components/shared/Pagination"
 
 const ITEMS_PER_PAGE = 24
@@ -97,9 +97,7 @@ export default function Transactions() {
               ? getPersonName(item.buyer)
               : getPersonName(item.user)
             const price = isPurchase ? item.price : item.fee
-            const linkTo = isPurchase
-              ? `/agent/transactions/${item._id}`
-              : `/agent/transactions/${item._id}/schedule-inspection`
+            const linkTo = `/agent/transactions/${item._id}?type=${item.recordType}`
 
             return (
               <Link
@@ -147,9 +145,11 @@ export default function Transactions() {
                   <div>
                     <p className="text-[12px] leading-4 text-text-secondary">
                       Last updated:{" "}
-                      {new Date(item.updatedAt).toLocaleDateString("en-US", {
+                      {new Date(item.updatedAt).toLocaleString("en-US", {
                         day: "numeric",
                         month: "short",
+                        hour: "numeric",
+                        minute: "2-digit",
                       })}
                     </p>
                   </div>

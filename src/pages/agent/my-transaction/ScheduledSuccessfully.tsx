@@ -12,7 +12,7 @@ type ScheduledSuccessfullyProps = {
   title: string
   date?: Date
   time: string
-  onGoToDashboard: () => void
+  onGoToDetails: () => void
 }
 
 export default function ScheduledSuccessfully({
@@ -21,7 +21,7 @@ export default function ScheduledSuccessfully({
   title,
   date,
   time,
-  onGoToDashboard,
+  onGoToDetails,
 }: ScheduledSuccessfullyProps) {
   const formattedDate = date
     ? date.toLocaleDateString("en-GB", {
@@ -34,13 +34,13 @@ export default function ScheduledSuccessfully({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-full gap-0 rounded-2xl border-none bg-white px-6 py-[43px] font-ssPro text-text-primary [&>button]:hidden"
+        className="flex max-h-[90vh] w-full flex-col gap-0 overflow-y-auto rounded-2xl border-none bg-white px-6 py-[43px] font-ssPro text-text-primary [&>button]:hidden"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <img src={successImg} alt="" className="mx-auto" />
 
-        <div className="mx-auto mt-4 flex w-[326px] flex-col">
+        <div className="mx-auto mt-4 flex max-w-[326px] flex-col">
           <div className="flex flex-col items-center justify-center gap-4">
             <DialogTitle className="text-center font-raleway text-[24px] font-medium tracking-[1px]">
               {title}
@@ -57,10 +57,10 @@ export default function ScheduledSuccessfully({
 
           <div className="mt-6 flex max-w-[343px] flex-col gap-3">
             <button
-              onClick={onGoToDashboard}
+              onClick={onGoToDetails}
               className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
             >
-              Go to Dashboard
+              Go to Transaction Details
             </button>
           </div>
         </div>
