@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { getMockTransaction } from "@/data/mockTransactions"
 import PageHeader from "@/components/shared/PageHeader"
 import VisitPropertyCard from "@/components/visit-details/VisitPropertyCard"
 import VisitBanner from "@/components/visit-details/VisitBanner"
@@ -8,73 +7,111 @@ import PropertyLocation from "@/components/visit-details/PropertyLocation"
 import VisitAgentDetails from "@/components/visit-details/VisitAgentDetails"
 import PreparationTips from "@/components/visit-details/PreparationTips"
 import VisitActions from "@/components/visit-details/VisitActions"
+import { useQuery } from "@tanstack/react-query"
+import { getInspectionDetails } from "@/services/inspection.service"
+import { useAgentChatForProperty } from "@/hooks/useAgentChatForProperty"
+import Spinner from "@/components/Spinner"
 
 export default function VisitDetails() {
   const { transactionId } = useParams()
   const navigate = useNavigate()
 
-  // TODO: replace with useQuery once endpoint exists
-  const transaction = getMockTransaction(transactionId ?? "")
-  const status = transaction?.status ?? "inspection_confirmed"
+  const {
+    data: inspection,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["inspectionDetails", transactionId],
+    queryFn: () => getInspectionDetails(transactionId ?? ""),
+    enabled: !!transactionId,
+    staleTime: 0,
+    refetchOnMount: "always",
+  })
 
-  const isHandover = status === "handover_confirmed"
+  const property =
+    inspection && typeof inspection.property !== "string"
+      ? inspection.property
+      : undefined
+  const { chatId } = useAgentChatForProperty(property?._id)
 
-  const pageTitle = isHandover ? "Handover Details" : "Visit Details"
-  const bannerTitle = isHandover ? "Handover Scheduled" : "Inspection Scheduled"
-  const bannerSubtitle = isHandover
-    ? "Your handover has been scheduled successfully"
-    : "Your visit has been scheduled successfully"
-  const confirmRoute = isHandover
-    ? `/transactions/${transactionId}/confirm-handover`
-    : `/transactions/${transactionId}/confirm-inspection`
-  const markCompletedLabel = isHandover
-    ? "Mark Handover as Completed"
-    : "Mark Visit as Completed"
+  if (isLoading || isFetching) return <Spinner />
+
+  if (!inspection) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center">
+        <p className="text-[14px] text-text-secondary">
+          Couldn't load this transaction.
+        </p>
+      </div>
+    )
+  }
+
+  const owner =
+    typeof inspection.owner === "string"
+      ? { name: "Agent" }
+      : { name: inspection.owner?.name ?? inspection.owner?.email }
+
+  const confirmRoute = `/transactions/${transactionId}/confirm-inspection`
 
   return (
     <div className="px-6 md:px-8 md:pt-6">
       <div className="mx-auto max-w-7xl">
-        <PageHeader title={pageTitle} responsive />
+        <PageHeader title="Visit Details" responsive />
 
         <main className="mt-4 space-y-4 md:mt-6 md:space-y-6 lg:flex lg:gap-6 lg:space-y-0">
           <section className="space-y-4 md:space-y-6 lg:flex-1">
             <VisitPropertyCard
-              title="Luxury 4 Bed-room Apartment"
-              location="Lekki Phase 1, Lagos."
-              price="3,000,000"
-              referenceId="FH-2862"
+              image={property?.image}
+              title={property?.title ?? ""}
+              location={property?.address ?? ""}
+              price={inspection.fee.toLocaleString()}
+              referenceId={inspection.reference ?? ""}
             />
 
-            <VisitBanner title={bannerTitle} subtitle={bannerSubtitle} />
+            <VisitBanner
+              title="Inspection Scheduled"
+              subtitle="Your visit has been scheduled successfully"
+            />
 
             <div className="hidden lg:block">
-              <PropertyLocation address="Lekki Phase 1, Lagos State" />
+              <PropertyLocation address={property?.address ?? ""} />
             </div>
 
             <div className="hidden lg:block">
               <VisitActions
                 confirmRoute={confirmRoute}
-                markCompletedLabel={markCompletedLabel}
+                markCompletedLabel="Mark Visit as Completed"
               />
             </div>
           </section>
 
           <section className="space-y-4 md:space-y-6 lg:flex-1">
             <VisitSummary
-              dateTime="20th Oct, 2025 at 10 AM"
+              dateTime={
+                inspection.scheduledDate
+                  ? new Date(inspection.scheduledDate).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })
+                  : "—"
+              }
               visitType="Physical Visit"
-              transactionId="TXN-89234567"
-              paymentStatus="Paid"
+              transactionId={inspection._id}
+              paymentStatus={inspection.feePaid ? "Paid" : "Pending"}
             />
 
             <div className="lg:hidden">
-              <PropertyLocation address="Lekki Phase 1, Lagos State" />
+              <PropertyLocation address={property?.address ?? ""} />
             </div>
 
             <VisitAgentDetails
-              name="Maryann Kikomu"
-              isVerified
-              onChat={() => navigate("/chat")}
+              name={owner.name}
+              onChat={() =>
+                navigate(chatId ? `/messages/${chatId}` : "/messages")
+              }
             />
 
             <PreparationTips />
@@ -83,7 +120,7 @@ export default function VisitDetails() {
           <div className="lg:hidden">
             <VisitActions
               confirmRoute={confirmRoute}
-              markCompletedLabel={markCompletedLabel}
+              markCompletedLabel="Mark Visit as Completed"
             />
           </div>
         </main>

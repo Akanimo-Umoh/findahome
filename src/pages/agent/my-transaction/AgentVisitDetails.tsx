@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom"
-import { getMockTransaction } from "@/data/mockTransactions"
 import PageHeader from "@/components/shared/PageHeader"
 import VisitPropertyCard from "@/components/visit-details/VisitPropertyCard"
 import VisitBanner from "@/components/visit-details/VisitBanner"
@@ -7,88 +6,124 @@ import VisitSummary from "@/components/visit-details/VisitSummary"
 import PropertyLocation from "@/components/visit-details/PropertyLocation"
 import ContactDetails from "@/components/transaction-details/ContactDetails"
 import AgentVisitActions from "./AgentVisitActions"
+import { useQuery } from "@tanstack/react-query"
+import { getInspectionDetails } from "@/services/inspection.service"
+import Spinner from "@/components/Spinner"
+import { getPersonDisplay } from "@/lib/personDisplay"
 
 export default function AgentVisitDetails() {
   const { transactionId } = useParams()
 
-  // TODO: replace with useQuery once endpoint exists
-  const transaction = getMockTransaction(transactionId ?? "")
-  const status = transaction?.status ?? "inspection_confirmed"
+  const {
+    data: inspection,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["inspectionDetails", transactionId],
+    queryFn: () => getInspectionDetails(transactionId ?? ""),
+    enabled: !!transactionId,
+    staleTime: 0,
+    refetchOnMount: "always",
+  })
 
-  const isHandover = status === "handover_confirmed"
+  if (isLoading || isFetching) return <Spinner />
 
-  // TODO: replace with real "has buyer marked their side complete" flag from API
-  // once statuses like "inspection_buyer_completed" exist server-side
-  const canMarkComplete = false
+  if (!inspection) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center">
+        <p className="text-[14px] text-text-secondary">
+          Couldn't load this transaction.
+        </p>
+      </div>
+    )
+  }
 
-  const pageTitle = isHandover ? "Handover Details" : "Visit Details"
-  const bannerTitle = isHandover ? "Handover Scheduled" : "Inspection Scheduled"
-  const bannerSubtitle = isHandover
-    ? "The handover has been scheduled successfully"
-    : "The visit has been scheduled successfully"
-  const confirmRoute = isHandover
-    ? `/agent/transactions/${transactionId}/confirm-handover`
-    : `/agent/transactions/${transactionId}/confirm-inspection`
-  const markCompletedLabel = isHandover
-    ? "Mark Handover as Completed"
-    : "Mark Visit as Completed"
+  const property =
+    typeof inspection.property === "string" ? undefined : inspection.property
+  const buyer = getPersonDisplay(
+    typeof inspection.user === "string" ? undefined : inspection.user,
+    "Buyer"
+  )
+
+  // no agent-side "complete" action exists on the backend — this just reflects whether the buyer has already completed it
+  const canMarkComplete = inspection.status === "inspection_completed"
 
   return (
     <div className="md:pt-6">
       <div className="mx-auto max-w-7xl">
-        <PageHeader title={pageTitle} responsive />
+        <PageHeader title="Visit Details" responsive />
 
         <main className="mt-4 space-y-4 md:mt-6 md:space-y-6 lg:flex lg:gap-6 lg:space-y-0">
           <section className="space-y-4 md:space-y-6 lg:flex-1">
             <VisitPropertyCard
-              title="Luxury 4 Bed-room Apartment"
-              location="Lekki Phase 1, Lagos."
-              price="3,000,000"
-              referenceId="FH-2862"
+              image={property?.image}
+              title={property?.title ?? ""}
+              location={property?.address ?? ""}
+              price={inspection.fee.toLocaleString()}
+              referenceId={inspection.reference ?? ""}
+            />
+            <VisitBanner
+              title="Inspection Scheduled"
+              subtitle="The visit has been scheduled successfully"
             />
 
-            <VisitBanner title={bannerTitle} subtitle={bannerSubtitle} />
-
             <div className="hidden lg:block">
-              <PropertyLocation address="Lekki Phase 1, Lagos State" />
+              <PropertyLocation address={property?.address ?? ""} />
             </div>
-
             <div className="hidden lg:block">
               <AgentVisitActions
-                confirmRoute={confirmRoute}
-                markCompletedLabel={markCompletedLabel}
+                confirmRoute={`/agent/transactions/${transactionId}?type=inspection`}
+                markCompletedLabel={
+                  canMarkComplete
+                    ? "Buyer Confirmed — View Details"
+                    : "Mark Visit as Completed"
+                }
                 canMarkComplete={canMarkComplete}
-                isHandover={isHandover}
+                isHandover={false}
               />
             </div>
           </section>
 
           <section className="space-y-4 md:space-y-6 lg:flex-1">
             <VisitSummary
-              dateTime="20th Oct, 2025 at 10 AM"
+              dateTime={
+                inspection.scheduledDate
+                  ? new Date(inspection.scheduledDate).toLocaleString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })
+                  : "—"
+              }
               visitType="Physical Visit"
-              transactionId="TXN-89234567"
-              paymentStatus="Paid"
+              transactionId={inspection._id}
+              paymentStatus={inspection.feePaid ? "Paid" : "Pending"}
             />
 
             <div className="lg:hidden">
-              <PropertyLocation address="Lekki Phase 1, Lagos State" />
+              <PropertyLocation address={property?.address ?? ""} />
             </div>
 
             <ContactDetails
               label="Buyer Details"
-              name="Victoria Ntekim"
-              phone="08167288115"
-              email="victoria.ntekim@gmail.com"
+              name={buyer.name}
+              phone={buyer.phone}
+              email={buyer.email}
             />
           </section>
 
           <div className="lg:hidden">
             <AgentVisitActions
-              confirmRoute={confirmRoute}
-              markCompletedLabel={markCompletedLabel}
+              confirmRoute={`/agent/transactions/${transactionId}?type=inspection`}
+              markCompletedLabel={
+                canMarkComplete
+                  ? "Buyer Confirmed — View Details"
+                  : "Mark Visit as Completed"
+              }
               canMarkComplete={canMarkComplete}
-              isHandover={isHandover}
+              isHandover={false}
             />
           </div>
         </main>

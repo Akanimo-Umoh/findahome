@@ -31,7 +31,7 @@ export default function SuccessModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-full gap-0 rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden"
+        className="flex max-h-[90vh] w-full flex-col gap-0 overflow-y-auto rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
