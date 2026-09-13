@@ -34,7 +34,7 @@ export default function AgentVisitDetails() {
     : "Mark Visit as Completed"
 
   return (
-    <div className="px-6 md:px-8 md:pt-6">
+    <div className="md:pt-6">
       <div className="mx-auto max-w-7xl">
         <PageHeader title={pageTitle} responsive />
 

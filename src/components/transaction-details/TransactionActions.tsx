@@ -72,14 +72,6 @@ export default function TransactionActions({
               {isConfirming ? "Confirming..." : "Confirm Inspection Schedule"}
             </Button>
 
-            <ScheduleConfirmedOverlay
-              open={isConfirmedOverlayOpen}
-              onOpenChange={onConfirmedOverlayOpenChange}
-              title="Visit Scheduled!"
-              description="Your property visit has been confirmed"
-              viewDetailsLabel="View Visit Details"
-              viewDetailsTo={`/transactions/${transactionId}/visit`}
-            />
             <Button
               variant="app-secondary"
               size="full"
@@ -130,14 +122,7 @@ export default function TransactionActions({
             <Button variant="app-primary" size="full" onClick={onConfirmAction}>
               Confirm Handover Schedule
             </Button>
-            <ScheduleConfirmedOverlay
-              open={isConfirmedOverlayOpen}
-              onOpenChange={onConfirmedOverlayOpenChange}
-              title="Handover Scheduled!"
-              description="Your property handover has been confirmed"
-              viewDetailsLabel="View Handover Details"
-              viewDetailsTo={`/transactions/${transactionId}/visit`}
-            />
+
             <Button
               variant="app-secondary"
               size="full"
@@ -173,6 +158,24 @@ export default function TransactionActions({
           Open a dispute
         </Link>
       </p>
+
+      <ScheduleConfirmedOverlay
+        open={isConfirmedOverlayOpen}
+        onOpenChange={onConfirmedOverlayOpenChange}
+        title="Visit Scheduled!"
+        description="Your property visit has been confirmed"
+        viewDetailsLabel="View Visit Details"
+        viewDetailsTo={`/transactions/${transactionId}/visit`}
+      />
+
+      <ScheduleConfirmedOverlay
+        open={isConfirmedOverlayOpen}
+        onOpenChange={onConfirmedOverlayOpenChange}
+        title="Handover Scheduled!"
+        description="Your property handover has been confirmed"
+        viewDetailsLabel="View Handover Details"
+        viewDetailsTo={`/transactions/${transactionId}/visit`}
+      />
     </div>
   )
 }

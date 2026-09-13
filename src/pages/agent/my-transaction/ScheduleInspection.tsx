@@ -121,9 +121,7 @@ export default function ScheduleInspection() {
 
   // redirect to the transaction details page, not the dashboard — the agent should immediately see the schedule they just set
   const handleGoToDetails = () => {
-    navigate(`/agent/transactions/${transactionId}?type=inspection`, {
-      replace: true,
-    })
+    navigate(-1)
   }
 
   return (
