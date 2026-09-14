@@ -19,7 +19,7 @@ const INSPECTION_STATUS_LABEL: Record<string, string> = {
   inspection_paid: "Awaiting Schedule",
   inspection_scheduled: "Awaiting Buyer Confirmation",
   inspection_confirmed: "Inspection Upcoming",
-  inspection_completed: "Awaiting Purchase Decision",
+  inspection_completed: "Completed",
   inspection_cancelled: "Cancelled",
 }
 
@@ -35,7 +35,7 @@ export function getCategory(item: MergedTransaction): "pending" | "completed" {
   if (item.recordType === "purchase") {
     return item.status === "funds_released" ? "completed" : "pending"
   }
-  return "pending" // inspections never reach a "completed" bucket in this list
+  return item.status === "inspection_completed" ? "completed" : "pending"
 }
 
 export function getPropertyId(

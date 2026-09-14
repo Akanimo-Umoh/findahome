@@ -90,24 +90,20 @@ function ActivityItem({ item }: { item: MergedActivity }) {
     )
   }
 
-  // escrow branch — explicit status handling instead of a binary isHold guess
-  if (item.status === "pending" || item.status === "cancelled") {
-    return null // defensive filter — these shouldn't be shown as activity at all
+  // escrow branch — pending = hold, released = release, anything else (cancelled) hidden
+  if (item.status !== "pending" && item.status !== "released") {
+    return null
   }
 
   // escrow branch
-  const isHold = item.status === "approved"
-  const isRelease = item.status === "released"
-
-  const icon = isHold ? escrowHoldIcon : escrowReleaseIcon
-  const bg = isHold ? "bg-[#F8B400]" : "bg-[#149D18]"
-  const sign = isHold ? "" : "+"
-  const title = `Escrow ${isHold ? "hold" : "release"} — ${getPropertyTitle(item.property)}`
-  const subtitle = isHold
-    ? "Funds held pending release"
-    : isRelease
-      ? "Funds released to you"
-      : ""
+  const isRelease = item.status === "released" // CHANGED
+  const icon = isRelease ? escrowReleaseIcon : escrowHoldIcon
+  const bg = isRelease ? "bg-[#149D18]" : "bg-[#F8B400]"
+  const sign = isRelease ? "+" : ""
+  const title = `Escrow ${isRelease ? "release" : "hold"} — ${getPropertyTitle(item.property)}`
+  const subtitle = isRelease
+    ? "Funds released to you"
+    : "Funds held pending release"
 
   return (
     <div className="flex items-start justify-between gap-2 rounded-xl border border-bg-accent p-2">
@@ -152,10 +148,11 @@ function ActivitiesWrapper({ children }: { children: React.ReactNode }) {
 export default function Activities() {
   const { activities, isLoading, error } = useAgentActivities()
 
+  // pending (hold) and released now count as visible; approved/cancelled excluded
   const visibleActivities = activities.filter(
     (item) =>
       item.recordType !== "escrow" ||
-      item.status === "approved" ||
+      item.status === "pending" ||
       item.status === "released"
   )
 
