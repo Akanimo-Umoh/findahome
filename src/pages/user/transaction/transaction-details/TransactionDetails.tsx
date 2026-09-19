@@ -24,11 +24,18 @@ import { useQueryClient } from "@tanstack/react-query"
 import {
   BANNER_CONFIG,
   getInspectionPaymentStatusLabel,
+  getPurchasePaymentStatusLabel,
   getTimelineSteps,
   mapInspectionStatusToTransactionStatus,
+  mapPurchaseStatusToTransactionStatus,
   PAYMENT_TYPE_LABEL,
   SCHEDULE_SECTION_LABEL,
 } from "@/components/transaction-details/transactionConfig"
+import {
+  confirmHandover,
+  rescheduleHandover,
+  type Purchase,
+} from "@/services/purchase.service"
 
 export default function TransactionDetails() {
   const { transactionId } = useParams()
@@ -40,9 +47,8 @@ export default function TransactionDetails() {
   const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false)
   const [isRescheduling, setIsRescheduling] = useState(false)
 
-  const { transaction, recordType, isLoading, error } = useTransactionDetails(
-    transactionId ?? ""
-  )
+  const { transaction, recordType, isLoading, isFetching, error } =
+    useTransactionDetails(transactionId ?? "")
 
   const property =
     transaction && typeof transaction.property !== "string"
@@ -52,7 +58,7 @@ export default function TransactionDetails() {
   const { chatId } = useAgentChatForProperty(property?._id)
   const agentChatPath = chatId ? `/messages/${chatId}` : "/messages"
 
-  if (isLoading) return <Spinner />
+  if (isLoading || isFetching) return <Spinner />
 
   if (error || !transaction) {
     return (
@@ -72,35 +78,44 @@ export default function TransactionDetails() {
     )
   }
 
-  // recordType === "purchase" isn't fully wired yet — inspections first, per plan
-  const status =
-    recordType === "inspection"
-      ? mapInspectionStatusToTransactionStatus(
-          (transaction as Inspection).status
-        )
-      : "property_payment_pending" // placeholder until purchase mapping is built
+  const isPurchase = recordType === "purchase"
+
+  const status = isPurchase
+    ? mapPurchaseStatusToTransactionStatus((transaction as Purchase).status)
+    : mapInspectionStatusToTransactionStatus((transaction as Inspection).status)
 
   const timelineSteps = getTimelineSteps(
     status,
-    recordType === "inspection" ? (transaction as Inspection) : undefined
+    isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
   const banner = BANNER_CONFIG[status]
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
 
   const agent = getPersonDisplay(
-    recordType === "inspection" ? (transaction as Inspection).owner : undefined,
+    isPurchase
+      ? (transaction as Purchase).owner
+      : (transaction as Inspection).owner,
     "Agent"
   )
 
-  const amount =
-    recordType === "inspection" ? (transaction as Inspection).fee : 0
+  const amount = isPurchase
+    ? (transaction as Purchase).price
+    : (transaction as Inspection).fee
+
+  const paymentStatusLabel = isPurchase
+    ? getPurchasePaymentStatusLabel((transaction as Purchase).status)
+    : getInspectionPaymentStatusLabel((transaction as Inspection).status)
 
   const handleConfirmAction = async () => {
     if (!transactionId) return
     setIsConfirming(true)
     try {
-      await confirmInspection(transactionId)
+      if (isPurchase) {
+        await confirmHandover(transactionId)
+      } else {
+        await confirmInspection(transactionId)
+      }
       queryClient.invalidateQueries({
         queryKey: ["transactionDetails", transactionId],
       })
@@ -110,20 +125,23 @@ export default function TransactionDetails() {
       setIsConfirmedOverlayOpen(true)
     } catch (err) {
       toast.error("Couldn't confirm the schedule. Please try again.")
-      console.error("confirmInspection error:", err)
+      console.error("confirm error:", err)
     } finally {
       setIsConfirming(false)
     }
   }
 
-  const handleSuggestNewTime = () => {
-    setIsRescheduleModalOpen(true)
-  }
+  const handleSuggestNewTime = () => setIsRescheduleModalOpen(true)
 
   const handleConfirmReschedule = async () => {
+    if (!transactionId) return
     setIsRescheduling(true)
     try {
-      await rescheduleInspection(transactionId ?? "")
+      if (isPurchase) {
+        await rescheduleHandover(transactionId)
+      } else {
+        await rescheduleInspection(transactionId)
+      }
       queryClient.invalidateQueries({
         queryKey: ["transactionDetails", transactionId],
       })
@@ -137,7 +155,7 @@ export default function TransactionDetails() {
       })
     } catch (err) {
       toast.error("Couldn't reject the schedule. Please try again.")
-      console.error("rescheduleInspection error:", err)
+      console.error("reschedule error:", err)
     } finally {
       setIsRescheduling(false)
     }
@@ -158,6 +176,10 @@ export default function TransactionDetails() {
     onGoToDashboard: () => navigate("/"),
   }
 
+  const scheduledDateValue = isPurchase
+    ? (transaction as Purchase).scheduledDate
+    : (transaction as Inspection).scheduledDate
+
   return (
     <div className="px-6 md:px-8 md:pt-6 lg:pb-10">
       <div className="mx-auto max-w-7xl">
@@ -172,13 +194,7 @@ export default function TransactionDetails() {
               title={property?.title ?? ""}
               image={property?.image}
               price={amount.toLocaleString()}
-              paymentStatus={
-                recordType === "inspection"
-                  ? getInspectionPaymentStatusLabel(
-                      (transaction as Inspection).status
-                    )
-                  : undefined
-              }
+              paymentStatus={paymentStatusLabel}
               lastUpdated={new Date(transaction.updatedAt).toLocaleDateString(
                 "en-US",
                 {
@@ -213,11 +229,7 @@ export default function TransactionDetails() {
             <PaymentSummary
               amountInEscrow={amount.toLocaleString()}
               paymentType={paymentTypeLabel}
-              referenceNumber={
-                recordType === "inspection"
-                  ? ((transaction as Inspection).reference ?? "")
-                  : ""
-              }
+              referenceNumber={transaction.reference ?? ""}
               datePaid={new Date(transaction.createdAt).toLocaleDateString(
                 "en-US",
                 {
@@ -240,14 +252,12 @@ export default function TransactionDetails() {
               email={agent.email}
             />
 
-            {scheduleLabel && recordType === "inspection" && (
+            {scheduleLabel && (
               <ScheduleDetails
                 label={scheduleLabel}
                 date={
-                  (transaction as Inspection).scheduledDate
-                    ? new Date(
-                        (transaction as Inspection).scheduledDate as string
-                      ).toLocaleDateString("en-US", {
+                  scheduledDateValue
+                    ? new Date(scheduledDateValue).toLocaleDateString("en-US", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
@@ -255,10 +265,8 @@ export default function TransactionDetails() {
                     : "—"
                 }
                 time={
-                  (transaction as Inspection).scheduledDate
-                    ? new Date(
-                        (transaction as Inspection).scheduledDate as string
-                      ).toLocaleTimeString("en-US", {
+                  scheduledDateValue
+                    ? new Date(scheduledDateValue).toLocaleTimeString("en-US", {
                         hour: "numeric",
                         minute: "2-digit",
                       })

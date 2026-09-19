@@ -58,7 +58,7 @@ const STATUS_LABEL: Record<TransactionStatus, string> = {
   inspection_requested: "Awaiting Agent",
   inspection_scheduled: "Schedule Visit",
   inspection_confirmed: "Visit Upcoming",
-  inspection_completed: "Payment Held by System",
+  inspection_completed: "Completed",
   property_payment_pending: "Awaiting Handover",
   handover_requested: "Schedule Handover",
   handover_scheduled: "Schedule Handover",

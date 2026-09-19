@@ -235,7 +235,8 @@ export default function Signup() {
                     {...register("password")}
                   />
 
-                  <p
+                  <button
+                    type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                     aria-label={
@@ -247,7 +248,7 @@ export default function Signup() {
                       alt=""
                       aria-hidden="true"
                     />
-                  </p>
+                  </button>
                 </div>
 
                 {passwordErrors && (

@@ -10,8 +10,9 @@ type Step2Props = {
   onBack: () => void
 }
 
-const REQUIRED_FIELDS: ("businessName" | "officeAddress")[] = [
+const REQUIRED_FIELDS: ("businessName" | "phoneNumber" | "officeAddress")[] = [
   "businessName",
+  "phoneNumber",
   "officeAddress",
 ]
 
@@ -30,9 +31,18 @@ export default function Step2({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const newErrors: Partial<Record<keyof AgentProfileData, string>> = {}
+
     REQUIRED_FIELDS.forEach((field) => {
       if (!data[field].trim()) newErrors[field] = "Can't be empty"
     })
+
+    // phone gets extra validation beyond "not empty"
+    if (!data.phoneNumber.trim()) {
+      newErrors.phoneNumber = "Can't be empty"
+    } else if (!/^\d{10,11}$/.test(data.phoneNumber)) {
+      newErrors.phoneNumber = "Enter a valid phone number"
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
@@ -60,6 +70,30 @@ export default function Step2({
 
           {errors.businessName && (
             <p className="text-[12px] text-red-500">{errors.businessName}</p>
+          )}
+        </div>
+
+        {/* phone number */}
+        <div className="flex flex-col gap-2">
+          <label htmlFor="phone">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
+
+          <input
+            type="tel"
+            id="phone"
+            placeholder="Enter Phone Number"
+            value={data.phoneNumber}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/\D/g, "")
+              updateField("phoneNumber", digitsOnly)
+            }}
+            maxLength={11}
+            className={`h-11.25 w-full rounded-xl border bg-white px-2 text-[14px] outline-none ${errors.phoneNumber ? "border-red-500" : "border-text-disabled"}`}
+          />
+
+          {errors.phoneNumber && (
+            <p className="text-[12px] text-red-500">{errors.phoneNumber}</p>
           )}
         </div>
 

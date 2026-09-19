@@ -15,7 +15,13 @@ export type Inspection = {
       }
   owner:
     | string
-    | { _id: string; name?: string; email: string; phoneNumber?: string | null }
+    | {
+        _id: string
+        name?: string
+        email: string
+        phoneNumber?: string | null
+        profilePicture?: string | null | string[]
+      }
   user:
     | string
     | { _id: string; name?: string; email: string; phoneNumber?: string | null }

@@ -94,7 +94,7 @@ export default function TransactionActions({
         {/* Phase 4 — inspection done, prompt to secure property */}
         {showSecureProperty && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/transactions/${transactionId}/payment`}>
+            <Link to={`/property-payment/${transactionId}`}>
               Secure Property
             </Link>
           </Button>

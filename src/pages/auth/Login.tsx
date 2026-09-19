@@ -21,6 +21,7 @@ type LocationState = {
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
+  const [rememberMe, setRememberMe] = useState(false)
 
   // use custom google auth hook
   const {
@@ -243,7 +244,8 @@ export default function Login() {
                     {...register("password")}
                   />
 
-                  <p
+                  <button
+                    type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
                     aria-label={
@@ -255,8 +257,9 @@ export default function Login() {
                       alt=""
                       aria-hidden="true"
                     />
-                  </p>
+                  </button>
                 </div>
+
                 {errors.password && (
                   <div
                     className="flex items-center gap-1"
@@ -277,6 +280,8 @@ export default function Login() {
                 <input
                   type="checkbox"
                   id="remember-me"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 rounded-lg"
                 />
                 <label htmlFor="remember-me" className="text-text-secondary">

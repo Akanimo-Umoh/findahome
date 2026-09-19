@@ -12,7 +12,9 @@ export function useAgentTransactionDetails(id: string) {
     | "inspection"
     | "purchase"
 
-  const { data, isLoading, error } = useQuery<Inspection | Purchase>({
+  const { data, isLoading, isFetching, error } = useQuery<
+    Inspection | Purchase
+  >({
     queryKey: ["agentTransactionDetails", id, recordType],
     queryFn: () =>
       recordType === "purchase"
@@ -23,5 +25,5 @@ export function useAgentTransactionDetails(id: string) {
     refetchOnMount: "always",
   })
 
-  return { transaction: data, recordType, isLoading, error }
+  return { transaction: data, recordType, isLoading, isFetching, error }
 }

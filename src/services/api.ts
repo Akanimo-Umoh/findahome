@@ -16,4 +16,25 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// handle expired/invalid/missing token globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const isAuthEndpoint = error.config?.url?.includes("/auth/")
+
+      if (!isAuthEndpoint) {
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+
+        // avoid redirect loop if already on login
+        if (!window.location.pathname.includes("/login")) {
+          window.location.href = "/login"
+        }
+      }
+    }
+    return Promise.reject(error)
+  }
+)
+
 export default api

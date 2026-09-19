@@ -23,7 +23,6 @@ import {
   PropertyEscrowTransaction,
   PropertyPayment,
 } from "@/pages/user/propertyPayment"
-import { PropertyHandoverSchedule } from "@/pages/user/propertyHandover"
 import { ConfirmHandover } from "@/pages/user/confirmHandover"
 import { TransactionReceipt } from "@/pages/user/receipt"
 import { Recent } from "@/pages/user/recent"
@@ -32,7 +31,10 @@ import { UserTransactionDetails } from "@/pages/user/transaction/transaction-det
 import { UserVisitDetails } from "@/pages/user/transaction/visit-details"
 import { UserConfirmVisit } from "@/pages/user/transaction/confirm-visit"
 import { UserTransactionReceipt } from "@/pages/user/transaction/transaction-receipt"
-import { UserPropertyPayment } from "@/pages/user/transaction/property-payment"
+import {
+  PurchasePaymentCallback,
+  UserPropertyPayment,
+} from "@/pages/user/transaction/property-payment"
 import { AgentProfile } from "@/pages/user/agents/agent-profile"
 import { Profile } from "@/pages/user/profile/my-profile"
 import { EditPersonalInfo } from "@/pages/user/profile/edit-personal-info"
@@ -65,7 +67,7 @@ import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 import AgentLayout from "@/layouts/AgentLayout"
 import { MyAds } from "@/pages/agent/ads/my-ads"
 import { ChangePassword } from "@/pages/agent/profile/change-password"
-import { AgentOnboarding } from "@/pages/agent/onboarding"
+import { AgentOnboarding, OnboardingSuccess } from "@/pages/agent/onboarding"
 import BlockRoleRoute from "./BlockedRoleRoute"
 import { CreateAd } from "@/pages/agent/ads/create-ad"
 import AgentTransactionDetails from "@/pages/agent/my-transaction/AgentTransactionDetails"
@@ -85,6 +87,8 @@ import {
   FundWalletCallback,
 } from "@/pages/agent/wallet/fund-wallet"
 import InspectionPaymentCallback from "@/components/shared/InspectionPaymentCallback"
+import ScheduleHandover from "@/pages/agent/my-transaction/ScheduleHandover"
+import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-confirm-visit"
 
 export default function AppRoutes() {
   return (
@@ -169,8 +173,12 @@ export default function AppRoutes() {
           element={<UserConfirmVisit />}
         />
         <Route
-          path="/transactions/:transactionId/payment"
+          path="/property-payment/:transactionId"
           element={<UserPropertyPayment />}
+        />
+        <Route
+          path="/property-payment/callback"
+          element={<PurchasePaymentCallback />}
         />
         <Route
           path="/transactions/:transactionId/receipt"
@@ -206,9 +214,10 @@ export default function AppRoutes() {
         <Route path="/confirm-handover" element={<ConfirmHandover />} />
         <Route path="/property-payment" element={<PropertyPayment />} />
         <Route
-          path="/property-handover-schedule"
-          element={<PropertyHandoverSchedule />}
+          path="/transactions/:transactionId/confirm-handover"
+          element={<UserPurchaseConfirmVisit />}
         />
+
         <Route path="/transaction-receipt" element={<TransactionReceipt />} />
 
         {/* user transaction details */}
@@ -221,12 +230,11 @@ export default function AppRoutes() {
       {/* ==================== AGENT ROUTES ==================== */}
       {/* Only for users with role: "agent" */}
       <Route element={<RoleBasedRoute allowedRoles={["agent"]} />}>
-        <Route element={<MainLayout />}>
-          <Route
-            path="/agent/properties/edit/:id"
-            element={<div>Edit Property</div>}
-          />
-        </Route>
+        <Route path="/agent/onboarding" element={<AgentOnboarding />} />
+        <Route
+          path="/agent/onboarding/success"
+          element={<OnboardingSuccess />}
+        />
 
         <Route element={<AgentLayout />}>
           <Route path="/agent/dashboard" element={<AgentDashboard />} />
@@ -262,6 +270,10 @@ export default function AppRoutes() {
           <Route
             path="/agent/transactions/:transactionId/schedule-inspection"
             element={<ScheduleInspection />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/schedule-handover"
+            element={<ScheduleHandover />}
           />
           <Route
             path="/agent/transactions/:transactionId/schedule-handover"

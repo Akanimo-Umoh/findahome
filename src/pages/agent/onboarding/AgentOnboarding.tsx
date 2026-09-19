@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
 import Step3 from "./Step3"
 import ProgressBar from "./ProgressBar"
-import OnboardingSuccess from "./OnboardingSuccess"
 import infoIcon from "@/assets/agentImages/icon-filled-info.svg"
 import { useAuthContext } from "@/context/AuthContext"
 import { onboardAgent } from "@/services/user.service"
@@ -18,6 +17,7 @@ export type AgentProfileData = {
   serviceArea: string[]
   languages: string[]
   businessName: string
+  phoneNumber: string
   licenceNumber: string
   officeAddress: string
   socialLinkOrWebsite: string
@@ -29,6 +29,7 @@ const initialData: AgentProfileData = {
   serviceArea: [],
   languages: [],
   businessName: "",
+  phoneNumber: "",
   licenceNumber: "",
   officeAddress: "",
   socialLinkOrWebsite: "",
@@ -36,13 +37,13 @@ const initialData: AgentProfileData = {
 
 export default function AgentOnboarding() {
   const [step, setStep] = useState(1)
-  const [isComplete, setIsComplete] = useState(false)
   const [formData, setFormData] = useState<AgentProfileData>(initialData)
   const [governmentId, setGovernmentId] = useState<File | null>(null)
   const [licenseDoc, setLicenseDoc] = useState<File | null>(null)
 
   const { token, user, updateUser } = useAuthContext()
   const { handleLogout } = useLogout()
+  const navigate = useNavigate()
 
   const updateField = (field: keyof AgentProfileData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -60,14 +61,12 @@ export default function AgentOnboarding() {
 
   // warn on tab close/refresh while onboarding isn't complete
   useEffect(() => {
-    if (isComplete) return
     const handler = (e: BeforeUnloadEvent) => {
       e.preventDefault()
-      e.returnValue = ""
     }
     window.addEventListener("beforeunload", handler)
     return () => window.removeEventListener("beforeunload", handler)
-  }, [isComplete])
+  }, [])
 
   const handleFinalSubmit = async () => {
     if (!token) throw new Error("Not authenticated")
@@ -78,6 +77,7 @@ export default function AgentOnboarding() {
     payload.append("serviceArea", JSON.stringify(formData.serviceArea))
     payload.append("languages", JSON.stringify(formData.languages))
     payload.append("businessName", formData.businessName)
+    payload.append("phoneNumber", formData.phoneNumber)
     payload.append("licenceNumber", formData.licenceNumber)
     payload.append("officeAddress", formData.officeAddress)
     payload.append("socialLinkOrWebsite", formData.socialLinkOrWebsite)
@@ -89,11 +89,11 @@ export default function AgentOnboarding() {
     if (user) {
       updateUser({ ...user, ...updatedUser, isOnboarding: true })
     }
-    setIsComplete(true)
-  }
 
-  if (isComplete) {
-    return <OnboardingSuccess />
+    navigate("/agent/onboarding/success", {
+      replace: true,
+      state: { fromOnboarding: true },
+    })
   }
 
   return (

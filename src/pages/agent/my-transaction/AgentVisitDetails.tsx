@@ -63,8 +63,16 @@ export default function AgentVisitDetails() {
               referenceId={inspection.reference ?? ""}
             />
             <VisitBanner
-              title="Inspection Scheduled"
-              subtitle="The visit has been scheduled successfully"
+              title={
+                canMarkComplete
+                  ? "Inspection Completed"
+                  : "Inspection Scheduled"
+              }
+              subtitle={
+                canMarkComplete
+                  ? "The buyer has confirmed this inspection is complete."
+                  : "The visit has been scheduled successfully"
+              }
             />
 
             <div className="hidden lg:block">

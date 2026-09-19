@@ -1,4 +1,5 @@
 import type { Inspection } from "@/services/inspection.service"
+import type { Purchase } from "@/services/purchase.service"
 import type { TransactionStatus, TimelineStep } from "@/types/transactions"
 
 const INSPECTION_STEPS = [
@@ -9,8 +10,8 @@ const INSPECTION_STEPS = [
   "Inspection Completed",
 ]
 
-const ALL_STEPS = [
-  ...INSPECTION_STEPS,
+// CHANGED: purchase/handover now has its own standalone 4-step timeline, no longer prefixed with inspection steps since they're separate transactions
+const HANDOVER_STEPS = [
   "Property Payment Made",
   "Agent scheduled handover",
   "Handover schedule confirmed",
@@ -22,12 +23,12 @@ const VISIBLE_STEPS: Record<TransactionStatus, string[]> = {
   inspection_scheduled: INSPECTION_STEPS,
   inspection_confirmed: INSPECTION_STEPS,
   inspection_completed: INSPECTION_STEPS,
-  property_payment_pending: ALL_STEPS,
-  handover_requested: ALL_STEPS,
-  handover_scheduled: ALL_STEPS,
-  handover_confirmed: ALL_STEPS,
-  handover_completed: ALL_STEPS,
-  funds_released: ALL_STEPS,
+  property_payment_pending: HANDOVER_STEPS,
+  handover_requested: HANDOVER_STEPS,
+  handover_scheduled: HANDOVER_STEPS,
+  handover_confirmed: HANDOVER_STEPS,
+  handover_completed: HANDOVER_STEPS,
+  funds_released: HANDOVER_STEPS,
 }
 
 function formatTimelineDate(dateStr?: string | null): string | undefined {
@@ -42,25 +43,32 @@ function formatTimelineDate(dateStr?: string | null): string | undefined {
 
 export function getTimelineSteps(
   status: TransactionStatus,
-  inspection?: Pick<
-    Inspection,
-    "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt"
-  >
+  record?:
+    | Pick<Inspection, "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt">
+    | Pick<Purchase, "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt">
 ): TimelineStep[] {
   const visible = VISIBLE_STEPS[status]
 
-  const inspectionDates = [
-    inspection?.paidAt,
-    inspection?.paidAt,
-    inspection?.scheduledAt,
-    inspection?.confirmedAt,
-    inspection?.completedAt,
-  ]
+  const dates =
+    visible === INSPECTION_STEPS
+      ? [
+          record?.paidAt,
+          record?.paidAt,
+          record?.scheduledAt,
+          record?.confirmedAt,
+          record?.completedAt,
+        ]
+      : [
+          record?.paidAt,
+          record?.scheduledAt,
+          record?.confirmedAt,
+          record?.completedAt,
+        ]
 
   return visible.map((label, index) => ({
     label,
     completedAt: formatTimelineDate(
-      index < inspectionDates.length ? inspectionDates[index] : undefined
+      index < dates.length ? dates[index] : undefined
     ),
   }))
 }
@@ -194,6 +202,51 @@ export function getInspectionPaymentStatusLabel(
       return "Completed"
     case "inspection_cancelled":
       return "Cancelled"
+    default:
+      return "Pending"
+  }
+}
+
+export function mapPurchaseStatusToTransactionStatus(
+  status: Purchase["status"]
+): TransactionStatus {
+  switch (status) {
+    case "none":
+    case "property_payment_made":
+      return "property_payment_pending"
+    case "handover_requested":
+      return "handover_requested"
+    case "handover_scheduled":
+    case "handover_rescheduled":
+      return "handover_scheduled"
+    case "handover_confirmed":
+      return "handover_confirmed"
+    case "handover_completed":
+      return "handover_completed"
+    case "funds_released":
+      return "funds_released"
+    default:
+      return "property_payment_pending"
+  }
+}
+
+export function getPurchasePaymentStatusLabel(
+  status: Purchase["status"]
+): string {
+  switch (status) {
+    case "none":
+      return "Awaiting Payment"
+    case "property_payment_made":
+      return "In Escrow"
+    case "handover_requested":
+    case "handover_scheduled":
+    case "handover_rescheduled":
+    case "handover_confirmed":
+      return "In Escrow"
+    case "handover_completed":
+      return "Completed"
+    case "funds_released":
+      return "Released"
     default:
       return "Pending"
   }
