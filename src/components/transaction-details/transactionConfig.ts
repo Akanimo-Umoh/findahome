@@ -213,11 +213,9 @@ export function mapPurchaseStatusToTransactionStatus(
   switch (status) {
     case "none":
     case "property_payment_made":
-      return "property_payment_pending"
-    case "handover_requested":
-      return "handover_requested"
-    case "handover_scheduled":
     case "handover_rescheduled":
+      return "property_payment_pending"
+    case "handover_scheduled":
       return "handover_scheduled"
     case "handover_confirmed":
       return "handover_confirmed"

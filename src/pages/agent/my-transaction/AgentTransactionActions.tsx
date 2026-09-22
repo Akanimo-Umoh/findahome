@@ -16,7 +16,7 @@ export default function AgentTransactionActions({
     status === "inspection_scheduled" ||
     status === "inspection_confirmed" ||
     status === "inspection_completed"
-  const showScheduleHandover = status === "handover_requested"
+  const showScheduleHandover = status === "property_payment_pending"
   const showHandoverVisitDetails =
     status === "handover_scheduled" ||
     status === "handover_confirmed" ||

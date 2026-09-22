@@ -23,7 +23,6 @@ import {
   PropertyEscrowTransaction,
   PropertyPayment,
 } from "@/pages/user/propertyPayment"
-import { ConfirmHandover } from "@/pages/user/confirmHandover"
 import { TransactionReceipt } from "@/pages/user/receipt"
 import { Recent } from "@/pages/user/recent"
 import { SavedProperties } from "@/pages/user/saved-properties"
@@ -169,10 +168,6 @@ export default function AppRoutes() {
           element={<UserConfirmVisit />}
         />
         <Route
-          path="/transactions/:transactionId/confirm-handover"
-          element={<UserConfirmVisit />}
-        />
-        <Route
           path="/property-payment/:transactionId"
           element={<UserPropertyPayment />}
         />
@@ -211,7 +206,7 @@ export default function AppRoutes() {
           element={<InspectionConfirmation />}
         /> */}
 
-        <Route path="/confirm-handover" element={<ConfirmHandover />} />
+        {/* <Route path="/confirm-handover" element={<ConfirmHandover />} /> */}
         <Route path="/property-payment" element={<PropertyPayment />} />
         <Route
           path="/transactions/:transactionId/confirm-handover"
@@ -274,10 +269,6 @@ export default function AppRoutes() {
           <Route
             path="/agent/transactions/:transactionId/schedule-handover"
             element={<ScheduleHandover />}
-          />
-          <Route
-            path="/agent/transactions/:transactionId/schedule-handover"
-            element={<ScheduleInspection />}
           />
           <Route
             path="/agent/transactions/:transactionId/visit"
