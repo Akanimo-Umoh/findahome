@@ -169,7 +169,7 @@ export default function PurchaseConfirmVisit() {
                   htmlFor="finalized-deal"
                   className="cursor-pointer text-[12px] leading-4 text-text-secondary"
                 >
-                  I have received my keys
+                  I have received possession or access to the property
                 </label>
               </div>
             </div>
