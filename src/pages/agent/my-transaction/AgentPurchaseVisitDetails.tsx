@@ -79,6 +79,7 @@ export default function AgentPurchaseVisitDetails() {
 
             <div className="hidden lg:block">
               <AgentVisitActions
+                status={purchase.status}
                 canMarkComplete={canMarkComplete}
                 isHandover={true}
               />
@@ -117,6 +118,7 @@ export default function AgentPurchaseVisitDetails() {
 
           <div className="lg:hidden">
             <AgentVisitActions
+              status={purchase.status}
               canMarkComplete={canMarkComplete}
               isHandover={true}
             />
