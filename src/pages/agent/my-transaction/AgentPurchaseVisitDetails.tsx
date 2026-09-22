@@ -79,12 +79,6 @@ export default function AgentPurchaseVisitDetails() {
 
             <div className="hidden lg:block">
               <AgentVisitActions
-                confirmRoute={`/agent/transactions/${transactionId}?type=purchase`}
-                markCompletedLabel={
-                  canMarkComplete
-                    ? "Buyer Confirmed — View Details"
-                    : "Mark Handover as Completed"
-                }
                 canMarkComplete={canMarkComplete}
                 isHandover={true}
               />
@@ -123,12 +117,6 @@ export default function AgentPurchaseVisitDetails() {
 
           <div className="lg:hidden">
             <AgentVisitActions
-              confirmRoute={`/agent/transactions/${transactionId}?type=purchase`}
-              markCompletedLabel={
-                canMarkComplete
-                  ? "Buyer Confirmed — View Details"
-                  : "Mark Handover as Completed"
-              }
               canMarkComplete={canMarkComplete}
               isHandover={true}
             />
