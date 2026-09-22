@@ -38,7 +38,9 @@ export default function AgentTransactionActions({
 
         {showInspectionVisitDetails && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/agent/transactions/${transactionId}/visit`}>
+            <Link
+              to={`/agent/transactions/${transactionId}/visit?type=inspection`}
+            >
               Visit Details
             </Link>
           </Button>
@@ -54,7 +56,9 @@ export default function AgentTransactionActions({
 
         {showHandoverVisitDetails && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/agent/transactions/${transactionId}/visit`}>
+            <Link
+              to={`/agent/transactions/${transactionId}/visit?type=purchase`}
+            >
               Handover Details
             </Link>
           </Button>
