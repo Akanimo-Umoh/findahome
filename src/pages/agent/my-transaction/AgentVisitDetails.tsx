@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import PageHeader from "@/components/shared/PageHeader"
 import VisitPropertyCard from "@/components/visit-details/VisitPropertyCard"
 import VisitBanner from "@/components/visit-details/VisitBanner"
@@ -7,20 +7,33 @@ import PropertyLocation from "@/components/visit-details/PropertyLocation"
 import ContactDetails from "@/components/transaction-details/ContactDetails"
 import AgentVisitActions from "./AgentVisitActions"
 import { useQuery } from "@tanstack/react-query"
-import { getInspectionDetails } from "@/services/inspection.service"
+import {
+  getInspectionDetails,
+  type Inspection,
+} from "@/services/inspection.service"
 import Spinner from "@/components/Spinner"
 import { getPersonDisplay } from "@/lib/personDisplay"
+import { getPurchaseDetails, type Purchase } from "@/services/purchase.service"
 
 export default function AgentVisitDetails() {
   const { transactionId } = useParams()
+  const [searchParams] = useSearchParams()
+  const isHandover = searchParams.get("type") === "purchase"
 
   const {
-    data: inspection,
+    data: transaction,
     isLoading,
     isFetching,
-  } = useQuery({
-    queryKey: ["inspectionDetails", transactionId],
-    queryFn: () => getInspectionDetails(transactionId ?? ""),
+  } = useQuery<Inspection | Purchase>({
+    queryKey: [
+      "agentVisitDetails",
+      transactionId,
+      isHandover ? "purchase" : "inspection",
+    ],
+    queryFn: () =>
+      isHandover
+        ? getPurchaseDetails(transactionId ?? "")
+        : getInspectionDetails(transactionId ?? ""),
     enabled: !!transactionId,
     staleTime: 0,
     refetchOnMount: "always",
@@ -28,7 +41,7 @@ export default function AgentVisitDetails() {
 
   if (isLoading || isFetching) return <Spinner />
 
-  if (!inspection) {
+  if (!transaction) {
     return (
       <div className="flex h-[calc(100vh-72px)] items-center justify-center">
         <p className="text-[14px] text-text-secondary">
@@ -39,19 +52,29 @@ export default function AgentVisitDetails() {
   }
 
   const property =
-    typeof inspection.property === "string" ? undefined : inspection.property
+    typeof transaction.property === "string" ? undefined : transaction.property
   const buyer = getPersonDisplay(
-    typeof inspection.user === "string" ? undefined : inspection.user,
+    isHandover
+      ? typeof (transaction as Purchase).buyer === "string"
+        ? undefined
+        : (transaction as Purchase).buyer
+      : typeof (transaction as Inspection).user === "string"
+        ? undefined
+        : (transaction as Inspection).user,
     "Buyer"
   )
-
-  // no agent-side "complete" action exists on the backend — this just reflects whether the buyer has already completed it
-  const canMarkComplete = inspection.status === "inspection_completed"
+  const scheduledDate = transaction.scheduledDate
+  const canMarkComplete = isHandover
+    ? (transaction as Purchase).status === "handover_completed"
+    : (transaction as Inspection).status === "inspection_completed"
 
   return (
     <div className="md:pt-6">
       <div className="mx-auto max-w-7xl">
-        <PageHeader title="Visit Details" responsive />
+        <PageHeader
+          title={isHandover ? "Handover Details" : "Visit Details"}
+          responsive
+        />
 
         <main className="mt-4 space-y-4 md:mt-6 md:space-y-6 lg:flex lg:gap-6 lg:space-y-0">
           <section className="space-y-4 md:space-y-6 lg:flex-1">
@@ -59,19 +82,26 @@ export default function AgentVisitDetails() {
               image={property?.image}
               title={property?.title ?? ""}
               location={property?.address ?? ""}
-              price={inspection.fee.toLocaleString()}
-              referenceId={inspection.reference ?? ""}
+              price={(isHandover
+                ? (transaction as Purchase).price
+                : (transaction as Inspection).fee
+              ).toLocaleString()}
+              referenceId={transaction.reference ?? ""}
             />
             <VisitBanner
               title={
                 canMarkComplete
-                  ? "Inspection Completed"
-                  : "Inspection Scheduled"
+                  ? isHandover
+                    ? "Handover Completed"
+                    : "Inspection Completed"
+                  : isHandover
+                    ? "Handover Scheduled"
+                    : "Inspection Scheduled"
               }
               subtitle={
                 canMarkComplete
-                  ? "The buyer has confirmed this inspection is complete."
-                  : "The visit has been scheduled successfully"
+                  ? `The buyer has confirmed this ${isHandover ? "handover" : "inspection"} is complete.`
+                  : `The ${isHandover ? "handover" : "visit"} has been scheduled successfully`
               }
             />
 
@@ -80,14 +110,18 @@ export default function AgentVisitDetails() {
             </div>
             <div className="hidden lg:block">
               <AgentVisitActions
-                confirmRoute={`/agent/transactions/${transactionId}?type=inspection`}
+                confirmRoute={`/agent/transactions/${transactionId}?type=${
+                  isHandover ? "purchase" : "inspection"
+                }`}
                 markCompletedLabel={
                   canMarkComplete
                     ? "Buyer Confirmed — View Details"
-                    : "Mark Visit as Completed"
+                    : isHandover
+                      ? "Mark Handover as Completed"
+                      : "Mark Visit as Completed"
                 }
                 canMarkComplete={canMarkComplete}
-                isHandover={false}
+                isHandover={isHandover}
               />
             </div>
           </section>
@@ -95,8 +129,8 @@ export default function AgentVisitDetails() {
           <section className="space-y-4 md:space-y-6 lg:flex-1">
             <VisitSummary
               dateTime={
-                inspection.scheduledDate
-                  ? new Date(inspection.scheduledDate).toLocaleString("en-US", {
+                scheduledDate
+                  ? new Date(scheduledDate).toLocaleString("en-US", {
                       day: "numeric",
                       month: "short",
                       year: "numeric",
@@ -105,9 +139,9 @@ export default function AgentVisitDetails() {
                     })
                   : "—"
               }
-              visitType="Physical Visit"
-              transactionId={inspection._id}
-              paymentStatus={inspection.feePaid ? "Paid" : "Pending"}
+              visitType={isHandover ? "In-Person Handover" : "Physical Visit"}
+              transactionId={transaction.reference ?? transaction._id}
+              paymentStatus={transaction.feePaid ? "Paid" : "Pending"}
             />
 
             <div className="lg:hidden">
@@ -124,14 +158,18 @@ export default function AgentVisitDetails() {
 
           <div className="lg:hidden">
             <AgentVisitActions
-              confirmRoute={`/agent/transactions/${transactionId}?type=inspection`}
+              confirmRoute={`/agent/transactions/${transactionId}?type=${
+                isHandover ? "purchase" : "inspection"
+              }`}
               markCompletedLabel={
                 canMarkComplete
                   ? "Buyer Confirmed — View Details"
-                  : "Mark Visit as Completed"
+                  : isHandover
+                    ? "Mark Handover as Completed"
+                    : "Mark Visit as Completed"
               }
               canMarkComplete={canMarkComplete}
-              isHandover={false}
+              isHandover={isHandover}
             />
           </div>
         </main>
