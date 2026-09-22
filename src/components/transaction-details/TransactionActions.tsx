@@ -136,7 +136,7 @@ export default function TransactionActions({
         {/* Phase 8 — confirmed, handover upcoming */}
         {showViewHandoverDetails && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/transactions/${transactionId}/visit`}>
+            <Link to={`/transactions/${transactionId}/visit?type=purchase`}>
               View Handover Details
             </Link>
           </Button>
@@ -162,19 +162,18 @@ export default function TransactionActions({
       <ScheduleConfirmedOverlay
         open={isConfirmedOverlayOpen}
         onOpenChange={onConfirmedOverlayOpenChange}
-        title="Visit Scheduled!"
-        description="Your property visit has been confirmed"
-        viewDetailsLabel="View Visit Details"
-        viewDetailsTo={`/transactions/${transactionId}/visit`}
-      />
-
-      <ScheduleConfirmedOverlay
-        open={isConfirmedOverlayOpen}
-        onOpenChange={onConfirmedOverlayOpenChange}
-        title="Handover Scheduled!"
-        description="Your property handover has been confirmed"
-        viewDetailsLabel="View Handover Details"
-        viewDetailsTo={`/transactions/${transactionId}/visit`}
+        title={showConfirmHandover ? "Handover Scheduled!" : "Visit Scheduled!"}
+        description={
+          showConfirmHandover
+            ? "Your property handover has been confirmed"
+            : "Your property visit has been confirmed"
+        }
+        viewDetailsLabel={
+          showConfirmHandover ? "View Handover Details" : "View Visit Details"
+        }
+        viewDetailsTo={`/transactions/${transactionId}/visit${
+          showConfirmHandover ? "?type=purchase" : ""
+        }`}
       />
     </div>
   )
