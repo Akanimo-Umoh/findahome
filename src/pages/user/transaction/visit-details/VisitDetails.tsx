@@ -141,6 +141,8 @@ export default function VisitDetails() {
               <VisitActions
                 confirmRoute={confirmRoute}
                 markCompletedLabel={markCompletedLabel}
+                transactionId={transactionId ?? ""}
+                disputeType={isHandover ? "purchase" : "inspection"}
               />
             </div>
           </section>
@@ -185,6 +187,8 @@ export default function VisitDetails() {
             <VisitActions
               confirmRoute={confirmRoute}
               markCompletedLabel={markCompletedLabel}
+              transactionId={transactionId ?? ""}
+              disputeType={isHandover ? "purchase" : "inspection"}
             />
           </div>
         </main>

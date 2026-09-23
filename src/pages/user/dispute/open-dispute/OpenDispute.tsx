@@ -119,7 +119,7 @@ export default function OpenDispute() {
 
       <main className="mt-6 md:mx-auto md:max-w-3xl">
         {/* property details — CHANGED: responsive layout + real data */}
-        <div className="flex flex-col gap-3 rounded-xl border border-bg-accent p-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex items-center justify-center gap-3 rounded-xl border border-bg-accent p-3 sm:flex-row sm:items-center sm:gap-4">
           {property?.image ? (
             <img
               src={property.image}

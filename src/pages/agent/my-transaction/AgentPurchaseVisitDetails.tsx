@@ -82,6 +82,7 @@ export default function AgentPurchaseVisitDetails() {
                 status={purchase.status}
                 canMarkComplete={canMarkComplete}
                 isHandover={true}
+                transactionId={purchase._id}
               />
             </div>
           </section>
@@ -121,6 +122,7 @@ export default function AgentPurchaseVisitDetails() {
               status={purchase.status}
               canMarkComplete={canMarkComplete}
               isHandover={true}
+              transactionId={purchase._id}
             />
           </div>
         </main>
