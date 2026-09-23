@@ -5,12 +5,14 @@ interface AgentVisitActionsProps {
   status: string
   canMarkComplete: boolean
   isHandover: boolean
+  transactionId: string
 }
 
 export default function AgentVisitActions({
   status,
   canMarkComplete,
   isHandover,
+  transactionId,
 }: AgentVisitActionsProps) {
   const transactionName = isHandover ? "handover" : "inspection"
   const statusMessage = canMarkComplete
@@ -27,7 +29,12 @@ export default function AgentVisitActions({
         </p>
 
         <Button variant="app-secondary" size="full" asChild>
-          <Link to="/agent/dashboard">Go to Dashboard</Link>
+          <Link
+            to={`/open-dispute/${transactionId}?type=${isHandover ? "purchase" : "inspection"}`}
+            className="font-semibold hover:text-button-bg"
+          >
+            Open a dispute
+          </Link>
         </Button>
       </div>
 

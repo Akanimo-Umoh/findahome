@@ -152,6 +152,7 @@ export default function AgentVisitDetails() {
               status={transaction.status}
               canMarkComplete={canMarkComplete}
               isHandover={isHandover}
+              transactionId={transactionId ?? ""}
             />
           </div>
         </main>

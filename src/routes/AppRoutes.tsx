@@ -185,7 +185,7 @@ export default function AppRoutes() {
         <Route path="/disputes" element={<MyDisputes />} />
         <Route path="/disputes/:disputeId" element={<MyDisputes />} />
 
-        <Route path="/open-dispute" element={<OpenDispute />} />
+        <Route path="/open-dispute/:transactionId?" element={<OpenDispute />} />
         <Route path="/open-dispute/submitted" element={<DisputeSubmitted />} />
         <Route path="/agents" element={<FindAgents />} />
         <Route path="/agent-profile" element={<AgentProfile />} />
