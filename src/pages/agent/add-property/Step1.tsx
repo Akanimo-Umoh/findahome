@@ -7,13 +7,14 @@ import {
 } from "@/components/ui/select"
 // import rightIcon from "@/assets/agentImages/icon-right-arrow.svg"
 import FormField from "./FormField"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type {
   AddPropertyFormData,
   ListingType,
   PropertyType,
 } from "@/types/addProperty"
 import { Button } from "@/components/ui/button"
+import { calculateEscrowFee } from "@/lib/escrowFee"
 
 type Step1Props = {
   formData: AddPropertyFormData
@@ -41,6 +42,17 @@ export default function Step1({
 }: Step1Props) {
   const [errors, setErrors] = useState<Step1Errors>({})
   const isLand = formData.propertyType === "land"
+
+  useEffect(() => {
+    const numericPrice = Number(formData.price.replace(/,/g, "")) || 0
+    // land has no listingType selector shown — falls back to "sale" pricing,
+    // since land is typically sold outright; flag if that's wrong
+    const listingType = formData.listingType || "sale"
+    const escrowFee = calculateEscrowFee(numericPrice, listingType)
+    if (formData.escrowFee !== escrowFee) {
+      updateFormData({ escrowFee })
+    }
+  }, [formData.price, formData.listingType])
 
   const validate = (): boolean => {
     const newErrors: Step1Errors = {}

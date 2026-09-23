@@ -2,6 +2,7 @@ type BaseProperty = {
   _id: string
   title: string
   price: number
+  escrowFee: number
   address: string
   images: string[]
   videos: string[]

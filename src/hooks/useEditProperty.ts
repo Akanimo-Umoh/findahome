@@ -19,6 +19,7 @@ export function useEditProperty() {
         propertyType: formData.propertyType,
         price: formData.price,
         serviceCharge: formData.serviceCharge,
+        escrowFee: formData.escrowFee,
         address: `${formData.city}, ${formData.state}`,
         description:
           formData.propertyType === "apartment"

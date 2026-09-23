@@ -8,6 +8,7 @@ export type AddPropertyFormData = {
   listingType: ListingType
   price: string
   serviceCharge: string
+  escrowFee: number
   // Land-only Step 1
   plotSize: string
   plotUnit: string

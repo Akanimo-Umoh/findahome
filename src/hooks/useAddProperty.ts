@@ -20,6 +20,7 @@ export function useAddProperty() {
       formDataToSend.append("listingType", formData.listingType)
       formDataToSend.append("inspectionFee", "5000")
       formDataToSend.append("serviceCharge", formData.serviceCharge)
+      formDataToSend.append("escrowFee", String(formData.escrowFee))
       formDataToSend.append("price", formData.price)
       formDataToSend.append("address", `${formData.city}, ${formData.state}`)
 
