@@ -86,7 +86,7 @@ export default function AgentVisitDetails() {
                 ? (transaction as Purchase).price
                 : (transaction as Inspection).fee
               ).toLocaleString()}
-              referenceId={transaction.reference ?? ""}
+              referenceId={transaction.reference ?? "--"}
             />
             <VisitBanner
               title={
@@ -131,7 +131,7 @@ export default function AgentVisitDetails() {
                   : "—"
               }
               visitType={isHandover ? "In-Person Handover" : "Physical Visit"}
-              transactionId={transaction.reference ?? transaction._id}
+              transactionId={transaction._id}
               paymentStatus={transaction.feePaid ? "Paid" : "Pending"}
             />
 

@@ -128,7 +128,7 @@ export default function VisitDetails() {
               title={property?.title ?? ""}
               location={property?.address ?? ""}
               price={price.toLocaleString()}
-              referenceId={transaction.reference ?? transaction._id}
+              referenceId={transaction.reference ?? "--"}
             />
 
             <VisitBanner title={bannerTitle} subtitle={bannerSubtitle} />
@@ -162,7 +162,7 @@ export default function VisitDetails() {
                   : "—"
               }
               visitType={isHandover ? "In-Person Handover" : "Physical Visit"}
-              transactionId={transaction.reference ?? transaction._id}
+              transactionId={transaction._id}
               paymentStatus={feePaid ? "Paid" : "Pending"}
             />
 

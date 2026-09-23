@@ -59,7 +59,7 @@ export default function AgentPurchaseVisitDetails() {
               title={property?.title ?? ""}
               location={property?.address ?? ""}
               price={purchase.price.toLocaleString()}
-              referenceId={purchase.reference ?? purchase._id}
+              referenceId={purchase.reference ?? "--"}
             />
 
             <VisitBanner
@@ -100,7 +100,7 @@ export default function AgentPurchaseVisitDetails() {
                   : "—"
               }
               visitType="In-Person Handover"
-              transactionId={purchase.reference ?? purchase._id}
+              transactionId={purchase._id}
               paymentStatus={purchase.feePaid ? "Paid" : "Pending"}
             />
 
