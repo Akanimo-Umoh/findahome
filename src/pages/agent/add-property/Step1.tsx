@@ -52,6 +52,7 @@ export default function Step1({
     if (formData.escrowFee !== escrowFee) {
       updateFormData({ escrowFee })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.price, formData.listingType])
 
   const validate = (): boolean => {
