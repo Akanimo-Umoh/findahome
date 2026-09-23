@@ -42,6 +42,8 @@ export type MergedTransaction = {
     price?: number
     address?: string
     image?: string
+    escrowFee?: number
+    serviceCharge?: number
   }
 }
 

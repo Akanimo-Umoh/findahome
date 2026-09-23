@@ -12,6 +12,8 @@ export type Inspection = {
         address: string
         image?: string
         images?: string[]
+        escrowFee?: number
+        serviceCharge?: number
       }
   owner:
     | string

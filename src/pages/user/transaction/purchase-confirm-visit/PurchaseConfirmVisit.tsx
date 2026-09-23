@@ -12,6 +12,7 @@ import {
   getPurchaseDetails,
   completeHandover,
 } from "@/services/purchase.service"
+import { createRating } from "@/services/rating.service"
 
 const COMPLETABLE_STATUS = "handover_confirmed"
 
@@ -65,13 +66,35 @@ export default function PurchaseConfirmVisit() {
       ? { name: "Agent" }
       : { name: purchase.owner?.name ?? purchase.owner?.email }
 
-  const allChecked = satisfied && finalizedDeal && rating > 0
+  const allChecked = satisfied && finalizedDeal
 
   const handleConfirm = async () => {
-    if (!transactionId) return
+    if (!transactionId || !purchase) return
     setIsSubmitting(true)
     try {
       await completeHandover(transactionId)
+
+      if (rating > 0) {
+        const propertyId =
+          typeof purchase.property === "string"
+            ? purchase.property
+            : purchase.property?._id
+        if (propertyId) {
+          try {
+            await createRating({
+              propertyId,
+              rating,
+              comment: review || undefined,
+            })
+          } catch (ratingErr) {
+            console.error("createRating error:", ratingErr)
+            toast.error(
+              "Handover completed, but your rating couldn't be saved."
+            )
+          }
+        }
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["purchaseDetails", transactionId],
       })
@@ -196,11 +219,6 @@ export default function PurchaseConfirmVisit() {
                   )
                 })}
               </div>
-              {rating === 0 && (
-                <p className="mt-1 text-[12px] text-destructive">
-                  Please rate the agent before confirming.
-                </p>
-              )}
             </div>
 
             <div className="flex flex-col gap-1">

@@ -12,6 +12,7 @@ import {
   getInspectionDetails,
   completeInspection,
 } from "@/services/inspection.service"
+import { createRating } from "@/services/rating.service"
 
 const COMPLETABLE_STATUS = "inspection_confirmed"
 
@@ -77,18 +78,35 @@ export default function ConfirmVisit() {
       : { name: inspection.owner?.name ?? inspection.owner?.email }
 
   const allChecked =
-    checks.satisfied &&
-    checks.inspectedProperly &&
-    checks.matchesListing &&
-    rating > 0
+    checks.satisfied && checks.inspectedProperly && checks.matchesListing
 
   const handleConfirm = async () => {
-    if (!transactionId) return
+    if (!transactionId || !inspection) return
     setIsSubmitting(true)
     try {
       await completeInspection(transactionId)
-      // TODO: once the review/rating endpoint exists, send { rating, review } here too —
-      // likely as a second call, or folded into completeInspection's body if he adds it there
+
+      if (rating > 0) {
+        const propertyId =
+          typeof inspection.property === "string"
+            ? inspection.property
+            : inspection.property?._id
+        if (propertyId) {
+          try {
+            await createRating({
+              propertyId,
+              rating,
+              comment: review || undefined,
+            })
+          } catch (ratingErr) {
+            console.error("createRating error:", ratingErr)
+            toast.error(
+              "Inspection completed, but your rating couldn't be saved."
+            )
+          }
+        }
+      }
+
       queryClient.invalidateQueries({
         queryKey: ["inspectionDetails", transactionId],
       })
@@ -241,11 +259,6 @@ export default function ConfirmVisit() {
                   )
                 })}
               </div>
-              {rating === 0 && (
-                <p className="mt-1 text-[12px] text-destructive">
-                  Please rate the agent before confirming.
-                </p>
-              )}
             </div>
 
             {/* CHANGED: restored — backend endpoint for submitting this isn't ready yet, but the input itself is user-authored, not fake display data */}

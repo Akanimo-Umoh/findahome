@@ -90,13 +90,13 @@ function ActivityItem({ item }: { item: MergedActivity }) {
     )
   }
 
-  // escrow branch — pending = hold, released = release, anything else (cancelled) hidden
-  if (item.status !== "pending" && item.status !== "released") {
+  // escrow branch — on_hold = hold, released = release, anything else (cancelled) hidden
+  if (item.status !== "on_hold" && item.status !== "released") {
     return null
   }
 
   // escrow branch
-  const isRelease = item.status === "released" // CHANGED
+  const isRelease = item.status === "released"
   const icon = isRelease ? escrowReleaseIcon : escrowHoldIcon
   const bg = isRelease ? "bg-[#149D18]" : "bg-[#F8B400]"
   const sign = isRelease ? "+" : ""
@@ -152,7 +152,7 @@ export default function Activities() {
   const visibleActivities = activities.filter(
     (item) =>
       item.recordType !== "escrow" ||
-      item.status === "pending" ||
+      item.status === "on_hold" ||
       item.status === "released"
   )
 

@@ -12,6 +12,8 @@ export type Purchase = {
         address: string
         image?: string
         images?: string[]
+        escrowFee?: number
+        serviceCharge?: number
       }
   buyer:
     | string
