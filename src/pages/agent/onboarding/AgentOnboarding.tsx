@@ -86,14 +86,14 @@ export default function AgentOnboarding() {
 
     const { user: updatedUser } = await onboardAgent(payload)
 
-    if (user) {
-      updateUser({ ...user, ...updatedUser, isOnboarding: true })
-    }
-
     navigate("/agent/onboarding/success", {
       replace: true,
       state: { fromOnboarding: true },
     })
+
+    if (user) {
+      updateUser({ ...user, ...updatedUser, isOnboarding: true })
+    }
   }
 
   return (
