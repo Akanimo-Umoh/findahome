@@ -29,18 +29,16 @@ export default function AgentVisitActions({
         </p>
 
         <Button variant="app-secondary" size="full" asChild>
-          <Link
-            to={`/open-dispute/${transactionId}?type=${isHandover ? "purchase" : "inspection"}`}
-            className="font-semibold hover:text-button-bg"
-          >
-            Open a dispute
-          </Link>
+          <Link to="/agent/dashboard">Go to Dashboard</Link>
         </Button>
       </div>
 
       <p className="text-center text-[12px] leading-4 text-text-secondary">
         Having issues with buyer?&nbsp;
-        <Link to="/dispute" className="font-semibold hover:text-button-bg">
+        <Link
+          to={`/open-dispute/${transactionId}?type=${isHandover ? "purchase" : "inspection"}`}
+          className="font-semibold hover:text-button-bg"
+        >
           Open a dispute
         </Link>
       </p>

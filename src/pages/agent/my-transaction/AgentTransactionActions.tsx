@@ -75,7 +75,10 @@ export default function AgentTransactionActions({
 
       <p className="mt-3 text-center text-[12px] leading-4 text-text-secondary">
         Having issues with buyer?{" "}
-        <Link to="/dispute" className="font-bold hover:text-button-bg">
+        <Link
+          to={`/open-dispute/${transactionId}?type=${status.startsWith("handover") || status === "property_payment_pending" || status === "funds_released" ? "purchase" : "inspection"}`}
+          className="font-bold hover:text-button-bg"
+        >
           Open a dispute
         </Link>
       </p>

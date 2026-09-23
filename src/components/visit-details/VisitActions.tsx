@@ -5,11 +5,15 @@ import { Button } from "@/components/ui/button"
 interface VisitActionsProps {
   confirmRoute: string
   markCompletedLabel: string
+  transactionId: string
+  disputeType: "inspection" | "purchase"
 }
 
 export default function VisitActions({
   confirmRoute,
   markCompletedLabel,
+  transactionId,
+  disputeType,
 }: VisitActionsProps) {
   return (
     <div className="mt-6 mb-10 space-y-3 md:mt-12">
@@ -26,7 +30,10 @@ export default function VisitActions({
       </div>
       <p className="text-center text-[12px] leading-4 text-text-secondary">
         Having issues with agent?&nbsp;
-        <Link to="/dispute" className="font-semibold hover:text-button-bg">
+        <Link
+          to={`/open-dispute/${transactionId}?type=${disputeType}`}
+          className="font-semibold hover:text-button-bg"
+        >
           Open a dispute
         </Link>
       </p>
