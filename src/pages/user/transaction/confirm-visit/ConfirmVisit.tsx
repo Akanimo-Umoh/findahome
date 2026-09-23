@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useState } from "react"
-import { Star } from "lucide-react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import goBack from "@/assets/images/icon-back.svg"
@@ -8,6 +7,7 @@ import infoIcon from "@/assets/images/icon-pay-inspection-info.svg"
 import { Button } from "@/components/ui/button"
 import Spinner from "@/components/Spinner"
 import SuccessModal from "@/components/confirm-visit/SuccessModal"
+import StarRating from "@/components/shared/StarRating"
 import {
   getInspectionDetails,
   completeInspection,
@@ -30,7 +30,6 @@ export default function ConfirmVisit() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [hasCompleted, setHasCompleted] = useState(false)
   const [rating, setRating] = useState(0)
-  const [hover, setHover] = useState(0)
   const [checks, setChecks] = useState<CheckState>({
     satisfied: false,
     inspectedProperly: false,
@@ -241,24 +240,7 @@ export default function ConfirmVisit() {
           <div className="mt-6 flex flex-col gap-2">
             <div className="flex flex-col gap-1">
               <p>Rate this Agent</p>
-              <div className="flex gap-1">
-                {[...Array(5)].map((_, index) => {
-                  const starIndex = index + 1
-                  return (
-                    <Star
-                      key={starIndex}
-                      className={`h-5 w-5 cursor-pointer transition-colors ${
-                        starIndex <= (hover || rating)
-                          ? "fill-yellow-500 text-yellow-500"
-                          : "text-text-secondary"
-                      }`}
-                      onClick={() => setRating(starIndex)}
-                      onMouseEnter={() => setHover(starIndex)}
-                      onMouseLeave={() => setHover(0)}
-                    />
-                  )
-                })}
-              </div>
+              <StarRating value={rating} onChange={setRating} />
             </div>
 
             {/* CHANGED: restored — backend endpoint for submitting this isn't ready yet, but the input itself is user-authored, not fake display data */}
