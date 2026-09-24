@@ -4,7 +4,7 @@ import AgentSidebar from "@/components/AgentSidebar"
 
 export default function AgentLayout() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-[calc(100vh-72px)] lg:min-h-screen">
       {/* mobile/tablet — regular navbar */}
       <div className="lg:hidden">
         <Navbar />
