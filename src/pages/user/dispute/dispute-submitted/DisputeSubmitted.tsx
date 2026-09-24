@@ -82,7 +82,7 @@ export default function DisputeSubmitted() {
           </Button>
 
           <Link
-            to="/my-dispute"
+            to="/disputes"
             className="mx-auto font-raleway font-semibold tracking-[1px] text-button-bg"
           >
             View my Disputes

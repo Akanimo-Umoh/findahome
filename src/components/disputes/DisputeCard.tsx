@@ -1,16 +1,14 @@
 import nairaIcon from "@/assets/images/icon-naira.svg"
 import { ChevronRight } from "lucide-react"
-import type { Dispute, DisputeStatus } from "./mockDisputes"
 import Skeleton from "../ui/Skeleton"
+import type { Dispute } from "@/services/dispute.service"
+import {
+  CATEGORY_LABEL,
+  STATUS_BADGE_BG,
+  STATUS_LABEL,
+} from "@/lib/disputeLabels"
 
-// --- status badge ---
-const STATUS_STYLES: Record<DisputeStatus, { bg: string; label: string }> = {
-  pending_review: { bg: "bg-[#D02727]", label: "Pending Review" },
-  under_review: { bg: "bg-[#E58A00]", label: "Under Review" },
-  resolved: { bg: "bg-[#149D18]", label: "Resolved" },
-}
-
-// --- skeleton ---
+// skeleton
 export function DisputeCardSkeleton() {
   return (
     <div className="space-y-6">
@@ -33,7 +31,7 @@ export function DisputeCardSkeleton() {
   )
 }
 
-// --- card ---
+// card
 interface DisputeCardProps {
   dispute: Dispute
   isSelected?: boolean
@@ -45,7 +43,9 @@ export default function DisputeCard({
   isSelected = false,
   onClick,
 }: DisputeCardProps) {
-  const { bg, label } = STATUS_STYLES[dispute.status]
+  const property =
+    typeof dispute.property === "string" ? undefined : dispute.property
+  const amount = property?.price ?? 0
 
   return (
     <button
@@ -59,33 +59,39 @@ export default function DisputeCard({
       <div className="flex w-full flex-col gap-1">
         <div className="space-y-1">
           <p className="font-raleway text-[14px] font-semibold tracking-[1px] md:text-[16px]">
-            {dispute.refId}
+            {dispute.referenceId}
           </p>
           <p className="text-[14px] md:text-[16px]">
             <span className="text-[#149D18]">Dispute Type:</span>{" "}
-            {dispute.disputeType}
+            {CATEGORY_LABEL[dispute.category]}
           </p>
           <p className="line-clamp-1 text-[14px] md:text-[16px]">
-            {dispute.propertyName}
+            {property?.title ?? ""}
           </p>
           <div className="flex items-center">
             <img src={nairaIcon} alt="" className="h-4 w-4" />
             <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
-              {dispute.amount}
+              {amount.toLocaleString()}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <div
-            className={`flex shrink-0 items-center justify-center rounded-2xl px-2 py-0.5 ${bg}`}
+            className={`flex shrink-0 items-center justify-center rounded-2xl px-2 py-0.5 ${STATUS_BADGE_BG[dispute.status]}`}
           >
             <p className="text-[12px] leading-4 text-bg-tertiary md:text-[14px]">
-              {label}
+              {STATUS_LABEL[dispute.status]}
             </p>
           </div>
+
           <p className="line-clamp-1 text-[14px] text-text-secondary">
-            Last updated: {dispute.lastUpdated}
+            Last updated:{" "}
+            {new Date(dispute.updatedAt).toLocaleDateString("en-US", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
           </p>
         </div>
       </div>
