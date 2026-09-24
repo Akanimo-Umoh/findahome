@@ -39,6 +39,8 @@ export default function TransactionActions({
   const showConfirmHandover = status === "handover_scheduled"
   const showViewHandoverDetails = status === "handover_confirmed"
   const showViewReceipt = status === "funds_released"
+  const disputeType =
+    status.startsWith("handover") || showViewReceipt ? "purchase" : "inspection"
 
   return (
     <div className="mt-6 mb-8 lg:mt-0 lg:mb-0">
@@ -154,7 +156,10 @@ export default function TransactionActions({
 
       <p className="mt-3 text-center text-[12px] leading-4 text-text-secondary">
         Having issues with agent?{" "}
-        <Link to="/dispute" className="font-bold hover:text-button-bg">
+        <Link
+          to={`/open-dispute/${transactionId}?type=${disputeType}`}
+          className="font-bold hover:text-button-bg"
+        >
           Open a dispute
         </Link>
       </p>

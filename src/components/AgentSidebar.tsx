@@ -58,7 +58,7 @@ const NAV_LINKS = [
   },
   {
     title: "Disputes",
-    link: "/agent/my-disputes",
+    link: "/disputes",
     icon: disputesIcon,
     iconActive: disputesActiveIcon,
   },
@@ -79,7 +79,9 @@ export default function AgentSidebar() {
       {/* nav links */}
       <nav className="mt-8 flex flex-1 flex-col gap-2 overflow-y-auto">
         {NAV_LINKS.map((link) => {
-          const isActive = location.pathname === link.link
+          const isActive =
+            location.pathname === link.link ||
+            location.pathname.startsWith(`${link.link}/`)
           return (
             <Link
               key={link.link}

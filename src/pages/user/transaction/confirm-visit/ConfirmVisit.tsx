@@ -290,7 +290,10 @@ export default function ConfirmVisit() {
 
             <p className="mb-10 flex items-center justify-center text-[12px] leading-4 text-text-secondary">
               Having issues with agent?&nbsp;
-              <Link to="/dispute" className="text-button-bg">
+              <Link
+                to={`/open-dispute/${transactionId}?type=inspection`}
+                className="text-button-bg"
+              >
                 Open a dispute
               </Link>
             </p>

@@ -283,7 +283,11 @@ export default function AgentConfirmVisit() {
               Having issues with buyer?&nbsp;
               <span
                 className="cursor-pointer text-button-bg"
-                onClick={() => navigate("/dispute")}
+                onClick={() =>
+                  navigate(
+                    `/open-dispute/${transactionId}?type=${isHandover ? "purchase" : "inspection"}`
+                  )
+                }
               >
                 Open a dispute
               </span>

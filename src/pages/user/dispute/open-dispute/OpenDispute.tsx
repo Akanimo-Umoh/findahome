@@ -104,7 +104,7 @@ export default function OpenDispute() {
         description,
       })
       toast.success("Dispute submitted. Our team will review it shortly.")
-      navigate("/dispute")
+      navigate("/disputes")
     } catch (err) {
       toast.error("Couldn't submit your dispute. Please try again.")
       console.error("createDispute error:", err)

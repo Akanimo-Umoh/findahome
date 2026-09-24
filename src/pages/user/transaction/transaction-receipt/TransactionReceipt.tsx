@@ -218,7 +218,7 @@ export default function Phase11() {
 
             <p className="text-center text-[12px] leading-4 text-text-secondary">
               Having issues with agent?&nbsp;
-              <Link to="/dispute" className="text-button-bg">
+              <Link to="/disputes" className="text-button-bg">
                 Open a dispute
               </Link>
             </p>

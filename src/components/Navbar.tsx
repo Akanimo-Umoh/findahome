@@ -490,7 +490,7 @@ export default function Navbar() {
       icon: agentDisputesIcon,
       iconActive: agentDisputesActiveIcon,
       title: "Disputes",
-      link: "/agent/my-disputes",
+      link: "/disputes",
     },
   ]
 
@@ -528,15 +528,17 @@ export default function Navbar() {
     { title: "Find Agents", link: "/agents" },
     { title: "Chats", link: "/messages" },
     { title: "Recent Activities", link: "/recent-activities" },
-    { title: "My Wallet", link: "/wallet" },
+    { title: "Disputes", link: "/disputes" },
   ]
 
   const tabletAgentLinks = [
     { title: "Dashboard", link: "/agent/dashboard" },
     { title: "My Listings", link: "/agent/my-listings" },
+    { title: "Chats", link: "/messages" },
     { title: "My Wallet", link: "/agent/wallet" },
     { title: "My Ads", link: "/agent/my-ads" },
-    { title: "Disputes", link: "/agent/my-disputes" },
+    { title: "Transactions", link: "/agent/transactions" },
+    { title: "Disputes", link: "/disputes" },
   ]
 
   const tabletUnauthenticatedLinks = [
