@@ -62,7 +62,6 @@ import Chats from "@/components/shared/Chats"
 import { MyDisputes } from "@/pages/disputes/my-dispute"
 // import { DisputeDetails } from "@/pages/user/dispute/dispute-detail"
 import { OpenDispute } from "@/pages/disputes/open-dispute"
-import { DisputeSubmitted } from "@/pages/user/dispute/dispute-submitted"
 import AgentLayout from "@/layouts/AgentLayout"
 import { MyAds } from "@/pages/agent/ads/my-ads"
 import { ChangePassword } from "@/pages/agent/profile/change-password"
@@ -182,7 +181,6 @@ export default function AppRoutes() {
 
         <Route path="/recent-activities" element={<Recent />} />
 
-        <Route path="/open-dispute/submitted" element={<DisputeSubmitted />} />
         <Route path="/agents" element={<FindAgents />} />
         <Route path="/agent-profile" element={<AgentProfile />} />
 
