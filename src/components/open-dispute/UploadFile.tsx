@@ -1,6 +1,5 @@
 import { useState } from "react"
-import { X, Loader2 } from "lucide-react"
-import uploadIcon from "@/assets/images/icon-file-upload.svg"
+import { FileText, ImagePlus, Loader2, X } from "lucide-react"
 import { compressImage } from "@/lib/compressImage"
 
 type UploadFileProps = {
@@ -67,12 +66,18 @@ export default function UploadFile({ onFilesSelected }: UploadFileProps) {
   return (
     <div>
       <div className="flex flex-col justify-center gap-2">
-        <label htmlFor="upload" className="text-[14px] md:text-[16px]">
-          Upload Evidence (Optional)
-        </label>
+        <div className="flex items-baseline justify-between gap-3">
+          <label htmlFor="upload" className="text-[14px] md:text-[16px]">
+            Upload Evidence
+          </label>
+          <span className="text-[12px] text-text-secondary">Optional</span>
+        </div>
 
-        <label htmlFor="upload" className="rounded-lg bg-button-disabled p-3">
-          <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-text-secondary bg-white py-5">
+        <label
+          htmlFor="upload"
+          className="group cursor-pointer rounded-xl border border-bg-accent bg-white p-3 transition-colors hover:border-button-hover"
+        >
+          <div className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-button-hover/50 bg-bg-accent/35 px-4 py-5 transition-colors group-hover:bg-bg-accent/60">
             <input
               type="file"
               id="upload"
@@ -82,22 +87,19 @@ export default function UploadFile({ onFilesSelected }: UploadFileProps) {
               className="hidden"
               disabled={isProcessing}
             />
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#4F95FF]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-button-bg">
               {isProcessing ? (
-                <Loader2 className="h-5 w-5 animate-spin text-white" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <img src={uploadIcon} alt="" />
+                <ImagePlus className="h-5 w-5" />
               )}
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
-              <p className="text-[14px] text-[#4F95FF]">
-                {isProcessing
-                  ? "Processing..."
-                  : "Tap to upload photos or documents"}
+              <p className="text-[14px] font-semibold text-button-bg">
+                {isProcessing ? "Processing..." : "Choose photos or documents"}
               </p>
-              <p className="text-[12px] leading-4 text-text-secondary">
-                Add up to {MAX_FILES} photos. PNG, JPG, PDF up to {MAX_SIZE_MB}
-                MB.
+              <p className="text-center text-[12px] leading-4 text-text-secondary">
+                PNG, JPG or PDF · up to {MAX_SIZE_MB}MB each · {MAX_FILES} files
               </p>
             </div>
           </div>
@@ -106,17 +108,20 @@ export default function UploadFile({ onFilesSelected }: UploadFileProps) {
         {error && <p className="text-[12px] text-destructive">{error}</p>}
 
         {files.length > 0 && (
-          <ul className="mt-1 space-y-1">
+          <ul className="space-y-2">
             {files.map((file, index) => (
               <li
                 key={`${file.name}-${index}`}
-                className="flex items-center justify-between rounded-lg border border-bg-accent px-2 py-1.5 text-[12px] text-text-secondary"
+                className="flex items-center justify-between gap-3 rounded-lg border border-bg-accent bg-white px-3 py-2 text-[12px] text-text-secondary"
               >
-                <span className="truncate">{file.name}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <FileText className="h-4 w-4 shrink-0 text-button-bg" />
+                  <span className="truncate">{file.name}</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => removeFile(index)}
-                  className="ml-2 shrink-0 cursor-pointer text-text-secondary hover:text-destructive"
+                  className="shrink-0 cursor-pointer rounded-md p-1 text-text-secondary transition-colors hover:bg-button-disabled hover:text-destructive"
                   aria-label={`Remove ${file.name}`}
                 >
                   <X className="h-4 w-4" />
