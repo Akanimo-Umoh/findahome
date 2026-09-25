@@ -49,6 +49,9 @@ export default function Navbar() {
 
   const logoLink = isAuthenticated && isAgent ? "/agent/dashboard" : "/"
   const profileLink = isAgent ? "/agent/profile" : "/profile"
+  const isLinkActive = (link: string) =>
+    location.pathname === link ||
+    (link !== "/" && location.pathname.startsWith(`${link}/`))
 
   // ── MOBILE LINKS ──
   const mobileUserLinks = [
@@ -231,7 +234,7 @@ export default function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           <div className="flex items-center gap-2">
             {tabletLinks.map((link, index) => {
-              const isActive = location.pathname === link.link
+              const isActive = isLinkActive(link.link)
               return (
                 <Link
                   key={index}
@@ -314,7 +317,7 @@ export default function Navbar() {
 
                   <div className="mt-6 space-y-2">
                     {mobileLinks.map((link, index) => {
-                      const isActive = location.pathname === link.link
+                      const isActive = isLinkActive(link.link)
                       return (
                         <Link
                           key={index}
