@@ -9,6 +9,7 @@ import successImg from "@/assets/images/img-pay-inspection-fee.png"
 import bellIcon from "@/assets/images/icon-blue-notification.svg"
 import trackIcon from "@/assets/images/icon-blue-track.svg"
 import { Button } from "@/components/ui/button"
+import { useAuthContext } from "@/context/AuthContext"
 
 type DisputeSubmittedDialogProps = {
   open: boolean
@@ -23,6 +24,11 @@ export default function DisputeSubmittedDialog({
   referenceId,
   dateIssued,
 }: DisputeSubmittedDialogProps) {
+  const { user } = useAuthContext()
+  const homePath = user?.role === "agent" ? "/agent/dashboard" : "/"
+  const homeLabel =
+    user?.role === "agent" ? "Go to Dashboard" : "Go to HomePage"
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -89,14 +95,12 @@ export default function DisputeSubmittedDialog({
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4">
           <Button variant="app-primary" size="full" asChild>
-            <Link to="/">Go to HomePage</Link>
+            <Link to={homePath}>{homeLabel}</Link>
           </Button>
-          <Link
-            to="/disputes"
-            className="mx-auto font-raleway font-semibold tracking-[1px] text-button-bg"
-          >
-            View my Disputes
-          </Link>
+
+          <Button variant="app-secondary" size="full" asChild>
+            <Link to="/disputes">View my Disputes</Link>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

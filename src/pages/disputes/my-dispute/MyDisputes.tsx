@@ -73,7 +73,7 @@ export default function MyDisputes() {
         <PageHeader
           title="My Dispute"
           responsive
-          onBack={showDetailsOnly ? () => navigate("/disputes") : undefined}
+          onBack={showDetailsOnly ? () => navigate(-1) : undefined}
         />
 
         {!showDetailsOnly && (

@@ -22,13 +22,7 @@ import {
 import { getPurchaseDetails, type Purchase } from "@/services/purchase.service"
 import { createDispute, type DisputeCategory } from "@/services/dispute.service"
 import DisputeSubmittedDialog from "./DisputeSubmittedDialog"
-
-const CATEGORY_OPTIONS = [
-  { value: "payment", label: "Payment" },
-  { value: "inspection", label: "Inspection" },
-  { value: "handover", label: "Handover" },
-  { value: "property_condition", label: "Property Condition" },
-]
+import { CATEGORY_OPTIONS } from "@/lib/disputeLabels"
 
 export default function OpenDispute() {
   const { transactionId } = useParams()
@@ -137,153 +131,172 @@ export default function OpenDispute() {
 
   return (
     <div className="mb-10 px-6 md:px-8 md:pt-6">
-      <PageHeader title="Open Dispute" responsive />
+      <div className="mx-auto max-w-7xl">
+        <PageHeader title="Open Dispute" responsive />
 
-      <main className="mt-6 md:mx-auto md:max-w-3xl">
-        {/* property details — CHANGED: responsive layout + real data */}
-        <div className="flex items-center justify-center gap-3 rounded-xl border border-bg-accent p-3 sm:flex-row sm:items-center sm:gap-4">
-          {property?.image ? (
-            <img
-              src={property.image}
-              alt=""
-              className="h-15 w-15 shrink-0 rounded-lg object-cover sm:h-25 sm:w-25"
-            />
-          ) : (
-            <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent sm:h-25 sm:w-25" />
-          )}
+        <main className="mt-6 md:mx-auto md:max-w-3xl">
+          {/* property details — CHANGED: responsive layout + real data */}
+          <div className="flex items-center justify-center gap-3 rounded-xl border border-bg-accent p-3 sm:flex-row sm:items-center sm:gap-4">
+            {property?.image ? (
+              <img
+                src={property.image}
+                alt=""
+                className="h-15 w-15 shrink-0 rounded-lg object-cover sm:h-25 sm:w-25"
+              />
+            ) : (
+              <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent sm:h-25 sm:w-25" />
+            )}
 
-          <div className="min-w-0 flex-1 space-y-2">
-            <div className="space-y-1">
-              <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px] md:text-[14px]">
-                {property?.title ?? "No property linked"}
-              </p>
+            <div className="min-w-0 flex-1 space-y-2">
+              <div className="space-y-1">
+                <p className="line-clamp-2 font-raleway text-[12px] font-semibold tracking-[1px] md:text-[14px]">
+                  {property?.title ?? "No property linked"}
+                </p>
 
-              <div className="flex flex-wrap items-center gap-1">
-                <div className="flex w-fit items-center">
-                  <img src={nairaIcon} alt="" className="h-4 w-4" />
-                  <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
-                    {amount.toLocaleString()}
+                <div className="flex flex-wrap items-center gap-1">
+                  <div className="flex w-fit items-center">
+                    <img src={nairaIcon} alt="" className="h-4 w-4" />
+                    <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-button-bg md:text-[16px]">
+                      {amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <p className="min-w-0 flex-1 text-[12px] text-text-secondary md:text-[14px]">
+                    Buyer: {buyer?.name ?? buyer?.email ?? "—"}
                   </p>
                 </div>
-                <p className="min-w-0 flex-1 text-[12px] text-text-secondary md:text-[14px]">
-                  Buyer: {buyer?.name ?? buyer?.email ?? "—"}
+              </div>
+
+              <div className="space-y-1 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25">
+                <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-bg-tertiary">
+                  {transaction?.feePaid ? "In Escrow" : "Not Yet Paid"}
+                </p>
+                <div className="flex min-w-0 items-center">
+                  <span className="shrink-0">Ref ID:&nbsp;</span>
+                  <span className="min-w-0 truncate">
+                    {transaction?.reference ?? transaction?._id ?? "—"}
+                  </span>
+                </div>
+
+                <p>
+                  Last updated:{" "}
+                  {transaction
+                    ? new Date(transaction.updatedAt).toLocaleDateString(
+                        "en-US",
+                        { day: "numeric", month: "short" }
+                      )
+                    : "—"}
                 </p>
               </div>
             </div>
+          </div>
 
-            <div className="space-y-1 text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25">
-              <p className="w-fit rounded-2xl bg-[#F39C12] px-2 py-1 text-bg-tertiary">
-                {transaction?.feePaid ? "In Escrow" : "Not Yet Paid"}
-              </p>
-              <p>Ref ID: {transaction?.reference ?? transaction?._id ?? "—"}</p>
-              <p>
-                Last updated:{" "}
-                {transaction
-                  ? new Date(transaction.updatedAt).toLocaleDateString(
-                      "en-US",
-                      { day: "numeric", month: "short" }
-                    )
-                  : "—"}
-              </p>
+          {/* notice */}
+          <div className="mt-8 flex items-center gap-2">
+            <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#D0272733]">
+              <img src={warningIcon} alt="" />
             </div>
-          </div>
-        </div>
-
-        {/* notice */}
-        <div className="mt-8 flex items-center gap-2">
-          <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#D0272733]">
-            <img src={warningIcon} alt="" />
-          </div>
-          <p className="text-[12px] leading-4 md:text-[14px]">
-            Only open a dispute if you cannot resolve the issue directly with
-            the agent
-          </p>
-        </div>
-
-        {/* dispute form */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            handleSubmit()
-          }}
-          className="mt-6"
-        >
-          <div className="flex flex-col justify-center gap-2">
-            <label className="w-fit text-[14px] md:text-[16px]">
-              Issue Category
-            </label>
-            <Select
-              value={category}
-              onValueChange={(v) => setCategory(v as DisputeCategory)}
-            >
-              <SelectTrigger className="select-issue w-full cursor-pointer rounded-lg border border-button-disabled bg-button-disabled px-2">
-                <SelectValue placeholder="Select Category" />
-              </SelectTrigger>
-              <SelectContent>
-                {CATEGORY_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="mt-4 flex flex-col justify-center gap-2">
-            <label
-              htmlFor="description"
-              className="w-fit text-[14px] md:text-[16px]"
-            >
-              Description
-            </label>
-            <div className="rounded-lg bg-button-disabled px-2 py-2">
-              <textarea
-                name="description"
-                id="description"
-                rows={4}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Provide detailed information about the issue."
-                className="w-full bg-transparent text-[14px] outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <UploadFile onFilesSelected={setEvidenceFiles} />
-          </div>
-          {evidenceFiles.length > 0 && (
-            <p className="mt-1 text-[11px] text-text-secondary">
-              {evidenceFiles.length} file(s) selected — evidence upload isn't
-              wired to the server yet.
-            </p>
-          )}
-
-          <div className="mt-8 space-y-2">
-            <Button
-              variant="app-primary"
-              size="full"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Submitting..." : "Submit Dispute"}
-            </Button>
-            <p className="text-center text-[12px] leading-4 text-text-secondary lg:text-[14px] lg:leading-5.25">
-              Our team will review your dispute and respond within 2-3 business
-              days.
+            <p className="text-[12px] leading-4 md:text-[14px]">
+              Only open a dispute if you cannot resolve the issue directly with
+              the agent
             </p>
           </div>
-        </form>
-      </main>
 
-      {submittedDispute && (
-        <DisputeSubmittedDialog
-          open={!!submittedDispute}
-          onOpenChange={() => {}}
-          referenceId={submittedDispute.referenceId}
-          dateIssued={submittedDispute.dateIssued}
-        />
-      )}
+          {/* dispute form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+            className="mt-6"
+          >
+            <div className="flex flex-col justify-center gap-2">
+              <label className="w-fit text-[14px] md:text-[16px]">
+                Issue Category
+              </label>
+              <Select
+                value={category}
+                onValueChange={(v) => setCategory(v as DisputeCategory)}
+              >
+                <SelectTrigger className="select-issue h-11 w-full cursor-pointer rounded-xl border border-bg-accent bg-white px-3 text-[14px] text-text-primary transition-colors hover:border-button-hover focus-visible:border-button-bg focus-visible:ring-button-bg/20 data-placeholder:text-text-secondary md:h-12 md:text-[16px]">
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CATEGORY_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="mt-4 flex flex-col justify-center gap-2">
+              <label
+                htmlFor="description"
+                className="w-fit text-[14px] md:text-[16px]"
+              >
+                Description
+              </label>
+              <div className="rounded-xl border border-bg-accent bg-white p-3 transition-colors focus-within:border-button-bg focus-within:ring-4 focus-within:ring-button-bg/10">
+                <textarea
+                  name="description"
+                  id="description"
+                  rows={4}
+                  maxLength={2000}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Provide detailed information about the issue."
+                  className="min-h-32 w-full resize-y bg-transparent px-1 py-1 text-[14px] leading-6 text-text-primary outline-none placeholder:text-text-secondary md:min-h-36 md:text-[16px]"
+                />
+              </div>
+              <div
+                className={`flex justify-end px-1 text-[11px] ${
+                  description.length >= 1800
+                    ? "text-error"
+                    : description.length >= 1500
+                      ? "text-warning"
+                      : "text-success"
+                }`}
+              >
+                <span>{description.length}/2000</span>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <UploadFile onFilesSelected={setEvidenceFiles} />
+            </div>
+            {evidenceFiles.length > 0 && (
+              <p className="mt-1 text-[11px] text-text-secondary">
+                {evidenceFiles.length} file(s) selected
+              </p>
+            )}
+
+            <div className="mt-8 space-y-2">
+              <Button
+                variant="app-primary"
+                size="full"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit Dispute"}
+              </Button>
+              <p className="text-center text-[12px] leading-4 text-text-secondary lg:text-[14px] lg:leading-5.25">
+                Our team will review your dispute and respond within 2-3
+                business days.
+              </p>
+            </div>
+          </form>
+        </main>
+
+        {submittedDispute && (
+          <DisputeSubmittedDialog
+            open={!!submittedDispute}
+            onOpenChange={() => {}}
+            referenceId={submittedDispute.referenceId}
+            dateIssued={submittedDispute.dateIssued}
+          />
+        )}
+      </div>
     </div>
   )
 }
