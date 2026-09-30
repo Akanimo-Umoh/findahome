@@ -31,12 +31,13 @@ const sizeMap = {
   sm: { container: "w-8 h-8", text: "text-[11px]" },
   md: { container: "w-10 h-10", text: "text-[13px]" },
   lg: { container: "w-[70px] h-[70px]", text: "text-[24px]" },
+  custom: { container: "", text: "text-[24px]" },
 }
 
 type AvatarProps = {
   name: string
   src?: string | null
-  size?: "xs" | "sm" | "md" | "lg"
+  size?: "xs" | "sm" | "md" | "lg" | "custom"
   className?: string
 }
 
