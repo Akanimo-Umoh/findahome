@@ -33,8 +33,7 @@ export function timeAgo(dateStr: string): string {
   return "Just now"
 }
 
-// client-side search + sort, as agreed
-export function filterAndSortAgents(
+export function filterAgents(
   agents: Agent[],
   search: string,
   sort: AgentSortOption
