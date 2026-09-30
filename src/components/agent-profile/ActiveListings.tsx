@@ -46,7 +46,7 @@ export default function ActiveListings({
             return (
               <div
                 key={listing._id}
-                className="w-full overflow-hidden rounded-2xl border border-bg-accent"
+                className="w-full overflow-hidden rounded-2xl border border-bg-accent hover:shadow-sm"
               >
                 <div className="h-42.5 w-full overflow-hidden rounded-t-2xl">
                   {listing.images[0] ? (
