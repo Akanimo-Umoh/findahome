@@ -12,6 +12,7 @@ type BaseProperty = {
   serviceCharge: number
   nearbyPlaces: string[]
   listingType: string
+  status: "pending" | "approved" | "rejected"
   owner: {
     _id: string
     name: string

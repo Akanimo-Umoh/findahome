@@ -87,6 +87,7 @@ import {
 import InspectionPaymentCallback from "@/components/shared/InspectionPaymentCallback"
 import ScheduleHandover from "@/pages/agent/my-transaction/ScheduleHandover"
 import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-confirm-visit"
+import AgentListings from "@/components/agent-profile/AgentListings"
 
 export default function AppRoutes() {
   return (
@@ -149,6 +150,10 @@ export default function AppRoutes() {
             path="/inspection-payment/callback"
             element={<InspectionPaymentCallback />}
           />
+
+          <Route path="/agents" element={<FindAgents />} />
+          <Route path="/agents/:agentId" element={<AgentProfile />} />
+          <Route path="/agents/:agentId/listings" element={<AgentListings />} />
         </Route>
       </Route>
 
@@ -180,9 +185,6 @@ export default function AppRoutes() {
         />
 
         <Route path="/recent-activities" element={<Recent />} />
-
-        <Route path="/agents" element={<FindAgents />} />
-        <Route path="/agent-profile" element={<AgentProfile />} />
 
         {/* wallet */}
         {/* <Route path="/wallet" element={<Wallet />} /> */}
