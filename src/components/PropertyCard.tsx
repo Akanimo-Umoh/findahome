@@ -22,7 +22,7 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
   const isLand = property.propertyType === "land"
 
   return (
-    <div className="max-w-112.5 overflow-hidden rounded-2xl border border-bg-accent transition hover:shadow-lg">
+    <div className="relative max-w-112.5 overflow-hidden rounded-2xl border border-bg-accent transition hover:shadow-lg">
       <div className="relative">
         <img
           src={property.images[0]}
@@ -128,7 +128,7 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
                   e.stopPropagation()
                   toggleFavorite()
                 }}
-                className="hidden shrink-0 cursor-pointer disabled:opacity-50 md:flex"
+                className="relative z-20 hidden shrink-0 cursor-pointer disabled:opacity-50 md:flex"
               >
                 <img
                   src={isSaved ? heartIcon : favoriteIcon}
@@ -141,11 +141,17 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
 
         <Link
           to={to}
-          className="flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden"
+          className="relative z-20 flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden"
         >
           View Details
         </Link>
       </div>
+
+      <Link
+        to={to}
+        aria-label={`View ${property.title} details`}
+        className="absolute inset-0 z-10 hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-button-bg md:block"
+      />
     </div>
   )
 }
