@@ -69,8 +69,11 @@ export function useAgentProfile(agentId: string) {
 
 export function useAgentListingsQuery(agentId: string) {
   const { data, isLoading } = useQuery({
-    queryKey: ["agentListings", agentId],
-    queryFn: () => getAgentListings(agentId),
+    queryKey: ["agentApprovedListings", agentId],
+    queryFn: async () => {
+      const listings = await getAgentListings(agentId)
+      return listings.filter((listing) => listing.status === "approved")
+    },
     enabled: !!agentId,
   })
   return { listings: data ?? [], isLoading }
