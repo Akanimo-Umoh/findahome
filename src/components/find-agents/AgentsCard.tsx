@@ -18,10 +18,7 @@ function AgentCard({ agent }: { agent: Agent }) {
   const location = getAgentLocation(agent)
 
   return (
-    <Link
-      to={`/agents/${agent._id}`}
-      className="overflow-hidden rounded-2xl border border-bg-accent hover:shadow-xl"
-    >
+    <div className="overflow-hidden rounded-2xl border border-bg-accent hover:shadow-sm">
       <div className="h-32.5 w-full overflow-hidden rounded-t-2xl md:h-42.5">
         <Avatar
           name={agent.name}
@@ -69,11 +66,14 @@ function AgentCard({ agent }: { agent: Agent }) {
           </div>
         </div>
 
-        <span className="mt-2 flex h-11.25 w-full cursor-pointer items-center justify-center rounded-lg border border-button-bg bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary hover:bg-bg-accent">
+        <Link
+          to={`/agents/${agent._id}`}
+          className="mt-2 flex h-11.25 w-full cursor-pointer items-center justify-center rounded-lg border border-button-bg bg-button-disabled font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary hover:bg-bg-accent"
+        >
           View Profile
-        </span>
+        </Link>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -107,7 +107,7 @@ export default function AgentsCard({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+      <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
           <AgentCardSkeleton key={i} />
         ))}
@@ -129,7 +129,7 @@ export default function AgentsCard({
     )
 
   return (
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+    <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {agents.map((agent) => (
         <AgentCard key={agent._id} agent={agent} />
       ))}
