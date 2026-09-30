@@ -141,7 +141,7 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
 
         <Link
           to={to}
-          className="relative z-20 flex h-[45px] w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden"
+          className="relative z-20 flex h-11.25 w-full items-center justify-center rounded-lg border border-button-bg bg-button-sec font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary md:hidden"
         >
           View Details
         </Link>
