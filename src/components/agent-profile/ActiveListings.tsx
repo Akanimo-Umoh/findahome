@@ -27,7 +27,7 @@ export default function ActiveListings({
             to={`/agents/${agentId}/listings`}
             className="text-[12px] text-button-bg underline md:text-[14px]"
           >
-            See All
+            See All {">"}
           </Link>
         )}
       </div>
