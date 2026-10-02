@@ -41,7 +41,7 @@ export default function AgentOnboarding() {
   const [governmentId, setGovernmentId] = useState<File | null>(null)
   const [licenseDoc, setLicenseDoc] = useState<File | null>(null)
 
-  const { token, user, updateUser } = useAuthContext()
+  const { token } = useAuthContext()
   const { handleLogout } = useLogout()
   const navigate = useNavigate()
 
@@ -88,12 +88,8 @@ export default function AgentOnboarding() {
 
     navigate("/agent/onboarding/success", {
       replace: true,
-      state: { fromOnboarding: true },
+      state: { fromOnboarding: true, updatedUser },
     })
-
-    if (user) {
-      updateUser({ ...user, ...updatedUser, isOnboarding: true })
-    }
   }
 
   return (
