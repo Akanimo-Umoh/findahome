@@ -17,14 +17,14 @@ export default function UserOnboarding() {
 
   const [fullName, setFullName] = useState(user?.name ?? "")
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? "")
-  const [locationInput, setLocationInput] = useState(user?.location ?? "")
+  const [userLocation, setUserLocation] = useState(user?.location ?? "")
   const [errors, setErrors] = useState<Errors>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isValid =
     fullName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
-    locationInput.trim() !== ""
+    userLocation.trim() !== ""
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,7 +36,7 @@ export default function UserOnboarding() {
     } else if (!/^\d{10,11}$/.test(phoneNumber)) {
       newErrors.phoneNumber = "Enter a valid phone number"
     }
-    if (!locationInput.trim()) newErrors.location = "Can't be empty"
+    if (!userLocation.trim()) newErrors.location = "Can't be empty"
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -49,7 +49,7 @@ export default function UserOnboarding() {
       const { user: updatedUser } = await onboardUser({
         name: fullName.trim(),
         phoneNumber,
-        location: locationInput.trim(),
+        location: userLocation.trim(),
       })
 
       // don't touch isOnboarding here, the success page does it
@@ -82,26 +82,22 @@ export default function UserOnboarding() {
           <button
             type="button"
             onClick={handleLogout}
-            className="cursor-pointer text-[13px] font-semibold text-text-secondary underline"
+            className="cursor-pointer px-2 py-2 text-[13px] font-semibold text-text-secondary underline"
           >
             Log out
           </button>
         </div>
 
-        <div className="mt-4 flex w-full max-w-66.75 flex-col items-center gap-1 text-center">
+        <div className="mt-4 flex w-full max-w-66.75 flex-col items-center gap-1 text-center md:max-w-md">
           <h1 className="font-raleway text-[20px] font-semibold tracking-[1px] md:text-[24px]">
             Complete Your Profile
           </h1>
-
           <p className="text-[14px] text-text-secondary">
             Just a few details so we can get you started.
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="mt-6 mb-10 w-full md:rounded-2xl md:bg-gray-50 md:p-8 md:shadow-sm"
-        >
+        <form onSubmit={handleSubmit} className="mt-6 mb-10 w-full">
           <div className="space-y-4">
             {/* full name */}
             <div className="flex flex-col gap-2">
@@ -164,11 +160,14 @@ export default function UserOnboarding() {
               <input
                 type="text"
                 id="location"
-                placeholder="Lekki, Lagos"
-                value={locationInput}
-                onChange={(e) => setLocationInput(e.target.value)}
+                placeholder="City or area, e.g. Lekki, Lagos"
+                value={userLocation}
+                onChange={(e) => setUserLocation(e.target.value)}
                 className={`h-11.25 w-full rounded-xl border bg-white px-2 text-[14px] outline-none ${errors.location ? "border-red-500" : "border-text-disabled"}`}
               />
+              <p className="text-[12px] text-text-secondary">
+                Your city or area is enough. No street address needed.
+              </p>
               {errors.location && (
                 <p className="text-[12px] text-red-500">{errors.location}</p>
               )}
@@ -178,7 +177,7 @@ export default function UserOnboarding() {
           <Button
             variant="app-primary"
             size="full"
-            className="mt-6 disabled:bg-text-secondary disabled:opacity-50"
+            className="mt-6 disabled:bg-button-bg disabled:opacity-50"
             type="submit"
             disabled={isSubmitting || !isValid}
           >

@@ -19,6 +19,10 @@ export const onboardUser = async (payload: {
   phoneNumber: string
   location: string
 }) => {
-  const { data } = await api.patch("/user/onboard-user", payload)
+  const { data } = await api.patch("/user/onboard-user", {
+    name: payload.name,
+    phoneNumber: payload.phoneNumber,
+    address: payload.location,
+  })
   return data
 }
