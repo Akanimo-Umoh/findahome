@@ -13,3 +13,12 @@ export const onboardAgent = async (payload: FormData) => {
   })
   return data
 }
+
+export const onboardUser = async (payload: {
+  name: string
+  phoneNumber: string
+  location: string
+}) => {
+  const { data } = await api.patch("/user/onboard-user", payload)
+  return data
+}
