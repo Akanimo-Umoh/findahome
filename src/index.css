@@ -356,6 +356,15 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
 @media (min-width: 768px) {
   .auth-bg {
     background: url("./assets/images/img-auth-user-tablet-bg.jpg");
