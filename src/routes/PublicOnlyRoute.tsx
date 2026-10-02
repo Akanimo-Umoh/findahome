@@ -1,5 +1,6 @@
 import { useAuthContext } from "@/context/AuthContext"
 import { Navigate, Outlet, useLocation } from "react-router-dom"
+import { onboardingRedirect } from "./onboarding"
 
 /**
  * PublicOnlyRoute - Allows access only to non-authenticated users
@@ -18,8 +19,10 @@ export default function PublicOnlyRoute() {
     // Check for return URL from location state (from protected routes)
     const returnUrl = location.state?.from || location.state?.returnUrl
 
-    if (user.role === "agent" && !user.isOnboarding) {
-      return <Navigate to="/agent/onboarding" replace />
+    // not onboarded yet: send agents and buyers to their onboarding page
+    const onboardingTarget = onboardingRedirect(user, location.pathname)
+    if (onboardingTarget) {
+      return <Navigate to={onboardingTarget} replace />
     }
 
     if (returnUrl) {

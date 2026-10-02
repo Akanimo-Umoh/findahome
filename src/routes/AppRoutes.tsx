@@ -88,6 +88,7 @@ import InspectionPaymentCallback from "@/components/shared/InspectionPaymentCall
 import ScheduleHandover from "@/pages/agent/my-transaction/ScheduleHandover"
 import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-confirm-visit"
 import AgentListings from "@/components/agent-profile/AgentListings"
+import { UserOnboarding } from "@/pages/user/onboarding"
 
 export default function AppRoutes() {
   return (
@@ -140,6 +141,9 @@ export default function AppRoutes() {
 
           <Route path="/settings" element={<div>User Settings</div>} />
         </Route>
+
+        <Route path="/onboarding" element={<UserOnboarding />} />
+        <Route path="/onboarding/success" element={<OnboardingSuccess />} />
 
         {/* routes without the footer for the user */}
         <Route element={<NormalLayout />}>

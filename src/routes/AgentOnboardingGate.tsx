@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useAuthContext } from "@/context/AuthContext"
+import { DASHBOARD, ONBOARDING_ENTRY, onboardingRedirect } from "./onboarding"
 
 export default function AgentOnboardingGate({
   children,
@@ -12,18 +13,21 @@ export default function AgentOnboardingGate({
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user || !token || user.role !== "agent" || !user.isVerified) return
+    if (!user || !token || !user.isVerified || user.role === "admin") return
 
     // not onboarded yet — force them into onboarding
-    if (!user.isOnboarding && location.pathname !== "/agent/onboarding") {
-      navigate("/agent/onboarding", { replace: true })
+    const target = onboardingRedirect(user, location.pathname)
+    if (target) {
+      navigate(target, { replace: true })
       return
     }
 
-    // already onboarded — don't let them back into onboarding
-    if (user.isOnboarding && location.pathname === "/agent/onboarding") {
-      navigate("/agent/dashboard", { replace: true })
-      return
+    // onboarded users can't go back to the form (the success page stays allowed)
+    if (
+      user.isOnboarding &&
+      location.pathname === ONBOARDING_ENTRY[user.role]
+    ) {
+      navigate(DASHBOARD[user.role], { replace: true })
     }
   }, [user, token, location.pathname, navigate])
 

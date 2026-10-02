@@ -3,6 +3,7 @@ import { useAuthContext } from "@/context/AuthContext"
 import { useEffect, useRef } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import { onboardingRedirect } from "./onboarding"
 
 type UserRole = "user" | "agent" | "admin"
 
@@ -55,15 +56,12 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
     }
 
     // Agent hasn't completed onboarding — block access to agent-only pages except onboarding itself
-    if (
-      user.role === "agent" &&
-      !user.isOnboarding &&
-      location.pathname !== "/agent/onboarding"
-    ) {
+    const onboardingTarget = onboardingRedirect(user, location.pathname)
+    if (onboardingTarget) {
       hasShownToast.current = true
       toast.warning("Please complete onboarding to continue")
       setTimeout(() => {
-        navigate("/agent/onboarding", { replace: true })
+        navigate(onboardingTarget, { replace: true })
       }, 1000)
       return
     }
@@ -109,9 +107,7 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
     !user ||
     !token ||
     !user.isVerified ||
-    (user.role === "agent" &&
-      !user.isOnboarding &&
-      location.pathname !== "/agent/onboarding") ||
+    onboardingRedirect(user, location.pathname) !== null ||
     !allowedRoles.includes(user.role as UserRole)
   ) {
     return null
