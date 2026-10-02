@@ -62,7 +62,10 @@ export default function Step1({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      className="w-full md:rounded-2xl md:bg-gray-50 md:p-8 md:shadow-sm"
+    >
       <div className="space-y-4">
         {/* about me */}
         <div className="flex flex-col gap-2">

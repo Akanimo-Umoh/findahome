@@ -50,7 +50,10 @@ export default function Step3({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full space-y-4 md:rounded-2xl md:bg-gray-50 md:p-8 md:shadow-sm"
+    >
       <FileUpload
         id="governmentId"
         label="Government ID"
