@@ -3,7 +3,7 @@ import { useAuthContext } from "@/context/AuthContext"
 import { useEffect, useRef } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { onboardingRedirect } from "./onboarding"
+import { DASHBOARD, onboardingRedirect } from "./onboarding"
 
 type UserRole = "user" | "agent" | "admin"
 
@@ -55,7 +55,7 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
       return
     }
 
-    // Agent hasn't completed onboarding — block access to agent-only pages except onboarding itself
+    // Agent or buyer hasn't completed onboarding
     const onboardingTarget = onboardingRedirect(user, location.pathname)
     if (onboardingTarget) {
       hasShownToast.current = true
@@ -73,19 +73,7 @@ export default function RoleBasedRoute({ allowedRoles }: RoleBasedRouteProps) {
       // delay navigation
       setTimeout(() => {
         // Redirect to appropriate dashboard based on role
-        switch (user.role) {
-          case "user":
-            navigate("/dashboard", { replace: true })
-            break
-          case "agent":
-            navigate("/agent/dashboard", { replace: true })
-            break
-          case "admin":
-            navigate("/admin/dashboard", { replace: true })
-            break
-          default:
-            navigate("/login", { replace: true })
-        }
+        navigate(DASHBOARD[user.role] ?? "/login", { replace: true })
       }, 3000)
       return
     }
