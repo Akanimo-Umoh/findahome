@@ -56,7 +56,10 @@ export default function AgentOnboarding() {
     setFormData((prev) => ({ ...prev, [field]: values }))
   }
 
-  const goNext = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS))
+  const goNext = () => {
+    setStep((s) => Math.min(s + 1, TOTAL_STEPS))
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
   const goBack = () => setStep((s) => Math.max(s - 1, 1))
 
   // warn on tab close/refresh while onboarding isn't complete
