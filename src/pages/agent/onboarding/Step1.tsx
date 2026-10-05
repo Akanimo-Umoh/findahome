@@ -11,7 +11,7 @@ type Step1Props = {
       | "about"
       | "yearsOfExperience"
       | "businessName"
-      | "licenceNumber"
+      | "licenseNumber"
       | "officeAddress"
       | "socialLinkOrWebsite",
     value: string
@@ -97,7 +97,13 @@ export default function Step1({
             id="experience"
             placeholder="Enter here"
             value={data.yearsOfExperience}
-            onChange={(e) => updateField("yearsOfExperience", e.target.value)}
+            inputMode="numeric"
+            onChange={(e) =>
+              updateField(
+                "yearsOfExperience",
+                e.target.value.replace(/\D/g, "")
+              )
+            }
             className={`h-11.25 w-full rounded-xl border bg-white px-2 text-[14px] outline-none ${errors.yearsOfExperience ? "border-red-500" : "border-text-disabled"}`}
           />
 
