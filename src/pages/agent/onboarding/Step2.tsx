@@ -164,7 +164,7 @@ export default function Step2({
           size="full"
           type="submit"
           disabled={!isValid}
-          className="flex-1"
+          className="flex-1 disabled:bg-button-bg disabled:text-white disabled:opacity-50"
         >
           Next <ArrowRight />
         </Button>
