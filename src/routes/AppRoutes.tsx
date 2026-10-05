@@ -134,6 +134,9 @@ export default function AppRoutes() {
       {/* ==================== USER ROUTES (BUYERS) ==================== */}
       {/* Only for users with role: "user" */}
       <Route element={<RoleBasedRoute allowedRoles={["user"]} />}>
+        <Route path="/onboarding" element={<UserOnboarding />} />
+        <Route path="/onboarding/success" element={<OnboardingSuccess />} />
+
         {/* routes with both navbar and footer  for the user*/}
         <Route element={<MainLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
@@ -141,9 +144,6 @@ export default function AppRoutes() {
 
           <Route path="/settings" element={<div>User Settings</div>} />
         </Route>
-
-        <Route path="/onboarding" element={<UserOnboarding />} />
-        <Route path="/onboarding/success" element={<OnboardingSuccess />} />
 
         {/* routes without the footer for the user */}
         <Route element={<NormalLayout />}>
