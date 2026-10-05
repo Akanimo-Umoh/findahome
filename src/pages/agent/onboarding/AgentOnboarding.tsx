@@ -18,7 +18,7 @@ export type AgentProfileData = {
   languages: string[]
   businessName: string
   phoneNumber: string
-  licenceNumber: string
+  licenseNumber: string
   officeAddress: string
   socialLinkOrWebsite: string
 }
@@ -30,7 +30,7 @@ const initialData: AgentProfileData = {
   languages: [],
   businessName: "",
   phoneNumber: "",
-  licenceNumber: "",
+  licenseNumber: "",
   officeAddress: "",
   socialLinkOrWebsite: "",
 }
@@ -81,7 +81,7 @@ export default function AgentOnboarding() {
     payload.append("languages", JSON.stringify(formData.languages))
     payload.append("businessName", formData.businessName)
     payload.append("phoneNumber", formData.phoneNumber)
-    payload.append("licenceNumber", formData.licenceNumber)
+    payload.append("licenseNumber", formData.licenseNumber.trim())
     payload.append("officeAddress", formData.officeAddress)
     payload.append("socialLinkOrWebsite", formData.socialLinkOrWebsite)
     if (governmentId) payload.append("governmentId", governmentId)
