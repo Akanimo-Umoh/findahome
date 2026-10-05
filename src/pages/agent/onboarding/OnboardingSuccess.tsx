@@ -30,9 +30,13 @@ export default function OnboardingSuccess() {
   useEffect(() => {
     if (!cameFromOnboarding || hasSyncedUser.current || !user) return
     hasSyncedUser.current = true
+
+    // the API sends `address`, the app reads `location`
+    const { address, ...serverUser } = location.state?.updatedUser ?? {}
     updateUser({
       ...user,
-      ...location.state?.updatedUser,
+      ...serverUser,
+      location: address ?? user.location,
       isOnboarding: true,
     })
   }, [cameFromOnboarding, user, updateUser, location.state])
