@@ -142,7 +142,7 @@ export default function Step1({
       <Button
         variant="app-primary"
         size="full"
-        className="mt-6"
+        className="mt-6 disabled:bg-button-bg disabled:text-white disabled:opacity-50"
         type="submit"
         disabled={!isValid}
       >
