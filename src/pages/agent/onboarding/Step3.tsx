@@ -92,7 +92,7 @@ export default function Step3({
           variant="app-primary"
           size="full"
           disabled={isSubmitting || !isValid}
-          className="flex-1"
+          className="flex-1 disabled:bg-button-bg disabled:text-white disabled:opacity-50"
         >
           {isSubmitting ? "Submitting..." : "Submit"}
         </Button>
