@@ -108,8 +108,8 @@ export default function Step2({
             type="text"
             id="licenseNum"
             placeholder="Enter License Number"
-            value={data.licenceNumber}
-            onChange={(e) => updateField("licenceNumber", e.target.value)}
+            value={data.licenseNumber}
+            onChange={(e) => updateField("licenseNumber", e.target.value)}
             className="h-11.25 w-full rounded-xl border border-text-disabled bg-white px-2 text-[14px] outline-none"
           />
         </div>
