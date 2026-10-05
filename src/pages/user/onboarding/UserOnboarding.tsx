@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
 import { useLogout } from "@/hooks/useLogout"
-import { onboardUser } from "@/services/user.service"
+import { onboardUser, updateProfile } from "@/services/user.service"
 
 type Errors = { fullName?: string; phoneNumber?: string; location?: string }
 
@@ -46,11 +46,15 @@ export default function UserOnboarding() {
     setErrors({})
     setIsSubmitting(true)
     try {
-      const { user: updatedUser } = await onboardUser({
+      // 1. save what the user typed
+      await updateProfile({
         name: fullName.trim(),
         phoneNumber,
         location: userLocation.trim(),
       })
+
+      // 2. mark onboarding as done
+      const { user: updatedUser } = await onboardUser()
 
       // don't touch isOnboarding here, the success page does it
       navigate("/onboarding/success", {
@@ -97,7 +101,10 @@ export default function UserOnboarding() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 mb-10 w-full">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 mb-10 w-full md:rounded-2xl md:bg-gray-50 md:p-8 md:shadow-sm"
+        >
           <div className="space-y-4">
             {/* full name */}
             <div className="flex flex-col gap-2">
@@ -165,9 +172,7 @@ export default function UserOnboarding() {
                 onChange={(e) => setUserLocation(e.target.value)}
                 className={`h-11.25 w-full rounded-xl border bg-white px-2 text-[14px] outline-none ${errors.location ? "border-red-500" : "border-text-disabled"}`}
               />
-              <p className="text-[12px] text-text-secondary">
-                Your city or area is enough. No street address needed.
-              </p>
+
               {errors.location && (
                 <p className="text-[12px] text-red-500">{errors.location}</p>
               )}
@@ -177,7 +182,7 @@ export default function UserOnboarding() {
           <Button
             variant="app-primary"
             size="full"
-            className="mt-6 disabled:bg-button-bg disabled:opacity-50"
+            className="mt-6 disabled:bg-button-bg disabled:text-white disabled:opacity-50"
             type="submit"
             disabled={isSubmitting || !isValid}
           >
