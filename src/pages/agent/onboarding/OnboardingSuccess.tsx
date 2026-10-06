@@ -60,45 +60,49 @@ export default function OnboardingSuccess() {
   if (!cameFromOnboarding) return null
 
   return (
-    <div className="onboarding flex min-h-screen flex-col items-center justify-center px-6 text-center md:px-8">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-button-bg">
-        <img src={checkIcon} alt="" className="h-8 w-8" />
+    <div className="auth-bg flex min-h-screen w-full items-center justify-center px-4 py-8 sm:px-6 md:px-8">
+      <div className="w-full max-w-[520px] rounded-[28px] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.06)] sm:p-8 md:p-10">
+        <div className="flex flex-col items-center justify-center text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-button-bg sm:h-20 sm:w-20">
+            <img src={checkIcon} alt="" className="h-8 w-8 sm:h-10 sm:w-10" />
+          </div>
+
+          <h1 className="mt-5 font-raleway text-[28px] font-semibold tracking-[1px] text-text-primary sm:text-[32px]">
+            Profile Submitted
+          </h1>
+
+          <p className="mt-2 w-full max-w-[330px] text-sm leading-6 text-text-secondary sm:text-[14px]">
+            {isAgent ? (
+              <>
+                We're reviewing your details.
+                <br />
+                Redirecting you to your dashboard...
+              </>
+            ) : (
+              <>
+                Your profile has been saved.
+                <br />
+                Taking you to the home page...
+              </>
+            )}
+          </p>
+
+          <div className="mt-6 h-1 w-full overflow-hidden rounded-full bg-text-disabled">
+            <div
+              className="h-full origin-left bg-button-bg"
+              style={{ animation: `shrink ${REDIRECT_MS}ms linear forwards` }}
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate(redirectPath, { replace: true })}
+            className="mt-6 cursor-pointer text-[13px] font-semibold text-button-bg underline sm:text-[14px]"
+          >
+            {isAgent ? "Go to dashboard now" : "Continue to home page"}
+          </button>
+        </div>
       </div>
-
-      <h1 className="mt-4 font-raleway font-semibold tracking-[1px]">
-        Profile Submitted
-      </h1>
-
-      <p className="mt-1 max-w-66.75 text-[14px] text-text-secondary">
-        {isAgent ? (
-          <>
-            We're reviewing your details.
-            <br />
-            Redirecting you to your dashboard...
-          </>
-        ) : (
-          <>
-            Your profile has been saved.
-            <br />
-            Taking you to the home page...
-          </>
-        )}
-      </p>
-
-      <div className="mt-6 h-1 w-full max-w-66.75 overflow-hidden rounded-full bg-text-disabled">
-        <div
-          className="h-full origin-left bg-button-bg"
-          style={{ animation: `shrink ${REDIRECT_MS}ms linear forwards` }}
-        />
-      </div>
-
-      <button
-        type="button"
-        onClick={() => navigate(redirectPath, { replace: true })}
-        className="mt-6 cursor-pointer text-[13px] font-semibold text-button-bg underline"
-      >
-        {isAgent ? "Go to dashboard now" : "Continue to home page"}
-      </button>
     </div>
   )
 }

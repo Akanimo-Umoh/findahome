@@ -1,32 +1,29 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "sonner"
-import { AxiosError } from "axios"
+import { Link } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
 import { useLogout } from "@/hooks/useLogout"
-import { onboardUser, updateProfile } from "@/services/user.service"
+import { useOnboardUser } from "@/hooks/useOnboardUser"
 
 type Errors = { fullName?: string; phoneNumber?: string; location?: string }
 
 export default function UserOnboarding() {
   const { user } = useAuthContext()
   const { handleLogout } = useLogout()
-  const navigate = useNavigate()
+  const { mutate, isPending } = useOnboardUser()
 
   const [fullName, setFullName] = useState(user?.name ?? "")
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? "")
   const [userLocation, setUserLocation] = useState(user?.location ?? "")
   const [errors, setErrors] = useState<Errors>({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isValid =
     fullName.trim() !== "" &&
     phoneNumber.trim() !== "" &&
     userLocation.trim() !== ""
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
     const newErrors: Errors = {}
@@ -44,33 +41,11 @@ export default function UserOnboarding() {
     }
 
     setErrors({})
-    setIsSubmitting(true)
-    try {
-      // 1. save what the user typed
-      await updateProfile({
-        name: fullName.trim(),
-        phoneNumber,
-        location: userLocation.trim(),
-      })
-
-      // 2. mark onboarding as done
-      const { user: updatedUser } = await onboardUser()
-
-      // don't touch isOnboarding here, the success page does it
-      navigate("/onboarding/success", {
-        replace: true,
-        state: { fromOnboarding: true, updatedUser },
-      })
-    } catch (err) {
-      const message =
-        err instanceof AxiosError
-          ? err.response?.data?.message ||
-            "Submission failed. Please try again."
-          : "Submission failed. Please try again."
-      toast.error(message)
-    } finally {
-      setIsSubmitting(false)
-    }
+    mutate({
+      name: fullName.trim(),
+      phoneNumber,
+      location: userLocation.trim(),
+    })
   }
 
   return (
@@ -184,13 +159,13 @@ export default function UserOnboarding() {
             size="full"
             className="mt-6 disabled:bg-button-bg disabled:text-white disabled:opacity-50"
             type="submit"
-            disabled={isSubmitting || !isValid}
+            disabled={isPending || !isValid}
           >
-            {isSubmitting ? (
+            {isPending ? (
               "Submitting..."
             ) : (
               <>
-                Continue <ArrowRight />
+                Submit <ArrowRight />
               </>
             )}
           </Button>
