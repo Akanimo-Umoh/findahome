@@ -11,8 +11,8 @@ import { login as loginApi } from "@/services/auth.service"
 import { AxiosError } from "axios"
 import { GoogleLogin } from "@react-oauth/google"
 import { useGoogleAuth } from "@/hooks/useGoogleAuth"
-import Loading from "@/components/Loading"
 import { getMe } from "@/services/user.service"
+import Spinner from "@/components/Spinner"
 
 type LocationState = {
   from?: string
@@ -30,7 +30,7 @@ export default function Login() {
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  } = useGoogleAuth(setApiError)
+  } = useGoogleAuth({ mode: "login", clearFormError: setApiError })
 
   const {
     register,
@@ -140,7 +140,9 @@ export default function Login() {
   }
 
   if (isGoogleLoading) {
-    return <Loading />
+    return (
+      <Spinner className="fixed inset-0 z-50 flex items-center justify-center bg-white" />
+    )
   }
 
   return (

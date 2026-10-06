@@ -54,11 +54,13 @@ export const resendVerificationEmail = async (
 
 export const googleAuth = async (
   tokenId: string,
-  mode: "register" | "login"
+  mode: "register" | "login",
+  role?: "user" | "agent"
 ) => {
   const { data } = await api.post("/auth/google", {
     tokenId,
     mode,
+    ...(role ? { role } : {}),
   })
   return data
 }

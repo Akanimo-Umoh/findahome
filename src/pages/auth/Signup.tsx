@@ -13,7 +13,7 @@ import { useState } from "react"
 import { AxiosError } from "axios"
 import { GoogleLogin } from "@react-oauth/google"
 import { useGoogleAuth } from "@/hooks/useGoogleAuth"
-import Loading from "@/components/Loading"
+import Spinner from "@/components/Spinner"
 
 export default function Signup() {
   const { role } = useParams<{ role: "user" | "agent" }>()
@@ -29,7 +29,11 @@ export default function Signup() {
     setApiError: setGoogleApiError,
     handleGoogleSuccess,
     handleGoogleError,
-  } = useGoogleAuth(setApiError)
+  } = useGoogleAuth({
+    mode: "signup",
+    role: selectedRole,
+    clearFormError: setApiError,
+  })
 
   const {
     register,
@@ -87,7 +91,9 @@ export default function Signup() {
     : null
 
   if (isGoogleLoading) {
-    return <Loading />
+    return (
+      <Spinner className="fixed inset-0 z-50 flex items-center justify-center bg-white" />
+    )
   }
 
   return (
