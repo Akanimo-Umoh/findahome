@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import checkIcon from "@/assets/images/img-pay-inspection-fee.png"
 import { useAuthContext } from "@/context/AuthContext"
 import { DASHBOARD } from "@/routes/onboarding"
+import { Button } from "@/components/ui/button"
 
 const REDIRECT_MS = 8000
 
@@ -94,13 +95,13 @@ export default function OnboardingSuccess() {
             />
           </div>
 
-          <button
-            type="button"
+          <Button
+            variant="app-primary"
             onClick={() => navigate(redirectPath, { replace: true })}
-            className="mt-6 cursor-pointer text-[13px] font-semibold text-button-bg underline sm:text-[14px]"
+            className="mt-6"
           >
             {isAgent ? "Go to dashboard now" : "Continue to home page"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
