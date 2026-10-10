@@ -89,7 +89,7 @@ export default function Profile() {
         </div>
 
         {/* profile */}
-        <section className="mt-6 md:mt-8">
+        {/* <section className="mt-6 md:mt-8">
           <div className="flex flex-col gap-2 rounded-lg bg-bg-accent p-2">
             <div className="flex items-center justify-between">
               <p>Profile Completion</p>
@@ -103,7 +103,7 @@ export default function Profile() {
               profile.
             </p>
           </div>
-        </section>
+        </section> */}
 
         {/* personal information */}
         <section className="mt-6">
