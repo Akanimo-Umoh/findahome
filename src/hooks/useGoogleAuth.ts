@@ -6,6 +6,7 @@ import { googleAuth } from "@/services/auth.service"
 import { useAuthContext } from "@/context/AuthContext"
 import { DASHBOARD, onboardingRedirect } from "@/routes/onboarding"
 import { toast } from "sonner"
+import { getMe } from "@/services/user.service"
 
 type Options = {
   mode: "login" | "signup"
@@ -49,7 +50,7 @@ export const useGoogleAuth = ({ mode, role, clearFormError }: Options) => {
 
   // shared by every successful path
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const finishAuth = (result: any, credential: string) => {
+  const finishAuth = async (result: any, credential: string) => {
     if (!result?.user?.isVerified) {
       goToVerify(result?.user?.email ?? getEmailFromCredential(credential))
       return
@@ -60,12 +61,22 @@ export const useGoogleAuth = ({ mode, role, clearFormError }: Options) => {
       return
     }
 
-    login(result.user, result.token)
+    // the Google response is a partial user, so load the full one
+    // the same way the email login does
+    localStorage.setItem("token", result.token)
+    let fullUser = result.user
+    try {
+      const meRes = await getMe()
+      fullUser = meRes.user
+    } catch (err) {
+      console.error("getMe fetch failed, falling back to Google payload:", err)
+    }
+
+    login(fullUser, result.token)
 
     const from = (location.state as { from?: string } | null)?.from
-    const onboardingTarget = onboardingRedirect(result.user, location.pathname)
-    const fallback =
-      DASHBOARD[result.user.role as keyof typeof DASHBOARD] ?? "/"
+    const onboardingTarget = onboardingRedirect(fullUser, location.pathname)
+    const fallback = DASHBOARD[fullUser.role as keyof typeof DASHBOARD] ?? "/"
 
     navigate(onboardingTarget ?? from ?? fallback, { replace: true })
   }
