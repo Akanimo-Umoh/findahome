@@ -11,6 +11,9 @@ import { useLogout } from "@/hooks/useLogout"
 
 const TOTAL_STEPS = 3
 
+const capitalizeFirstCharacter = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1)
+
 export type AgentProfileData = {
   about: string
   yearsOfExperience: string
@@ -75,17 +78,37 @@ export default function AgentOnboarding() {
     if (!token) throw new Error("Not authenticated")
 
     const payload = new FormData()
-    payload.append("about", formData.about)
+    payload.append("about", capitalizeFirstCharacter(formData.about))
     payload.append("yearsOfExperience", formData.yearsOfExperience)
-    payload.append("serviceArea", JSON.stringify(formData.serviceArea))
-    payload.append("languages", JSON.stringify(formData.languages))
-    payload.append("businessName", formData.businessName)
+    payload.append(
+      "serviceArea",
+      JSON.stringify(formData.serviceArea.map(capitalizeFirstCharacter))
+    )
+    payload.append(
+      "languages",
+      JSON.stringify(formData.languages.map(capitalizeFirstCharacter))
+    )
+    payload.append(
+      "businessName",
+      capitalizeFirstCharacter(formData.businessName)
+    )
     payload.append("phoneNumber", formData.phoneNumber)
-    payload.append("licenseNumber", formData.licenseNumber.trim())
-    payload.append("officeAddress", formData.officeAddress)
+    payload.append(
+      "licenseNumber",
+      capitalizeFirstCharacter(formData.licenseNumber.trim())
+    )
+    payload.append(
+      "officeAddress",
+      capitalizeFirstCharacter(formData.officeAddress)
+    )
     payload.append("socialLinkOrWebsite", formData.socialLinkOrWebsite)
     if (governmentId) payload.append("governmentId", governmentId)
     if (licenseDoc) payload.append("licenseDoc", licenseDoc)
+
+    console.log(
+      "Agent onboarding submission:",
+      Object.fromEntries(payload.entries())
+    )
 
     const { user: updatedUser } = await onboardAgent(payload)
 
