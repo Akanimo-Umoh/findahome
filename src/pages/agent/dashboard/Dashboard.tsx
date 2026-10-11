@@ -6,6 +6,9 @@ import RecentActivities from "./RecentActivities"
 import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "@/components/Avatar"
 import { useAgentListings } from "@/hooks/useAgentListings"
+import { useAgentTransactionsList } from "@/hooks/useAgentTransactionsList"
+import { useAgentAds } from "@/hooks/useAgentAds"
+import { getCategory } from "@/pages/agent/my-transaction/transactionHelpers"
 import { useNavigate } from "react-router-dom"
 
 export default function Dashboard() {
@@ -13,6 +16,17 @@ export default function Dashboard() {
   const { user } = useAuthContext()
   const { activeListingsCount, isLoading: isLoadingListings } =
     useAgentListings()
+  const { items: transactions, isLoading: isLoadingTransactions } =
+    useAgentTransactionsList()
+  const { ads, isLoading: isLoadingAds } = useAgentAds()
+
+  const pendingTransactionsCount = transactions.filter(
+    (transaction) => getCategory(transaction) === "pending"
+  ).length
+  const completedDealsCount = transactions.filter(
+    (transaction) => getCategory(transaction) === "completed"
+  ).length
+  const runningAdsCount = ads.filter((ad) => ad.status === "active").length
 
   return (
     <div className="mb-10 pt-0.5 md:pt-6 lg:pt-8">
@@ -73,6 +87,11 @@ export default function Dashboard() {
         <PerformanceSnapshot
           activeListingsCount={activeListingsCount}
           isLoadingActiveListings={isLoadingListings}
+          pendingTransactionsCount={pendingTransactionsCount}
+          completedDealsCount={completedDealsCount}
+          isLoadingTransactions={isLoadingTransactions}
+          runningAdsCount={runningAdsCount}
+          isLoadingAds={isLoadingAds}
         />
       </div>
 
