@@ -97,6 +97,7 @@ export default function OnboardingSuccess() {
 
           <Button
             variant="app-primary"
+            size="full"
             onClick={() => navigate(redirectPath, { replace: true })}
             className="mt-6"
           >
