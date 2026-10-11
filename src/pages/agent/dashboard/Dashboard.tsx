@@ -53,7 +53,7 @@ export default function Dashboard() {
           </div>
 
           <p className="text-[12px] text-bg-accent md:text-[14px]">
-            Funds are available for withdrawal
+            Funds available for withdrawal
           </p>
         </div>
 
