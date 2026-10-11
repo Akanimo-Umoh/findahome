@@ -20,8 +20,9 @@ export default function TagInput({
 
   const addTag = () => {
     const trimmed = input.trim()
-    if (trimmed && !values.includes(trimmed)) {
-      onChange([...values, trimmed])
+    const capitalized = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+    if (capitalized && !values.includes(capitalized)) {
+      onChange([...values, capitalized])
     }
     setInput("")
   }
