@@ -1,4 +1,5 @@
 import alert from "@/assets/images/icon-mail-alert.png"
+import { Button } from "@/components/ui/button"
 import { resendVerificationEmail, verifyEmail } from "@/services/auth.service"
 import { AxiosError } from "axios"
 import {
@@ -218,13 +219,15 @@ export default function VerifyEmail() {
               </button>
             </p>
           </div>
-          <button
+
+          <Button
+            variant="app-primary"
+            size="full"
             type="submit"
             disabled={code.join("").length !== 6 || isVerifying}
-            className="h-[37px] w-full cursor-pointer rounded-lg bg-sec-but font-raleway text-[14px] font-semibold tracking-[1px] text-component-primary disabled:cursor-not-allowed disabled:border disabled:border-text-secondary disabled:bg-bg-accent disabled:text-black disabled:opacity-50"
           >
             {isVerifying ? "Verifying..." : "Verify Your Email"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

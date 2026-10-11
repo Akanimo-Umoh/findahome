@@ -1,4 +1,5 @@
 import iconSuccess from "@/assets/images/icon-verification-successful.png"
+import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 
 export default function VerifyEmailSuccess() {
@@ -14,13 +15,14 @@ export default function VerifyEmailSuccess() {
         <img src={iconSuccess} alt="success" className="mx-auto" />
       </div>
 
-      <button
+      <Button
+        variant="app-primary"
+        size="full"
         type="button"
         onClick={() => navigate("/login", { replace: true })}
-        className="h-[37px] cursor-pointer rounded-lg bg-sec-but font-raleway text-[14px] font-semibold tracking-[1px] text-component-primary"
       >
         Continue
-      </button>
+      </Button>
     </div>
   )
 }

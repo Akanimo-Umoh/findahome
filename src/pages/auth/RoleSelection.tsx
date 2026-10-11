@@ -5,6 +5,7 @@ import secureIcon from "@/assets/agentImages/icon-secure.svg"
 import trustedIcon from "@/assets/agentImages/icon-trusted.svg"
 import ratedIcon from "@/assets/agentImages/icon-rated.svg"
 import { Link, useNavigate } from "react-router-dom"
+import { Button } from "@/components/ui/button"
 
 export default function RoleSelection() {
   const navigate = useNavigate()
@@ -37,26 +38,28 @@ export default function RoleSelection() {
       <div className="mt-8 w-full space-y-4">
         <div className="space-y-3 border-black">
           {/* continue as agent */}
-          <button
+          <Button
+            variant="app-primary"
+            size="full"
             onClick={() => navigate("/signup/agent")}
-            className="button-style flex h-[45px] w-full cursor-pointer items-center justify-center gap-2 rounded-lg"
           >
             <img src={asAgentIcon} alt="" />
             <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-white">
               Continue as Agent
             </p>
-          </button>
+          </Button>
 
           {/* continue as buyer */}
-          <button
+          <Button
+            variant="app-secondary"
+            size="full"
             onClick={() => navigate("/signup/user")}
-            className="flex h-[45px] w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-text-secondary bg-button-disabled"
           >
             <img src={asBuyerIcon} alt="" />
             <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
               Continue as Buyer
             </p>
-          </button>
+          </Button>
         </div>
 
         <p className="text-center text-[12px] leading-4 text-text-secondary">
