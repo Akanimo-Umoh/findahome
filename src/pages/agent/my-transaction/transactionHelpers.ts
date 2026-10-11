@@ -31,10 +31,13 @@ export function getStatusLabel(item: MergedTransaction): string {
   return map[item.status] ?? item.status
 }
 
-export function getCategory(item: MergedTransaction): "pending" | "completed" {
+export function getCategory(
+  item: MergedTransaction
+): "pending" | "completed" | "cancelled" {
   if (item.recordType === "purchase") {
     return item.status === "funds_released" ? "completed" : "pending"
   }
+  if (item.status === "inspection_cancelled") return "cancelled"
   return item.status === "inspection_completed" ? "completed" : "pending"
 }
 
