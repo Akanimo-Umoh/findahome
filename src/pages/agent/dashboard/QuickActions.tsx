@@ -261,7 +261,7 @@ const actions: Action[] = [
     icon: messageIcon,
     label: "Messages",
     bg: "bg-[#DC2626]",
-    link: "/agent/messages",
+    link: "/messages",
   },
 ]
 
@@ -280,7 +280,7 @@ export default function QuickActions() {
           <Link
             to={action.link}
             key={action.link}
-            className="flex flex-col items-center gap-2 rounded-xl border border-[#E7E5E2] bg-white px-3 py-4 transition-colors hover:border-bg-accent hover:bg-[#FAFAF9] active:scale-95 md:gap-2.5 md:rounded-[14px] md:py-[18px] lg:gap-2.5 lg:py-[18px]"
+            className="flex flex-col items-center gap-2 rounded-xl border border-[#E7E5E2] bg-white px-3 py-4 transition-all hover:border-bg-accent hover:bg-[#FAFAF9] hover:shadow-sm active:scale-95 md:gap-2.5 md:rounded-[14px] md:py-[18px] lg:gap-2.5 lg:py-[18px]"
           >
             {/* icon */}
             <div
