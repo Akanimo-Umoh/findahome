@@ -6,11 +6,21 @@ import stackIcon from "@/assets/agentImages/icon-stack-blue.svg"
 type PerformanceSnapshotProps = {
   activeListingsCount: number
   isLoadingActiveListings: boolean
+  pendingTransactionsCount: number
+  completedDealsCount: number
+  isLoadingTransactions: boolean
+  runningAdsCount: number
+  isLoadingAds: boolean
 }
 
 export default function PerformanceSnapshot({
   activeListingsCount,
   isLoadingActiveListings,
+  pendingTransactionsCount,
+  completedDealsCount,
+  isLoadingTransactions,
+  runningAdsCount,
+  isLoadingAds,
 }: PerformanceSnapshotProps) {
   const stats = [
     {
@@ -23,21 +33,21 @@ export default function PerformanceSnapshot({
     {
       icon: pendingIcon,
       iconBg: "bg-[#FBEAE8]",
-      value: "10",
+      value: isLoadingTransactions ? "—" : String(pendingTransactionsCount),
       valueColor: "text-[#C0392B]",
       label: "Pending Transaction",
     },
     {
       icon: completedIcon,
       iconBg: "bg-[#EEF1FC]",
-      value: "15",
+      value: isLoadingTransactions ? "—" : String(completedDealsCount),
       valueColor: "text-button-bg",
       label: "Completed Deals",
     },
     {
       icon: stackIcon,
       iconBg: "bg-[#F0EBFB]",
-      value: "8",
+      value: isLoadingAds ? "—" : String(runningAdsCount),
       valueColor: "text-[#6D3FC0]",
       label: "Running Ads",
     },
