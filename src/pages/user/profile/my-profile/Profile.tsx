@@ -115,7 +115,10 @@ export default function Profile() {
           <p className="md:text-[18px]">Security</p>
 
           <div className="mt-4 flex flex-col gap-4 rounded-lg border border-bg-accent p-3">
-            <div className="flex items-center justify-between">
+            <Link
+              to="/profile/change-password"
+              className="flex items-center justify-between"
+            >
               <div className="flex items-center gap-2">
                 <img
                   src={changePasswordIcon}
@@ -128,7 +131,7 @@ export default function Profile() {
               </div>
 
               <img src={rightArrowIcon} alt="" />
-            </div>
+            </Link>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
