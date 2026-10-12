@@ -144,7 +144,10 @@ export default function Profile() {
               <img src={rightArrowIcon} alt="" />
             </div>
 
-            <div className="flex items-center justify-between">
+            <Link
+              to="/profile/feedback"
+              className="flex items-center justify-between"
+            >
               <div className="flex items-center gap-2">
                 <img src={feedbackIcon} alt="" className="md:h-6 md:w-6" />
                 <p className="text-[14px] text-text-secondary md:text-[16px]">
@@ -153,7 +156,7 @@ export default function Profile() {
               </div>
 
               <img src={rightArrowIcon} alt="" />
-            </div>
+            </Link>
           </div>
         </div>
 

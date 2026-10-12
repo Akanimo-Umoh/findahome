@@ -38,6 +38,7 @@ import { AgentProfile } from "@/pages/user/agents/agent-profile"
 import { Profile } from "@/pages/user/profile/my-profile"
 import { EditPersonalInfo } from "@/pages/user/profile/edit-personal-info"
 import { ChangePassword as UserChangePassword } from "@/pages/user/profile/change-password"
+import { Feedback as UserFeedback } from "@/pages/user/profile/feedback"
 
 // Agent Pages
 import { Dashboard as AgentDashboard } from "@/pages/agent/dashboard"
@@ -155,6 +156,7 @@ export default function AppRoutes() {
             path="/profile/change-password"
             element={<UserChangePassword />}
           />
+          <Route path="/profile/feedback" element={<UserFeedback />} />
           <Route
             path="/inspection-payment/callback"
             element={<InspectionPaymentCallback />}
