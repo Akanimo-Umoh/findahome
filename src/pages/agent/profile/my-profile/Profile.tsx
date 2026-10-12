@@ -9,6 +9,7 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "@/components/Avatar"
 import { useLogout } from "@/hooks/useLogout"
 import { useBankAccounts } from "@/hooks/useBankAccounts"
+import { useAgentProfile } from "@/hooks/useAgentDirectory"
 import PageHeader from "@/components/shared/PageHeader"
 import Skeleton from "@/components/ui/Skeleton"
 import { Button } from "@/components/ui/button"
@@ -18,6 +19,7 @@ export default function Profile() {
   const { user } = useAuthContext()
   const { handleLogout } = useLogout()
   const { accounts, isLoading, error } = useBankAccounts()
+  const { agent, isLoading: isLoadingAgent } = useAgentProfile(user?._id ?? "")
   const payoutAccount =
     accounts.find((account) => account.isDefault) ?? accounts[0]
 
@@ -84,19 +86,25 @@ export default function Profile() {
             <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
               <p>ID Verification</p>
 
-              <div className="flex items-center gap-1">
-                <img src={checkIcon} alt="" />
-                <p className="text-text-secondary">Complete</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
-              <p>Business Registration</p>
-
-              <div className="flex items-center gap-1">
-                <img src={pendingIcon} alt="" />
-                <p className="text-warning">Pending Review</p>
-              </div>
+              {isLoadingAgent ? (
+                <Skeleton className="h-4 w-20" />
+              ) : agent ? (
+                <div className="flex items-center gap-1">
+                  <img
+                    src={agent.isVerified ? checkIcon : pendingIcon}
+                    alt=""
+                  />
+                  <p
+                    className={
+                      agent.isVerified ? "text-success" : "text-warning"
+                    }
+                  >
+                    {agent.isVerified ? "Verified" : "Pending Review"}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-text-secondary">Status unavailable</p>
+              )}
             </div>
           </div>
         </div>
