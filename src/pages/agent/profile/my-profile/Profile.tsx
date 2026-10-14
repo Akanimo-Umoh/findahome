@@ -1,4 +1,5 @@
 import verifiedIcon from "@/assets/images/icon-verified-green.svg"
+import addPicture from "@/assets/images/icon-picture.svg"
 import checkIcon from "@/assets/agentImages/icon-check-green-circle.svg"
 import pendingIcon from "@/assets/agentImages/icon-pending-review.svg"
 import creditIcon from "@/assets/agentImages/icon-white-credit-card.svg"
@@ -9,19 +10,28 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "@/components/Avatar"
 import { useLogout } from "@/hooks/useLogout"
 import { useBankAccounts } from "@/hooks/useBankAccounts"
+import { useProfilePicture } from "@/hooks/useProfilePicture"
 import { useAgentProfile } from "@/hooks/useAgentDirectory"
 import PageHeader from "@/components/shared/PageHeader"
 import Skeleton from "@/components/ui/Skeleton"
 import { Button } from "@/components/ui/button"
+import { useRef } from "react"
 import { Link } from "react-router-dom"
 
 export default function Profile() {
   const { user } = useAuthContext()
   const { handleLogout } = useLogout()
+  const { changeProfilePicture, isUploading } = useProfilePicture()
   const { accounts, isLoading, error } = useBankAccounts()
   const { agent, isLoading: isLoadingAgent } = useAgentProfile(user?._id ?? "")
   const payoutAccount =
     accounts.find((account) => account.isDefault) ?? accounts[0]
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) changeProfilePicture(file)
+  }
 
   return (
     <div className="mb-10 flex flex-col md:pt-6 lg:pt-8">
@@ -31,17 +41,28 @@ export default function Profile() {
       <main className="mt-6">
         <div className="agent-profile rounded-lg px-6 py-5">
           <div className="flex flex-col items-center justify-center gap-1">
-            <div className="relative pb-2">
+            <div className="relative shrink-0">
               <Avatar
                 name={user?.name ?? "?"}
                 src={user?.profilePicture}
-                className="h-17.5 w-17.5 rounded-full object-cover"
+                size="lg"
               />
-              <img
-                src={verifiedIcon}
-                alt=""
-                className="absolute right-[1.5px] bottom-[1.5px]"
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
               />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                aria-label="Change profile picture"
+                className="absolute right-0 -bottom-1 cursor-pointer disabled:opacity-50"
+              >
+                <img src={addPicture} alt="" />
+              </button>
             </div>
 
             <div>
@@ -53,14 +74,14 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="mt-2 flex items-center justify-center gap-4">
-            <p className="rounded-2xl bg-bg-accent px-2 py-0.5 text-center text-[12px] leading-4 text-button-bg">
-              Licensed Agent
-            </p>
-            <p className="rounded-2xl bg-[#D8F3DC] px-2 py-0.5 text-[12px] leading-4 text-success">
-              Verified
-            </p>
-          </div>
+          {agent?.isVerified && !isLoadingAgent && (
+            <div className="mt-2 flex items-center justify-center">
+              <div className="flex items-center gap-1 rounded-2xl bg-[#D8F3DC] px-2 py-0.5 text-[12px] leading-4 text-success">
+                <span>Verified</span>
+                <img src={verifiedIcon} alt="" className="h-4 w-4" />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* acct information */}
