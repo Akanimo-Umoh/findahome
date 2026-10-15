@@ -46,9 +46,18 @@ export default function Navbar() {
   const { handleLogout } = useLogout()
 
   const isAgent = user?.role === "agent"
+  const isAdmin = user?.role === "admin"
 
-  const logoLink = isAuthenticated && isAgent ? "/agent/dashboard" : "/"
-  const profileLink = isAgent ? "/agent/profile" : "/profile"
+  const logoLink = isAdmin
+    ? "/admin/dashboard"
+    : isAuthenticated && isAgent
+      ? "/agent/dashboard"
+      : "/"
+  const profileLink = isAdmin
+    ? "/admin/settings"
+    : isAgent
+      ? "/agent/profile"
+      : "/profile"
   const isLinkActive = (link: string) =>
     location.pathname === link ||
     (link !== "/" && location.pathname.startsWith(`${link}/`))
@@ -122,6 +131,39 @@ export default function Navbar() {
     },
   ]
 
+  const mobileAdminLinks = [
+    {
+      icon: dashboard,
+      iconActive: dashboardActive,
+      title: "Dashboard",
+      link: "/admin/dashboard",
+    },
+    {
+      icon: agents,
+      iconActive: agentsActive,
+      title: "Users",
+      link: "/admin/users",
+    },
+    {
+      icon: agents,
+      iconActive: agentsActive,
+      title: "Agents",
+      link: "/admin/agents",
+    },
+    {
+      icon: recent,
+      iconActive: recentActive,
+      title: "Properties",
+      link: "/admin/properties",
+    },
+    {
+      icon: wallet,
+      iconActive: walletActive,
+      title: "Settings",
+      link: "/admin/settings",
+    },
+  ]
+
   const mobileUnauthenticatedLinks = [
     { icon: dashboard, iconActive: dashboardActive, title: "Home", link: "/" },
     {
@@ -169,6 +211,16 @@ export default function Navbar() {
     { title: "Disputes", link: "/disputes" },
   ]
 
+  const tabletAdminLinks = [
+    { title: "Dashboard", link: "/admin/dashboard" },
+    { title: "Users", link: "/admin/users" },
+    { title: "Agents", link: "/admin/agents" },
+    { title: "Properties", link: "/admin/properties" },
+    { title: "Transactions", link: "/admin/transactions" },
+    { title: "Reports", link: "/admin/reports" },
+    { title: "Settings", link: "/admin/settings" },
+  ]
+
   const tabletUnauthenticatedLinks = [
     { title: "About Us", link: "/about" },
     { title: "Properties", link: "/properties" },
@@ -178,15 +230,19 @@ export default function Navbar() {
   ]
 
   const mobileLinks = isAuthenticated
-    ? isAgent
-      ? mobileAgentLinks
-      : mobileUserLinks
+    ? isAdmin
+      ? mobileAdminLinks
+      : isAgent
+        ? mobileAgentLinks
+        : mobileUserLinks
     : mobileUnauthenticatedLinks
 
   const tabletLinks = isAuthenticated
-    ? isAgent
-      ? tabletAgentLinks
-      : tabletUserLinks
+    ? isAdmin
+      ? tabletAdminLinks
+      : isAgent
+        ? tabletAgentLinks
+        : tabletUserLinks
     : tabletUnauthenticatedLinks
 
   useEffect(() => {

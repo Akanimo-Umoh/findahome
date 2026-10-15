@@ -14,6 +14,7 @@ import {
 import RoleBasedRoute from "./RoleBasedRoute"
 import PublicOnlyRoute from "./PublicOnlyRoute"
 import MainLayout from "@/layouts/MainLayout"
+import AdminLayout from "@/layouts/AdminLayout"
 
 // User Pages (buyers)
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
@@ -99,7 +100,9 @@ export default function AppRoutes() {
       cannot be accessed by the agent and admin*/}
       <Route element={<BlockRoleRoute blockedRoles={["agent"]} />}>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route element={<BlockRoleRoute blockedRoles={["admin"]} />}>
+            <Route path="/" element={<Home />} />
+          </Route>
         </Route>
 
         {/* public routes without the footer*/}
@@ -311,7 +314,7 @@ export default function AppRoutes() {
       {/* ==================== ADMIN ROUTES ==================== */}
       {/* Only for users with role: "admin" */}
       <Route element={<RoleBasedRoute allowedRoles={["admin"]} />}>
-        <Route element={<MainLayout />}>
+        <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/agents" element={<AdminAgents />} />
