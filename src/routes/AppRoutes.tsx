@@ -96,6 +96,7 @@ import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-conf
 import AgentListings from "@/components/agent-profile/AgentListings"
 import { UserOnboarding } from "@/pages/user/onboarding"
 import AdminPlaceholder from "@/components/admin/ui/AdminPlaceholder"
+import { Escrow, EscrowDetails } from "@/pages/admin/escrow"
 
 export default function AppRoutes() {
   return (
@@ -327,17 +328,17 @@ export default function AppRoutes() {
             path="/admin/properties/:propertyId"
             element={<AdminPropertyDetails />}
           />
-          <Route
-            path="/admin/transactions"
-            element={<div>Admin Transactions</div>}
-          />
           <Route path="/admin/reports" element={<div>Admin Reports</div>} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/admin/ads" element={<AdminPlaceholder />} />
-          <Route path="/admin/transactions" element={<AdminPlaceholder />} />
           <Route path="/admin/payouts" element={<AdminPlaceholder />} />
           <Route path="/admin/reports" element={<AdminPlaceholder />} />
           <Route path="/admin/disputes" element={<AdminPlaceholder />} />
+          <Route path="/admin/transactions" element={<Escrow />} />
+          <Route
+            path="/admin/transactions/:escrowId"
+            element={<EscrowDetails />}
+          />
         </Route>
       </Route>
 
