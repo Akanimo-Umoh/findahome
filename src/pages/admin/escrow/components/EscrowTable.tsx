@@ -30,7 +30,7 @@ function Person({ name, email }: { name: string; email: string }) {
 export function EscrowTable({ rows }: { rows: EscrowRow[] }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[960px] text-left text-sm">
+      <table className="w-full min-w-240 text-left text-sm">
         <thead>
           <tr className="border-b border-slate-200 text-xs tracking-wide text-slate-500 uppercase">
             {HEAD.map((h, i) => (
