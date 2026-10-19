@@ -1,2 +1,2 @@
 export { default as Escrow } from "./Escrow"
-export { default as EscrowDetails } from "./EscrowDetails"
+export { default as EscrowDetails } from "./details/EscrowDetails"
