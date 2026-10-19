@@ -50,12 +50,15 @@ import { Profile as MyAgentProfile } from "@/pages/agent/profile/my-profile"
 import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard"
 import { Users as AdminUsers } from "@/pages/admin/users"
 import { Agents as AdminAgents } from "@/pages/admin/agents"
-import { Properties as AdminProperties } from "@/pages/admin/properties"
 import { Settings as AdminSettings } from "@/pages/admin/settings"
 import { AllProperties } from "@/pages/properties"
 import { SearchResults } from "@/pages/search"
 import { PropertyDetails } from "@/pages/propertyDetails"
 import NormalLayout from "@/layouts/NormalLayout"
+import {
+  Properties as AdminProperties,
+  PropertyDetails as AdminPropertyDetails,
+} from "@/pages/admin/properties"
 
 import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
@@ -92,6 +95,7 @@ import ScheduleHandover from "@/pages/agent/my-transaction/ScheduleHandover"
 import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-confirm-visit"
 import AgentListings from "@/components/agent-profile/AgentListings"
 import { UserOnboarding } from "@/pages/user/onboarding"
+import AdminPlaceholder from "@/components/admin/ui/AdminPlaceholder"
 
 export default function AppRoutes() {
   return (
@@ -320,11 +324,20 @@ export default function AppRoutes() {
           <Route path="/admin/agents" element={<AdminAgents />} />
           <Route path="/admin/properties" element={<AdminProperties />} />
           <Route
+            path="/admin/properties/:propertyId"
+            element={<AdminPropertyDetails />}
+          />
+          <Route
             path="/admin/transactions"
             element={<div>Admin Transactions</div>}
           />
           <Route path="/admin/reports" element={<div>Admin Reports</div>} />
           <Route path="/admin/settings" element={<AdminSettings />} />
+          <Route path="/admin/ads" element={<AdminPlaceholder />} />
+          <Route path="/admin/transactions" element={<AdminPlaceholder />} />
+          <Route path="/admin/payouts" element={<AdminPlaceholder />} />
+          <Route path="/admin/reports" element={<AdminPlaceholder />} />
+          <Route path="/admin/disputes" element={<AdminPlaceholder />} />
         </Route>
       </Route>
 
