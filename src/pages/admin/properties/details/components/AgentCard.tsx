@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { CalendarDays, CircleCheck, Mail, Phone } from "lucide-react"
+import { CalendarDays, Mail, Phone } from "lucide-react"
 import AdminSection from "@/components/admin/ui/AdminSection"
 import Avatar from "@/components/Avatar"
 import Skeleton from "@/components/ui/Skeleton"
@@ -10,6 +10,9 @@ import type {
   RiskLevel,
 } from "@/types/adminProperty"
 import { formatDate } from "../../shared/propertyMeta"
+import { reviewState } from "@/pages/admin/agents/agentMeta"
+import ReviewBadge from "@/pages/admin/agents/shared/ReviewBadge"
+import { useAdminUsers } from "@/pages/admin/users/useAdminUsers"
 
 type AgentCardProps = {
   owner: AdminProperty["owner"]
@@ -60,6 +63,9 @@ export default function AgentCard({
     .join(" ")
   const risk = agent?.riskLevel ? RISK[agent.riskLevel] : null
 
+  // the public agent endpoint only knows the e-mail check (isVerified), so the admin verification state comes from the admin user list
+  const fullAgent = useAdminUsers().data?.find((u) => u._id === owner._id)
+
   return (
     <AdminSection title="Agent Profile">
       <div className="flex items-center gap-3">
@@ -103,7 +109,7 @@ export default function AgentCard({
 
       {/* User Management will read ?agent= once it exists */}
       <Link
-        to={`/admin/users?agent=${owner._id}`}
+        to={`/admin/agents/${owner._id}`}
         className="mt-4 flex h-10 items-center justify-center rounded-lg bg-button-bg text-[14px] font-semibold text-white outline-none hover:bg-button-hover focus-visible:ring-2 focus-visible:ring-button-bg/40 focus-visible:ring-offset-2"
       >
         View Profile
@@ -113,13 +119,10 @@ export default function AgentCard({
         <div className="flex items-center justify-between py-2.5">
           <dt className="text-text-secondary">Verification</dt>
           <dd>
-            {agent?.isVerified ? (
-              <Pill className="bg-emerald-50 text-emerald-700">
-                <CircleCheck size={13} aria-hidden />
-                Verified
-              </Pill>
+            {fullAgent ? (
+              <ReviewBadge state={reviewState(fullAgent)} />
             ) : (
-              <Pill className="bg-slate-100 text-slate-600">Unverified</Pill>
+              <span className="text-[13px] text-text-secondary">—</span>
             )}
           </dd>
         </div>

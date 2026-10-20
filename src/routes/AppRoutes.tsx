@@ -49,7 +49,10 @@ import { Profile as MyAgentProfile } from "@/pages/agent/profile/my-profile"
 // Admin Pages
 import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard"
 import { Users as AdminUsers } from "@/pages/admin/users"
-import { Agents as AdminAgents } from "@/pages/admin/agents"
+import {
+  Agents as AdminAgents,
+  AgentDetails as AdminAgentDetails,
+} from "@/pages/admin/agents"
 import { Settings as AdminSettings } from "@/pages/admin/settings"
 import { AllProperties } from "@/pages/properties"
 import { SearchResults } from "@/pages/search"
@@ -323,6 +326,10 @@ export default function AppRoutes() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/agents" element={<AdminAgents />} />
+          <Route
+            path="/admin/agents/:agentId"
+            element={<AdminAgentDetails />}
+          />
           <Route path="/admin/properties" element={<AdminProperties />} />
           <Route
             path="/admin/properties/:propertyId"

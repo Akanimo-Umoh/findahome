@@ -81,7 +81,7 @@ export default function NeedsAttention({
     },
     {
       key: "agents",
-      to: "/admin/users",
+      to: "/admin/agents?status=pending",
       icon: UserCheck,
       tone: "info",
       title: "Agent applications",

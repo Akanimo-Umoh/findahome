@@ -7,6 +7,7 @@ import {
   Megaphone,
   Scale,
   Settings,
+  UserRoundCheck,
   Users,
   type LucideIcon,
 } from "lucide-react"
@@ -53,12 +54,18 @@ export const adminNavGroups: AdminNavGroup[] = [
         subtitle: "Review and moderate property listings",
       },
       {
-        label: "User management",
+        label: "Agents",
+        to: "/admin/agents",
+        icon: UserRoundCheck,
+        title: "Agents",
+        subtitle: "Verify and manage agents and landlords",
+      },
+      {
+        label: "Buyers",
         to: "/admin/users",
         icon: Users,
-        title: "User management",
-        subtitle: "Agents and house-hunters on the platform",
-        alsoActiveOn: ["/admin/agents"],
+        title: "Buyers",
+        subtitle: "House-hunters on the platform",
       },
       {
         label: "Ads manager",
