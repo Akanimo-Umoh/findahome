@@ -2,11 +2,27 @@ import { Link } from "react-router-dom"
 import type { EscrowRow, Party } from "../../types"
 import { Panel } from "./Panel"
 
-function PartyCard({ role, party }: { role: string; party: Party }) {
+function PartyCard({
+  role,
+  party,
+  to,
+}: {
+  role: string
+  party: Party
+  to?: string
+}) {
   return (
     <div className="rounded-lg border border-slate-100 bg-slate-50/60 p-3">
       <p className="text-xs tracking-wide text-slate-400 uppercase">{role}</p>
-      <p className="mt-1 font-medium text-slate-900">{party.name}</p>
+      <p className="mt-1 font-medium text-slate-900">
+        {to ? (
+          <Link to={to} className="hover:text-[#274ad0] hover:underline">
+            {party.name}
+          </Link>
+        ) : (
+          party.name
+        )}
+      </p>
       <p className="truncate text-sm text-slate-500">
         {party.email || "No email"}
       </p>
@@ -21,8 +37,17 @@ export function PartiesPanel({ row }: { row: EscrowRow }) {
   return (
     <Panel title="People and property">
       <div className="grid gap-3 sm:grid-cols-2">
-        <PartyCard role="Buyer (paid)" party={row.buyer} />
-        <PartyCard role="Agent (receives funds)" party={row.agent} />
+        <PartyCard
+          role="Buyer (paid)"
+          party={row.buyer}
+          to={row.buyer.id ? `/admin/users/${row.buyer.id}` : undefined}
+        />
+
+        <PartyCard
+          role="Agent (receives funds)"
+          party={row.agent}
+          to={row.agent.id ? `/admin/agents/${row.agent.id}` : undefined}
+        />
       </div>
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-100 p-3">

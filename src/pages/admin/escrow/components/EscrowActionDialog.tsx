@@ -24,9 +24,14 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
   if (!action) return null
 
   const release = action === "release"
+  const approve = action === "approve"
   const confirm = () =>
     mutation.mutate(
-      { id: row.id, status: release ? "released" : "on_hold" },
+      {
+        id: row.id,
+        status: release ? "released" : "on_hold",
+        approving: approve,
+      },
       { onSuccess: onClose }
     )
 
@@ -38,12 +43,18 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {release ? "Release funds to the agent?" : "Move back to hold?"}
+            {approve
+              ? "Approve this payment?"
+              : release
+                ? "Release funds to the agent?"
+                : "Move back to hold?"}
           </DialogTitle>
           <DialogDescription>
-            {release
-              ? `${formatNaira(row.amount)} will be added to ${row.agent.name}'s wallet balance. You can move it back to hold later.`
-              : `${formatNaira(row.amount)} will be taken out of ${row.agent.name}'s wallet balance and held in escrow again.`}
+            {approve
+              ? `${formatNaira(row.amount)} from ${row.buyer.name} will be held in escrow, and ${row.agent.name} can continue with the next step.`
+              : release
+                ? `${formatNaira(row.amount)} will be added to ${row.agent.name}'s wallet balance. You can move it back to hold later.`
+                : `${formatNaira(row.amount)} will be taken out of ${row.agent.name}'s wallet balance and held in escrow again.`}
           </DialogDescription>
         </DialogHeader>
 
@@ -73,7 +84,11 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
             {mutation.isPending && (
               <Loader2 className="mr-2 size-4 animate-spin" />
             )}
-            {release ? "Release funds" : "Move to hold"}
+            {approve
+              ? "Approve payment"
+              : release
+                ? "Release funds"
+                : "Move to hold"}
           </Button>
         </DialogFooter>
       </DialogContent>

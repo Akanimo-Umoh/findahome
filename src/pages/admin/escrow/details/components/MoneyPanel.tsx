@@ -37,8 +37,8 @@ export function MoneyPanel({ row }: { row: EscrowRow }) {
       bar: "bg-[#274ad0]",
     },
     {
-      label: "Held in escrow",
-      done: true,
+      label: "Approved and held",
+      done: row.status !== "pending",
       date: row.createdAt,
       bar: "bg-[#274ad0]",
     },

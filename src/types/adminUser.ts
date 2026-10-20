@@ -14,6 +14,7 @@ export type AdminUser = {
   profilePicture?: string[]
   address?: string | null
   rating?: number
+  isVerified?: boolean // e-mail code check above isOnboarding
   isOnboarding?: boolean
   createdAt: string
 

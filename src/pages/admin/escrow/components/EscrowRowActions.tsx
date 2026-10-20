@@ -34,7 +34,12 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
             <Eye className="size-4" /> View details
           </DropdownMenuItem>
 
-          {!row.released && (
+          {row.status === "pending" && (
+            <DropdownMenuItem onSelect={() => setAction("approve")}>
+              <CheckCircle2 className="size-4" /> Approve payment
+            </DropdownMenuItem>
+          )}
+          {!row.released && row.status !== "pending" && (
             <DropdownMenuItem onSelect={() => setAction("release")}>
               <CheckCircle2 className="size-4" /> Release funds
             </DropdownMenuItem>

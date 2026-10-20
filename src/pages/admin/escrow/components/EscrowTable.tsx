@@ -16,10 +16,26 @@ const HEAD = [
   "",
 ]
 
-function Person({ name, email }: { name: string; email: string }) {
+function Person({
+  name,
+  email,
+  to,
+}: {
+  name: string
+  email: string
+  to?: string
+}) {
   return (
     <>
-      <p className="font-medium text-slate-800">{name}</p>
+      <p className="font-medium text-slate-800">
+        {to ? (
+          <Link to={to} className="hover:text-[#274ad0] hover:underline">
+            {name}
+          </Link>
+        ) : (
+          name
+        )}
+      </p>
       {email && (
         <p className="max-w-44 truncate text-xs text-slate-400">{email}</p>
       )}
@@ -53,11 +69,17 @@ export function EscrowTable({ rows }: { rows: EscrowRow[] }) {
                 <p className="text-xs text-slate-400 tabular-nums">{r.code}</p>
               </td>
               <td className="px-4 py-3">
-                <Person {...r.buyer} />
+                <Person
+                  {...r.buyer}
+                  to={r.buyer.id ? `/admin/users/${r.buyer.id}` : undefined}
+                />
               </td>
               <td className="px-4 py-3 text-slate-600">{KIND_LABEL[r.kind]}</td>
               <td className="px-4 py-3">
-                <Person {...r.agent} />
+                <Person
+                  {...r.agent}
+                  to={r.agent.id ? `/admin/agents/${r.agent.id}` : undefined}
+                />
               </td>
               <td className="px-4 py-3 font-medium text-slate-900 tabular-nums">
                 {formatNaira(r.amount)}

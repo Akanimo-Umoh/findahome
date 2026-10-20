@@ -16,6 +16,12 @@ export function EscrowStats({ stats, loading }: Props) {
       hint: `${stats?.count.all ?? 0} transactions`,
     },
     {
+      label: "Pending approval",
+      value: stats?.pending,
+      dot: "bg-amber-500",
+      hint: `${stats?.count.pending ?? 0} waiting`,
+    },
+    {
       label: "In escrow",
       value: stats?.inEscrow,
       dot: "bg-[#274ad0]",

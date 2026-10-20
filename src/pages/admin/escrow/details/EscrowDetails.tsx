@@ -96,10 +96,13 @@ export default function EscrowDetails() {
                 <RotateCcw className="mr-2 size-4" /> Refund buyer
               </Button>
               <Button
-                onClick={() => setAction("release")}
+                onClick={() =>
+                  setAction(row.status === "pending" ? "approve" : "release")
+                }
                 className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
               >
-                <CheckCircle2 className="mr-2 size-4" /> Release funds
+                <CheckCircle2 className="mr-2 size-4" />{" "}
+                {row.status === "pending" ? "Approve payment" : "Release funds"}
               </Button>
             </>
           ) : (

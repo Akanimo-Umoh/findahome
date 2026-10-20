@@ -49,6 +49,8 @@ type Ref = string | { _id: string } | null | undefined
 export interface RawDispute {
   _id: string
   referenceId: string
+  user?: { _id: string; name?: string; email?: string } | string | null
+  property?: { _id: string; title?: string } | null
   status: string // opened | under_review | resolved | closed | escalated
   category: string
   description: string

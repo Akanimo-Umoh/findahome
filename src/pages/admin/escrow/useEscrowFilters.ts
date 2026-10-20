@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom"
 import type { EscrowRow, EscrowTab } from "./types"
 
 export const PAGE_SIZE = 10
-const TABS: EscrowTab[] = ["in_escrow", "released", "disputed"]
+const TABS: EscrowTab[] = ["pending", "in_escrow", "released", "disputed"]
 
 export function useEscrowFilters(rows: EscrowRow[]) {
   const [params, setParams] = useSearchParams()

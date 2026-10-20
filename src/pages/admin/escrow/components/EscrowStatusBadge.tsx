@@ -3,6 +3,7 @@ import { STATE_LABEL } from "../format"
 import type { EscrowState } from "../types"
 
 const TONE: Record<EscrowState, string> = {
+  pending: "bg-amber-50 text-amber-700 ring-amber-100",
   in_escrow: "bg-blue-50 text-[#274ad0] ring-blue-100",
   released: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   disputed: "bg-rose-50 text-rose-700 ring-rose-100",

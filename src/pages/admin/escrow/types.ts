@@ -1,9 +1,9 @@
 import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 
 export type EscrowKind = "inspection" | "purchase"
-export type EscrowState = "in_escrow" | "released" | "disputed"
+export type EscrowState = "pending" | "in_escrow" | "released" | "disputed"
 export type EscrowTab = "all" | EscrowState
-export type EscrowAction = "release" | "hold"
+export type EscrowAction = "approve" | "release" | "hold"
 
 export interface Party {
   id: string | null
@@ -33,6 +33,7 @@ export interface EscrowRow {
 
 export interface EscrowStatsData {
   total: number
+  pending: number
   inEscrow: number
   released: number
   disputed: number
