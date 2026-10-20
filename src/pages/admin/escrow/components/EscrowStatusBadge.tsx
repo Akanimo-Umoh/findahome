@@ -7,6 +7,7 @@ const TONE: Record<EscrowState, string> = {
   in_escrow: "bg-blue-50 text-[#274ad0] ring-blue-100",
   released: "bg-emerald-50 text-emerald-700 ring-emerald-100",
   disputed: "bg-rose-50 text-rose-700 ring-rose-100",
+  refunded: "bg-slate-100 text-slate-600 ring-slate-200",
 }
 
 export function EscrowStatusBadge({ state }: { state: EscrowState }) {

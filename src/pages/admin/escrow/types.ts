@@ -1,7 +1,12 @@
 import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 
 export type EscrowKind = "inspection" | "purchase"
-export type EscrowState = "pending" | "in_escrow" | "released" | "disputed"
+export type EscrowState =
+  | "pending"
+  | "in_escrow"
+  | "released"
+  | "disputed"
+  | "refunded"
 export type EscrowTab = "all" | EscrowState
 export type EscrowAction = "approve" | "release" | "hold"
 

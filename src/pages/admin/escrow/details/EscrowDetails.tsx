@@ -86,7 +86,7 @@ export default function EscrowDetails() {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {!row.released ? (
+          {row.status === "refunded" ? null : !row.released ? (
             <>
               <Button
                 variant="outline"

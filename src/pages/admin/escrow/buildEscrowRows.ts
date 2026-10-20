@@ -81,11 +81,13 @@ export function buildEscrowRows({
     const released = e.status === "released" // anything else counts as held
     const status: EscrowState = released
       ? "released"
-      : e.status === "pending"
-        ? "pending"
-        : openDispute
-          ? "disputed"
-          : "in_escrow"
+      : e.status === "refunded"
+        ? "refunded"
+        : e.status === "pending"
+          ? "pending"
+          : openDispute
+            ? "disputed"
+            : "in_escrow"
     const property = e.property ?? linked?.property ?? null
 
     return {
@@ -129,6 +131,7 @@ export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
       in_escrow: count("in_escrow"),
       released: count("released"),
       disputed: count("disputed"),
+      refunded: count("refunded"),
     },
   }
 }

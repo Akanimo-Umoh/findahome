@@ -10,6 +10,7 @@ export const STATE_LABEL: Record<EscrowState, string> = {
   in_escrow: "In escrow",
   released: "Released",
   disputed: "Disputed",
+  refunded: "Refunded",
 }
 
 export const formatDate = (iso?: string | null) =>

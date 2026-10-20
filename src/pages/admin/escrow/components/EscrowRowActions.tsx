@@ -39,17 +39,19 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
               <CheckCircle2 className="size-4" /> Approve payment
             </DropdownMenuItem>
           )}
-          {!row.released && row.status !== "pending" && (
-            <DropdownMenuItem onSelect={() => setAction("release")}>
-              <CheckCircle2 className="size-4" /> Release funds
-            </DropdownMenuItem>
-          )}
+          {!row.released &&
+            row.status !== "pending" &&
+            row.status !== "refunded" && (
+              <DropdownMenuItem onSelect={() => setAction("release")}>
+                <CheckCircle2 className="size-4" /> Release funds
+              </DropdownMenuItem>
+            )}
           {row.released && (
             <DropdownMenuItem onSelect={() => setAction("hold")}>
               <Undo2 className="size-4" /> Move back to hold
             </DropdownMenuItem>
           )}
-          {!row.released && (
+          {!row.released && row.status !== "refunded" && (
             // needs a refund endpoint on the backend
             <DropdownMenuItem disabled>
               <RotateCcw className="size-4" /> Refund buyer

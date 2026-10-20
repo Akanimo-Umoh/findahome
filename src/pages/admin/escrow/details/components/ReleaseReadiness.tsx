@@ -54,13 +54,15 @@ export function ReleaseReadiness({ row }: { row: EscrowRow }) {
         ))}
       </ul>
       <p className="mt-4 border-t border-slate-100 pt-3 text-sm text-slate-500">
-        {row.released
-          ? "Funds have already been released."
-          : row.status === "pending"
-            ? "This payment is waiting for your approval before it is held in escrow."
-            : ready
-              ? "Everything checks out. This escrow is ready to release."
-              : "Review the items above before releasing."}
+        {row.status === "refunded"
+          ? "This payment was refunded to the buyer."
+          : row.released
+            ? "Funds have already been released."
+            : row.status === "pending"
+              ? "This payment is waiting for your approval before it is held in escrow."
+              : ready
+                ? "Everything checks out. This escrow is ready to release."
+                : "Review the items above before releasing."}
       </p>
     </Panel>
   )
