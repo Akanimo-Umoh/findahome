@@ -48,7 +48,10 @@ import { Profile as MyAgentProfile } from "@/pages/agent/profile/my-profile"
 
 // Admin Pages
 import { Dashboard as AdminDashboard } from "@/pages/admin/dashboard"
-import { Users as AdminUsers } from "@/pages/admin/users"
+import {
+  Users as AdminUsers,
+  BuyerDetails as AdminBuyerDetails,
+} from "@/pages/admin/users"
 import {
   Agents as AdminAgents,
   AgentDetails as AdminAgentDetails,
@@ -325,6 +328,7 @@ export default function AppRoutes() {
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/users/:userId" element={<AdminBuyerDetails />} />
           <Route path="/admin/agents" element={<AdminAgents />} />
           <Route
             path="/admin/agents/:agentId"
