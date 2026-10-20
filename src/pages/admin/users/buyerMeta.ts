@@ -51,7 +51,39 @@ export function buyerSummary(input: {
       rows && disputes && rows.length > 0
         ? (disputes.length / rows.length) * 100
         : null,
+    refunds: rows ? rows.filter((r) => r.status === "refunded").length : null,
   }
 }
 
 export type BuyerSummary = ReturnType<typeof buyerSummary>
+
+export type BuyerActivity = {
+  transactions: number
+  disputes: number
+  openDisputes: number
+}
+
+// Per-buyer counts from the escrow data (transactions) and the disputes list.
+export function buyerActivity(
+  rows: EscrowRow[] = [],
+  disputes: RawDispute[] = []
+) {
+  const map = new Map<string, BuyerActivity>()
+  const entry = (id: string) => {
+    let e = map.get(id)
+    if (!e) {
+      e = { transactions: 0, disputes: 0, openDisputes: 0 }
+      map.set(id, e)
+    }
+    return e
+  }
+  for (const r of rows) if (r.buyer.id) entry(r.buyer.id).transactions += 1
+  for (const d of disputes) {
+    const id = disputeUserId(d)
+    if (!id) continue
+    const e = entry(id)
+    e.disputes += 1
+    if (isOpenDispute(d)) e.openDisputes += 1
+  }
+  return map
+}

@@ -29,9 +29,9 @@ export default function BuyerStats({ summary, loading }: BuyerStatsProps) {
       className: "text-amber-600",
     },
     {
-      label: "Disputes Resolved",
-      value: summary.resolvedDisputes,
-      className: "text-emerald-700",
+      label: "Refunds",
+      value: summary.refunds,
+      className: "text-violet-600",
     },
     {
       label: "Cancelled Inspections",
