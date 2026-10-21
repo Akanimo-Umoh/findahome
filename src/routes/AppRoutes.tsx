@@ -65,6 +65,7 @@ import {
   Properties as AdminProperties,
   PropertyDetails as AdminPropertyDetails,
 } from "@/pages/admin/properties"
+import { Disputes as AdminDisputes } from "@/pages/admin/disputes"
 
 import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
@@ -344,7 +345,7 @@ export default function AppRoutes() {
           <Route path="/admin/ads" element={<AdminPlaceholder />} />
           <Route path="/admin/payouts" element={<AdminPlaceholder />} />
           <Route path="/admin/reports" element={<AdminPlaceholder />} />
-          <Route path="/admin/disputes" element={<AdminPlaceholder />} />
+          <Route path="/admin/disputes" element={<AdminDisputes />} />
           <Route path="/admin/transactions" element={<Escrow />} />
           <Route
             path="/admin/transactions/:escrowId"
