@@ -1,0 +1,77 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { requestError } from "@/lib/requestError"
+import {
+  getAdminBanks,
+  getFinanceTransactions,
+  setTransactionStatus,
+} from "@/services/admin/finance.service"
+import type { AdminBank, FinanceTx } from "@/types/adminFinance"
+
+export const financeKey = ["admin", "finance"] as const
+
+export type FinanceData = {
+  transactions: FinanceTx[]
+  // undefined when the bank request failed
+  banks?: AdminBank[]
+}
+
+export function useFinanceData() {
+  return useQuery({
+    queryKey: financeKey,
+    staleTime: 0,
+    refetchOnMount: "always",
+    retry: false,
+    queryFn: async (): Promise<FinanceData> => {
+      const [transactions, banks] = await Promise.allSettled([
+        getFinanceTransactions(),
+        getAdminBanks(),
+      ])
+      if (transactions.status === "rejected") throw transactions.reason
+      return {
+        transactions: transactions.value,
+        banks: banks.status === "fulfilled" ? banks.value : undefined,
+      }
+    },
+  })
+}
+
+// "approved" = the payout was sent (mark as paid). The status change is the only thing the backend does; it does not move money to a bank.
+export function useSetPayoutStatus() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      status,
+    }: {
+      id: string
+      status: "pending" | "approved" | "failed"
+    }) => setTransactionStatus(id, status),
+    onSuccess: (_res, { id, status }) => {
+      const now = new Date().toISOString()
+      qc.setQueryData<FinanceData>(financeKey, (old) =>
+        old
+          ? {
+              ...old,
+              transactions: old.transactions.map((t) =>
+                t._id === id
+                  ? {
+                      ...t,
+                      status,
+                      updatedAt: now,
+                      approvedAt: status === "approved" ? now : t.approvedAt,
+                    }
+                  : t
+              ),
+            }
+          : old
+      )
+      toast.success("Payout marked as paid")
+    },
+    onError: (err) =>
+      toast.error(
+        requestError(err, "Couldn't update the payout. Please try again.")
+      ),
+  })
+}
