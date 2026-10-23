@@ -58,6 +58,7 @@ export function buildLedger(input: {
     rows.push({
       id: t._id,
       code: shortCode("TXN", t._id),
+      reference: t.reference,
       kind,
       title: KIND_LABEL[kind],
       party: p,
@@ -81,6 +82,7 @@ export function buildLedger(input: {
     rows.push({
       id: e.id,
       code: e.code,
+      reference: e.reference,
       kind,
       title: e.propertyTitle,
       party: {

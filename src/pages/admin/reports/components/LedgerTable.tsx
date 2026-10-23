@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { EllipsisVertical, Eye } from "lucide-react"
+import { CircleCheck, EllipsisVertical, Eye } from "lucide-react"
 import Skeleton from "@/components/ui/Skeleton"
 import {
   DropdownMenu,
@@ -16,6 +16,7 @@ import type { LedgerRow } from "../../finance/types"
 type LedgerTableProps = {
   rows: LedgerRow[]
   loading: boolean
+  onConfirm: (row: LedgerRow) => void
 }
 
 const th =
@@ -27,7 +28,13 @@ const ROLE_BADGE: Record<string, { label: string; className: string }> = {
   agent: { label: "Agent", className: "bg-emerald-50 text-emerald-700" },
 }
 
-function RowAction({ row }: { row: LedgerRow }) {
+function RowAction({
+  row,
+  onConfirm,
+}: {
+  row: LedgerRow
+  onConfirm: (row: LedgerRow) => void
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +46,16 @@ function RowAction({ row }: { row: LedgerRow }) {
           <EllipsisVertical size={17} aria-hidden />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-44 rounded-xl p-1.5">
+      <DropdownMenuContent align="end" className="w-48 rounded-xl p-1.5">
+        {row.kind === "wallet_funding" && row.status === "pending" && (
+          <DropdownMenuItem
+            className="cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 text-[14px]"
+            onSelect={() => onConfirm(row)}
+          >
+            <CircleCheck aria-hidden />
+            Confirm Payment
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem
           asChild={!!row.href}
           disabled={!row.href}
@@ -62,7 +78,11 @@ function RowAction({ row }: { row: LedgerRow }) {
   )
 }
 
-export default function LedgerTable({ rows, loading }: LedgerTableProps) {
+export default function LedgerTable({
+  rows,
+  loading,
+  onConfirm,
+}: LedgerTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-215 border-collapse">
@@ -151,7 +171,7 @@ export default function LedgerTable({ rows, loading }: LedgerTableProps) {
                       {formatDate(r.date)}
                     </td>
                     <td className={`${td} text-right`}>
-                      <RowAction row={r} />
+                      <RowAction row={r} onConfirm={onConfirm} />
                     </td>
                   </tr>
                 )

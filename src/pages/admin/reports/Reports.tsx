@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react"
-import { SearchX, TriangleAlert } from "lucide-react"
+import { Clock, SearchX, TriangleAlert } from "lucide-react"
 import AdminPagination from "@/components/admin/ui/AdminPagination"
 import { Button } from "@/components/ui/button"
 import { useEscrowData } from "@/pages/admin/escrow/useEscrow"
 import { useAdminUsers } from "@/pages/admin/users/useAdminUsers"
 import { buildLedger, buildPayouts } from "../finance/buildFinance"
+import FundingDialog from "../finance/components/FundingDialog"
 import PayoutDialog from "../finance/components/PayoutDialog"
-import type { PayoutRow } from "../finance/types"
-import { useFinanceData, useSetPayoutStatus } from "../finance/useFinanceData"
+import type { LedgerRow, PayoutRow } from "../finance/types"
+import {
+  useConfirmFunding,
+  useFinanceData,
+  useSetPayoutStatus,
+} from "../finance/useFinanceData"
 import LedgerFilters from "./components/LedgerFilters"
 import LedgerTable from "./components/LedgerTable"
 import PayoutOverview from "./components/PayoutOverview"
@@ -24,11 +29,13 @@ import { useReportFilters } from "./useReportFilters"
 export default function Reports() {
   const { filters, update, clear, hasActive, resetKey } = useReportFilters()
   const [payout, setPayout] = useState<PayoutRow | null>(null)
+  const [funding, setFunding] = useState<LedgerRow | null>(null)
 
   const finance = useFinanceData()
   const escrow = useEscrowData()
   const users = useAdminUsers()
   const setStatus = useSetPayoutStatus()
+  const confirmFunding = useConfirmFunding()
 
   const transactions = useMemo(
     () => finance.data?.transactions ?? [],
@@ -58,6 +65,14 @@ export default function Reports() {
   )
   const summary = useMemo(() => summarizeLedger(periodRows), [periodRows])
 
+  const awaitingFunding = useMemo(
+    () =>
+      ledger.filter(
+        (r) => r.kind === "wallet_funding" && r.status === "pending"
+      ).length,
+    [ledger]
+  )
+
   const loading = finance.isLoading || escrow.isLoading
   const empty = !loading && !finance.isError && filtered.length === 0
 
@@ -66,6 +81,14 @@ export default function Reports() {
     setStatus.mutate(
       { id: payout.id, status: "approved" },
       { onSuccess: () => setPayout(null) }
+    )
+  }
+
+  const confirmPayment = () => {
+    if (!funding?.reference) return
+    confirmFunding.mutate(
+      { id: funding.id, reference: funding.reference },
+      { onSuccess: () => setFunding(null) }
     )
   }
 
@@ -86,6 +109,29 @@ export default function Reports() {
           <TriangleAlert className="mt-0.5 size-4 shrink-0" />
           Escrow data didn&rsquo;t load, so escrow payments, releases and
           refunds are missing from the totals and the table.
+        </div>
+      )}
+
+      {awaitingFunding > 0 && (
+        <div
+          role="status"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-[13.5px] text-amber-800"
+        >
+          <span className="flex items-center gap-2">
+            <Clock size={15} aria-hidden />
+            {awaitingFunding} wallet funding{" "}
+            {awaitingFunding === 1 ? "payment is" : "payments are"} waiting for
+            your confirmation.
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              update({ kind: "wallet_funding", status: "pending" })
+            }
+            className="cursor-pointer font-semibold underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-amber-600/40"
+          >
+            Show them
+          </button>
         </div>
       )}
 
@@ -150,7 +196,7 @@ export default function Reports() {
             )}
           </div>
         ) : (
-          <LedgerTable rows={rows} loading={loading} />
+          <LedgerTable rows={rows} loading={loading} onConfirm={setFunding} />
         )}
 
         <AdminPagination
@@ -171,6 +217,15 @@ export default function Reports() {
         loading={finance.isLoading}
         onProcess={setPayout}
       />
+
+      {funding && (
+        <FundingDialog
+          row={funding}
+          pending={confirmFunding.isPending}
+          onConfirm={confirmPayment}
+          onClose={() => setFunding(null)}
+        />
+      )}
 
       {payout && (
         <PayoutDialog

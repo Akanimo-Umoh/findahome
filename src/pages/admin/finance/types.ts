@@ -30,6 +30,7 @@ export type LedgerParty = {
 export type LedgerRow = {
   id: string
   code: string
+  reference: string | null
   kind: LedgerKind
   title: string
   party: LedgerParty

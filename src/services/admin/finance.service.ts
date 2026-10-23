@@ -25,3 +25,11 @@ export const setTransactionStatus = async (
   })
   return data
 }
+
+// Admin only. Checks the payment with Paystack, then credits the person's wallet and marks the funding as approved. It refuses to run twice.
+export const confirmWalletFunding = async (reference: string) => {
+  const { data } = await api.post("/transaction/verify-fund-wallet", {
+    reference,
+  })
+  return data
+}

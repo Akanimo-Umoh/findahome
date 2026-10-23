@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { requestError } from "@/lib/requestError"
 import {
+  confirmWalletFunding,
   getAdminBanks,
   getFinanceTransactions,
   setTransactionStatus,
@@ -72,6 +73,41 @@ export function useSetPayoutStatus() {
     onError: (err) =>
       toast.error(
         requestError(err, "Couldn't update the payout. Please try again.")
+      ),
+  })
+}
+
+// Confirms a wallet funding payment: the person's wallet is credited.
+export function useConfirmFunding() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ reference }: { id: string; reference: string }) =>
+      confirmWalletFunding(reference),
+    onSuccess: (_res, { id }) => {
+      const now = new Date().toISOString()
+      qc.setQueryData<FinanceData>(financeKey, (old) =>
+        old
+          ? {
+              ...old,
+              transactions: old.transactions.map((t) =>
+                t._id === id
+                  ? {
+                      ...t,
+                      status: "approved",
+                      approvedAt: now,
+                      updatedAt: now,
+                    }
+                  : t
+              ),
+            }
+          : old
+      )
+      toast.success("Payment confirmed and wallet credited")
+    },
+    onError: (err) =>
+      toast.error(
+        requestError(err, "Couldn't confirm the payment. Please try again.")
       ),
   })
 }
