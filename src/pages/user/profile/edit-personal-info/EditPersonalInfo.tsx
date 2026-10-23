@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
+import { requestError } from "@/lib/requestError"
+import { updateProfile } from "@/services/user.service"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
@@ -20,15 +22,25 @@ export default function EditPersonalInfo() {
     setIsSaving(true)
 
     try {
-      // TODO: replace with real mutation once the backend endpoint is ready.
-      // Expected shape: updatePersonalInfo({ name, phoneNumber, location })
-      await new Promise((resolve) => setTimeout(resolve, 600))
+      const { user: saved } = await updateProfile({
+        name: name.trim(),
+        phoneNumber: phoneNumber.trim(),
+        location: location.trim(),
+      })
 
-      updateUser({ ...user, name, phoneNumber, location })
+      // use what the server saved (it calls the location "address")
+      updateUser({
+        ...user,
+        name: saved?.name ?? name.trim(),
+        phoneNumber: saved?.phoneNumber ?? phoneNumber.trim(),
+        location: saved?.address ?? location.trim(),
+      })
       toast.success("Your personal information has been updated.")
       navigate("/profile")
-    } catch {
-      toast.error("Couldn't save your changes. Please try again.")
+    } catch (err) {
+      toast.error(
+        requestError(err, "Couldn't save your changes. Please try again.")
+      )
     } finally {
       setIsSaving(false)
     }
