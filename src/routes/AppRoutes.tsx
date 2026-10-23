@@ -65,6 +65,7 @@ import {
   Properties as AdminProperties,
   PropertyDetails as AdminPropertyDetails,
 } from "@/pages/admin/properties"
+import { Ads as AdminAds } from "@/pages/admin/ads"
 import { Disputes as AdminDisputes } from "@/pages/admin/disputes"
 import { Payouts as AdminPayouts } from "@/pages/admin/payouts"
 import { Reports as AdminReports } from "@/pages/admin/reports"
@@ -104,7 +105,6 @@ import ScheduleHandover from "@/pages/agent/my-transaction/ScheduleHandover"
 import { UserPurchaseConfirmVisit } from "@/pages/user/transaction/purchase-confirm-visit"
 import AgentListings from "@/components/agent-profile/AgentListings"
 import { UserOnboarding } from "@/pages/user/onboarding"
-import AdminPlaceholder from "@/components/admin/ui/AdminPlaceholder"
 import { Escrow, EscrowDetails } from "@/pages/admin/escrow"
 
 export default function AppRoutes() {
@@ -343,7 +343,7 @@ export default function AppRoutes() {
             element={<AdminPropertyDetails />}
           />
           <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="/admin/ads" element={<AdminPlaceholder />} />
+          <Route path="/admin/ads" element={<AdminAds />} />
           <Route path="/admin/payouts" element={<AdminPayouts />} />
           <Route path="/admin/reports" element={<AdminReports />} />
           <Route path="/admin/disputes" element={<AdminDisputes />} />
