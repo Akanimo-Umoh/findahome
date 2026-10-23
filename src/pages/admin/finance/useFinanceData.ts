@@ -36,7 +36,7 @@ export function useFinanceData() {
   })
 }
 
-// "approved" = the payout was sent (mark as paid). The status change is the only thing the backend does; it does not move money to a bank.
+// "approved" = the payout was paid. Payouts are sent by hand, outside the platform; this only records that it was done.
 export function useSetPayoutStatus() {
   const qc = useQueryClient()
 

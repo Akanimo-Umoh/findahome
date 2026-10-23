@@ -17,8 +17,7 @@ type PayoutDialogProps = {
   onClose: () => void
 }
 
-// "Process now" and "Retry payout" both end here. FindaHome does not send the money itself yet, so this only records that the transfer was made.
-// Mount it only while a payout is chosen.
+// "Process now" and "Retry payout" both end here. Payouts are paid by hand, outside FindaHome: the admin sends the money from their bank, then marks it as paid so it is tracked on the platform. Mount it only while a payout is chosen.
 export default function PayoutDialog({
   payout,
   pending,
@@ -33,9 +32,9 @@ export default function PayoutDialog({
         <DialogHeader>
           <DialogTitle>Mark this payout as paid?</DialogTitle>
           <DialogDescription>
-            {payout.agent.name} requested {formatNaira(payout.amount)}.
-            FindaHome doesn&rsquo;t send the money itself yet: transfer it to
-            the account below first, then confirm here.
+            {payout.agent.name} requested {formatNaira(payout.amount)}. Send the
+            money from your bank to the account below, then mark it as paid so
+            it is tracked here.
           </DialogDescription>
         </DialogHeader>
 
