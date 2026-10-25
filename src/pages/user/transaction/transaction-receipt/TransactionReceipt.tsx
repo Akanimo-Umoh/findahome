@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom"
+import { useMemo, useState } from "react"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { toast } from "sonner"
 import propertyImg from "@/assets/images/property.jpg"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
 import gmailIcon from "@/assets/images/icon-gmail.svg"
@@ -8,74 +10,76 @@ import whatsappIcon from "@/assets/images/icon-whatsapp.svg"
 import checkIcon from "@/assets/images/icon-transaction-confirmed.svg"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
+import Spinner from "@/components/Spinner"
+import { useAuthContext } from "@/context/AuthContext"
+import { useTransactionDetails } from "@/hooks/useTransactionDetails"
+import { buildReceipt, formatReceiptDate, receiptSummary } from "@/lib/receipt"
+import {
+  canShareReceiptFile,
+  downloadReceiptPdf,
+  shareReceiptPdf,
+} from "@/lib/receiptPdf"
 
-export default function Phase11() {
-  // TODO: this comes from the actual transaction record once the endpoint exists
-  const transactionStatus: "pending" | "funds_released" = "funds_released"
-  const canDownloadReceipt = transactionStatus === "funds_released"
+export default function TransactionReceipt() {
+  const { transactionId } = useParams()
+  const navigate = useNavigate()
+  const { user } = useAuthContext()
+  const [busy, setBusy] = useState<"download" | "share" | null>(null)
+  // checked once: only phones and a few browsers can share a file
+  const [canShareFile] = useState(canShareReceiptFile)
+
+  const { transaction, recordType, isLoading, isFetching, error } =
+    useTransactionDetails(transactionId ?? "")
+
+  const receipt = useMemo(
+    () => (transaction ? buildReceipt(transaction, recordType, user) : null),
+    [transaction, recordType, user]
+  )
+
+  if (isLoading || isFetching) return <Spinner />
+
+  if (error || !receipt) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center">
+        <div className="text-center">
+          <p className="text-[14px] text-text-secondary">
+            Couldn't load this receipt.
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 text-[14px] text-[#274AD0] underline"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const run = async (kind: "download" | "share", work: () => Promise<void>) => {
+    setBusy(kind)
+    try {
+      await work()
+    } catch (err) {
+      // closing the share sheet is not an error
+      if (err instanceof DOMException && err.name === "AbortError") return
+      console.error("receipt error:", err)
+      toast.error("Couldn't create the receipt. Please try again.")
+    } finally {
+      setBusy(null)
+    }
+  }
 
   const users = [
-    {
-      title: "Buyer's Name:",
-      text: "Victoria Ntekim",
-    },
-    {
-      title: "Buyer's Contact:",
-      text: "08167288115",
-    },
-    {
-      title: "Agent's Name:",
-      text: "Maryann Kikomu",
-    },
-    {
-      title: "Date & Time:",
-      text: "20th Oct, 2025 at 10 AM",
-    },
-    {
-      title: "Transaction ID:",
-      text: "TXN-89234567",
-    },
+    { title: "Buyer's Name:", text: receipt.buyer.name },
+    { title: "Buyer's Contact:", text: receipt.buyer.phone },
+    { title: "Agent's Name:", text: receipt.agent.name },
+    { title: "Date & Time:", text: formatReceiptDate(receipt.paidAt) },
+    { title: "Receipt No:", text: receipt.receiptNo },
   ]
 
-  const transactionDetails = [
-    {
-      title: "Property Reference",
-      text: "Ref: FH - 2862",
-    },
-    {
-      title: "Total Amount Paid",
-      text: "3,060,000",
-    },
-
-    {
-      title: "Payment Method",
-      text: "Card Payment",
-    },
-    {
-      title: "Transaction Status",
-      text:
-        transactionStatus === "funds_released" ? "Funds Released" : "Pending",
-    },
-  ]
-
-  const timelines = [
-    {
-      title: "Payment Made",
-      date: "20th Oct, 2025",
-    },
-    {
-      title: "Handover Scheduled",
-      date: "22nd Oct, 2025",
-    },
-    {
-      title: "Handover Completed",
-      date: "28th Oct, 2025",
-    },
-    {
-      title: "Funds Released",
-      date: "30th Oct, 2025",
-    },
-  ]
+  const summary = receiptSummary(receipt)
+  const subject = `FindaHome receipt ${receipt.receiptNo}`
 
   return (
     <div className="px-6 md:px-8 md:pt-6">
@@ -87,72 +91,120 @@ export default function Phase11() {
           {/* property */}
           <div className="flex items-center gap-2">
             <img
-              src={propertyImg}
+              src={receipt.property.image ?? propertyImg}
               alt=""
               className="h-15 w-15 rounded-lg object-cover"
             />
 
             <div>
               <p className="font-raleway text-[14px] font-semibold tracking-[1px]">
-                Luxury 4 Bed-room Apartment
+                {receipt.property.title}
               </p>
 
-              <div className="flex items-center text-[12px] leading-4 text-text-secondary">
-                <p className="">Lekki Phase 1, Lagos.</p>
-                <p className="flex items-center">
-                  <img src={nairaIcon} alt="" className="h-4 w-4" />
-                  <span>3M/yr</span>
+              {receipt.property.address && (
+                <p className="text-[12px] leading-4 text-text-secondary">
+                  {receipt.property.address}
                 </p>
-              </div>
+              )}
 
               <p className="text-[12px] leading-4 text-text-secondary">
-                Ref: FH - 2862
+                Ref: {receipt.property.ref}
               </p>
             </div>
           </div>
+
+          {!receipt.isPaid && (
+            <p className="mt-4 rounded-lg bg-bg-accent px-3 py-2 text-[12px] leading-4 text-text-secondary">
+              {receipt.note} Your receipt will be ready as soon as your payment
+              is confirmed.
+            </p>
+          )}
 
           {/* parties details */}
           <div className="mt-6">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col justify-center gap-2 rounded-xl bg-bg-warm-section p-2">
-                {users.map((user, index) => (
+                {users.map((item) => (
                   <div
-                    key={index}
-                    className="flex items-center justify-between"
+                    key={item.title}
+                    className="flex items-center justify-between gap-4"
                   >
                     <p className="text-[12px] leading-4 text-text-primary">
-                      {user.title}
+                      {item.title}
                     </p>
 
-                    <p className="text-[12px] leading-4 text-text-secondary">
-                      {user.text}
+                    <p className="text-right text-[12px] leading-4 break-all text-text-secondary">
+                      {item.text}
                     </p>
                   </div>
                 ))}
               </div>
 
               <div className="flex flex-col justify-center gap-2 rounded-xl bg-bg-accent p-2">
-                {transactionDetails.map((detail, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between"
-                  >
-                    <p className="text-[12px] leading-4 text-text-primary">
-                      {detail.title}
-                    </p>
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[12px] leading-4 text-text-primary">
+                    Payment Type
+                  </p>
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    {receipt.typeLabel}
+                  </p>
+                </div>
 
-                    {detail.title === "Total Amount Paid" ? (
+                {/* the split is only shown when it adds up to the total paid */}
+                {receipt.lines.length > 1 &&
+                  receipt.lines.map((line) => (
+                    <div
+                      key={line.label}
+                      className="flex items-center justify-between gap-4"
+                    >
+                      <p className="text-[12px] leading-4 text-text-primary">
+                        {line.label}
+                      </p>
                       <p className="flex items-center text-[12px] leading-4 text-text-secondary">
                         <img src={nairaIcon} alt="" />
-                        <span>{detail.text}</span>
+                        <span>{line.amount.toLocaleString("en-NG")}</span>
                       </p>
-                    ) : (
-                      <p className="text-[12px] leading-4 text-text-secondary">
-                        {detail.text}
-                      </p>
-                    )}
+                    </div>
+                  ))}
+
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[12px] leading-4 font-semibold text-text-primary">
+                    Total Amount Paid
+                  </p>
+                  <p className="flex items-center text-[12px] leading-4 font-semibold text-text-secondary">
+                    <img src={nairaIcon} alt="" />
+                    <span>{receipt.amount.toLocaleString("en-NG")}</span>
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[12px] leading-4 text-text-primary">
+                    Payment Method
+                  </p>
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    Paystack
+                  </p>
+                </div>
+
+                {receipt.reference && (
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="text-[12px] leading-4 text-text-primary">
+                      Payment Reference
+                    </p>
+                    <p className="text-right text-[12px] leading-4 break-all text-text-secondary">
+                      {receipt.reference}
+                    </p>
                   </div>
-                ))}
+                )}
+
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-[12px] leading-4 text-text-primary">
+                    Transaction Status
+                  </p>
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    {receipt.statusLabel}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -163,16 +215,28 @@ export default function Phase11() {
               <p>Transaction timeline</p>
 
               <div className="flex flex-col gap-2">
-                {timelines.map((timeline, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-button-bg">
-                      <img src={checkIcon} alt="" className="h-4 w-4" />
-                    </div>
+                {receipt.timeline.map((step) => (
+                  <div key={step.label} className="flex items-center gap-2">
+                    {step.done ? (
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-button-bg">
+                        <img src={checkIcon} alt="" className="h-4 w-4" />
+                      </div>
+                    ) : (
+                      <div className="h-6 w-6 shrink-0 rounded-full border border-bg-accent" />
+                    )}
 
                     <div>
-                      <p className="text-[14px]">{timeline.title}</p>
+                      <p
+                        className={`text-[14px] ${step.done ? "" : "text-text-secondary"}`}
+                      >
+                        {step.label}
+                      </p>
                       <p className="text-[12px] leading-4 text-text-secondary">
-                        {timeline.date}
+                        {step.at
+                          ? formatReceiptDate(step.at)
+                          : step.done
+                            ? "Done"
+                            : "Not yet"}
                       </p>
                     </div>
                   </div>
@@ -181,21 +245,48 @@ export default function Phase11() {
             </div>
           </div>
 
+          <p className="mt-4 rounded-lg bg-bg-accent px-3 py-2 text-[12px] leading-4 text-text-secondary">
+            {receipt.note}
+          </p>
+
           {/* share receipt */}
           <div className="mt-4 space-y-2">
             <p>Share Receipt</p>
 
-            <div className="flex items-center justify-center gap-6 rounded-lg border border-bg-accent px-2 py-4">
-              <div className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2">
+            <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-bg-accent px-2 py-4">
+              <a
+                href={`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary)}`}
+                className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2"
+              >
                 <img src={gmailIcon} alt="" />
                 <p className="text-[12px] leading-4">Email</p>
-              </div>
+              </a>
 
-              <div className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(summary)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2"
+              >
                 <img src={whatsappIcon} alt="" />
                 <p className="text-[12px] leading-4">Whatsapp</p>
-              </div>
+              </a>
+
+              {canShareFile && receipt.isPaid && (
+                <button
+                  type="button"
+                  disabled={busy !== null}
+                  onClick={() => run("share", () => shareReceiptPdf(receipt))}
+                  className="flex items-center gap-1 rounded-xl border border-bg-accent p-2 text-[12px] leading-4 disabled:opacity-50"
+                >
+                  {busy === "share" ? "Preparing…" : "Share PDF"}
+                </button>
+              )}
             </div>
+            <p className="text-[12px] leading-4 text-text-secondary">
+              Email and WhatsApp share a short summary. Download the PDF to
+              attach the full receipt.
+            </p>
           </div>
 
           {/* links */}
@@ -204,21 +295,33 @@ export default function Phase11() {
               <Button
                 variant="app-primary"
                 size="full"
-                disabled={!canDownloadReceipt}
+                disabled={!receipt.isPaid || busy !== null}
+                onClick={() =>
+                  run("download", () => downloadReceiptPdf(receipt))
+                }
               >
                 <img src={downloadIcon} alt="" />
-                <p>Download Receipt(PDF)</p>
+                <p>
+                  {busy === "download"
+                    ? "Preparing receipt…"
+                    : "Download Receipt(PDF)"}
+                </p>
               </Button>
 
-              <Button variant="app-secondary" size="full">
-                <img src={homeIcon} alt="" />
-                <p>Go to Homepage</p>
+              <Button variant="app-secondary" size="full" asChild>
+                <Link to="/">
+                  <img src={homeIcon} alt="" />
+                  <p>Go to Homepage</p>
+                </Link>
               </Button>
             </div>
 
             <p className="text-center text-[12px] leading-4 text-text-secondary">
               Having issues with agent?&nbsp;
-              <Link to="/disputes" className="text-button-bg">
+              <Link
+                to={`/open-dispute/${transactionId}?type=${recordType}`}
+                className="text-button-bg"
+              >
                 Open a dispute
               </Link>
             </p>

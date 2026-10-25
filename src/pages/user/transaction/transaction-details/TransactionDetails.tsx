@@ -37,6 +37,18 @@ import {
   type Purchase,
 } from "@/services/purchase.service"
 
+const formatSchedule = (iso?: string | null) =>
+  iso
+    ? new Date(iso).toLocaleString("en-NG", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+    : undefined
+
 export default function TransactionDetails() {
   const { transactionId } = useParams()
   const navigate = useNavigate()
@@ -174,6 +186,13 @@ export default function TransactionDetails() {
     onConfirmAction: handleConfirmAction,
     onSuggestNewTime: handleSuggestNewTime,
     onGoToDashboard: () => navigate("/"),
+    // a receipt is available from the first payment on
+    receiptTo: transaction.feePaid
+      ? `/transactions/${transactionId}/receipt?type=${recordType}`
+      : undefined,
+    chatTo: agentChatPath,
+    scheduledAtLabel: formatSchedule(transaction.scheduledDate),
+    agentName: agent.name,
   }
 
   const scheduledDateValue = isPurchase
@@ -230,14 +249,15 @@ export default function TransactionDetails() {
               amountInEscrow={amount.toLocaleString()}
               paymentType={paymentTypeLabel}
               referenceNumber={transaction.reference ?? ""}
-              datePaid={new Date(transaction.createdAt).toLocaleDateString(
-                "en-US",
-                {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                }
-              )}
+              datePaid={
+                transaction.paidAt
+                  ? new Date(transaction.paidAt).toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : "—"
+              }
             />
 
             {/* escrow timeline — mobile only, lg shows it in left column above */}
