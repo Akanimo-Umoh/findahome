@@ -24,7 +24,6 @@ import {
   PropertyEscrowTransaction,
   PropertyPayment,
 } from "@/pages/user/propertyPayment"
-import { TransactionReceipt } from "@/pages/user/receipt"
 import { Recent } from "@/pages/user/recent"
 import { SavedProperties } from "@/pages/user/saved-properties"
 import { UserTransactionDetails } from "@/pages/user/transaction/transaction-details"
@@ -86,7 +85,6 @@ import BlockRoleRoute from "./BlockedRoleRoute"
 import { CreateAd } from "@/pages/agent/ads/create-ad"
 import AgentTransactionDetails from "@/pages/agent/my-transaction/AgentTransactionDetails"
 import AgentVisitDetails from "@/pages/agent/my-transaction/AgentVisitDetails"
-import AgentConfirmVisit from "@/pages/agent/my-transaction/AgentConfirmVisit"
 import ScheduleInspection from "@/pages/agent/my-transaction/ScheduleInspection"
 import AdPreview from "@/pages/agent/ads/create-ad/AdPreview"
 import AdPaymentSummary from "@/pages/agent/ads/create-ad/AdPaymentSummary"
@@ -237,8 +235,6 @@ export default function AppRoutes() {
           element={<UserPurchaseConfirmVisit />}
         />
 
-        <Route path="/transaction-receipt" element={<TransactionReceipt />} />
-
         {/* user transaction details */}
         {/* <Route
           path="/transaction-details"
@@ -297,14 +293,6 @@ export default function AppRoutes() {
           <Route
             path="/agent/transactions/:transactionId/visit"
             element={<AgentVisitDetails />}
-          />
-          <Route
-            path="/agent/transactions/:transactionId/confirm-inspection"
-            element={<AgentConfirmVisit />}
-          />
-          <Route
-            path="/agent/transactions/:transactionId/confirm-handover"
-            element={<AgentConfirmVisit />}
           />
 
           <Route
