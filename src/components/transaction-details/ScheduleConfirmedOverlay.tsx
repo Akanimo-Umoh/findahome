@@ -3,9 +3,6 @@ import { Link } from "react-router-dom"
 import greenCalendar from "@/assets/images/icon-calendar-check.svg"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 
-// TODO: swap for the real per-property/agent chat route once that endpoint exists
-const AGENT_CHAT_PATH = "/chat"
-
 interface ScheduleConfirmedOverlayProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -13,6 +10,10 @@ interface ScheduleConfirmedOverlayProps {
   description: string
   viewDetailsLabel: string
   viewDetailsTo: string
+  // the chat with this property's agent
+  chatTo: string
+  scheduledAtLabel?: string
+  agentName: string
 }
 
 export default function ScheduleConfirmedOverlay({
@@ -22,6 +23,9 @@ export default function ScheduleConfirmedOverlay({
   description,
   viewDetailsLabel,
   viewDetailsTo,
+  chatTo,
+  scheduledAtLabel,
+  agentName,
 }: ScheduleConfirmedOverlayProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -49,16 +53,12 @@ export default function ScheduleConfirmedOverlay({
           <div className="flex items-center justify-between">
             <p className="text-[12px]">Date & Time:</p>
             <p className="text-[12px] text-text-secondary">
-              20th Oct, 2025 at 10 AM
+              {scheduledAtLabel ?? "—"}
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-[12px]">Visit Type:</p>
-            <p className="text-[12px] text-text-secondary">Physical Visit</p>
-          </div>
-          <div className="flex items-center justify-between">
             <p className="text-[12px]">Agent:</p>
-            <p className="text-[12px] text-text-secondary">Maryann Kikomu</p>
+            <p className="text-[12px] text-text-secondary">{agentName}</p>
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export default function ScheduleConfirmedOverlay({
           </Button>
 
           <Button variant="app-secondary" size="full" asChild>
-            <Link to={AGENT_CHAT_PATH}>Back to chat</Link>
+            <Link to={chatTo}>Back to chat</Link>
           </Button>
         </div>
       </DialogContent>
