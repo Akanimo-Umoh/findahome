@@ -452,8 +452,12 @@ export default function ChatMessages({
                         navigate("/agent/my-transactions")
                       }
                     }
-                    if (link.action === "purchase-property") {
-                      // TODO: route to purchase flow once that's built
+                    if (
+                      link.action === "purchase-property" &&
+                      inspection?._id
+                    ) {
+                      // the payment page starts from the completed inspection
+                      navigate(`/property-payment/${inspection._id}`)
                     }
                   }}
                   className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}
