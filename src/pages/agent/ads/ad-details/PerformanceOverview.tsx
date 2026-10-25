@@ -23,7 +23,7 @@ export default function PerformanceOverview({ ad }: PerformanceOverviewProps) {
   const clicks = ad.clicks ?? 0
   const ctr = views > 0 ? ((clicks / views) * 100).toFixed(1) : "0"
   // TODO: no "leads" field in schema yet
-  const leads = 0
+  // the backend doesn't track leads yet, so show a dash instead of a false 0
 
   return (
     <div>
@@ -60,10 +60,10 @@ export default function PerformanceOverview({ ad }: PerformanceOverviewProps) {
         <div className="rounded-lg bg-bg-accent px-4 py-3">
           <div className="flex items-center gap-2">
             <img src={viewsIcon} alt="" className="h-4 w-4" />
-            <p className="text-[14px] text-text-secondary">Leads</p>
+            <p className="text-[14px] font-semibold">—</p>
           </div>
 
-          <p className="text-[14px] font-semibold">{leads}</p>
+          <p className="text-[14px] font-semibold">—</p>
         </div>
       </div>
     </div>
