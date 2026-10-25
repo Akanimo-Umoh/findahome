@@ -16,6 +16,12 @@ interface TransactionActionsProps {
   onConfirmAction: () => void
   onSuggestNewTime: () => void
   onGoToDashboard: () => void
+  // where the receipt lives, set once the payment has been made
+  receiptTo?: string
+  // real details for the "schedule confirmed" overlay
+  chatTo: string
+  scheduledAtLabel?: string
+  agentName: string
 }
 
 export default function TransactionActions({
@@ -30,6 +36,10 @@ export default function TransactionActions({
   onConfirmAction,
   onSuggestNewTime,
   // onGoToDashboard,
+  receiptTo,
+  chatTo,
+  scheduledAtLabel,
+  agentName,
 }: TransactionActionsProps) {
   // const showRequestInspection = status === "inspection_requested"
   const showConfirmInspection = status === "inspection_scheduled"
@@ -145,11 +155,16 @@ export default function TransactionActions({
         )}
 
         {/* Phase 10 — funds released, receipt available */}
-        {showViewReceipt && (
+        {showViewReceipt && receiptTo && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/transactions/${transactionId}/receipt`}>
-              View Receipt
-            </Link>
+            <Link to={receiptTo}>View Receipt</Link>
+          </Button>
+        )}
+
+        {/* any other paid transaction: the receipt is there from the first payment */}
+        {!showViewReceipt && receiptTo && (
+          <Button variant="app-secondary" size="full" asChild>
+            <Link to={receiptTo}>View Receipt</Link>
           </Button>
         )}
       </div>
@@ -179,6 +194,9 @@ export default function TransactionActions({
         viewDetailsTo={`/transactions/${transactionId}/visit${
           showConfirmHandover ? "?type=purchase" : ""
         }`}
+        chatTo={chatTo}
+        scheduledAtLabel={scheduledAtLabel}
+        agentName={agentName}
       />
     </div>
   )
