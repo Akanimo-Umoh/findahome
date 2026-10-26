@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import { getAgentPurchasesAndInspections } from "@/services/transaction.service"
 import { useAuthContext } from "@/context/AuthContext"
 
-export function useAgentTransactionsList() {
+export function useAgentTransactionsList(enabled = true) {
   const { user } = useAuthContext()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["agentPurchasesAndInspections", user?._id],
     queryFn: getAgentPurchasesAndInspections,
-    enabled: !!user?._id,
+    enabled: !!user?._id && enabled,
     staleTime: 0,
     refetchOnMount: "always",
   })

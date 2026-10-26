@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import { getUserPurchasesAndInspections } from "@/services/transaction.service"
 import { useAuthContext } from "@/context/AuthContext"
 
-export function useUserActivities() {
+export function useUserActivities(enabled = true) {
   const { user } = useAuthContext()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["userPurchasesAndInspections", user?._id],
     queryFn: getUserPurchasesAndInspections,
-    enabled: !!user?._id,
+    enabled: !!user?._id && enabled,
     staleTime: 0,
     refetchOnMount: "always",
   })
