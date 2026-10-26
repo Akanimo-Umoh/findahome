@@ -20,10 +20,8 @@ import { useAuthContext } from "@/context/AuthContext"
 import Avatar from "../Avatar"
 import { formatChatDateLabel } from "@/lib/utils"
 import RequestSuccessful from "./RequestSuccessful"
-import {
-  useInspectionStatus,
-  type InspectionStage,
-} from "@/hooks/useInspectionStatus"
+import { usePropertyDeal } from "@/hooks/usePropertyDeal"
+import { getNextStep } from "./chatNextStep"
 
 type ChatMessagesProps = {
   chatId?: string
@@ -114,9 +112,13 @@ export default function ChatMessages({
   // console.log("chat detail: ", chatDetail?.participants);
 
   const property = chatDetail?.property
-  const { inspection, stage: inspectionStage } = useInspectionStatus(
-    property?._id
-  )
+
+  // where the deal for this property stands, for the buyer or for the agent
+  const { stage, inspection, purchase } = usePropertyDeal({
+    propertyId: property?._id,
+    buyerId: otherParty?._id,
+    isAgent,
+  })
 
   // header display
   const headerName = isAgent
@@ -130,65 +132,40 @@ export default function ChatMessages({
 
   const refId = property?._id?.slice(-4).toUpperCase()
 
-  const payButtonConfig: Record<
-    Exclude<InspectionStage, "confirmed" | "cancelled">,
-    { title: string; action: string; clickable: boolean }
-  > = {
-    none: { title: "Pay inspection fee", action: "pay", clickable: true },
-    awaiting_payment: {
-      title: "Pay inspection fee",
-      action: "pay",
-      clickable: true,
-    },
-    awaiting_confirmation: {
-      title: "Payment under review",
-      action: "noop",
-      clickable: false,
-    },
-    awaiting_schedule: {
-      title: "Awaiting agent schedule",
-      action: "noop",
-      clickable: false,
-    },
-    awaiting_buyer_confirm: {
-      title: "Confirm inspection date",
-      action: "noop",
-      clickable: false,
-    }, // wired later
-    completed: {
-      title: "Purchase Property",
-      action: "purchase-property",
-      clickable: true,
-    },
-  }
+  // the one next step for this side of the deal, or null when there is none
+  const nextStep = getNextStep(stage, isAgent, {
+    inspectionId: inspection?._id,
+    purchaseId: purchase?._id,
+  })
 
-  // miniLinks — swap label + button behavior based on paid state
-  const miniLinks = [
-    ...(!isAgent &&
-    inspectionStage !== "confirmed" &&
-    inspectionStage !== "cancelled"
+  const miniLinks: {
+    icon: string
+    title: string
+    bg: string
+    color: string
+    action: string
+    to?: string
+  }[] = [
+    ...(nextStep
       ? [
           {
-            icon: iconPay,
-            title: payButtonConfig[inspectionStage].title,
-            bg: payButtonConfig[inspectionStage].clickable
-              ? "bg-[#DCFBE9]"
-              : "bg-bg-accent",
-            color: payButtonConfig[inspectionStage].clickable
-              ? "text-[#237142]"
-              : "text-text-secondary",
-            action: payButtonConfig[inspectionStage].action,
-          },
-        ]
-      : []),
-    ...(isAgent
-      ? [
-          {
-            icon: iconVisit,
-            title: "Schedule visit",
-            bg: "bg-[#E2EEFF]",
-            color: "text-[#274AD0]",
-            action: "visit",
+            icon: nextStep.icon === "pay" ? iconPay : iconVisit,
+            title: nextStep.title,
+            // read-only labels are grey, things the person can do are coloured
+            bg:
+              nextStep.kind === "status"
+                ? "bg-bg-accent"
+                : isAgent
+                  ? "bg-[#E2EEFF]"
+                  : "bg-[#DCFBE9]",
+            color:
+              nextStep.kind === "status"
+                ? "text-text-secondary"
+                : isAgent
+                  ? "text-[#274AD0]"
+                  : "text-[#237142]",
+            action: nextStep.kind,
+            to: nextStep.to,
           },
         ]
       : []),
@@ -440,27 +417,12 @@ export default function ChatMessages({
                 <button
                   key={link.title}
                   onClick={() => {
-                    if (link.action === "noop") return
                     if (link.action === "pay") setIsPayModalOpen(true)
                     if (link.action === "escrow") setIsEscrowOpen(true)
-                    if (link.action === "visit") {
-                      if (inspection?._id) {
-                        navigate(
-                          `/agent/transactions/${inspection._id}/schedule-inspection`
-                        )
-                      } else {
-                        navigate("/agent/my-transactions")
-                      }
-                    }
-                    if (
-                      link.action === "purchase-property" &&
-                      inspection?._id
-                    ) {
-                      // the payment page starts from the completed inspection
-                      navigate(`/property-payment/${inspection._id}`)
-                    }
+                    if (link.action === "link" && link.to) navigate(link.to)
                   }}
-                  className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} cursor-pointer`}
+                  disabled={link.action === "status"}
+                  className={`flex items-center justify-center gap-1 px-1 py-1 opacity-90 ${link.bg} ${link.action === "status" ? "cursor-default" : "cursor-pointer"}`}
                 >
                   <img src={link.icon} alt="" className="hidden xs:flex" />
                   <p className={`${link.color} text-[12px] leading-4`}>
