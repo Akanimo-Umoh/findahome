@@ -14,19 +14,13 @@ import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
 import { useTransactionDetails } from "@/hooks/useTransactionDetails"
 import { buildReceipt, formatReceiptDate, receiptSummary } from "@/lib/receipt"
-import {
-  canShareReceiptFile,
-  downloadReceiptPdf,
-  shareReceiptPdf,
-} from "@/lib/receiptPdf"
+import { downloadReceiptPdf } from "@/lib/receiptPdf"
 
 export default function TransactionReceipt() {
   const { transactionId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [busy, setBusy] = useState<"download" | "share" | null>(null)
-  // checked once: only phones and a few browsers can share a file
-  const [canShareFile] = useState(canShareReceiptFile)
 
   const { transaction, recordType, isLoading, isFetching, error } =
     useTransactionDetails(transactionId ?? "")
@@ -266,23 +260,13 @@ export default function TransactionReceipt() {
                 href={`https://wa.me/?text=${encodeURIComponent(summary)}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2"
+                className="flex w-21.25 items-center gap-0.5 rounded-xl border border-bg-accent p-2"
               >
                 <img src={whatsappIcon} alt="" />
                 <p className="text-[12px] leading-4">Whatsapp</p>
               </a>
-
-              {canShareFile && receipt.isPaid && (
-                <button
-                  type="button"
-                  disabled={busy !== null}
-                  onClick={() => run("share", () => shareReceiptPdf(receipt))}
-                  className="flex items-center gap-1 rounded-xl border border-bg-accent p-2 text-[12px] leading-4 disabled:opacity-50"
-                >
-                  {busy === "share" ? "Preparing…" : "Share PDF"}
-                </button>
-              )}
             </div>
+
             <p className="text-[12px] leading-4 text-text-secondary">
               Email and WhatsApp share a short summary. Download the PDF to
               attach the full receipt.

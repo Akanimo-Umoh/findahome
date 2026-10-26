@@ -1,10 +1,5 @@
 import type { jsPDF } from "jspdf"
-import {
-  formatReceiptDate,
-  receiptFilename,
-  receiptSummary,
-  type ReceiptData,
-} from "./receipt"
+import { formatReceiptDate, receiptFilename, type ReceiptData } from "./receipt"
 
 // jsPDF's built-in fonts have no naira sign, so the PDF writes "NGN".
 const ngn = (n: number) => `NGN ${n.toLocaleString("en-NG")}`
@@ -247,28 +242,4 @@ export async function buildReceiptPdf(r: ReceiptData): Promise<jsPDF> {
 export async function downloadReceiptPdf(r: ReceiptData) {
   const doc = await buildReceiptPdf(r)
   doc.save(receiptFilename(r))
-}
-
-// Phones can share the PDF itself (WhatsApp, email, files...). Desktop browsers mostly can't, so the page only offers this when the browser says it can.
-export const canShareReceiptFile = () => {
-  if (typeof navigator === "undefined" || !navigator.canShare) return false
-  try {
-    return navigator.canShare({
-      files: [new File(["x"], "receipt.pdf", { type: "application/pdf" })],
-    })
-  } catch {
-    return false
-  }
-}
-
-export async function shareReceiptPdf(r: ReceiptData) {
-  const doc = await buildReceiptPdf(r)
-  const file = new File([doc.output("blob")], receiptFilename(r), {
-    type: "application/pdf",
-  })
-  await navigator.share({
-    files: [file],
-    title: `Receipt ${r.receiptNo}`,
-    text: receiptSummary(r),
-  })
 }
