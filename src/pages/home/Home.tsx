@@ -1,13 +1,17 @@
 import FeaturedProps from "./FeaturedProps"
 import HowItWorks from "./HowItWorks"
-import Reviews from "./Reviews"
+// import Reviews from "./Reviews"
 import Search from "./Search"
 import Properties from "./Properties"
 import Faq from "./Faq"
 import { useAuthContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
-// import Why from "./Why";
+import Why from "./Why"
+import testImg from "./test-img.jpg"
+import naira from "@/assets/images/naira.svg"
+import { ListingCard, type Listing } from "./ListingCard"
+import Action from "./Action"
 
 export default function Home() {
   const { user } = useAuthContext()
@@ -17,6 +21,30 @@ export default function Home() {
     if (user?.role === "agent") navigate("/agent/dashboard", { replace: true })
     if (user?.role === "admin") navigate("/admin/dashboard", { replace: true })
   }, [user, navigate])
+
+  const mockListings: Listing[] = [
+    {
+      id: "1",
+      kind: "apartment",
+      title: "4 Bedroom Apartment",
+      price: 800_000,
+      location: "Lekki Phase 1, Lagos",
+      imageUrl: "/images/apartment.jpg",
+      beds: 4,
+      baths: 2,
+      agent: { name: "Eden Properties", avatarUrl: "/images/eden.jpg" },
+    },
+    {
+      id: "2",
+      kind: "land",
+      title: "800Sqm of Land",
+      price: 800_000,
+      location: "Lekki Phase 1, Lagos",
+      imageUrl: "/images/land.jpg",
+      landType: "Residential",
+      agent: { name: "MaryAnn Kikomu", avatarUrl: "/images/maryann.jpg" },
+    },
+  ]
 
   return (
     <div className="font-ssPro">
@@ -33,7 +61,7 @@ export default function Home() {
               <span className="hidden md:flex">Your next home, made easy.</span>
             </p>
 
-            <p className="text-[12px] leading-4 md:max-w-138 md:text-[18px] md:leading-[27px]">
+            <p className="text-[12px] leading-4 md:max-w-138 md:text-[18px] md:leading-6.75">
               <span className="md:hidden">
                 Discover verified properties across Nigeria. Connect with
                 trusted agents and move in safely.
@@ -51,16 +79,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* test new cards design */}
+      <section className="mt-10 border border-red-800 px-6">
+        <div className="overflow-hidden rounded-2xl">
+          <img src={testImg} alt="" className="h-40 w-full max-w-82.5" />
+
+          <div className="mt-4 font-raleway text-[12px] font-semibold tracking-[1px]">
+            <p className="text-black">4 Bedroom Apartment</p>
+            <p className="flex items-center border border-blue-700">
+              <img src={naira} alt="" className="" />
+              <span className="text-button-bg">800k</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto mt-10 max-w-7xl px-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {mockListings.map((listing) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+        </div>
+      </section>
+
       <main className="mx-auto mt-10 max-w-7xl space-y-10 md:mt-20 md:space-y-20">
         {/* featured section */}
         <section>
           <FeaturedProps />
         </section>
-
-        {/* why section */}
-        {/* <section className="mt-8">
-        <Why />
-        </section> */}
 
         <section>
           <Properties />
@@ -71,14 +117,24 @@ export default function Home() {
           <HowItWorks />
         </section>
 
+        {/* why section */}
+        <section className="mt-8">
+          <Why />
+        </section>
+
         {/* frequently asked questions */}
         <section>
           <Faq />
         </section>
 
         {/* reviews */}
-        <section>
+        {/* <section>
           <Reviews />
+        </section> */}
+
+        {/* action link */}
+        <section>
+          <Action />
         </section>
       </main>
     </div>
