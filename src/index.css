@@ -84,8 +84,15 @@
   --color-warning: #f8b400;
   --color-error: #ff6b6b;
 
+  --color-ink: #1c1b19;
+  --color-ink-muted: #a4a19a;
+  --color-brand-500: #4f46e5;
+
   /* breakpoint */
   --breakpoint-xs: 375px;
+
+  /* Motion */
+  --animate-wobble: wobble 3.2s ease-in-out infinite;
 }
 
 :root {
@@ -362,6 +369,16 @@ input:-webkit-autofill:active {
   }
   to {
     transform: scaleX(0);
+  }
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-6deg) translateY(0);
+  }
+  50% {
+    transform: rotate(6deg) translateY(-6px);
   }
 }
 

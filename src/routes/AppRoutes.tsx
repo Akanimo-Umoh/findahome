@@ -105,6 +105,9 @@ import AgentListings from "@/components/agent-profile/AgentListings"
 import { UserOnboarding } from "@/pages/user/onboarding"
 import { Escrow, EscrowDetails } from "@/pages/admin/escrow"
 
+// error pages
+import NotFoundPage from "@/pages/error-pages/NotFoundPage"
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -368,7 +371,7 @@ export default function AppRoutes() {
       </Route>
 
       {/* ==================== 404 - NOT FOUND ==================== */}
-      <Route path="*" element={<div>404 - Page Not Found</div>} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )
 }
