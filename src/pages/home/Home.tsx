@@ -12,6 +12,7 @@ import testImg from "./test-img.jpg"
 import naira from "@/assets/images/naira.svg"
 import { ListingCard, type Listing } from "./ListingCard"
 import Action from "./Action"
+import { useScrollToHash } from "@/hooks/useScrollToHash"
 
 export default function Home() {
   const { user } = useAuthContext()
@@ -45,6 +46,8 @@ export default function Home() {
       agent: { name: "MaryAnn Kikomu", avatarUrl: "/images/maryann.jpg" },
     },
   ]
+
+  useScrollToHash()
 
   return (
     <div className="font-ssPro">
@@ -113,17 +116,17 @@ export default function Home() {
         </section>
 
         {/* how it works */}
-        <section>
+        <section id="how-it-works" className="scroll-mt-20">
           <HowItWorks />
         </section>
 
         {/* why section */}
-        <section className="mt-8">
+        <section id="why-choose-us" className="mt-8 scroll-mt-20">
           <Why />
         </section>
 
         {/* frequently asked questions */}
-        <section>
+        <section id="faq" className="scroll-mt-20">
           <Faq />
         </section>
 
