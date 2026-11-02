@@ -1,10 +1,13 @@
-# Admin Users: Backend Follow-ups
+# Admin Users: Backend Handoff
 
-## Still Blocking
+## [SEND TO BACKEND DEV] Follow-ups
 
-17. Last-active tracking. The user model has `lastActive`, and `trackActivity` updates it, but the middleware is attached to selected routes rather than consistently to authenticated activity. Please ensure meaningful authenticated user requests update the timestamp so the dashboard's active-this-week metric is accurate.
+17. Last-active tracking. Please update `lastActive` consistently for authenticated user activity, not just selected endpoints, so the admin dashboard and buyer profiles show a meaningful last-active time.
 
-## Already Available And Connected
+18. Block public admin registration. Public `POST /api/auth/register` may accept `role: "user"` or `role: "agent"`, but must reject or safely downgrade `role: "admin"`. Admin accounts are created through trusted backend-side provisioning.
 
-- `PATCH /api/user/users/:id/moderate` accepts `{ action: "flag" | "suspend" | "ban", value: boolean }`; the buyer table and profile now expose these controls.
-- `GET /api/user/users` returns account moderation flags and last-active data for admin views.
+## Implemented In Frontend / Confirmed In Backend
+
+- `PATCH /api/user/users/:id/moderate` accepts `{ action: "flag" | "suspend" | "ban", value: boolean }`; buyer list and profile controls call it.
+- `GET /api/user/users` returns account moderation flags and `lastActive` for admin views.
+- Multiple admins are supported at one equal authority level; no admin hierarchy is requested.

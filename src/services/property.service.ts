@@ -3,12 +3,15 @@ import type { Property } from "@/types/property"
 
 export const getAllProperties = async (): Promise<Property[]> => {
   const { data } = await api.get("/property")
-  console.log("API response:", data)
-  return data.properties
+  const properties = (data.properties ?? []) as Property[]
+  return properties.filter((property) => property.status === "approved")
 }
 
 export const getPropertyById = async (id: string): Promise<Property> => {
   const { data } = await api.get(`/property/${id}`)
-  console.log("Api response:", data)
-  return data.property
+  const property = data.property as Property
+  if (property.status !== "approved") {
+    throw new Error("This property is not available")
+  }
+  return property
 }

@@ -1,7 +1,7 @@
 import hide from "@/assets/images/icon-hide-password.svg"
 import show from "@/assets/images/icon-show-password.svg"
 import inputError from "@/assets/images/icon-email-error.svg"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -16,8 +16,9 @@ import { useGoogleAuth } from "@/hooks/useGoogleAuth"
 import Spinner from "@/components/Spinner"
 
 export default function Signup() {
-  const { role } = useParams<{ role: "user" | "agent" }>()
-  const selectedRole = role ?? "user"
+  const { role } = useParams<{ role: string }>()
+  const isValidRole = role === "user" || role === "agent"
+  const selectedRole: "user" | "agent" = role === "agent" ? "agent" : "user"
 
   const [showPassword, setShowPassword] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
@@ -49,7 +50,7 @@ export default function Signup() {
       setApiError(null)
       setGoogleApiError(null)
 
-      // add the fixed role "buyer" to the payload
+      // Public signup is for buyers; agent accounts are provisioned separately.
       const payload = {
         ...data,
         email: data.email.toLowerCase(),
@@ -95,6 +96,8 @@ export default function Signup() {
       <Spinner className="fixed inset-0 z-50 flex items-center justify-center bg-white" />
     )
   }
+
+  if (!isValidRole) return <Navigate to="/signup" replace />
 
   return (
     <div className="mx-6 flex w-full flex-col gap-6 font-ssPro md:mx-7.5 md:my-5 md:gap-10">

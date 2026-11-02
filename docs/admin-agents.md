@@ -1,11 +1,11 @@
-# Admin Agents: Backend Follow-ups
+# Admin Agents: Backend Handoff
 
-No backend follow-up is currently blocking this page.
+## [SEND TO BACKEND DEV] Follow-up
 
-## Backend Correction Needed
+15. Separate email verification from agent approval. `updateAgentVerification` currently sets `isVerified = status === "approved"`, but `isVerified` is also the email-code verification field. Please stop changing `isVerified` during admin review and use `verificationStatus` only for agent approval.
 
-15. Keep email verification separate from agent approval. `updateAgentVerification` currently sets `isVerified = status === "approved"`, but `isVerified` also represents email-code verification. Please stop changing that field during admin review and use only `verificationStatus` for agent approval.
+## Implemented In Frontend / Confirmed In Backend
 
-- Verification uses `PATCH /api/user/agents/:id/verification` with `{ status: "approved" | "rejected" }`. The frontend now sends the backend's `approved` value and reads the returned `agent`.
-- Risk level is included in `GET /api/user/agents/:id`.
-- The frontend keeps email verification (`isVerified`) separate from admin verification (`verificationStatus`).
+- The frontend sends `PATCH /api/user/agents/:id/verification` with `{ status: "approved" | "rejected" }` and reads the returned `agent`.
+- `riskLevel` is included in `GET /api/user/agents/:id`.
+- Public agent listings now display approved properties only.

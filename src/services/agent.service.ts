@@ -14,5 +14,6 @@ export async function getAgentProfile(agentId: string) {
 
 export async function getAgentListings(agentId: string) {
   const res = await api.get(`/property/agent/${agentId}`)
-  return res.data.properties as Property[]
+  const listings = res.data.properties as Property[]
+  return listings.filter((listing) => listing.status === "approved")
 }

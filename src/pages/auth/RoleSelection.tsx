@@ -37,7 +37,6 @@ export default function RoleSelection() {
 
       <div className="mt-8 w-full space-y-4">
         <div className="space-y-3 border-black">
-          {/* continue as agent */}
           <Button
             variant="app-primary"
             size="full"
@@ -49,7 +48,6 @@ export default function RoleSelection() {
             </p>
           </Button>
 
-          {/* continue as buyer */}
           <Button
             variant="app-secondary"
             size="full"
