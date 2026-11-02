@@ -5,6 +5,7 @@ import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 import Search from "../home/Search"
 import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 import Pagination from "@/components/shared/Pagination"
+import PropertyGrid from "@/components/shared/PropertyGrid"
 
 export default function AllProperties() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -53,21 +54,21 @@ export default function AllProperties() {
           {/* main properties ctn */}
           <div className="mt-6">
             {loading ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <PropertyCardSkeleton key={index} />
+              <PropertyGrid>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <PropertyCardSkeleton key={i} />
                 ))}
-              </div>
+              </PropertyGrid>
             ) : error ? (
               <div className="mt-6 text-center text-red-500">
                 Error: {error}
               </div>
             ) : (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <PropertyGrid>
                 {currentProperties.map((property) => (
                   <PropertyCardCtn key={property._id} property={property} />
                 ))}
-              </div>
+              </PropertyGrid>
             )}
           </div>
         </main>
