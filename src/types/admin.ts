@@ -8,12 +8,19 @@ export type AdminUserRecord = {
   name?: string
   role: "user" | "agent" | "admin"
   createdAt?: string
+  lastActive?: string
+  isOnboarding?: boolean
+  verificationStatus?: "none" | "pending" | "approved" | "rejected"
+  isFlagged?: boolean
+  isSuspended?: boolean
+  isBanned?: boolean
 }
 
 export type AdminListingRecord = {
   _id: string
   title?: string
   status: string // "pending" | "approved" | "rejected" on the backend today
+  isFlagged?: boolean
   createdAt?: string
   updatedAt?: string
 }
@@ -41,10 +48,23 @@ export type AdminDisputeRecord = {
 
 export type AdminAdRecord = {
   _id: string
-  status: "pending" | "active" | "completed" | "paused"
+  status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "active"
+    | "completed"
+    | "paused"
   isPaid: boolean
   adBudget: number
   createdAt?: string
+  endDate?: string
+}
+
+export type AdminDealRecord = {
+  _id: string
+  platformFee?: number
+  feePaid?: boolean
 }
 
 export type AdminTransactionRecord = {

@@ -9,11 +9,13 @@ import BuyerListStats from "./components/BuyerListStats"
 import BuyerTable from "./components/BuyerTable"
 import BuyerToolbar from "./components/BuyerToolbar"
 import { useAdminUsers } from "./useAdminUsers"
+import { useUserModeration } from "./useUserModeration"
 import { useBuyerFilters } from "./useBuyerFilters"
 
 export default function Users() {
   const { filters, update, clear, hasActive, resetKey } = useBuyerFilters()
   const users = useAdminUsers()
+  const moderate = useUserModeration()
   // transactions and disputes per buyer come from the escrow query
   const escrow = useEscrowData()
 
@@ -114,6 +116,9 @@ export default function Users() {
             activity={activity}
             transactionsKnown={transactionsKnown}
             disputesKnown={disputesKnown}
+            onModerate={(id, action, value) =>
+              moderate.mutate({ id, action, value })
+            }
           />
         )}
 

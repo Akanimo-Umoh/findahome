@@ -58,10 +58,10 @@ export default function Ads() {
   const loading = ads.isLoading
   const empty = !loading && !ads.isError && filtered.length === 0
 
-  const decide = (action: "approve" | "reject", note?: string) => {
+  const decide = (action: "approve" | "reject") => {
     if (!reviewing) return
     adAction.mutate(
-      { id: reviewing._id, action, note },
+      { id: reviewing._id, action },
       { onSuccess: () => setReviewing(null) }
     )
   }

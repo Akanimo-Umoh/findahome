@@ -13,10 +13,10 @@ export type AdState =
 
 export const adState = (a: AdminAd): AdState =>
   a.status === "pending"
-    ? a.isPaid
-      ? "pending_review"
-      : "awaiting_payment"
-    : a.status
+    ? "pending_review"
+    : a.status === "approved"
+      ? "awaiting_payment"
+      : a.status
 
 export const STATE_LABEL: Record<AdState, string> = {
   awaiting_payment: "Awaiting payment",
@@ -106,10 +106,10 @@ export function selectAds(all: AdminAd[], f: Filters) {
   }
 }
 
-// Ads that were paid for and wait for a decision, oldest first.
+// Ads waiting for an admin decision, oldest first.
 export const reviewQueue = (all: AdminAd[]) =>
   all
-    .filter((a) => adState(a) === "pending_review")
+    .filter((a) => a.status === "pending")
     .sort((a, b) => time(a.createdAt) - time(b.createdAt))
 
 // Active / pending / rejected are what is true now. Revenue and the objective split follow the period.

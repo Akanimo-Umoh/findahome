@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom"
-import { EllipsisVertical, Eye, Flag, ShieldAlert } from "lucide-react"
+import {
+  EllipsisVertical,
+  Eye,
+  Flag,
+  ShieldAlert,
+  UserRoundX,
+} from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +16,15 @@ import type { AdminUser } from "@/types/adminUser"
 
 const item = "cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 text-[14px]"
 
-export default function BuyerRowActions({ buyer }: { buyer: AdminUser }) {
+type BuyerRowActionsProps = {
+  buyer: AdminUser
+  onModerate: (action: "flag" | "suspend" | "ban", value: boolean) => void
+}
+
+export default function BuyerRowActions({
+  buyer,
+  onModerate,
+}: BuyerRowActionsProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -30,16 +44,26 @@ export default function BuyerRowActions({ buyer }: { buyer: AdminUser }) {
             View Profile
           </Link>
         </DropdownMenuItem>
-        {/* need account status endpoints on the backend */}
-        <DropdownMenuItem className={item} disabled>
+        <DropdownMenuItem
+          className={item}
+          onSelect={() => onModerate("flag", !buyer.isFlagged)}
+        >
           <Flag aria-hidden />
-          Restrict account
-          <span className="ml-auto text-[10px] uppercase">Soon</span>
+          {buyer.isFlagged ? "Remove flag" : "Flag account"}
         </DropdownMenuItem>
-        <DropdownMenuItem className={item} disabled>
+        <DropdownMenuItem
+          className={item}
+          onSelect={() => onModerate("suspend", !buyer.isSuspended)}
+        >
           <ShieldAlert aria-hidden />
-          Suspend
-          <span className="ml-auto text-[10px] uppercase">Soon</span>
+          {buyer.isSuspended ? "Unsuspend" : "Suspend"}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          className={item}
+          onSelect={() => onModerate("ban", !buyer.isBanned)}
+        >
+          <UserRoundX aria-hidden />
+          {buyer.isBanned ? "Unban" : "Ban"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

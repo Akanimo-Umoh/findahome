@@ -3,7 +3,7 @@
 // Note: the backend's `isVerified` is the e-mail code check, NOT an admin decision on an agent, so it is deliberately not typed here.
 
 export type UserRole = "user" | "agent" | "admin"
-export type VerificationDecision = "verified" | "rejected"
+export type VerificationDecision = "approved" | "rejected"
 
 export type AdminUser = {
   _id: string
@@ -16,6 +16,11 @@ export type AdminUser = {
   rating?: number
   isVerified?: boolean // e-mail code check above isOnboarding
   isOnboarding?: boolean
+  lastActive?: string
+  verificationStatus?: "none" | "pending" | VerificationDecision
+  isFlagged?: boolean
+  isSuspended?: boolean
+  isBanned?: boolean
   createdAt: string
 
   // agent onboarding answers
@@ -30,8 +35,5 @@ export type AdminUser = {
   governmentId?: string[]
   licenseDoc?: string[]
 
-  // ---- not on the backend yet ----
-  verificationStatus?: "pending" | VerificationDecision
   verificationNote?: string
-  verifiedAt?: string
 }

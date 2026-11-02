@@ -51,7 +51,8 @@ export type AdminProperty = {
 
   // ---- not on the backend yet ----
   isFlagged?: boolean
-  flagReason?: string
+  flagReason?: string | null
+  flaggedAt?: string | null
   adminNotes?: AdminNote[]
   statusHistory?: StatusEvent[]
 }

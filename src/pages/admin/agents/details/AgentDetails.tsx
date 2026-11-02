@@ -111,10 +111,10 @@ export default function AgentDetails() {
   }
 
   const state = reviewState(agent)
-  const confirm = (reason?: string) => {
+  const confirm = () => {
     if (!action) return
     verify.mutate(
-      { id: agent._id, status: action, reason },
+      { id: agent._id, status: action },
       { onSuccess: () => setAction(null) }
     )
   }

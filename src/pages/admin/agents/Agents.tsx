@@ -58,10 +58,10 @@ export default function Agents() {
   )
 
   const verify = useVerifyAgent()
-  const confirm = (reason?: string) => {
+  const confirm = () => {
     if (!decision) return
     verify.mutate(
-      { id: decision.agent._id, status: decision.action, reason },
+      { id: decision.agent._id, status: decision.action },
       { onSuccess: () => setDecision(null) }
     )
   }

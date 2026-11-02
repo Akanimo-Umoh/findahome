@@ -38,12 +38,15 @@ export function useReviewProperty() {
     mutationFn: ({
       id,
       status,
+      reason,
     }: {
       id: string
       status: "approved" | "rejected"
-    }) => setPropertyStatus(id, status),
-    onSuccess: (_saved, { id, status }) => {
+      reason?: string
+    }) => setPropertyStatus(id, status, reason),
+    onSuccess: (saved, { id, status }) => {
       patchCaches(qc, id, { status, updatedAt: new Date().toISOString() })
+      if (saved) patchCaches(qc, id, saved)
       // the dashboard's pending / active counts just changed
       qc.invalidateQueries({ queryKey: dashboardQueryKey })
       toast.success(
@@ -73,7 +76,8 @@ export function useFlagProperty() {
     onSuccess: (_saved, { id, flagged, reason }) => {
       patchCaches(qc, id, {
         isFlagged: flagged,
-        flagReason: flagged ? reason : undefined,
+        flagReason: flagged ? (reason ?? "No reason provided") : null,
+        flaggedAt: flagged ? new Date().toISOString() : null,
       })
       toast.success(flagged ? "Listing flagged" : "Flag removed")
     },

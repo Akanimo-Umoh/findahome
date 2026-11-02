@@ -80,16 +80,16 @@ export default function ReviewDialog({
           <DialogDescription>{copy.body(propertyTitle)}</DialogDescription>
         </DialogHeader>
 
-        {action === "flagged" && (
+        {(action === "flagged" || action === "rejected") && (
           <div>
             <label
-              htmlFor="flag-reason"
+              htmlFor="review-reason"
               className="mb-1.5 block text-[13px] font-semibold text-text-primary"
             >
               Reason (optional)
             </label>
             <Textarea
-              id="flag-reason"
+              id="review-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="What should be followed up?"

@@ -31,22 +31,18 @@ export const getAgentProperties = async (
 
 export const setPropertyStatus = async (
   id: string,
-  status: "approved" | "rejected"
+  status: "approved" | "rejected",
+  reason?: string
 ) => {
-  const { data } = await api.put(`/property/status/${id}`, { status })
+  const { data } = await api.put(`/property/status/${id}`, { status, reason })
   const saved: AdminProperty | undefined = data.data ?? data.property
-  // PUT /property/status/:id is currently wired to updateProperty on the
-  // backend, which ignores `status` but still answers 200. Don't report a
-  // success that didn't happen.
-  if (saved?.status && saved.status !== status) {
+  if (saved?.status !== status) {
     throw new Error(
       "The server accepted the request but didn't change the status."
     )
   }
   return saved
 }
-
-// ---- not on the backend yet (see the backend list) ----
 
 export const flagProperty = async (
   id: string,

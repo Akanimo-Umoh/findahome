@@ -4,6 +4,7 @@ import Avatar from "@/components/Avatar"
 import Skeleton from "@/components/ui/Skeleton"
 import { formatDate } from "@/pages/admin/properties/shared/propertyMeta"
 import type { AdminUser } from "@/types/adminUser"
+import type { UserModerationAction } from "../useUserModeration"
 import { userCode, type BuyerActivity } from "../buyerMeta"
 import BuyerRowActions from "./BuyerRowActions"
 
@@ -14,6 +15,7 @@ type BuyerTableProps = {
   // false when the escrow / disputes data failed to load: show "—", not zeros
   transactionsKnown: boolean
   disputesKnown: boolean
+  onModerate: (id: string, action: UserModerationAction, value: boolean) => void
 }
 
 const th =
@@ -26,6 +28,7 @@ export default function BuyerTable({
   activity,
   transactionsKnown,
   disputesKnown,
+  onModerate,
 }: BuyerTableProps) {
   return (
     <div className="overflow-x-auto">
@@ -134,7 +137,12 @@ export default function BuyerTable({
                       {formatDate(u.createdAt)}
                     </td>
                     <td className={`${td} text-right`}>
-                      <BuyerRowActions buyer={u} />
+                      <BuyerRowActions
+                        buyer={u}
+                        onModerate={(action, value) =>
+                          onModerate(u._id, action, value)
+                        }
+                      />
                     </td>
                   </tr>
                 )

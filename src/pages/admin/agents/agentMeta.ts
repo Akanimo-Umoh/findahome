@@ -14,7 +14,7 @@ export const REVIEW_LABEL: Record<ReviewState, string> = {
 // from isOnboarding (details submitted) + verificationStatus (admin decision).
 export function reviewState(agent: AdminUser): ReviewState {
   if (!agent.isOnboarding) return "incomplete"
-  if (agent.verificationStatus === "verified") return "verified"
+  if (agent.verificationStatus === "approved") return "verified"
   if (agent.verificationStatus === "rejected") return "rejected"
   return "pending"
 }

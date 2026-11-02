@@ -4,7 +4,6 @@ import {
   MailCheck,
   MailWarning,
   Mail,
-  NotebookPen,
   Phone,
   ShieldAlert,
 } from "lucide-react"
@@ -12,11 +11,16 @@ import Avatar from "@/components/Avatar"
 import { formatDate } from "@/pages/admin/properties/shared/propertyMeta"
 import type { AdminUser } from "@/types/adminUser"
 import { userCode } from "../../buyerMeta"
+import { useUserModeration } from "../../useUserModeration"
 
 const btn =
-  "inline-flex h-10 cursor-not-allowed items-center gap-2 rounded-lg border border-slate-200 px-4 text-[14px] font-semibold text-text-disabled outline-none"
+  "inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 px-4 text-[14px] font-semibold text-text-primary outline-none hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-button-bg/40 disabled:cursor-not-allowed disabled:opacity-50"
 
 export default function BuyerHeader({ buyer }: { buyer: AdminUser }) {
+  const moderate = useUserModeration()
+  const set = (action: "flag" | "suspend" | "ban", value: boolean) =>
+    moderate.mutate({ id: buyer._id, action, value })
+
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
@@ -57,38 +61,41 @@ export default function BuyerHeader({ buyer }: { buyer: AdminUser }) {
               <CalendarDays size={15} aria-hidden />
               Joined {formatDate(buyer.createdAt)}
             </li>
+            <li className="flex items-center gap-2">
+              <CalendarDays size={15} aria-hidden />
+              Last active {formatDate(buyer.lastActive)}
+            </li>
           </ul>
         </div>
       </div>
 
-      {/* none of these exist on the backend yet (notes, restrict, suspend) */}
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          disabled
-          title="Needs backend support"
-          className={btn}
-        >
-          <NotebookPen size={16} aria-hidden />
-          Add Internal Note
-        </button>
-        <button
-          type="button"
-          disabled
-          title="Needs backend support"
+          disabled={moderate.isPending}
+          onClick={() => set("flag", !buyer.isFlagged)}
           className={btn}
         >
           <Flag size={16} aria-hidden />
-          Restrict Account
+          {buyer.isFlagged ? "Remove flag" : "Flag account"}
         </button>
         <button
           type="button"
-          disabled
-          title="Needs backend support"
+          disabled={moderate.isPending}
+          onClick={() => set("suspend", !buyer.isSuspended)}
           className={btn}
         >
           <ShieldAlert size={16} aria-hidden />
-          Suspend
+          {buyer.isSuspended ? "Unsuspend" : "Suspend"}
+        </button>
+        <button
+          type="button"
+          disabled={moderate.isPending}
+          onClick={() => set("ban", !buyer.isBanned)}
+          className={btn}
+        >
+          <ShieldAlert size={16} aria-hidden />
+          {buyer.isBanned ? "Unban" : "Ban"}
         </button>
       </div>
     </section>

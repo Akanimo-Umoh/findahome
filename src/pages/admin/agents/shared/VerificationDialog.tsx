@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -8,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
 import type { VerificationDecision } from "@/types/adminUser"
 
 const COPY: Record<
@@ -21,7 +19,7 @@ const COPY: Record<
     button: string
   }
 > = {
-  verified: {
+  approved: {
     title: "Verify this agent?",
     body: (n) => `${n} will be marked as a verified agent.`,
     confirm: "Verify agent",
@@ -41,7 +39,7 @@ type VerificationDialogProps = {
   action: VerificationDecision
   agentName: string
   pending: boolean
-  onConfirm: (reason?: string) => void
+  onConfirm: () => void
   onClose: () => void
 }
 
@@ -54,8 +52,6 @@ export default function VerificationDialog({
   onClose,
 }: VerificationDialogProps) {
   const copy = COPY[action]
-  const [reason, setReason] = useState("")
-  const needsReason = action === "rejected" && reason.trim() === ""
 
   return (
     <Dialog open onOpenChange={(open) => !open && !pending && onClose()}>
@@ -65,32 +61,14 @@ export default function VerificationDialog({
           <DialogDescription>{copy.body(agentName)}</DialogDescription>
         </DialogHeader>
 
-        {action === "rejected" && (
-          <div>
-            <label
-              htmlFor="reject-reason"
-              className="mb-1.5 block text-[13px] font-semibold text-text-primary"
-            >
-              Reason
-            </label>
-            <Textarea
-              id="reject-reason"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="What does the agent need to fix?"
-              className="min-h-24"
-            />
-          </div>
-        )}
-
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Cancel
           </Button>
           <Button
             className={copy.button}
-            disabled={pending || needsReason}
-            onClick={() => onConfirm(reason.trim() || undefined)}
+            disabled={pending}
+            onClick={onConfirm}
           >
             {pending ? copy.busy : copy.confirm}
           </Button>

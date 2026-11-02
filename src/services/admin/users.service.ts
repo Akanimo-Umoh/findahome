@@ -8,8 +8,6 @@ export const getAdminUsers = async (): Promise<AdminUser[]> => {
   return data.data ?? []
 }
 
-// ---- not on the backend yet (see the backend list) ----
-
 export const setAgentVerification = async (
   id: string,
   status: VerificationDecision,
@@ -19,5 +17,23 @@ export const setAgentVerification = async (
     status,
     reason,
   })
-  return data.data as AdminUser | undefined
+  return data.agent as AdminUser | undefined
+}
+
+export const moderateUserAccount = async (
+  id: string,
+  action: "flag" | "suspend" | "ban",
+  value: boolean
+) => {
+  const { data } = await api.patch(`/user/users/${id}/moderate`, {
+    action,
+    value,
+  })
+  const user = data.user as AdminUser
+  return {
+    _id: user._id,
+    isFlagged: user.isFlagged,
+    isSuspended: user.isSuspended,
+    isBanned: user.isBanned,
+  }
 }

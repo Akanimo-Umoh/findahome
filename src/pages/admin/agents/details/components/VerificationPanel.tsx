@@ -2,7 +2,6 @@ import { Check, Minus, X } from "lucide-react"
 import AdminSection from "@/components/admin/ui/AdminSection"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { formatDate } from "@/pages/admin/properties/shared/propertyMeta"
 import type { AdminUser, VerificationDecision } from "@/types/adminUser"
 import type { ReviewState } from "../../agentMeta"
 
@@ -44,9 +43,7 @@ export default function VerificationPanel({
     pending: ready
       ? "All required details are in. Ready for a decision."
       : "Some required details are missing. Review before deciding.",
-    verified: agent.verifiedAt
-      ? `Verified on ${formatDate(agent.verifiedAt)}.`
-      : "This agent is verified.",
+    verified: "This agent is verified.",
     rejected: "This verification was rejected.",
   }
 
@@ -95,7 +92,7 @@ export default function VerificationPanel({
         <Button
           className="bg-emerald-600 text-white hover:bg-emerald-700"
           disabled={locked || state === "verified"}
-          onClick={() => onDecide("verified")}
+          onClick={() => onDecide("approved")}
         >
           Verify agent
         </Button>
