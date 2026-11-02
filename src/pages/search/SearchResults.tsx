@@ -14,6 +14,7 @@ import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 import Search from "../home/Search"
 import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
 import Pagination from "@/components/shared/Pagination"
+import PropertyGrid from "@/components/shared/PropertyGrid"
 
 type SortOption = "low-to-high" | "high-to-low" | "newest" | ""
 
@@ -147,11 +148,11 @@ export default function SearchResults() {
         <div className="mt-6 space-y-8">
           {loading || isTransitioning ? (
             // initial load
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <PropertyCardSkeleton key={index} />
+            <PropertyGrid>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <PropertyCardSkeleton key={i} />
               ))}
-            </div>
+            </PropertyGrid>
           ) : error ? (
             // api error
             <div className="py-12 text-center">
@@ -161,11 +162,11 @@ export default function SearchResults() {
             </div>
           ) : currentProperties.length > 0 ? (
             // results
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <PropertyGrid>
               {currentProperties.map((property) => (
                 <PropertyCardCtn key={property._id} property={property} />
               ))}
-            </div>
+            </PropertyGrid>
           ) : (
             // no results
             <div className="py-12 text-center">

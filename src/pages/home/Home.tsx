@@ -1,13 +1,15 @@
 import FeaturedProps from "./FeaturedProps"
 import HowItWorks from "./HowItWorks"
-import Reviews from "./Reviews"
+// import Reviews from "./Reviews"
 import Search from "./Search"
 import Properties from "./Properties"
 import Faq from "./Faq"
 import { useAuthContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
-// import Why from "./Why";
+import Why from "./Why"
+import Action from "./Action"
+import { useScrollToHash } from "@/hooks/useScrollToHash"
 
 export default function Home() {
   const { user } = useAuthContext()
@@ -17,6 +19,8 @@ export default function Home() {
     if (user?.role === "agent") navigate("/agent/dashboard", { replace: true })
     if (user?.role === "admin") navigate("/admin/dashboard", { replace: true })
   }, [user, navigate])
+
+  useScrollToHash()
 
   return (
     <div className="font-ssPro">
@@ -33,7 +37,7 @@ export default function Home() {
               <span className="hidden md:flex">Your next home, made easy.</span>
             </p>
 
-            <p className="text-[12px] leading-4 md:max-w-138 md:text-[18px] md:leading-[27px]">
+            <p className="text-[12px] leading-4 md:max-w-138 md:text-[18px] md:leading-6.75">
               <span className="md:hidden">
                 Discover verified properties across Nigeria. Connect with
                 trusted agents and move in safely.
@@ -57,28 +61,33 @@ export default function Home() {
           <FeaturedProps />
         </section>
 
-        {/* why section */}
-        {/* <section className="mt-8">
-        <Why />
-        </section> */}
-
         <section>
           <Properties />
         </section>
 
         {/* how it works */}
-        <section>
+        <section id="how-it-works" className="scroll-mt-20">
           <HowItWorks />
         </section>
 
+        {/* why section */}
+        <section id="why-choose-us" className="mt-8 scroll-mt-20">
+          <Why />
+        </section>
+
         {/* frequently asked questions */}
-        <section>
+        <section id="faq" className="scroll-mt-20">
           <Faq />
         </section>
 
         {/* reviews */}
-        <section>
+        {/* <section>
           <Reviews />
+        </section> */}
+
+        {/* action link */}
+        <section>
+          <Action />
         </section>
       </main>
     </div>

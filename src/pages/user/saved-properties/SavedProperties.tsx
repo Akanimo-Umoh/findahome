@@ -6,6 +6,7 @@ import { useState } from "react"
 import PropertyCardSkeleton from "@/components/PropertyCardSkeleton"
 // import PropertyCard from "@/components/PropertyCard"
 import PropertyCardCtn from "@/components/shared/PropertyCardCtn"
+import PropertyGrid from "@/components/shared/PropertyGrid"
 
 type Tab = "apartment" | "land"
 
@@ -59,11 +60,11 @@ export default function SavedProperties() {
         {/* main apartment card ctn */}
         <div className="mt-8 space-y-8">
           {loading ? (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+            <PropertyGrid>
               {Array.from({ length: 3 }).map((_, i) => (
                 <PropertyCardSkeleton key={i} />
               ))}
-            </div>
+            </PropertyGrid>
           ) : error ? (
             <p>{error}</p>
           ) : filtered.length === 0 ? (
@@ -71,11 +72,11 @@ export default function SavedProperties() {
               You don't have any saved properties yet.
             </p>
           ) : (
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] justify-center gap-6">
+            <PropertyGrid>
               {filtered.map((fav) => (
                 <PropertyCardCtn key={fav._id} property={fav.property} />
               ))}
-            </div>
+            </PropertyGrid>
           )}
         </div>
       </main>

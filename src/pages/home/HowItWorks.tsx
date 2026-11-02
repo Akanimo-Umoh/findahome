@@ -1,93 +1,133 @@
-import chats from "@/assets/images/icon-chat.svg"
-import search from "@/assets/images/search.svg"
-import dashboard from "@/assets/images/icon-dashboard.svg"
-import { motion } from "framer-motion"
+import { motion, useReducedMotion, type Variants } from "framer-motion"
+
+// Icons: these need to be the BLUE version (they now sit on a white tile).
+import search from "@/assets/images/search-why.svg"
+import chats from "@/assets/images/icon-chats.svg"
+import payFee from "@/assets/images/icon-pay-fee.svg"
+import inspect from "@/assets/images/icon-inspect.svg"
+import home from "@/assets/images/icon-home.svg"
+import { useMediaQuery } from "@/hooks/useMediaQuery"
+
+const steps = [
+  {
+    icon: search,
+    title: "Search Properties",
+    details:
+      "Explore verified listings and message agents direct. No login needed to browse.",
+  },
+  {
+    icon: chats,
+    title: "Connect with Agents",
+    details: "Chat directly with trusted agents and schedule viewings.",
+  },
+  {
+    icon: payFee,
+    title: "Pay Inspection Fee",
+    details:
+      "Pay a small fee held securely in escrow. The agent is paid only after you confirm.",
+  },
+  {
+    icon: inspect,
+    title: "Inspect and Confirm",
+    details:
+      "Visit the property, then confirm the inspection was satisfactory to release the fee.",
+  },
+  {
+    icon: home,
+    title: "Pay and Move In",
+    details:
+      "Happy with the property? Proceed to payment and schedule the handover with the agent.",
+  },
+]
 
 export default function HowItWorks() {
-  const works = [
-    {
-      icon: search,
-      title: "Search Properties",
-      details: "Browse verified listings across Nigeria with detailed filters",
-      direction: "left",
-    },
-    {
-      icon: chats,
-      title: "Connect with agents",
-      details: "Chat directly with trusted agents and schedule viewings.",
-      direction: "right",
-    },
-    {
-      icon: dashboard,
-      title: "Move in safely",
-      details: "Complete transactions with  our escrow protection.",
-      direction: "bottom",
-    },
-  ]
+  const reduceMotion = useReducedMotion()
+  // At lg the 5 steps sit in one row, so we cascade them left to right.
+  // On smaller screens they stack and are revealed one by one as you scroll,
+  // so a stagger delay would only make each card feel late.
+  const isRow = useMediaQuery("(min-width: 1024px)")
 
-  // ✅ ADDED: animation variants
-  const variants = {
-    left: {
-      hidden: { opacity: 0, x: -40 },
-      visible: { opacity: 1, x: 0 },
-    },
-    right: {
-      hidden: { opacity: 0, x: 40 },
-      visible: { opacity: 1, x: 0 },
-    },
-    bottom: {
-      hidden: { opacity: 0, y: 40 },
-      visible: { opacity: 1, y: 0 },
-    },
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 28 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay },
+    }),
+  }
+
+  // Number badge: pops in just after its card lands (inherits the card's state)
+  const badgeVariants: Variants = {
+    hidden: { opacity: 0, scale: reduceMotion ? 1 : 0.4 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 420,
+        damping: 18,
+        delay: delay + 0.18,
+      },
+    }),
   }
 
   return (
     <div className="max-w-7xl px-6 md:px-8">
-      <div className="text-center text-text-primary md:flex md:flex-col md:gap-1">
-        <p className="font-raleway text-[24px] font-semibold tracking-[1px] md:text-[36px]">
-          How it works
-        </p>
+      <motion.div
+        className="text-center text-text-primary md:flex md:flex-col md:gap-1"
+        initial={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <h2 className="font-raleway text-[24px] font-semibold tracking-[1px] md:text-[36px]">
+          How It Works
+        </h2>
         <p className="text-[12px] text-text-secondary md:text-[16px]">
-          3 simple steps to your dream apartment
+          A safe, simple process to finding your dream apartment
         </p>
-      </div>
+      </motion.div>
 
-      <div className="mx-auto mt-6 flex max-w-60 flex-col items-start justify-center md:mt-12 md:max-w-full md:flex-row md:gap-12">
-        {works.map((work, index) => (
-          <motion.div
-            key={index}
-            className="flex w-full justify-center gap-1 md:h-50 md:w-50 md:flex-col md:items-center md:justify-center md:gap-2 md:rounded-full md:border md:border-button-bg"
-            variants={variants[work.direction as keyof typeof variants]}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
-          >
-            <div className="flex w-6 flex-col items-center md:w-8">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-button-bg md:h-8 md:w-8 md:rounded-2xl">
-                <img
-                  src={work.icon}
-                  alt="search properties"
-                  className="h-4 w-4 md:h-6 md:w-6"
-                />
+      {/* 1 col on mobile, 2 on sm/md (last card centers), 5 in a row on lg */}
+      <ol className="mx-auto mt-8 flex max-w-sm flex-wrap justify-center gap-x-5 gap-y-7 sm:max-w-2xl md:mt-12 lg:max-w-full">
+        {steps.map((step, index) => {
+          const delay = isRow ? index * 0.1 : 0
+
+          return (
+            <motion.li
+              key={step.title}
+              custom={delay}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.35,
+                margin: "0px 0px -40px 0px",
+              }}
+              className="relative w-full rounded-2xl bg-bg-accent p-4 pt-5 sm:w-[calc(50%-0.625rem)] lg:w-[calc(20%-1rem)]"
+            >
+              <motion.span
+                variants={badgeVariants}
+                className="absolute -top-3 left-0 flex h-6 w-6 items-center justify-center rounded-full bg-button-bg text-[12px] font-semibold text-white"
+              >
+                {index + 1}
+              </motion.span>
+
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-button-sec">
+                <img src={step.icon} alt="" className="h-5 w-5" />
               </div>
-              {/* dashed border */}
-              {index !== works.length - 1 && (
-                <div className="h-[59px] w-[1px] border-l border-dashed border-text-secondary md:hidden"></div>
-              )}
-            </div>
 
-            <div className="w-full md:w-[151px] md:text-center">
-              <p className="text-[12px] font-semibold text-text-primary md:text-[14px] md:tracking-[1px]">
-                {work.title}
+              <h3 className="mt-3 text-[12px] font-semibold text-text-primary md:text-[14px]">
+                {step.title}
+              </h3>
+              <p className="mt-1 text-[12px] leading-4.5 text-text-secondary md:text-[13px]">
+                {step.details}
               </p>
-              <p className="text-[12px] text-text-secondary md:text-[12px]">
-                {work.details}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+            </motion.li>
+          )
+        })}
+      </ol>
     </div>
   )
 }
