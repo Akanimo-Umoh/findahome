@@ -146,7 +146,7 @@ export default function VerifyEmail() {
   }
 
   return (
-    <div className="mx-6 flex w-full flex-col gap-8 font-ssPro">
+    <div className="mx-6 flex w-full flex-col gap-8 md:mx-7.5 md:my-5 md:gap-10">
       <p className="text-center font-raleway text-[18px] font-semibold tracking-[1px] text-text-primary">
         Verify Email
       </p>
@@ -200,7 +200,7 @@ export default function VerifyEmail() {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="h-[45px] w-[33px] bg-white text-center text-[18px] text-black"
+                  className="h-[45px] w-[33px] rounded-lg bg-white text-center text-[18px] text-black outline-none md:border-2 md:border-text-disabled md:focus:border-sec-but"
                   aria-label={`Digit ${index + 1}`}
                   disabled={isVerifying || isResending}
                 />
