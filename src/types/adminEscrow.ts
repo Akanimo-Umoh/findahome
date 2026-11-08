@@ -15,15 +15,21 @@ export interface RawProperty {
 }
 
 export interface RawEscrow {
+  code?: string
   _id: string
   property?: RawProperty | null
   buyer?: RawUser | null
   seller?: RawUser | null
   amount: number
-  status: string // on_hold | released
+  platformFee?: number
+  netPayout?: number
+  status: "on_hold" | "released" | "refunded"
   type?: string // inspection | purchase
   reference?: string
   createdAt: string
+  releasedAt?: string | null
+  releasedBy?: RawUser | string | null
+  reason?: string | null
 }
 
 // A Purchase or an Inspection (same reference as the escrow)
@@ -37,6 +43,7 @@ export interface RawLinkedRecord {
   owner?: RawUser | null
   feePaid?: boolean
   feeReleased?: boolean
+  platformFee?: number
   initializedAt?: string
   paidAt?: string
   scheduledAt?: string

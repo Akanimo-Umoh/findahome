@@ -1,14 +1,9 @@
 import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 
 export type EscrowKind = "inspection" | "purchase"
-export type EscrowState =
-  | "pending"
-  | "in_escrow"
-  | "released"
-  | "disputed"
-  | "refunded"
+export type EscrowState = "in_escrow" | "released" | "disputed" | "refunded"
 export type EscrowTab = "all" | EscrowState
-export type EscrowAction = "approve" | "release" | "hold"
+export type EscrowAction = "release" | "hold"
 
 export interface Party {
   id: string | null
@@ -24,8 +19,14 @@ export interface EscrowRow {
   kind: EscrowKind
   status: EscrowState
   released: boolean
+  releaseReady: boolean
   amount: number
+  platformFee: number | null
+  netPayout: number | null
+  netPayoutConfirmed: boolean
   createdAt: string
+  releasedAt: string | null
+  reason: string | null
   propertyId: string | null
   propertyTitle: string
   propertyAddress: string | null
@@ -38,9 +39,24 @@ export interface EscrowRow {
 
 export interface EscrowStatsData {
   total: number
-  pending: number
   inEscrow: number
   released: number
   disputed: number
+  refunded: number
+  platformRevenue: number
   count: Record<EscrowTab, number>
+}
+
+export function isEscrowReleaseReady(row: EscrowRow): boolean {
+  if (row.released || row.status === "refunded" || row.openDispute) return false
+  if (!row.linked?.feePaid) return false
+  if (!row.netPayoutConfirmed) return false
+
+  const completed =
+    row.kind === "inspection"
+      ? row.linked.status === "inspection_completed"
+      : row.linked.status === "handover_completed" ||
+        row.linked.status === "funds_released"
+
+  return completed
 }

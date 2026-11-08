@@ -1,6 +1,4 @@
 import type { AdObjective } from "@/types/ad"
-
-// "rejected" is not on the backend yet; the UI is ready for it.
 export type AdminAdStatus =
   | "pending"
   | "approved"

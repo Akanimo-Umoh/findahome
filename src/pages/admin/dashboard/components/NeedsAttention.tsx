@@ -85,7 +85,7 @@ export default function NeedsAttention({
       icon: UserCheck,
       tone: "info",
       title: "Agent applications",
-      sub: "Verification isn’t tracked yet",
+      sub: "Waiting for a verification decision",
       value: o?.attention.agentApplications,
     },
     {

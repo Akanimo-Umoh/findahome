@@ -7,7 +7,7 @@ import { propertiesKey } from "@/pages/admin/properties/shared/useModeration"
 import { useAdminUsers } from "@/pages/admin/users/useAdminUsers"
 import { getAdminProperties } from "@/services/admin/properties.service"
 import type { AdminUser, VerificationDecision } from "@/types/adminUser"
-import { countListings, reviewState } from "./agentMeta"
+import { byApplicationOrder, countListings, reviewState } from "./agentMeta"
 import AgentStats from "./components/AgentStats"
 import AgentTable from "./components/AgentTable"
 import AgentToolbar from "./components/AgentToolbar"
@@ -17,9 +17,10 @@ import VerificationDialog from "./shared/VerificationDialog"
 import { useVerifyAgent } from "./shared/useVerifyAgent"
 import { useAgentFilters } from "./useAgentFilters"
 
-const QUEUE_SIZE = 5
+const QUEUE_PAGE_SIZE = 10
 
 export default function Agents() {
+  const [queuePage, setQueuePage] = useState(1)
   const { filters, update, clear, hasActive, resetKey } = useAgentFilters()
   const [decision, setDecision] = useState<{
     agent: AdminUser
@@ -49,8 +50,16 @@ export default function Agents() {
     () =>
       agents
         .filter((a) => reviewState(a) === "pending")
-        .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+        .sort(byApplicationOrder),
     [agents]
+  )
+  const queuePageCount = Math.max(1, Math.ceil(queue.length / QUEUE_PAGE_SIZE))
+
+  // a decision can empty the last page, so never trust the stored number
+  const currentQueuePage = Math.min(queuePage, queuePageCount)
+  const queueRows = queue.slice(
+    (currentQueuePage - 1) * QUEUE_PAGE_SIZE,
+    currentQueuePage * QUEUE_PAGE_SIZE
   )
   const { tabCounts, filtered, pageCount, page, rows } = useMemo(
     () => selectAgents(agents, filters),
@@ -79,8 +88,11 @@ export default function Agents() {
       />
 
       <VerificationQueue
-        agents={queue.slice(0, QUEUE_SIZE)}
+        agents={queueRows}
         total={queue.length}
+        page={currentQueuePage}
+        pageSize={QUEUE_PAGE_SIZE}
+        onPageChange={setQueuePage}
         loading={loading}
       />
 

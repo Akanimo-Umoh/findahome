@@ -10,6 +10,7 @@ import { useAgentTransactionsList } from "@/hooks/useAgentTransactionsList"
 import { useAgentAds } from "@/hooks/useAgentAds"
 import { getCategory } from "@/pages/agent/my-transaction/transactionHelpers"
 import { useNavigate } from "react-router-dom"
+import VerificationBanner from "../components/VerificationBanner"
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -51,6 +52,8 @@ export default function Dashboard() {
           </p>
         </div>
       </div>
+
+      <VerificationBanner />
 
       {/* available balance */}
       <div className="mt-6 space-y-4 rounded-2xl bg-button-bg p-3 md:mt-6 md:py-4">

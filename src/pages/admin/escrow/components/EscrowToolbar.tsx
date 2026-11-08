@@ -4,10 +4,10 @@ import type { EscrowStatsData, EscrowTab } from "../types"
 
 const TABS: { id: EscrowTab; label: string }[] = [
   { id: "all", label: "All transactions" },
-  { id: "pending", label: "Pending" },
   { id: "in_escrow", label: "In escrow" },
   { id: "released", label: "Released" },
   { id: "disputed", label: "Disputed" },
+  { id: "refunded", label: "Refunded" },
 ]
 
 interface Props {

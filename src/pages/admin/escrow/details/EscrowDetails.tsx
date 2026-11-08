@@ -9,7 +9,7 @@ import { MoneyPanel } from "./components/MoneyPanel"
 import { PartiesPanel } from "./components/PartiesPanel"
 import { ReleaseReadiness } from "./components/ReleaseReadiness"
 import { formatDate, KIND_LABEL } from "../format"
-import type { EscrowAction } from "../types"
+import { isEscrowReleaseReady, type EscrowAction } from "../types"
 import { useEscrowData } from "../useEscrow"
 
 const BACK = "/admin/transactions"
@@ -96,13 +96,18 @@ export default function EscrowDetails() {
                 <RotateCcw className="mr-2 size-4" /> Refund buyer
               </Button>
               <Button
-                onClick={() =>
-                  setAction(row.status === "pending" ? "approve" : "release")
+                disabled={!isEscrowReleaseReady(row)}
+                title={
+                  row.netPayoutConfirmed
+                    ? isEscrowReleaseReady(row)
+                      ? undefined
+                      : "Payment, completion, and dispute checks must all pass before release"
+                    : "Release is disabled until the backend returns a confirmed net payout."
                 }
+                onClick={() => setAction("release")}
                 className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
               >
-                <CheckCircle2 className="mr-2 size-4" />{" "}
-                {row.status === "pending" ? "Approve payment" : "Release funds"}
+                <CheckCircle2 className="mr-2 size-4" /> Release funds
               </Button>
             </>
           ) : (

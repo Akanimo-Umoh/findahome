@@ -78,7 +78,7 @@ export default function AdReviewDialog({
             disabled={busy}
             onClick={() => onDecide("approve")}
           >
-            {pending === "approve" ? "Publishing…" : "Approve & Publish"}
+            {pending === "approve" ? "Approving…" : "Approve Ad"}
           </Button>
         </DialogFooter>
       </DialogContent>

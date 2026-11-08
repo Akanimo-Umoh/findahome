@@ -1,5 +1,5 @@
 import type { AdminUser } from "@/types/adminUser"
-import { reviewState, type ReviewState } from "./agentMeta"
+import { byApplicationOrder, reviewState, type ReviewState } from "./agentMeta"
 
 export const PAGE_SIZE = 10
 
@@ -39,7 +39,13 @@ export function selectAgents(all: AdminUser[], f: Filters) {
   const scoped = all.filter((a) => matchesSearch(a, f.q))
   const filtered = scoped
     .filter((a) => f.status === "all" || reviewState(a) === f.status)
-    .sort((a, b) => time(b.createdAt) - time(a.createdAt))
+    .sort(
+      // the review tab is a work list: first come, first served.
+      // every other tab stays newest first
+      f.status === "pending"
+        ? byApplicationOrder
+        : (a, b) => time(b.createdAt) - time(a.createdAt)
+    )
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const page = Math.min(f.page, pageCount)

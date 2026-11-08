@@ -1,4 +1,3 @@
-// (advisory only; the backend does not enforce it yet)
 import { Check, Minus, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { EscrowRow } from "../../types"
@@ -23,7 +22,7 @@ export function ReleaseReadiness({ row }: { row: EscrowRow }) {
     },
     { label: "No open dispute", ok: !row.openDispute },
   ]
-  const ready = checks.every((c) => c.ok === true)
+  const ready = row.releaseReady
 
   return (
     <Panel title="Release readiness">
@@ -58,12 +57,20 @@ export function ReleaseReadiness({ row }: { row: EscrowRow }) {
           ? "This payment was refunded to the buyer."
           : row.released
             ? "Funds have already been released."
-            : row.status === "pending"
-              ? "This payment is waiting for your approval before it is held in escrow."
-              : ready
-                ? "Everything checks out. This escrow is ready to release."
-                : "Review the items above before releasing."}
+            : ready
+              ? "Everything checks out. This escrow is ready to release."
+              : "Review the items above before releasing."}
       </p>
+      {row.releasedAt && (
+        <p className="mt-2 text-xs text-slate-400">
+          Released {new Date(row.releasedAt).toLocaleString("en-NG")}
+        </p>
+      )}
+      {row.reason && (
+        <p className="mt-2 rounded-md bg-slate-50 p-2 text-xs text-slate-600">
+          {row.reason}
+        </p>
+      )}
     </Panel>
   )
 }

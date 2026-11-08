@@ -6,7 +6,6 @@ export const KIND_LABEL: Record<EscrowKind, string> = {
 }
 
 export const STATE_LABEL: Record<EscrowState, string> = {
-  pending: "Pending",
   in_escrow: "In escrow",
   released: "Released",
   disputed: "Disputed",

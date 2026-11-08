@@ -11,13 +11,30 @@ export const REVIEW_LABEL: Record<ReviewState, string> = {
 }
 
 // `isVerified` on the user is the e-mail code check, so the review state comes
-// from isOnboarding (details submitted) + verificationStatus (admin decision).
-export function reviewState(agent: AdminUser): ReviewState {
-  if (!agent.isOnboarding) return "incomplete"
-  if (agent.verificationStatus === "approved") return "verified"
-  if (agent.verificationStatus === "rejected") return "rejected"
-  return "pending"
-}
+// straight from verificationStatus, which the backend owns.
+const STATE_BY_STATUS = {
+  none: "incomplete",
+  pending: "pending",
+  approved: "verified",
+  rejected: "rejected",
+} as const satisfies Record<
+  NonNullable<AdminUser["verificationStatus"]>,
+  ReviewState
+>
+
+export const reviewState = (agent: AdminUser): ReviewState =>
+  STATE_BY_STATUS[agent.verificationStatus ?? "none"]
+
+// When the application reached the admin. `onboardedAt` comes from the backend
+// once it records it; until then the join date is the closest stand-in.
+export const submittedAt = (agent: AdminUser): string =>
+  agent.onboardedAt ?? agent.createdAt
+
+const timeOf = (iso: string) => new Date(iso).getTime() || 0
+
+// First come, first served: the longest-waiting application comes first.
+export const byApplicationOrder = (a: AdminUser, b: AdminUser): number =>
+  timeOf(submittedAt(a)) - timeOf(submittedAt(b)) || a._id.localeCompare(b._id)
 
 // Exactly the two files the onboarding form uploads (Step 3).
 export type AgentDocument = {

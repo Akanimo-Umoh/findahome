@@ -30,7 +30,7 @@ export const STATUS_LABEL_LONG: Record<PropertyStatus, string> = {
   rejected: "Rejected",
 }
 
-// There is no human-readable id on the backend yet, so derive a stable one.
+// Older records may not have a generated property code.
 export const propertyCode = (p: Pick<AdminProperty, "_id" | "code">) =>
   p.code ?? `PROP-${p._id.slice(-6).toUpperCase()}`
 

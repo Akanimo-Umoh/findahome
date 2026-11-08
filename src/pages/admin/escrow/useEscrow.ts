@@ -44,6 +44,8 @@ export function useEscrowData() {
         partial: [purchases, inspections, disputes].some(
           (r) => r.status === "rejected"
         ),
+        purchases:
+          purchases.status === "fulfilled" ? purchases.value : undefined,
         disputes: disputes.status === "fulfilled" ? disputes.value : undefined,
         inspections:
           inspections.status === "fulfilled" ? inspections.value : undefined,
@@ -55,18 +57,13 @@ export function useEscrowData() {
 export function useSetEscrowStatus() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (v: {
-      id: string
-      status: "on_hold" | "released"
-      approving?: boolean
-    }) => escrowService.setStatus(v.id, v.status),
-    onSuccess: (_d, v) => {
+    mutationFn: (v: { id: string; status: "on_hold" | "released" }) =>
+      escrowService.setStatus(v.id, v.status),
+    onSuccess: (_data, v) => {
       toast.success(
         v.status === "released"
           ? "Funds released to the agent"
-          : v.approving
-            ? "Payment approved and held in escrow"
-            : "Escrow moved back to hold"
+          : "Escrow moved back to hold"
       )
       qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
     },

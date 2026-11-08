@@ -92,9 +92,8 @@ export function buildOverview(
     ? src.users.filter((u) => u.role === "user")
     : null
   const agentReviewPending = (u: NonNullable<typeof agents>[number]) =>
-    !!u.isOnboarding &&
-    u.verificationStatus !== "approved" &&
-    u.verificationStatus !== "rejected"
+    u.verificationStatus === "pending"
+
   const agentPendingCount = count(agents, agentReviewPending)
   const agentVerifiedCount = count(
     agents,
@@ -235,7 +234,7 @@ export function buildOverview(
     },
 
     attention: {
-      agentApplications: null, // see users.agents.pendingVerification
+      agentApplications: agentPendingCount,
       pendingActions: sum(
         disputesOpen,
         listingsPending,

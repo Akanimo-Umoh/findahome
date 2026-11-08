@@ -9,7 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EscrowActionDialog } from "./EscrowActionDialog"
-import type { EscrowAction, EscrowRow } from "../types"
+import {
+  isEscrowReleaseReady,
+  type EscrowAction,
+  type EscrowRow,
+} from "../types"
 
 export function EscrowRowActions({ row }: { row: EscrowRow }) {
   const navigate = useNavigate()
@@ -34,18 +38,19 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
             <Eye className="size-4" /> View details
           </DropdownMenuItem>
 
-          {row.status === "pending" && (
-            <DropdownMenuItem onSelect={() => setAction("approve")}>
-              <CheckCircle2 className="size-4" /> Approve payment
+          {!row.released && row.status !== "refunded" && (
+            <DropdownMenuItem
+              disabled={!isEscrowReleaseReady(row)}
+              title={
+                row.netPayoutConfirmed
+                  ? undefined
+                  : "Backend net payout is not confirmed"
+              }
+              onSelect={() => setAction("release")}
+            >
+              <CheckCircle2 className="size-4" /> Release funds
             </DropdownMenuItem>
           )}
-          {!row.released &&
-            row.status !== "pending" &&
-            row.status !== "refunded" && (
-              <DropdownMenuItem onSelect={() => setAction("release")}>
-                <CheckCircle2 className="size-4" /> Release funds
-              </DropdownMenuItem>
-            )}
           {row.released && (
             <DropdownMenuItem onSelect={() => setAction("hold")}>
               <Undo2 className="size-4" /> Move back to hold

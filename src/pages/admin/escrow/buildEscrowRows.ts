@@ -83,22 +83,34 @@ export function buildEscrowRows({
       ? "released"
       : e.status === "refunded"
         ? "refunded"
-        : e.status === "pending"
-          ? "pending"
-          : openDispute
-            ? "disputed"
-            : "in_escrow"
+        : openDispute
+          ? "disputed"
+          : "in_escrow"
     const property = e.property ?? linked?.property ?? null
+    const linkedComplete =
+      !!linked &&
+      (kind === "inspection"
+        ? linked.status === "inspection_completed"
+        : ["handover_completed", "funds_released"].includes(linked.status))
+    const platformFee = e.platformFee ?? linked?.platformFee ?? null
 
     return {
       id: e._id,
-      code: `TXN-${e._id.slice(-6).toUpperCase()}`,
+      code: e.code ?? `TXN-${e._id.slice(-6).toUpperCase()}`,
       reference: e.reference ?? "—",
       kind,
       status,
       released,
+      releaseReady: !!linked?.feePaid && linkedComplete && !openDispute,
       amount: e.amount ?? 0,
+      platformFee,
+      netPayout:
+        e.netPayout ??
+        (platformFee == null ? null : (e.amount ?? 0) - platformFee),
+      netPayoutConfirmed: typeof e.netPayout === "number",
       createdAt: e.createdAt,
+      releasedAt: e.releasedAt ?? null,
+      reason: e.reason ?? null,
       propertyId: property?._id ?? null,
       propertyTitle:
         property?.title ?? linked?.property?.title ?? "Unknown property",
@@ -121,13 +133,17 @@ export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
 
   return {
     total: sum(),
-    pending: sum("pending"),
     inEscrow: sum("in_escrow"),
     released: sum("released"),
     disputed: sum("disputed"),
+    refunded: sum("refunded"),
+    platformRevenue: rows.reduce(
+      (total, row) =>
+        total + (row.linked?.feePaid ? (row.platformFee ?? 0) : 0),
+      0
+    ),
     count: {
       all: count(),
-      pending: count("pending"),
       in_escrow: count("in_escrow"),
       released: count("released"),
       disputed: count("disputed"),
