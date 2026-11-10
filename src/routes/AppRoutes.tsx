@@ -71,6 +71,7 @@ import { Reports as AdminReports } from "@/pages/admin/reports"
 
 import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
+import Notifications from "@/pages/notifications/Notifications"
 import { MyTransactions } from "@/pages/agent/my-transaction"
 import Chats from "@/components/shared/Chats"
 // import { TransactionDetails } from "@/pages/agent/transaction-details"
@@ -352,11 +353,11 @@ export default function AppRoutes() {
         element={<RoleBasedRoute allowedRoles={["user", "agent", "admin"]} />}
       >
         <Route element={<MainLayout />}>
-          <Route path="/notifications" element={<div>Notifications</div>} />
           <Route path="/help" element={<div>Help Center</div>} />
         </Route>
 
         <Route element={<NormalLayout />}>
+          <Route path="/notifications" element={<Notifications />} />
           {/* chats list */}
           <Route path="/messages" element={<Chats />} />
           {/* single chat */}

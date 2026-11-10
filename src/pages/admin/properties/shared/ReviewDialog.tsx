@@ -71,6 +71,9 @@ export default function ReviewDialog({
 }: ReviewDialogProps) {
   const copy = COPY[action]
   const [reason, setReason] = useState("")
+  // a rejection must say what to fix, or the agent has nothing to act on
+  const needsReason = action === "rejected"
+  const canConfirm = !pending && (!needsReason || reason.trim().length > 0)
 
   return (
     <Dialog open onOpenChange={(open) => !open && !pending && onClose()}>
@@ -86,13 +89,17 @@ export default function ReviewDialog({
               htmlFor="review-reason"
               className="mb-1.5 block text-[13px] font-semibold text-text-primary"
             >
-              Reason (optional)
+              {needsReason ? "What should the agent fix?" : "Reason (optional)"}
             </label>
             <Textarea
               id="review-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="What should be followed up?"
+              placeholder={
+                needsReason
+                  ? "E.g. The photos are too dark. Please upload clearer ones."
+                  : "What should be followed up?"
+              }
               className="min-h-24"
             />
           </div>
@@ -104,7 +111,7 @@ export default function ReviewDialog({
           </Button>
           <Button
             className={copy.button}
-            disabled={pending}
+            disabled={!canConfirm}
             onClick={() => onConfirm(reason.trim() || undefined)}
           >
             {pending ? copy.busy : copy.confirm}

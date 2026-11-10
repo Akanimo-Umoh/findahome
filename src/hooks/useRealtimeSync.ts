@@ -13,6 +13,7 @@ const LISTING_EVENTS = new Set([
   "property_approved",
   "property_rejected",
   "property_pending",
+  "admin_note_added",
 ])
 
 type NotificationEvent = {

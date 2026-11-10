@@ -133,6 +133,7 @@
 // }
 
 import Spinner from "@/components/Spinner" // adjust the path
+import { Link } from "react-router-dom"
 import { useNotifications } from "@/hooks/useNotifications"
 
 const timeAgo = (iso: string) => {
@@ -155,7 +156,15 @@ export default function RecentActivities() {
 
   return (
     <div>
-      <p>Recent Activities</p>
+      <div className="flex items-center justify-between">
+        <p>Recent Activities</p>
+        <Link
+          to="/notifications"
+          className="text-[12px] font-semibold text-button-bg md:text-[14px]"
+        >
+          View all
+        </Link>
+      </div>
 
       {isLoading && (
         <Spinner className="flex min-h-40 items-center justify-center" />
