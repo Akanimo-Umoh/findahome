@@ -8,6 +8,8 @@ import { AxiosError } from "axios"
 type Step3Props = {
   governmentId: File | null
   licenseDoc: File | null
+  existingGovernmentId?: string
+  existingLicenseDoc?: string
   setGovernmentId: (file: File | null) => void
   setLicenseDoc: (file: File | null) => void
   onBack: () => void
@@ -17,6 +19,8 @@ type Step3Props = {
 export default function Step3({
   governmentId,
   licenseDoc,
+  existingGovernmentId,
+  existingLicenseDoc,
   setGovernmentId,
   setLicenseDoc,
   onBack,
@@ -25,11 +29,11 @@ export default function Step3({
   const [errors, setErrors] = useState<{ governmentId?: string }>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const isValid = governmentId !== null
+  const isValid = governmentId !== null || !!existingGovernmentId
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!governmentId) {
+    if (!governmentId && !existingGovernmentId) {
       setErrors({ governmentId: "Can't be empty" })
       return
     }
@@ -59,6 +63,7 @@ export default function Step3({
         label="Government ID"
         hint="E.g drivers license, National ID"
         value={governmentId}
+        existingUrl={existingGovernmentId}
         onChange={(file) => {
           setGovernmentId(file)
           if (file) setErrors((prev) => ({ ...prev, governmentId: undefined }))
@@ -72,6 +77,7 @@ export default function Step3({
         hint="E.g Business License, Certificate of incorporation"
         optional
         value={licenseDoc}
+        existingUrl={existingLicenseDoc}
         onChange={setLicenseDoc}
       />
 

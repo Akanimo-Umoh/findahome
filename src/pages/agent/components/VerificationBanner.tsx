@@ -1,9 +1,10 @@
+import { Link } from "react-router-dom"
 import { useMyVerification } from "@/hooks/useMyVerification"
 import { VERIFICATION_VIEW } from "@/lib/agentVerification"
 import { cn } from "@/lib/utils"
 
 export default function VerificationBanner() {
-  const { status, isLoading } = useMyVerification()
+  const { status, note, isLoading } = useMyVerification()
   if (isLoading || !status || status === "approved" || status === "none") {
     return null
   }
@@ -21,6 +22,17 @@ export default function VerificationBanner() {
       <div>
         <p className="font-semibold">{view.label}</p>
         <p>{view.hint}</p>
+        {status === "rejected" && note && (
+          <p className="mt-1">Reason: {note}</p>
+        )}
+        {status === "rejected" && (
+          <Link
+            to="/agent/onboarding"
+            className="mt-1 inline-block font-semibold underline"
+          >
+            Resubmit documents
+          </Link>
+        )}
       </div>
     </div>
   )

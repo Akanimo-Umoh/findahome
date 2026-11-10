@@ -132,6 +132,14 @@ export default function Profile() {
               {view && status !== "approved" && (
                 <p className="mt-1 text-text-secondary">{view.hint}</p>
               )}
+              {status === "rejected" && (
+                <Link
+                  to="/agent/onboarding"
+                  className="mt-1 inline-block font-semibold text-button-bg underline"
+                >
+                  Resubmit documents
+                </Link>
+              )}
             </div>
           </div>
         </div>

@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -39,7 +41,7 @@ type VerificationDialogProps = {
   action: VerificationDecision
   agentName: string
   pending: boolean
-  onConfirm: () => void
+  onConfirm: (reason?: string) => void
   onClose: () => void
 }
 
@@ -52,6 +54,10 @@ export default function VerificationDialog({
   onClose,
 }: VerificationDialogProps) {
   const copy = COPY[action]
+  const [reason, setReason] = useState("")
+  // a rejection needs a reason so the agent knows what to fix
+  const needsReason = action === "rejected"
+  const canConfirm = !pending && (!needsReason || reason.trim().length > 0)
 
   return (
     <Dialog open onOpenChange={(open) => !open && !pending && onClose()}>
@@ -61,14 +67,33 @@ export default function VerificationDialog({
           <DialogDescription>{copy.body(agentName)}</DialogDescription>
         </DialogHeader>
 
+        {needsReason && (
+          <div className="space-y-1.5">
+            <label
+              htmlFor="rejection-reason"
+              className="text-[13px] font-semibold"
+            >
+              What should the agent fix?
+            </label>
+            <Textarea
+              id="rejection-reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="E.g. The ID photo is blurry. Please upload a clear copy."
+              maxLength={300}
+              disabled={pending}
+            />
+          </div>
+        )}
+
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={pending}>
             Cancel
           </Button>
           <Button
             className={copy.button}
-            disabled={pending}
-            onClick={onConfirm}
+            disabled={!canConfirm}
+            onClick={() => onConfirm(needsReason ? reason.trim() : undefined)}
           >
             {pending ? copy.busy : copy.confirm}
           </Button>

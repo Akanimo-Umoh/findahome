@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
+import type { VerificationStatus } from "@/lib/agentVerification"
 
 export type UserRole = "user" | "agent" | "admin"
 
@@ -8,6 +9,8 @@ export type User = {
   name?: string
   isVerified: boolean
   isOnboarding?: boolean
+  verificationStatus?: VerificationStatus
+  verificationNote?: string
   role: UserRole
   profilePicture?: string | null
   phoneNumber?: string

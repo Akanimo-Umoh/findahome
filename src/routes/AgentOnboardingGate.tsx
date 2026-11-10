@@ -22,9 +22,12 @@ export default function AgentOnboardingGate({
       return
     }
 
-    // onboarded users can't go back to the form (the success page stays allowed)
+    // onboarded users can't go back to the form (the success page stays allowed).
+    // Agents are checked by the form page itself: a rejected agent may try
+    // again, and only the server knows the current decision.
     if (
       user.isOnboarding &&
+      user.role !== "agent" &&
       location.pathname === ONBOARDING_ENTRY[user.role]
     ) {
       navigate(DASHBOARD[user.role], { replace: true })

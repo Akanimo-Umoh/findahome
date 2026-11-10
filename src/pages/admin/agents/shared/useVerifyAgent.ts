@@ -13,17 +13,20 @@ export function useVerifyAgent() {
     mutationFn: ({
       id,
       status,
+      reason,
     }: {
       id: string
       status: VerificationDecision
-    }) => setAgentVerification(id, status),
-    onSuccess: (_saved, { id, status }) => {
+      reason?: string
+    }) => setAgentVerification(id, status, reason),
+    onSuccess: (_saved, { id, status, reason }) => {
       qc.setQueryData<AdminUser[]>(usersKey, (old) =>
         old?.map((u) =>
           u._id === id
             ? {
                 ...u,
                 verificationStatus: status,
+                verificationNote: status === "rejected" ? reason : undefined,
               }
             : u
         )

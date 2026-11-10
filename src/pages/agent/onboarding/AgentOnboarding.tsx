@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import Step1 from "./Step1"
 import Step2 from "./Step2"
 import Step3 from "./Step3"
@@ -8,6 +8,13 @@ import infoIcon from "@/assets/agentImages/icon-filled-info.svg"
 import { useAuthContext } from "@/context/AuthContext"
 import { onboardAgent } from "@/services/user.service"
 import { useLogout } from "@/hooks/useLogout"
+import { useQueryClient } from "@tanstack/react-query"
+import Spinner from "@/components/Spinner"
+import {
+  myVerificationKey,
+  useMyVerification,
+  type MyAccount,
+} from "@/hooks/useMyVerification"
 
 const TOTAL_STEPS = 3
 
@@ -38,15 +45,30 @@ const initialData: AgentProfileData = {
   socialLinkOrWebsite: "",
 }
 
-export default function AgentOnboarding() {
+type OnboardingFormProps = {
+  initial: AgentProfileData
+  isResubmission: boolean
+  rejectionNote: string | null
+  existingGovernmentId?: string
+  existingLicenseDoc?: string
+}
+
+function OnboardingForm({
+  initial,
+  isResubmission,
+  rejectionNote,
+  existingGovernmentId,
+  existingLicenseDoc,
+}: OnboardingFormProps) {
   const [step, setStep] = useState(1)
-  const [formData, setFormData] = useState<AgentProfileData>(initialData)
+  const [formData, setFormData] = useState<AgentProfileData>(initial)
   const [governmentId, setGovernmentId] = useState<File | null>(null)
   const [licenseDoc, setLicenseDoc] = useState<File | null>(null)
 
   const { token } = useAuthContext()
   const { handleLogout } = useLogout()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const updateField = (field: keyof AgentProfileData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -112,6 +134,9 @@ export default function AgentOnboarding() {
 
     const { user: updatedUser } = await onboardAgent(payload)
 
+    // so the profile and dashboard show "Awaiting review" straight away
+    queryClient.invalidateQueries({ queryKey: myVerificationKey })
+
     navigate("/agent/onboarding/success", {
       replace: true,
       state: { fromOnboarding: true, updatedUser },
@@ -140,12 +165,31 @@ export default function AgentOnboarding() {
 
         <div className="mt-4 flex w-full max-w-66.75 flex-col items-center justify-center gap-1 text-center">
           <h1 className="font-raleway font-semibold tracking-[1px]">
-            Set Up Your Agent Profile
+            {isResubmission
+              ? "Update Your Agent Details"
+              : "Set Up Your Agent Profile"}
           </h1>
           <p className="text-[14px] text-text-secondary">
-            Tell us a bit about your agency to build trust with buyers.
+            {isResubmission
+              ? "Check your details and upload your documents again."
+              : "Tell us a bit about your agency to build trust with buyers."}
           </p>
         </div>
+
+        {isResubmission && (
+          <div
+            role="alert"
+            className="mt-4 w-full rounded-lg bg-red-50 px-3 py-2.5 text-[13px] text-red-700"
+          >
+            <p className="font-semibold">
+              Your last submission was not approved
+            </p>
+            <p>
+              {rejectionNote ??
+                "Please check your details and upload your documents again."}
+            </p>
+          </div>
+        )}
 
         <div className="mt-6 flex w-full max-w-79.25 flex-col items-center gap-2">
           <ProgressBar currentStep={step} totalSteps={TOTAL_STEPS} />
@@ -175,6 +219,8 @@ export default function AgentOnboarding() {
             <Step3
               governmentId={governmentId}
               licenseDoc={licenseDoc}
+              existingGovernmentId={existingGovernmentId}
+              existingLicenseDoc={existingLicenseDoc}
               setGovernmentId={setGovernmentId}
               setLicenseDoc={setLicenseDoc}
               onBack={goBack}
@@ -192,5 +238,72 @@ export default function AgentOnboarding() {
         </div>
       </div>
     </div>
+  )
+}
+
+const toFormData = (me: MyAccount): AgentProfileData => ({
+  about: me.about ?? "",
+  yearsOfExperience: me.yearsOfExperience ? String(me.yearsOfExperience) : "",
+  serviceArea: me.serviceArea ?? [],
+  languages: me.languages ?? [],
+  businessName: me.businessName ?? "",
+  phoneNumber: me.phoneNumber ?? "",
+  licenseNumber: me.licenseNumber ?? "",
+  officeAddress: me.officeAddress ?? "",
+  socialLinkOrWebsite: me.socialLinkOrWebsite ?? "",
+})
+
+export default function AgentOnboarding() {
+  const { user } = useAuthContext()
+  const { status, note, me, isLoading, refetch } = useMyVerification()
+
+  // A rejected agent can resubmit. An agent with a prior onboarding submission
+  // may also be resubmitting while the one-time legacy migration is pending.
+  const isResubmission = !!user?.isOnboarding || status === "rejected"
+
+  // Wait for the first answer from /user/me only. Don't also wait on
+  // background refetches: they run whenever the tab regains focus, and
+  // swapping the form for a spinner would throw away what the agent typed.
+  // The server refuses duplicate submissions anyway.
+  if (isLoading) {
+    return (
+      <Spinner className="fixed inset-0 z-50 flex items-center justify-center bg-white" />
+    )
+  }
+
+  // no answer at all (the first request failed): don't show a form we can't check
+  if (!me) {
+    return (
+      <div className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center gap-4 px-6 text-center">
+        <p className="font-semibold text-text-primary">
+          We couldn't load your verification status.
+        </p>
+        <p className="text-sm text-text-secondary">
+          Please try again before submitting your agent details.
+        </p>
+        <button
+          type="button"
+          onClick={() => void refetch()}
+          className="rounded-lg bg-button-bg px-5 py-2 text-sm font-semibold text-white"
+        >
+          Try again
+        </button>
+      </div>
+    )
+  }
+
+  // Pending and approved agents must not submit another application.
+  if (status === "pending" || status === "approved") {
+    return <Navigate to="/agent/dashboard" replace />
+  }
+
+  return (
+    <OnboardingForm
+      initial={isResubmission && me ? toFormData(me) : initialData}
+      isResubmission={isResubmission}
+      rejectionNote={note}
+      existingGovernmentId={me?.governmentId?.[0]}
+      existingLicenseDoc={me?.licenseDoc?.[0]}
+    />
   )
 }

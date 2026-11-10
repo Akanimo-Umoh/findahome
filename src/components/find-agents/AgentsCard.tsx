@@ -33,7 +33,7 @@ function AgentCard({ agent }: { agent: Agent }) {
             {agent.name}
           </p>
 
-          {agent.isVerified && (
+          {agent.verificationStatus === "approved" && (
             <div className="flex items-center gap-1 text-[12px] text-text-secondary">
               <img src={ninIcon} alt="" className="h-4 w-4" />
               <p>NIN Verified Agent</p>

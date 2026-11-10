@@ -13,6 +13,7 @@ type FileUploadProps = {
   label: string
   hint: string
   optional?: boolean
+  existingUrl?: string
   value: File | null
   onChange: (file: File | null) => void
   error?: string
@@ -23,6 +24,7 @@ export default function FileUpload({
   label,
   hint,
   optional = false,
+  existingUrl,
   value,
   onChange,
   error,
@@ -120,6 +122,32 @@ export default function FileUpload({
             aria-label={`Remove ${value.name}`}
           >
             Remove
+          </button>
+        </div>
+      ) : existingUrl ? (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+          <div className="min-w-0">
+            <p className="text-[13px] font-semibold text-emerald-800">
+              Previously uploaded document
+            </p>
+            <a
+              href={existingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-1 block truncate text-[12px] text-emerald-700 underline"
+            >
+              View saved document
+            </a>
+            <p className="mt-1 text-[11px] text-emerald-700">
+              This document will be kept unless you upload a replacement.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            className="shrink-0 text-[12px] font-semibold text-button-bg underline"
+          >
+            Replace
           </button>
         </div>
       ) : (
