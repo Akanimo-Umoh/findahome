@@ -13,7 +13,6 @@ import api from "@/services/api"
 import Spinner from "@/components/Spinner"
 import ImageCarousel from "@/components/ImageCarousel"
 import { Button } from "@/components/ui/button"
-import ListingAdminNotes from "@/pages/agent/components/ListingAdminNotes"
 
 type PropertyData = {
   _id: string
@@ -36,12 +35,6 @@ type PropertyData = {
   videos?: string[]
   status?: "pending" | "approved" | "rejected" | "sold"
   rejectionReason?: string | null
-  adminNotes?: {
-    _id: string
-    note: string
-    createdAt: string
-    author?: { name?: string } | string
-  }[]
   owner: {
     name: string
     profilePicture?: string | string[] | null
@@ -129,10 +122,6 @@ export default function PropertyPreview() {
             </p>
           </div>
         )}
-
-        <ListingAdminNotes
-          notes={property.status === "approved" ? [] : property.adminNotes}
-        />
 
         <div className="mt-6 xl:flex xl:justify-center xl:gap-7">
           {/* left column — carousel + video (lg) */}

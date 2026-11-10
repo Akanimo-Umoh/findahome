@@ -11,7 +11,6 @@ import DetailsHeader from "./components/DetailsHeader"
 import FactTiles from "./components/FactTiles"
 import LegalDocuments from "./components/LegalDocuments"
 import MediaGallery from "./components/MediaGallery"
-import ModerationChecklist from "./components/ModerationChecklist"
 import StatusTimeline from "./components/StatusTimeline"
 import VideoTour from "./components/VideoTour"
 import { usePropertyDetails } from "./usePropertyDetails"
@@ -133,7 +132,6 @@ export default function PropertyDetails() {
             }
           />
           <StatusTimeline property={p} />
-          <ModerationChecklist />
         </aside>
       </div>
 
