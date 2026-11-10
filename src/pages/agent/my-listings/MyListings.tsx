@@ -35,19 +35,20 @@ export default function MyListings() {
           onClick={() => navigate(-1)}
           className="absolute left-0 cursor-pointer"
         >
-          <img src={goBack} alt="" className="h-6 w-6" />
+          <img src={goBack} alt="" className="size-5 xs:size-6" />
         </button>
 
-        <div className="flex items-center justify-center gap-8 md:gap-16">
+        <div className="flex items-center justify-center gap-4 xs:gap-8 md:gap-16">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex h-10 cursor-pointer items-center justify-center rounded-xl px-3 font-raleway text-[14px] font-semibold tracking-[1px] transition-colors md:h-10.75 md:font-ssPro md:text-[18px] md:font-normal ${
+              className={`flex h-10 cursor-pointer items-center justify-center rounded-xl px-3 font-raleway text-[11px] font-semibold tracking-[1px] transition-colors xs:text-[14px] md:h-10.75 md:font-ssPro md:text-[18px] md:font-normal ${
                 activeTab === tab ? "border border-bg-accent" : ""
               }`}
             >
-              {tabLabels[tab]}
+              {tabLabels[tab]} (
+              {listings.filter((l) => l.propertyType === tab).length})
             </button>
           ))}
         </div>

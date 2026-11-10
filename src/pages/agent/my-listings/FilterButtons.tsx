@@ -23,7 +23,7 @@ export default function FilterButtons({
         <button
           key={value}
           onClick={() => onFilterChange(value)}
-          className={`cursor-pointer rounded-lg px-2 py-1 text-[12px] transition-colors duration-500 xs:text-[14px] md:text-[16px] ${activeFilter === value ? "bg-button-bg text-white" : "bg-button-sec text-text-primary hover:bg-bg-accent"}`}
+          className={`cursor-pointer rounded-lg px-2 py-1 text-[11px] transition-colors duration-500 xs:text-[14px] md:text-[16px] ${activeFilter === value ? "bg-button-bg text-white" : "bg-button-sec text-text-primary hover:bg-bg-accent"}`}
         >
           {label}
         </button>
