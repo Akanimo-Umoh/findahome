@@ -21,10 +21,12 @@ type NotificationEvent = {
   meta?: { verificationStatus?: string }
 }
 
-// Keeps cached data in step with changes made by someone else (for example an
-// admin approving a listing). We only mark the matching queries stale, so
-// React Query refetches the ones on screen. Nothing from the event is shown,
-// because some of these events are broadcast to every connected user.
+type IncomingMessage = { chat?: string }
+
+// Keeps cached data in step with changes made by someone else (an admin
+// approving a listing, a new chat message). The server tells the browser, and
+// we only mark the matching queries stale so React Query refetches the ones on
+// screen. Nothing from an event is shown, because some are broadcast to everyone.
 export function useRealtimeSync() {
   const { user, token } = useAuthContext()
   const queryClient = useQueryClient()
@@ -33,8 +35,13 @@ export function useRealtimeSync() {
     if (!user?._id || !token) return
 
     const socket = getSocket()
-    if (!socket.connected) socket.connect()
-    socket.emit("user_connected", user._id)
+
+    // Register on every connection. After a reconnect the server has forgotten
+    // this browser, so a single emit at mount isn't enough.
+    const register = () => socket.emit("user_connected", user._id)
+    socket.on("connect", register)
+    if (socket.connected) register()
+    else socket.connect()
 
     const onNotification = (event: NotificationEvent) => {
       if (event.type && LISTING_EVENTS.has(event.type)) {
@@ -46,19 +53,37 @@ export function useRealtimeSync() {
           queryClient.invalidateQueries({
             queryKey: ["property", event.propertyId],
           })
+          // the owner's preview page and edit form
+          queryClient.invalidateQueries({
+            queryKey: ["property-owner", event.propertyId],
+          })
         }
       }
 
-      // sent only to that agent when an admin decides their verification
-      if (event.meta?.verificationStatus) {
+      // Notifications sent only to this user (a verification decision) arrive
+      // as the saved notification itself, with no `type`. `meta` is not
+      // reliable because the Notification schema drops it.
+      if (!event.type || event.meta?.verificationStatus) {
         queryClient.invalidateQueries({ queryKey: myVerificationKey })
         queryClient.invalidateQueries({ queryKey: ["notifications"] })
       }
     }
 
+    // a chat message from someone else: refresh the chat list and, if that
+    // chat is open, its messages
+    const onMessage = (message: IncomingMessage) => {
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
+      if (message.chat) {
+        queryClient.invalidateQueries({ queryKey: ["messages", message.chat] })
+      }
+    }
+
     socket.on("notification", onNotification)
+    socket.on("receive_message", onMessage)
     return () => {
+      socket.off("connect", register)
       socket.off("notification", onNotification)
+      socket.off("receive_message", onMessage)
     }
   }, [user?._id, token, queryClient])
 }

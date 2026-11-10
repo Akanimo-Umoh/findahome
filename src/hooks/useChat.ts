@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
 import { toast } from "sonner"
-import { getSocket } from "@/services/socket"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 export type ChatMessage = {
@@ -106,27 +105,11 @@ export function useChatMessages({ chatId }: { chatId: string }) {
       return res.data as ChatMessage[]
     },
     enabled: !!chatId,
+    // fallback if the live socket isn't available; pauses when the tab is hidden
+    refetchInterval: 5_000,
   })
 
-  // socket — append incoming messages directly to the query cache
-  useEffect(() => {
-    if (!user?._id) return
-
-    const socket = getSocket()
-    if (!socket.connected) socket.connect()
-    socket.emit("user_connected", user._id)
-
-    socket.on("receive_message", (message: ChatMessage) => {
-      queryClient.setQueryData<ChatMessage[]>(
-        ["messages", chatId],
-        (prev = []) => [...prev, message]
-      )
-    })
-
-    return () => {
-      socket.off("receive_message")
-    }
-  }, [user?._id, chatId, queryClient])
+  // incoming messages are handled by useRealtimeSync
 
   async function sendMessage(text: string) {
     if (!chatDetail || !text.trim() || !user?._id) return
@@ -152,14 +135,6 @@ export function useChatMessages({ chatId }: { chatId: string }) {
           chat._id === chatId ? { ...chat, lastMessage: newMessage } : chat
         )
       )
-
-      const socket = getSocket()
-      socket.emit("send_message", {
-        from: user._id,
-        to: chatDetail.participants.find((p) => p._id !== user._id)?._id,
-        text: text.trim(),
-        attachments: [],
-      })
     } catch {
       toast.error("Failed to send message")
     } finally {

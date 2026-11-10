@@ -1,6 +1,10 @@
 import { io, Socket } from "socket.io-client"
 
-const SOCKET_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"
+// The API base URL ends in /api, but Socket.IO treats a URL path as a
+// namespace, so connect to the server's origin only.
+const SOCKET_URL = (
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000"
+).replace(/\/api\/?$/, "")
 
 let socket: Socket
 
