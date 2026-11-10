@@ -19,6 +19,9 @@ export function useAgentListings() {
       return res.data.properties as AgentListing[]
     },
     enabled: !!user?._id,
+    // safety net if a live update is missed (socket dropped, tab asleep)
+    staleTime: 30_000,
+    refetchInterval: 30_000,
   })
 
   const activeListingsCount = useMemo(
