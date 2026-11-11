@@ -18,6 +18,20 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 // only these statuses represent a genuinely schedulable inspection — anything else means this page was reached incorrectly
 const SCHEDULABLE_STATUSES = ["inspection_paid"]
 
+const notSchedulableMessage = (status: string) => {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+      return "The buyer hasn't paid the inspection fee yet."
+    case "inspection_initialized":
+      return "The buyer's payment is still being confirmed. You can schedule the inspection once it's confirmed."
+    case "inspection_cancelled":
+      return "This inspection was cancelled."
+    default:
+      return "This inspection has already been scheduled."
+  }
+}
+
 export default function ScheduleInspection() {
   const { transactionId } = useParams()
   const navigate = useNavigate()
@@ -52,7 +66,7 @@ export default function ScheduleInspection() {
     return (
       <div className="flex h-[calc(100vh-72px)] flex-col items-center justify-center gap-4 px-6 text-center">
         <p className="text-[14px] text-text-secondary">
-          This inspection has already been scheduled.
+          {notSchedulableMessage(inspection.status)}
         </p>
         <Button
           variant="app-primary"

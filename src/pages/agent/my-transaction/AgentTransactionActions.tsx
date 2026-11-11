@@ -5,11 +5,13 @@ import type { TransactionStatus } from "@/types/transactions"
 interface AgentTransactionActionsProps {
   status: TransactionStatus
   transactionId: string
+  canSchedule?: boolean
 }
 
 export default function AgentTransactionActions({
   status,
   transactionId,
+  canSchedule = true,
 }: AgentTransactionActionsProps) {
   const showScheduleInspection = status === "inspection_requested"
   const showInspectionVisitDetails =
@@ -26,7 +28,7 @@ export default function AgentTransactionActions({
   return (
     <div className="mt-6 mb-8 lg:mt-0 lg:mb-0">
       <div className="flex flex-col items-center justify-center gap-4">
-        {showScheduleInspection && (
+        {showScheduleInspection && canSchedule && (
           <Button variant="app-primary" size="full" asChild>
             <Link
               to={`/agent/transactions/${transactionId}/schedule-inspection`}
@@ -34,6 +36,17 @@ export default function AgentTransactionActions({
               Schedule Inspection
             </Link>
           </Button>
+        )}
+
+        {showScheduleInspection && !canSchedule && (
+          <>
+            <Button variant="app-primary" size="full" disabled>
+              Schedule Inspection
+            </Button>
+            <p className="text-center text-[12px] leading-4 text-text-secondary">
+              You can schedule once the buyer&apos;s payment is confirmed.
+            </p>
+          </>
         )}
 
         {showInspectionVisitDetails && (

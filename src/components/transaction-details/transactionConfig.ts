@@ -137,6 +137,30 @@ export const AGENT_BANNER_CONFIG: Partial<
   },
 }
 
+// What the agent sees before they're allowed to schedule. The UI status
+// `inspection_requested` covers four backend statuses, and only
+// `inspection_paid` (payment confirmed) means the agent can act.
+export function getAgentInspectionBanner(
+  status: Inspection["status"]
+): BannerConfig | undefined {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+      return {
+        title: "Awaiting Buyer Payment",
+        subtitle: "The buyer hasn't paid the inspection fee yet.",
+      }
+    case "inspection_initialized":
+      return {
+        title: "Payment Under Review",
+        subtitle:
+          "The buyer's payment is being confirmed. You can schedule the inspection once it's confirmed.",
+      }
+    default:
+      return undefined
+  }
+}
+
 export const SCHEDULE_SECTION_LABEL: Partial<
   Record<TransactionStatus, string>
 > = {
@@ -191,8 +215,9 @@ export function getInspectionPaymentStatusLabel(
   switch (status) {
     case "none":
     case "inspection_requested":
-    case "inspection_initialized":
       return "Awaiting Payment"
+    case "inspection_initialized":
+      return "Payment Under Review"
     case "inspection_paid":
       return "In Escrow"
     case "inspection_scheduled":
