@@ -165,9 +165,13 @@ export default function Chats() {
                                   : ""}
                               </p>
 
-                              <p className="flex h-3.75 w-3.75 items-center justify-center rounded-full bg-[#149D18] text-[10px] text-white">
-                                1
-                              </p>
+                              {!!chat.unreadCount && (
+                                <p className="flex h-3.75 min-w-3.75 items-center justify-center rounded-full bg-[#149D18] px-1 text-[10px] text-white">
+                                  {chat.unreadCount > 9
+                                    ? "9+"
+                                    : chat.unreadCount}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>

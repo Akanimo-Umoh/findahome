@@ -36,6 +36,7 @@ export type ChatItem = {
   participants: ChatParticipant[]
   property: ChatProperty
   lastMessage?: ChatMessage
+  unreadCount?: number
   createdAt: string
   updatedAt: string
 }
@@ -102,6 +103,9 @@ export function useChatMessages({ chatId }: { chatId: string }) {
     queryKey: ["messages", chatId],
     queryFn: async () => {
       const res = await api.get(`/message/${chatId}`)
+      // the server marks these messages as read, so refresh the unread
+      // counts in the chat list now that it has done so
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
       return res.data as ChatMessage[]
     },
     enabled: !!chatId,
