@@ -109,7 +109,10 @@ export function useChatMessages({ chatId }: { chatId: string }) {
       return res.data as ChatMessage[]
     },
     enabled: !!chatId,
-    // fallback if the live socket isn't available; pauses when the tab is hidden
+    // TODO(remove-polling): temporary fallback while live chat isn't working.
+    // Delete this line once messages arrive live without it (the backend must
+    // make each socket join a room named after the user id). It also refetches
+    // the chat list every 5s through the queryFn above.
     refetchInterval: 5_000,
   })
 
