@@ -4,6 +4,7 @@ import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
 import PickDate from "./PickDate"
+import { combineDateAndTime, isInThePast } from "@/lib/schedule"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
 import ScheduledSuccessfully from "./ScheduledSuccessfully"
@@ -104,9 +105,12 @@ export default function ScheduleInspection() {
   const handleSubmit = async () => {
     if (!selectedDate || !transactionId) return
 
-    const [hours, minutes] = selectedTime.split(":").map(Number)
-    const combined = new Date(selectedDate)
-    combined.setHours(hours, minutes, 0, 0)
+    const combined = combineDateAndTime(selectedDate, selectedTime)
+    // checked again here, because the page may have been open for a while
+    if (combined.getTime() <= Date.now()) {
+      toast.error("That time has already passed. Pick a later time.")
+      return
+    }
 
     setIsSubmitting(true)
     try {
@@ -284,10 +288,21 @@ export default function ScheduleInspection() {
               </label>
             </div>
 
+            {isInThePast(selectedDate, selectedTime) && (
+              <p className="text-[12px] leading-4 text-state-error">
+                That time has already passed. Pick a later time.
+              </p>
+            )}
+
             <Button
               variant="app-primary"
               size="full"
-              disabled={!isConfirmed || !selectedDate || isSubmitting}
+              disabled={
+                !isConfirmed ||
+                !selectedDate ||
+                isSubmitting ||
+                isInThePast(selectedDate, selectedTime)
+              }
               onClick={handleSubmit}
             >
               {isSubmitting ? "Scheduling..." : submitLabel}

@@ -106,6 +106,29 @@ export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
   },
 }
 
+// Buyer-facing banner before the payment is confirmed. The UI status
+// `inspection_requested` also covers "paid, waiting for the agent".
+export function getBuyerInspectionBanner(
+  status: Inspection["status"]
+): BannerConfig | undefined {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+      return {
+        title: "Awaiting Payment",
+        subtitle: "The inspection fee hasn't been paid yet.",
+      }
+    case "inspection_initialized":
+      return {
+        title: "Payment Under Review",
+        subtitle:
+          "We're confirming your payment. Your agent can schedule the inspection once it's confirmed.",
+      }
+    default:
+      return undefined
+  }
+}
+
 // CHANGED: agent-facing banners, added as a second named export in the same
 // shared file instead of duplicating the whole config file
 export const AGENT_BANNER_CONFIG: Partial<

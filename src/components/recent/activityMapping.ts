@@ -54,6 +54,16 @@ const TYPE_LABEL: Record<TransactionStatus, string> = {
   funds_released: "Transaction Receipt",
 }
 
+// The shared UI status folds three backend statuses into one, so for
+// inspections that aren't confirmed yet the label comes from the raw status.
+function getStatusLabel(item: MergedTransaction, status: TransactionStatus) {
+  if (item.recordType === "inspection") {
+    if (item.status === "inspection_initialized") return "Payment Under Review"
+    if (item.status === "inspection_requested") return "Awaiting Payment"
+  }
+  return STATUS_LABEL[status]
+}
+
 const STATUS_LABEL: Record<TransactionStatus, string> = {
   inspection_requested: "Awaiting Agent",
   inspection_scheduled: "Schedule Visit",
@@ -98,7 +108,7 @@ export function mapToActivity(item: MergedTransaction): Activity {
     id: item._id,
     type: TYPE_LABEL[status],
     status,
-    statusLabel: STATUS_LABEL[status],
+    statusLabel: getStatusLabel(item, status),
     date: formatDate(item.updatedAt),
     agentName: getAgentName(item),
     agentVerified: false, // not returned by the backend yet

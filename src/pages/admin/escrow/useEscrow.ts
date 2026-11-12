@@ -70,3 +70,24 @@ export function useSetEscrowStatus() {
     onError: (e) => toast.error(errorMessage(e)),
   })
 }
+
+export function useConfirmPayment() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: {
+      kind: "inspection" | "purchase"
+      id: string
+      reference: string
+    }) =>
+      v.kind === "inspection"
+        ? escrowService.confirmInspectionPayment(v.id, v.reference)
+        : escrowService.confirmPurchasePayment(v.id, v.reference),
+    onSuccess: () => {
+      toast.success("Payment confirmed. The escrow has been created.")
+      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
+    },
+    // shows the server's own reason, for example when Paystack has no
+    // successful payment for this reference
+    onError: (e) => toast.error(errorMessage(e)),
+  })
+}

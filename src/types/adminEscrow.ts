@@ -44,6 +44,8 @@ export interface RawLinkedRecord {
   feePaid?: boolean
   feeReleased?: boolean
   platformFee?: number
+  fee?: number // inspection fee
+  price?: number // purchase amount
   initializedAt?: string
   paidAt?: string
   scheduledAt?: string

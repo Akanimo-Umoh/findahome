@@ -32,6 +32,30 @@ export default function TransactionReceipt() {
 
   if (isLoading || isFetching) return <Spinner />
 
+  // an inspection receipt only exists once the inspection has been completed
+  if (
+    transaction &&
+    recordType === "inspection" &&
+    transaction.status !== "inspection_completed"
+  ) {
+    return (
+      <div className="flex h-[calc(100vh-72px)] items-center justify-center px-6">
+        <div className="text-center">
+          <p className="text-[14px] text-text-secondary">
+            Your receipt will be available once the inspection has been
+            completed.
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 text-[14px] text-[#274AD0] underline"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (error || !receipt) {
     return (
       <div className="flex h-[calc(100vh-72px)] items-center justify-center">

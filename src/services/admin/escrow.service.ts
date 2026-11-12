@@ -28,6 +28,22 @@ export const escrowService = {
     )
     return data.disputes ?? []
   },
+  // The server checks the reference with Paystack itself, then creates the
+  // escrow and marks the record as paid.
+  async confirmInspectionPayment(inspectionId: string, reference: string) {
+    const { data } = await api.post("/inspection/verify-payment", {
+      inspectionId,
+      reference,
+    })
+    return data
+  },
+  async confirmPurchasePayment(purchaseId: string, reference: string) {
+    const { data } = await api.post("/purchase/verify-payment", {
+      purchaseId,
+      reference,
+    })
+    return data
+  },
   async setStatus(escrowId: string, status: "on_hold" | "released") {
     const { data } = await api.patch("/escrow/status", { escrowId, status })
     return data

@@ -4,6 +4,7 @@ import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
 import PickDate from "./PickDate"
+import { combineDateAndTime } from "@/lib/schedule"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
 import ScheduledSuccessfully from "./ScheduledSuccessfully"
@@ -64,9 +65,11 @@ export default function ScheduleHandover() {
   const handleSubmit = async () => {
     if (!selectedDate || !transactionId) return
 
-    const [hours, minutes] = selectedTime.split(":").map(Number)
-    const combined = new Date(selectedDate)
-    combined.setHours(hours, minutes, 0, 0)
+    const combined = combineDateAndTime(selectedDate, selectedTime)
+    if (combined.getTime() <= Date.now()) {
+      toast.error("That time has already passed. Pick a later time.")
+      return
+    }
 
     setIsSubmitting(true)
     try {

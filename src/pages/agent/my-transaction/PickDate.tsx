@@ -28,6 +28,8 @@ export default function PickDate({
           mode="single"
           selected={selectedDate}
           onSelect={onSelectDate}
+          // past days can't be picked
+          disabled={{ before: new Date(new Date().setHours(0, 0, 0, 0)) }}
           className="w-full p-0 [&_table]:w-full"
         />
       </CardContent>
