@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
-import propertyImg from "@/assets/images/property.jpg"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
 import gmailIcon from "@/assets/images/icon-gmail.svg"
 import homeIcon from "@/assets/images/icon-escrow-dashboard.svg"
@@ -108,11 +107,15 @@ export default function TransactionReceipt() {
         <main className="mt-6">
           {/* property */}
           <div className="flex items-center gap-2">
-            <img
-              src={receipt.property.image ?? propertyImg}
-              alt=""
-              className="h-15 w-15 rounded-lg object-cover"
-            />
+            {receipt.property.image ? (
+              <img
+                src={receipt.property.image}
+                alt=""
+                className="h-15 w-15 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+            )}
 
             <div>
               <p className="font-raleway text-[14px] font-semibold tracking-[1px]">

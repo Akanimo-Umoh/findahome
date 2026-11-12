@@ -20,10 +20,6 @@ import AdminLayout from "@/layouts/AdminLayout"
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
 import { FindAgents } from "@/pages/user/agents/find-agents"
 // import { FundWallet, Wallet } from "@/pages/user/wallet"
-import {
-  PropertyEscrowTransaction,
-  PropertyPayment,
-} from "@/pages/user/propertyPayment"
 import { Recent } from "@/pages/user/recent"
 import { SavedProperties } from "@/pages/user/saved-properties"
 import { UserTransactionDetails } from "@/pages/user/transaction/transaction-details"
@@ -221,10 +217,7 @@ export default function AppRoutes() {
         {/* fund wallet */}
         {/* <Route path="/fund-wallet" element={<FundWallet />} /> */}
         {/* escrow transaction details */}
-        <Route
-          path="/escrow-transactions-details"
-          element={<PropertyEscrowTransaction />}
-        />
+
         {/* <Route path="/visit-details" element={<InspectionVisitDetails />} /> */}
 
         {/* <Route
@@ -233,7 +226,6 @@ export default function AppRoutes() {
         /> */}
 
         {/* <Route path="/confirm-handover" element={<ConfirmHandover />} /> */}
-        <Route path="/property-payment" element={<PropertyPayment />} />
         <Route
           path="/transactions/:transactionId/confirm-handover"
           element={<UserPurchaseConfirmVisit />}

@@ -15,6 +15,38 @@ const LISTING_EVENTS = new Set([
   "property_pending",
 ])
 
+// An inspection or purchase moved to a new stage.
+const DEAL_EVENTS = new Set([
+  "inspection_requested",
+  "inspection_payment_started",
+  "inspection_fee_paid",
+  "inspection_scheduled",
+  "inspection_reschedule_requested",
+  "inspection_confirmed",
+  "inspection_completed",
+  "purchase_requested",
+  "purchase_payment_initialized",
+  "purchase_payment_verified",
+  "purchase_status_changed",
+  "handover_scheduled",
+  "handover_reschedule_requested",
+  "handover_confirmed",
+  "handover_completed",
+])
+
+// Everything that reads a deal's stage: the chat mini actions, the transaction
+// lists and detail pages, and the admin escrow page.
+const DEAL_KEYS = [
+  ["userPurchasesAndInspections"],
+  ["agentPurchasesAndInspections"],
+  ["user-inspections"],
+  ["inspectionDetails"],
+  ["purchaseDetails"],
+  ["transactionDetails"],
+  ["agentTransactionDetails"],
+  ["admin", "escrow"],
+]
+
 type NotificationEvent = {
   type?: string
   propertyId?: string
@@ -24,9 +56,10 @@ type NotificationEvent = {
 type IncomingMessage = { chat?: string }
 
 // Keeps cached data in step with changes made by someone else (an admin
-// approving a listing, a new chat message). The server tells the browser, and
-// we only mark the matching queries stale so React Query refetches the ones on
-// screen. Nothing from an event is shown, because some are broadcast to everyone.
+// approving a listing, a buyer rejecting a date, a new chat message). The
+// server tells the browser, and we only mark the matching queries stale, so
+// React Query refetches the ones on screen. Nothing from an event is shown,
+// because some are broadcast to everyone.
 export function useRealtimeSync() {
   const { user, token } = useAuthContext()
   const queryClient = useQueryClient()
@@ -58,6 +91,16 @@ export function useRealtimeSync() {
             queryKey: ["property-owner", event.propertyId],
           })
         }
+      }
+
+      if (
+        event.type &&
+        (DEAL_EVENTS.has(event.type) || event.type.startsWith("escrow_"))
+      ) {
+        DEAL_KEYS.forEach((queryKey) =>
+          queryClient.invalidateQueries({ queryKey })
+        )
+        queryClient.invalidateQueries({ queryKey: ["notifications"] })
       }
 
       // Notifications sent only to this user (a verification decision) arrive

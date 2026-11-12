@@ -29,13 +29,19 @@ export default function ScheduleHandover() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState("10:30")
 
-  const { data: purchase, isLoading } = useQuery({
+  const {
+    data: purchase,
+    isLoading,
+    isFetchedAfterMount,
+  } = useQuery({
     queryKey: ["purchaseDetails", transactionId],
     queryFn: () => getPurchaseDetails(transactionId ?? ""),
     enabled: !!transactionId,
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
-  if (isLoading) return <Spinner />
+  if (isLoading || !isFetchedAfterMount) return <Spinner />
 
   if (!purchase) {
     return (

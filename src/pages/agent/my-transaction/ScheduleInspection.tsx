@@ -44,13 +44,23 @@ export default function ScheduleInspection() {
   const [selectedTime, setSelectedTime] = useState("10:30")
   const [hasScheduled, setHasScheduled] = useState(false)
 
-  const { data: inspection, isLoading } = useQuery({
+  const {
+    data: inspection,
+    isLoading,
+    isFetchedAfterMount,
+  } = useQuery({
     queryKey: ["inspectionDetails", transactionId],
     queryFn: () => getInspectionDetails(transactionId ?? ""),
     enabled: !!transactionId,
+    // always ask the server on arrival: a copy cached earlier can still say
+    // "scheduled" after the buyer has rejected the date
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
-  if (isLoading) return <Spinner />
+  // wait for the first fresh answer only (not for later background refetches),
+  // so the "already scheduled" screen can't flash up from stale data
+  if (isLoading || !isFetchedAfterMount) return <Spinner />
 
   if (!inspection) {
     return (

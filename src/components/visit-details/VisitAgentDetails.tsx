@@ -1,4 +1,3 @@
-import agentAvatar from "@/assets/images/agentAvatar.jpg"
 import chatIcon from "@/assets/images/icon-chat.svg"
 
 interface VisitAgentDetailsProps {
@@ -11,7 +10,7 @@ interface VisitAgentDetailsProps {
 export default function VisitAgentDetails({
   name,
   isVerified = false,
-  avatar = agentAvatar,
+  avatar,
   onChat,
 }: VisitAgentDetailsProps) {
   return (
@@ -21,11 +20,17 @@ export default function VisitAgentDetails({
       </p>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img
-            src={avatar}
-            alt=""
-            className="h-12.5 w-12.5 shrink-0 rounded-full object-cover md:h-25 md:w-25"
-          />
+          {avatar ? (
+            <img
+              src={avatar}
+              alt=""
+              className="h-12.5 w-12.5 shrink-0 rounded-full object-cover md:h-25 md:w-25"
+            />
+          ) : (
+            <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-full bg-bg-accent font-raleway text-[18px] font-semibold text-button-bg md:h-25 md:w-25">
+              {name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div>
             <p className="line-clamp-2 text-[12px] font-semibold md:text-[14px]">
               {name}

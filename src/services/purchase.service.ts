@@ -20,7 +20,13 @@ export type Purchase = {
     | { _id: string; name?: string; email: string; phoneNumber?: string | null }
   owner:
     | string
-    | { _id: string; name?: string; email: string; phoneNumber?: string | null }
+    | {
+        _id: string
+        name?: string
+        email: string
+        phoneNumber?: string | null
+        profilePicture?: string | string[] | null
+      }
   inspection: string
   price: number
   feePaid: boolean

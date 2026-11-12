@@ -1,4 +1,3 @@
-import propertyImg from "@/assets/images/property.jpg"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
 
 interface VisitPropertyCardProps {
@@ -10,7 +9,7 @@ interface VisitPropertyCardProps {
 }
 
 export default function VisitPropertyCard({
-  image = propertyImg,
+  image,
   title,
   location,
   price,
@@ -18,11 +17,15 @@ export default function VisitPropertyCard({
 }: VisitPropertyCardProps) {
   return (
     <div className="flex items-center gap-2 rounded-xl border border-bg-accent p-2">
-      <img
-        src={image}
-        alt=""
-        className="h-15 w-15 shrink-0 rounded-lg object-cover"
-      />
+      {image ? (
+        <img
+          src={image}
+          alt=""
+          className="h-15 w-15 shrink-0 rounded-lg object-cover"
+        />
+      ) : (
+        <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
+      )}
       <div>
         <p className="font-raleway text-[14px] font-semibold tracking-[1px] md:text-[16px]">
           {title}

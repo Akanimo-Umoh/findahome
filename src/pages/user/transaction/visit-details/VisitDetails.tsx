@@ -79,10 +79,19 @@ export default function VisitDetails() {
     )
   }
 
+  const ownerPicture =
+    typeof transaction.owner === "string"
+      ? undefined
+      : transaction.owner?.profilePicture
   const owner =
     typeof transaction.owner === "string"
-      ? { name: "Agent" }
-      : { name: transaction.owner?.name ?? transaction.owner?.email }
+      ? { name: "Agent", avatar: undefined }
+      : {
+          name: transaction.owner?.name ?? transaction.owner?.email,
+          avatar: Array.isArray(ownerPicture)
+            ? ownerPicture[0]
+            : (ownerPicture ?? undefined),
+        }
 
   const price = isHandover
     ? (transaction as Purchase).price
@@ -174,6 +183,7 @@ export default function VisitDetails() {
 
             <VisitAgentDetails
               name={owner.name}
+              avatar={owner.avatar}
               onChat={() =>
                 navigate(chatId ? `/messages/${chatId}` : "/messages")
               }
