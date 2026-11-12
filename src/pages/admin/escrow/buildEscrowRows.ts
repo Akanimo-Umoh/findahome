@@ -92,7 +92,12 @@ export function buildEscrowRows({
       (kind === "inspection"
         ? linked.status === "inspection_completed"
         : ["handover_completed", "funds_released"].includes(linked.status))
-    const platformFee = e.platformFee ?? linked?.platformFee ?? null
+    // The platform doesn't charge for inspections: the agent is paid the full
+    // amount, so there is no fee to read and no payout for the backend to confirm.
+    const noFee = kind === "inspection"
+    const platformFee = noFee
+      ? 0
+      : (e.platformFee ?? linked?.platformFee ?? null)
 
     return {
       id: e._id,
@@ -104,10 +109,11 @@ export function buildEscrowRows({
       releaseReady: !!linked?.feePaid && linkedComplete && !openDispute,
       amount: e.amount ?? 0,
       platformFee,
-      netPayout:
-        e.netPayout ??
-        (platformFee == null ? null : (e.amount ?? 0) - platformFee),
-      netPayoutConfirmed: typeof e.netPayout === "number",
+      netPayout: noFee
+        ? (e.amount ?? 0)
+        : (e.netPayout ??
+          (platformFee == null ? null : (e.amount ?? 0) - platformFee)),
+      netPayoutConfirmed: noFee || typeof e.netPayout === "number",
       createdAt: e.createdAt,
       releasedAt: e.releasedAt ?? null,
       reason: e.reason ?? null,

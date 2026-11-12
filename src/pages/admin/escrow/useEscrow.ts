@@ -19,11 +19,13 @@ export function errorMessage(e: unknown) {
   return "Something went wrong"
 }
 
-export function useEscrowData() {
+export function useEscrowData(opts?: { background?: boolean }) {
   return useQuery({
     queryKey: ESCROW_QUERY_KEY,
-    staleTime: 0,
-    refetchOnMount: "always",
+    // the escrow page always wants fresh data; the sidebar badge can use a
+    // copy up to a minute old
+    staleTime: opts?.background ? 60_000 : 0,
+    refetchOnMount: opts?.background ? true : "always",
     queryFn: async () => {
       const [escrows, purchases, inspections, disputes] =
         await Promise.allSettled([
