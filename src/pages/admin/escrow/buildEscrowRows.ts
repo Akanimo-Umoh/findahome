@@ -99,6 +99,8 @@ export function buildEscrowRows({
       ? 0
       : (e.platformFee ?? linked?.platformFee ?? null)
 
+    const netPayoutConfirmed = noFee || typeof e.netPayout === "number"
+
     return {
       id: e._id,
       code: e.code ?? `TXN-${e._id.slice(-6).toUpperCase()}`,
@@ -106,14 +108,18 @@ export function buildEscrowRows({
       kind,
       status,
       released,
-      releaseReady: !!linked?.feePaid && linkedComplete && !openDispute,
+      releaseReady:
+        !!linked?.feePaid &&
+        linkedComplete &&
+        !openDispute &&
+        netPayoutConfirmed,
       amount: e.amount ?? 0,
       platformFee,
       netPayout: noFee
         ? (e.amount ?? 0)
         : (e.netPayout ??
           (platformFee == null ? null : (e.amount ?? 0) - platformFee)),
-      netPayoutConfirmed: noFee || typeof e.netPayout === "number",
+      netPayoutConfirmed,
       createdAt: e.createdAt,
       releasedAt: e.releasedAt ?? null,
       reason: e.reason ?? null,

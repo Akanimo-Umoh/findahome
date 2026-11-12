@@ -18,6 +18,7 @@ export type MyAccount = {
   socialLinkOrWebsite?: string | null
   governmentId?: string[]
   licenseDoc?: string[]
+  balance?: number
 }
 
 export const myVerificationKey = ["agent", "verification"] as const
@@ -32,6 +33,10 @@ export function useMyVerification() {
     enabled: !!token,
     staleTime: 0,
     refetchOnMount: "always",
+    // TODO(remove-polling): fallback until the server tells the agent live
+    // when their balance changes (see the backend request for a socket event
+    // after an escrow release). Pauses when the tab is hidden.
+    refetchInterval: 30_000,
     retry: false,
   })
   const me = query.data ?? null

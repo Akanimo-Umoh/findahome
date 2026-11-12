@@ -21,6 +21,16 @@ export default function PickDate({
   selectedTime,
   onSelectTime,
 }: PickDateProps) {
+  const now = new Date()
+
+  const isToday = selectedDate?.toDateString() === now.toDateString()
+
+  const minTime = isToday
+    ? `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`
+    : undefined
+
   return (
     <Card className="mx-auto w-full">
       <CardContent className="mx-auto w-full">
@@ -42,6 +52,7 @@ export default function PickDate({
                 id="time-from"
                 type="time"
                 step="1"
+                min={minTime}
                 value={selectedTime}
                 onChange={(e) => onSelectTime(e.target.value)}
                 className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"

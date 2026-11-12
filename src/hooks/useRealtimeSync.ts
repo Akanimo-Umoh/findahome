@@ -101,6 +101,9 @@ export function useRealtimeSync() {
           queryClient.invalidateQueries({ queryKey })
         )
         queryClient.invalidateQueries({ queryKey: ["notifications"] })
+        // an escrow release changes the agent's balance, which is read from
+        // their account
+        queryClient.invalidateQueries({ queryKey: myVerificationKey })
       }
 
       // Notifications sent only to this user (a verification decision) arrive

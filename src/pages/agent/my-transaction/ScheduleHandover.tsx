@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner"
 import Spinner from "@/components/Spinner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { requestError } from "@/lib/requestError"
 
 const SCHEDULABLE_STATUSES = ["property_payment_made", "handover_rescheduled"]
 
@@ -94,7 +95,9 @@ export default function ScheduleHandover() {
       setHasScheduled(true)
       setShowSuccess(true)
     } catch (err) {
-      toast.error("Couldn't schedule the handover. Please try again.")
+      toast.error(
+        requestError(err, "Couldn't schedule the handover. Please try again.")
+      )
       console.error("scheduleHandover error:", err)
     } finally {
       setIsSubmitting(false)

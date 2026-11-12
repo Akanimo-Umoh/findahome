@@ -2,12 +2,13 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import api from "@/services/api"
 import goBack from "@/assets/images/icon-back.svg"
 import iconNaira from "@/assets/images/icon-chat-naira.svg"
 import iconSend from "@/assets/images/icon-chat-sendMessage.svg"
 import Avatar from "@/components/Avatar"
+import { useAuthContext } from "@/context/AuthContext"
 import { useCreateOrGetChat } from "@/hooks/useCreateOrGetChat"
+import type { ChatDetail, ChatItem, ChatParticipant } from "@/hooks/useChat"
 
 export type DraftChatInfo = {
   propertyId: string
@@ -20,30 +21,98 @@ export type DraftChatInfo = {
   propertyAddress?: string
 }
 
-// A chat that doesn't exist yet. Nothing is saved while the buyer is here: the
-// chat is created, and shows up for both people, only when the first message
-// is sent. Leaving without sending leaves no trace.
+// A chat is only created when the buyer sends the first message.
 export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { user } = useAuthContext()
   const { createChat } = useCreateOrGetChat()
+
   const [text, setText] = useState("")
   const [isSending, setIsSending] = useState(false)
 
   const handleSend = async () => {
-    const message = text.trim()
-    if (!message || isSending) return
+    const messageText = text.trim()
+
+    if (!messageText || isSending) return
+
+    if (!user?._id) {
+      toast.error("Please log in to send a message.")
+      return
+    }
 
     setIsSending(true)
-    try {
-      const chatId = await createChat(draft.propertyId, draft.agentId)
-      if (!chatId) throw new Error("The chat could not be created")
-      await api.post("/message/send", { chatId, text: message })
 
-      queryClient.invalidateQueries({ queryKey: ["chats"] })
-      // replace, so Back doesn't return to the empty draft
+    try {
+      // Create the chat and first message in one backend request.
+      const result = await createChat(
+        draft.propertyId,
+        draft.agentId,
+        messageText
+      )
+
+      const { chatId, message, createdAt, updatedAt } = result
+
+      // Build the chat detail using the draft information we already have.
+      const currentUser: ChatParticipant = {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        profilePicture: user.profilePicture,
+        isVerified: user.isVerified,
+      }
+
+      const agent: ChatParticipant = {
+        _id: draft.agentId,
+        email: "",
+        name: draft.agentName,
+        profilePicture: draft.agentAvatar ?? null,
+      }
+
+      const chatDetail: ChatDetail = {
+        _id: chatId,
+        participants: [currentUser, agent],
+        property: {
+          _id: draft.propertyId,
+          title: draft.propertyTitle,
+          price: draft.propertyPrice ?? 0,
+          images: draft.propertyImage ? [draft.propertyImage] : [],
+          address: draft.propertyAddress,
+        },
+        lastMessage: message,
+        createdAt,
+        updatedAt,
+      }
+
+      // Seed the chat detail cache before navigating.
+      queryClient.setQueryData<ChatDetail>(["chat", chatId], chatDetail)
+
+      // Seed the messages cache with the first message.
+      queryClient.setQueryData(["messages", chatId], [message])
+
+      // Immediately update the existing chat list cache.
+      const existingChats = queryClient.getQueryData<ChatItem[]>([
+        "chats",
+        user._id,
+      ])
+
+      if (existingChats) {
+        const newChat: ChatItem = {
+          ...chatDetail,
+          unreadCount: 0,
+        }
+
+        queryClient.setQueryData<ChatItem[]>(
+          ["chats", user._id],
+          [newChat, ...existingChats.filter((chat) => chat._id !== chatId)]
+        )
+      }
+
+      // Navigate only after the cache is ready.
+      // ChatMessages will render immediately using the cached data.
       navigate(`/messages/${chatId}`, { replace: true })
-    } catch {
+    } catch (error) {
+      console.error("First message error:", error)
       toast.error("Couldn't send your message. Please try again.")
       setIsSending(false)
     }
@@ -60,7 +129,9 @@ export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
         >
           <img src={goBack} alt="" />
         </button>
+
         <Avatar name={draft.agentName} src={draft.agentAvatar} size="md" />
+
         <p className="text-[12px] font-semibold text-text-primary">
           {draft.agentName}
         </p>
@@ -78,15 +149,18 @@ export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
           ) : (
             <div className="h-15 w-15 shrink-0 rounded-lg bg-bg-accent" />
           )}
+
           <div className="min-w-0">
             <p className="line-clamp-1 font-raleway text-[14px] font-semibold tracking-[1px]">
               {draft.propertyTitle}
             </p>
+
             {draft.propertyAddress && (
               <p className="line-clamp-1 text-[12px] leading-4 text-text-secondary">
                 {draft.propertyAddress}
               </p>
             )}
+
             {draft.propertyPrice != null && (
               <p className="flex items-center text-[12px] leading-4 text-text-secondary">
                 <img src={iconNaira} alt="" className="h-4 w-4" />
@@ -96,10 +170,27 @@ export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
           </div>
         </div>
 
-        <p className="mt-10 text-center text-[12px] leading-4 text-text-secondary">
-          Say hello to {draft.agentName}. This conversation will appear in your
-          chats, and in theirs, once you send your first message.
-        </p>
+        {/* first-message preview while sending */}
+        {isSending && text.trim() && (
+          <div className="mx-auto mt-6 flex max-w-247.5 justify-end">
+            <div className="max-w-[75%] rounded-2xl rounded-tr-sm bg-button-bg px-3 py-2">
+              <p className="text-[12px] leading-5 wrap-break-word text-white md:text-[16px] md:leading-6">
+                {text}
+              </p>
+
+              <p className="mt-1 text-right text-[10px] text-white/70">
+                Sending...
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isSending && (
+          <p className="mt-10 text-center text-[12px] leading-4 text-text-secondary">
+            Say hello to {draft.agentName}. This conversation will appear in
+            your chats, and in theirs, once you send your first message.
+          </p>
+        )}
       </div>
 
       {/* message input */}
@@ -109,11 +200,17 @@ export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault()
+                handleSend()
+              }
+            }}
             placeholder="Type your message..."
             disabled={isSending}
             className="h-full w-full flex-1 rounded-2xl bg-[#F5F5F5] px-3 text-[12px] leading-4 outline-none placeholder:text-text-secondary disabled:opacity-50"
           />
+
           <button
             type="button"
             onClick={handleSend}

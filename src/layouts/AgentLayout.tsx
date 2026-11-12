@@ -1,8 +1,12 @@
 import { Outlet } from "react-router-dom"
 import Navbar from "@/components/Navbar"
 import AgentSidebar from "@/components/AgentSidebar"
+import { useSyncBalance } from "@/hooks/useSyncBalance"
 
 export default function AgentLayout() {
+  // keeps the balance shown on every agent screen in step with the server
+  useSyncBalance()
+
   return (
     <div className="min-h-[calc(100vh-72px)] lg:min-h-screen">
       {/* mobile/tablet — regular navbar */}

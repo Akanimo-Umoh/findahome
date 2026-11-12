@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner"
 import Spinner from "@/components/Spinner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { requestError } from "@/lib/requestError"
 
 // only these statuses represent a genuinely schedulable inspection — anything else means this page was reached incorrectly
 const SCHEDULABLE_STATUSES = ["inspection_paid"]
@@ -140,7 +141,9 @@ export default function ScheduleInspection() {
       setHasScheduled(true)
       setShowSuccess(true)
     } catch (err) {
-      toast.error("Couldn't schedule the inspection. Please try again.")
+      toast.error(
+        requestError(err, "Couldn't schedule the inspection. Please try again.")
+      )
       console.error("scheduleInspection error:", err)
     } finally {
       setIsSubmitting(false)
