@@ -57,12 +57,8 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
             </DropdownMenuItem>
           )}
           {!row.released && row.status !== "refunded" && (
-            // needs a refund endpoint on the backend
-            <DropdownMenuItem disabled>
+            <DropdownMenuItem onSelect={() => setAction("refund")}>
               <RotateCcw className="size-4" /> Refund buyer
-              <span className="ml-auto text-[10px] text-slate-400 uppercase">
-                Soon
-              </span>
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
