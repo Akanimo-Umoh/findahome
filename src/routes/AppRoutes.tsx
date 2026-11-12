@@ -352,6 +352,7 @@ export default function AppRoutes() {
           <Route path="/notifications" element={<Notifications />} />
           {/* chats list */}
           <Route path="/messages" element={<Chats />} />
+          <Route path="/messages/new" element={<Chats />} />
           {/* single chat */}
           <Route path="/messages/:chatId" element={<Chats />} />
           <Route

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom"
 import goBack from "@/assets/images/icon-back.svg"
 // import iconOptions from "@/assets/images/icon-chat-options.svg"
 import iconSearch from "@/assets/images/icon-messages-search.svg"
@@ -13,6 +13,7 @@ import { useChatList } from "@/hooks/useChat"
 // import Spinner from "../Spinner"
 import { useState } from "react"
 import ChatMessages from "./ChatMessages"
+import DraftChat, { type DraftChatInfo } from "./DraftChat"
 import ChatListSkeleton from "../ChatListSkeleton"
 
 const formatTime = (dateStr: string) =>
@@ -26,10 +27,23 @@ export default function Chats() {
   const { chatId: selectedChatId } = useParams<{ chatId: string }>()
   const { user } = useAuthContext()
   const { chats, isLoading, error } = useChatList()
+  const location = useLocation()
+
+  // /messages/new is a chat that doesn't exist yet: it is only created when
+  // the buyer sends their first message
+  const isNewChat = location.pathname === "/messages/new"
+  const draft = (location.state as { draft?: DraftChatInfo } | null)?.draft
+  const hasSelection = !!selectedChatId || isNewChat
+
+  // a chat with no messages isn't a conversation yet, so it isn't listed
+  // (unless it's the one that's open)
+  const visibleChats = chats.filter(
+    (chat) => !!chat.lastMessage || chat._id === selectedChatId
+  )
   const [searchQuery, setSearchQuery] = useState("")
   const isAgent = user?.role === "agent" || user?.role === "admin"
 
-  const filteredChats = chats.filter((chat) => {
+  const filteredChats = visibleChats.filter((chat) => {
     const query = searchQuery.toLowerCase()
     if (!query) return true
 
@@ -53,7 +67,7 @@ export default function Chats() {
     <div className="flex h-[calc(100vh-72px)] overflow-hidden font-ssPro md:h-[calc(100vh-66px)]">
       {/* left panel */}
       <div
-        className={`flex w-full flex-col md:mt-4 lg:mt-0 lg:max-w-[420px] lg:min-w-[280px] lg:shrink-0 lg:basis-[35%] lg:border-r lg:border-bg-accent ${selectedChatId ? "hidden lg:flex" : "flex"}`}
+        className={`flex w-full flex-col md:mt-4 lg:mt-0 lg:max-w-[420px] lg:min-w-[280px] lg:shrink-0 lg:basis-[35%] lg:border-r lg:border-bg-accent ${hasSelection ? "hidden lg:flex" : "flex"}`}
       >
         <header className="mx-6 shrink-0 lg:pt-3">
           {/* header */}
@@ -80,7 +94,7 @@ export default function Chats() {
             <p className="mt-10 text-center text-[12px] text-text-secondary">
               {error}
             </p>
-          ) : chats.length === 0 ? (
+          ) : visibleChats.length === 0 ? (
             <div className="mt-20 flex cursor-pointer flex-col items-center justify-center gap-5">
               <img src={imgMessages} alt="" className="h-30.5 w-38" />
               <div className="flex w-56.5 flex-col items-center justify-center gap-1 text-center">
@@ -187,10 +201,17 @@ export default function Chats() {
 
       {/* right panel */}
       <div
-        className={`min-w-0 flex-1 ${selectedChatId ? "flex flex-col" : "hidden lg:flex lg:flex-col"}`}
+        className={`min-w-0 flex-1 ${hasSelection ? "flex flex-col" : "hidden lg:flex lg:flex-col"}`}
       >
         {selectedChatId ? (
           <ChatMessages chatId={selectedChatId} />
+        ) : isNewChat ? (
+          draft ? (
+            <DraftChat draft={draft} />
+          ) : (
+            // opened /messages/new directly, with nothing to start a chat from
+            <Navigate to="/messages" replace />
+          )
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-5">
             <img src={imgMessages} alt="" className="h-30.5 w-38" />

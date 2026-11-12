@@ -305,6 +305,16 @@ export default function PropertyDetails() {
           propertyId={property._id}
           agentId={property.owner._id}
           agentIsVerified={property.owner.isVerified}
+          agentName={property.owner.name}
+          agentAvatar={
+            Array.isArray(property.owner.profilePicture)
+              ? property.owner.profilePicture[0]
+              : (property.owner.profilePicture ?? undefined)
+          }
+          propertyTitle={property.title}
+          propertyImage={property.images?.[0]}
+          propertyPrice={property.price}
+          propertyAddress={property.address}
         />
       </div>
     </div>
