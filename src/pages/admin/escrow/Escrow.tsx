@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button"
 import { buildEscrowStats } from "./buildEscrowRows"
 import { EscrowPagination } from "./components/EscrowPagination"
 import { PendingPayments } from "./components/PendingPayments"
-import { buildPendingPayments } from "./pendingPayments"
+import { ReleaseReadyNotice } from "./components/ReleaseReadyNotice"
+import { buildPendingPayments, filterPendingPayments } from "./pendingPayments"
+import { needsRelease } from "./useEscrowAttention"
 import { EscrowStats } from "./components/EscrowStats"
 import { EscrowTable } from "./components/EscrowTable"
 import { EscrowToolbar } from "./components/EscrowToolbar"
@@ -20,9 +22,14 @@ export default function Escrow() {
   )
   const f = useEscrowFilters(rows)
   const pending = useMemo(
-    () => buildPendingPayments(data?.inspections, data?.purchases),
-    [data]
+    () =>
+      filterPendingPayments(
+        buildPendingPayments(data?.inspections, data?.purchases),
+        f.q
+      ),
+    [data, f.q]
   )
+  const readyCount = useMemo(() => rows.filter(needsRelease).length, [rows])
 
   return (
     <div className="space-y-5">
@@ -40,6 +47,12 @@ export default function Escrow() {
       <EscrowStats stats={stats} loading={isLoading} />
 
       <PendingPayments items={pending} />
+
+      <ReleaseReadyNotice
+        count={readyCount}
+        active={f.ready}
+        onToggle={() => f.setReady(!f.ready)}
+      />
 
       <section className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 p-4">

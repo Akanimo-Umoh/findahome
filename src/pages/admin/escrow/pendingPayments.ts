@@ -49,3 +49,21 @@ export function buildPendingPayments(
     (a.startedAt ?? "").localeCompare(b.startedAt ?? "")
   )
 }
+
+export function filterPendingPayments(items: PendingPayment[], query: string) {
+  const term = query.trim().toLowerCase()
+  if (!term) return items
+  return items.filter((p) =>
+    [
+      p.id,
+      p.reference,
+      p.propertyTitle,
+      p.buyerName,
+      p.buyerEmail,
+      String(p.amount),
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(term)
+  )
+}

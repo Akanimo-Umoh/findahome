@@ -51,7 +51,7 @@ export function EscrowToolbar({ tab, query, counts, onTab, onQuery }: Props) {
         <input
           value={query}
           onChange={(e) => onQuery(e.target.value)}
-          placeholder="Search property, buyer, agent or code"
+          placeholder="Search property, buyer, agent, reference or ID"
           className="h-10 w-full rounded-lg border border-slate-200 bg-white pr-3 pl-9 text-sm outline-none focus:border-[#274ad0] focus:ring-2 focus:ring-[#274ad0]/15"
         />
       </div>

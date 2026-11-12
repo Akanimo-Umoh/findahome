@@ -35,6 +35,7 @@ export interface RawEscrow {
 // A Purchase or an Inspection (same reference as the escrow)
 export interface RawLinkedRecord {
   _id: string
+  code?: string
   reference?: string
   status: string
   property?: RawProperty | null

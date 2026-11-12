@@ -14,11 +14,17 @@ import { KIND_LABEL, formatDate } from "../format"
 import type { PendingPayment } from "../pendingPayments"
 import { useConfirmPayment } from "../useEscrow"
 
+const PREVIEW_COUNT = 5
+
 export function PendingPayments({ items }: { items: PendingPayment[] }) {
   const [selected, setSelected] = useState<PendingPayment | null>(null)
+  const [showAll, setShowAll] = useState(false)
   const mutation = useConfirmPayment()
 
   if (items.length === 0) return null
+
+  // oldest first; only the first few show until the admin asks for the rest
+  const visible = showAll ? items : items.slice(0, PREVIEW_COUNT)
 
   const confirm = () => {
     if (!selected) return
@@ -41,7 +47,7 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
       </header>
 
       <ul className="divide-y divide-amber-100">
-        {items.map((p) => (
+        {visible.map((p) => (
           <li
             key={`${p.kind}-${p.id}`}
             className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3"
@@ -75,6 +81,18 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
           </li>
         ))}
       </ul>
+
+      {items.length > PREVIEW_COUNT && (
+        <div className="border-t border-amber-100 px-4 py-2 text-center">
+          <button
+            type="button"
+            onClick={() => setShowAll((v) => !v)}
+            className="cursor-pointer text-[13px] font-semibold text-button-bg hover:underline"
+          >
+            {showAll ? "Show fewer" : `Show all ${items.length}`}
+          </button>
+        </div>
+      )}
 
       {selected && (
         <Dialog
