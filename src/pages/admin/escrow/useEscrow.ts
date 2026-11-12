@@ -93,19 +93,3 @@ export function useConfirmPayment() {
     onError: (e) => toast.error(errorMessage(e)),
   })
 }
-
-export function useRefundEscrow() {
-  const qc = useQueryClient()
-
-  return useMutation({
-    mutationFn: (v: { id: string; reason: string }) =>
-      escrowService.refund(v.id, v.reason),
-
-    onSuccess: () => {
-      toast.success("Refund processed successfully")
-      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
-    },
-
-    onError: (e) => toast.error(errorMessage(e)),
-  })
-}

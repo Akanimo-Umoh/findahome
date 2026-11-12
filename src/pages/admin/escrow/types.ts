@@ -3,7 +3,7 @@ import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 export type EscrowKind = "inspection" | "purchase"
 export type EscrowState = "in_escrow" | "released" | "disputed" | "refunded"
 export type EscrowTab = "all" | EscrowState
-export type EscrowAction = "release" | "hold" | "refund"
+export type EscrowAction = "release" | "hold"
 
 export interface Party {
   id: string | null

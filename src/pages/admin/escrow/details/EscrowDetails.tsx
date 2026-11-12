@@ -88,7 +88,11 @@ export default function EscrowDetails() {
         <div className="flex flex-wrap gap-2">
           {row.status === "refunded" ? null : !row.released ? (
             <>
-              <Button variant="outline" onClick={() => setAction("refund")}>
+              <Button
+                variant="outline"
+                disabled
+                title="Needs a refund endpoint on the backend"
+              >
                 <RotateCcw className="mr-2 size-4" /> Refund buyer
               </Button>
               <Button
