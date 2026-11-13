@@ -21,7 +21,8 @@ interface Props {
 
 export function EscrowActionDialog({ row, action, onClose }: Props) {
   const mutation = useSetEscrowStatus()
-  if (!action) return null
+  // refunds have their own dialog, because they need a reason
+  if (!action || action === "refund") return null
 
   const release = action === "release"
   const confirm = () =>
@@ -67,16 +68,16 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
           <Button
             variant="outline"
             onClick={onClose}
-            disabled={
-              mutation.isPending ||
-              (release && (!row.releaseReady || !row.netPayoutConfirmed))
-            }
+            disabled={mutation.isPending}
           >
             Cancel
           </Button>
           <Button
             onClick={confirm}
-            disabled={mutation.isPending}
+            disabled={
+              mutation.isPending ||
+              (release && (!row.releaseReady || !row.netPayoutConfirmed))
+            }
             className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
           >
             {mutation.isPending && (

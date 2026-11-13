@@ -9,7 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EscrowActionDialog } from "./EscrowActionDialog"
+import { EscrowRefundDialog } from "./EscrowRefundDialog"
 import {
+  isEscrowRefundable,
   isEscrowReleaseReady,
   type EscrowAction,
   type EscrowRow,
@@ -56,13 +58,9 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
               <Undo2 className="size-4" /> Move back to hold
             </DropdownMenuItem>
           )}
-          {!row.released && row.status !== "refunded" && (
-            // needs a refund endpoint on the backend
-            <DropdownMenuItem disabled>
+          {isEscrowRefundable(row) && (
+            <DropdownMenuItem onSelect={() => setAction("refund")}>
               <RotateCcw className="size-4" /> Refund buyer
-              <span className="ml-auto text-[10px] text-slate-400 uppercase">
-                Soon
-              </span>
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -73,6 +71,9 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
         action={action}
         onClose={() => setAction(null)}
       />
+      {action === "refund" && (
+        <EscrowRefundDialog row={row} onClose={() => setAction(null)} />
+      )}
     </>
   )
 }

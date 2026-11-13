@@ -3,7 +3,7 @@ import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 export type EscrowKind = "inspection" | "purchase"
 export type EscrowState = "in_escrow" | "released" | "disputed" | "refunded"
 export type EscrowTab = "all" | EscrowState
-export type EscrowAction = "release" | "hold"
+export type EscrowAction = "release" | "hold" | "refund"
 
 export interface Party {
   id: string | null
@@ -45,6 +45,12 @@ export interface EscrowStatsData {
   refunded: number
   platformRevenue: number
   count: Record<EscrowTab, number>
+}
+
+// Funds can be returned to the buyer while they are still held (in escrow or
+// disputed), but not after they were released to the agent or already refunded.
+export function isEscrowRefundable(row: EscrowRow): boolean {
+  return !row.released && row.status !== "refunded"
 }
 
 export function isEscrowReleaseReady(row: EscrowRow): boolean {

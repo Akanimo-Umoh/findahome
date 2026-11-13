@@ -93,3 +93,41 @@ export function useConfirmPayment() {
     onError: (e) => toast.error(errorMessage(e)),
   })
 }
+
+// Everything worth sending to the backend developer when a request fails.
+export function describeError(e: unknown) {
+  if (axios.isAxiosError(e)) {
+    return {
+      status: e.response?.status ?? null,
+      method: e.config?.method?.toUpperCase() ?? null,
+      url: e.config?.url ?? null,
+      message:
+        (e.response?.data as { message?: string } | undefined)?.message ??
+        e.message,
+      response: e.response?.data ?? null,
+    }
+  }
+  return {
+    status: null,
+    method: null,
+    url: null,
+    message: e instanceof Error ? e.message : String(e),
+    response: null,
+  }
+}
+
+export function useRefundEscrow() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { id: string; reason: string }) =>
+      escrowService.refund(v.id, v.reason),
+    onSuccess: () => {
+      toast.success("Refunded. The amount was returned to the buyer's wallet.")
+      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
+    },
+    onError: (e) => {
+      console.error("refund failed:", describeError(e))
+      toast.error(errorMessage(e))
+    },
+  })
+}

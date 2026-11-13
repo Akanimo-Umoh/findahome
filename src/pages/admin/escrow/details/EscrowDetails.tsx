@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import { ArrowLeft, CheckCircle2, RotateCcw, Undo2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { EscrowActionDialog } from "../components/EscrowActionDialog"
+import { EscrowRefundDialog } from "../components/EscrowRefundDialog"
 import { DisputePanel } from "./components/DisputePanel"
 import { LinkedRecord } from "./components/LinkedRecord"
 import { MoneyPanel } from "./components/MoneyPanel"
@@ -88,11 +89,7 @@ export default function EscrowDetails() {
         <div className="flex flex-wrap gap-2">
           {row.status === "refunded" ? null : !row.released ? (
             <>
-              <Button
-                variant="outline"
-                disabled
-                title="Needs a refund endpoint on the backend"
-              >
+              <Button variant="outline" onClick={() => setAction("refund")}>
                 <RotateCcw className="mr-2 size-4" /> Refund buyer
               </Button>
               <Button
@@ -135,6 +132,9 @@ export default function EscrowDetails() {
         action={action}
         onClose={() => setAction(null)}
       />
+      {action === "refund" && (
+        <EscrowRefundDialog row={row} onClose={() => setAction(null)} />
+      )}
     </div>
   )
 }

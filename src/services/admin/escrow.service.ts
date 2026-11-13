@@ -44,6 +44,10 @@ export const escrowService = {
     })
     return data
   },
+  async refund(escrowId: string, reason: string) {
+    const { data } = await api.patch(`/escrow/${escrowId}/refund`, { reason })
+    return data
+  },
   async setStatus(escrowId: string, status: "on_hold" | "released") {
     const { data } = await api.patch("/escrow/status", { escrowId, status })
     return data
