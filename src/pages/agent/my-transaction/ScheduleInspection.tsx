@@ -24,8 +24,9 @@ const notSchedulableMessage = (status: string) => {
   switch (status) {
     case "none":
     case "inspection_requested":
-      return "The buyer hasn't paid the inspection fee yet."
     case "inspection_initialized":
+      return "The buyer hasn't paid the inspection fee yet."
+    case "inspection_payment_review":
       return "The buyer's payment is still being confirmed. You can schedule the inspection once it's confirmed."
     case "inspection_cancelled":
       return "This inspection was cancelled."

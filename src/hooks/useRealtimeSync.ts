@@ -19,6 +19,8 @@ const LISTING_EVENTS = new Set([
 const DEAL_EVENTS = new Set([
   "inspection_requested",
   "inspection_payment_started",
+  "inspection_payment_review",
+  "inspection_status_changed",
   "inspection_fee_paid",
   "inspection_scheduled",
   "inspection_reschedule_requested",

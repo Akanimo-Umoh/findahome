@@ -49,6 +49,7 @@ export interface RawLinkedRecord {
   price?: number // purchase amount
   initializedAt?: string
   paidAt?: string
+  paystackPaidAt?: string
   scheduledAt?: string
   confirmedAt?: string
   completedAt?: string

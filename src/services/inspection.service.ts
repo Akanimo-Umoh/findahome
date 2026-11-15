@@ -32,6 +32,7 @@ export type Inspection = {
     | "none"
     | "inspection_requested"
     | "inspection_initialized"
+    | "inspection_payment_review"
     | "inspection_paid"
     | "inspection_scheduled"
     | "inspection_confirmed"

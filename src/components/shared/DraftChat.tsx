@@ -8,6 +8,7 @@ import iconSend from "@/assets/images/icon-chat-sendMessage.svg"
 import Avatar from "@/components/Avatar"
 import { useAuthContext } from "@/context/AuthContext"
 import { useCreateOrGetChat } from "@/hooks/useCreateOrGetChat"
+import { requestError } from "@/lib/requestError"
 import type { ChatDetail, ChatItem, ChatParticipant } from "@/hooks/useChat"
 
 export type DraftChatInfo = {
@@ -113,7 +114,9 @@ export default function DraftChat({ draft }: { draft: DraftChatInfo }) {
       navigate(`/messages/${chatId}`, { replace: true })
     } catch (error) {
       console.error("First message error:", error)
-      toast.error("Couldn't send your message. Please try again.")
+      toast.error(
+        requestError(error, "Couldn't send your message. Please try again.")
+      )
       setIsSending(false)
     }
   }

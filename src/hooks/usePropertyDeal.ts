@@ -6,7 +6,7 @@ import type { MergedTransaction } from "@/services/transaction.service"
 export type DealStage =
   | "none" // nothing started for this property
   | "inspection_unpaid" // requested, fee not paid yet
-  | "inspection_review" // payment started, waiting to be verified
+  | "inspection_review" // payment received, waiting for the admin to approve it
   | "inspection_awaiting_schedule" // fee paid, agent has to pick a date
   | "inspection_scheduled" // agent picked a date, buyer has to confirm
   | "inspection_confirmed" // buyer confirmed, visit upcoming
@@ -22,7 +22,8 @@ export type DealStage =
 const INSPECTION_STAGE: Record<string, DealStage> = {
   none: "none",
   inspection_requested: "inspection_unpaid",
-  inspection_initialized: "inspection_review",
+  inspection_initialized: "inspection_unpaid",
+  inspection_payment_review: "inspection_review",
   inspection_paid: "inspection_awaiting_schedule",
   inspection_scheduled: "inspection_scheduled",
   inspection_confirmed: "inspection_confirmed",

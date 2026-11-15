@@ -12,9 +12,10 @@ export interface PendingPayment {
   startedAt?: string
 }
 
-// A payment the buyer started on Paystack that no admin has confirmed yet.
-// Inspections move to `inspection_initialized`; purchases keep status "none"
-// but get a reference. Once confirmed, `feePaid` becomes true.
+// A payment that Paystack confirmed but no admin has approved yet.
+// Inspections move to `inspection_payment_review`; purchases still use status
+// "none" with a reference until the purchase side is done. Once approved,
+// `feePaid` becomes true.
 export function buildPendingPayments(
   inspections: RawLinkedRecord[] = [],
   purchases: RawLinkedRecord[] = []
@@ -29,15 +30,12 @@ export function buildPendingPayments(
       propertyTitle: r.property?.title ?? "Unknown property",
       buyerName: buyer?.name ?? "Unknown user",
       buyerEmail: buyer?.email ?? "",
-      startedAt: r.initializedAt,
+      startedAt: r.paystackPaidAt ?? r.initializedAt,
     }
   }
 
   const pendingInspections = inspections
-    .filter(
-      (i) =>
-        i.status === "inspection_initialized" && !!i.reference && !i.feePaid
-    )
+    .filter((i) => i.status === "inspection_payment_review" && !i.feePaid)
     .map((i) => toRow(i, "inspection"))
 
   const pendingPurchases = purchases

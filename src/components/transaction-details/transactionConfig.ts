@@ -114,11 +114,12 @@ export function getBuyerInspectionBanner(
   switch (status) {
     case "none":
     case "inspection_requested":
+    case "inspection_initialized":
       return {
         title: "Awaiting Payment",
         subtitle: "The inspection fee hasn't been paid yet.",
       }
-    case "inspection_initialized":
+    case "inspection_payment_review":
       return {
         title: "Payment Under Review",
         subtitle:
@@ -169,11 +170,12 @@ export function getAgentInspectionBanner(
   switch (status) {
     case "none":
     case "inspection_requested":
+    case "inspection_initialized":
       return {
         title: "Awaiting Buyer Payment",
         subtitle: "The buyer hasn't paid the inspection fee yet.",
       }
-    case "inspection_initialized":
+    case "inspection_payment_review":
       return {
         title: "Payment Under Review",
         subtitle:
@@ -217,6 +219,7 @@ export function mapInspectionStatusToTransactionStatus(
     case "none":
     case "inspection_requested":
     case "inspection_initialized":
+    case "inspection_payment_review":
     case "inspection_paid":
       return "inspection_requested"
     case "inspection_scheduled":
@@ -238,8 +241,9 @@ export function getInspectionPaymentStatusLabel(
   switch (status) {
     case "none":
     case "inspection_requested":
-      return "Awaiting Payment"
     case "inspection_initialized":
+      return "Awaiting Payment"
+    case "inspection_payment_review":
       return "Payment Under Review"
     case "inspection_paid":
       return "In Escrow"

@@ -15,7 +15,8 @@ const PURCHASE_STATUS_LABEL: Record<string, string> = {
 const INSPECTION_STATUS_LABEL: Record<string, string> = {
   none: "Not Started",
   inspection_requested: "Awaiting Payment",
-  inspection_initialized: "Payment Under Review",
+  inspection_initialized: "Awaiting Payment",
+  inspection_payment_review: "Payment Under Review",
   inspection_paid: "Awaiting Schedule",
   inspection_scheduled: "Awaiting Buyer Confirmation",
   inspection_confirmed: "Inspection Upcoming",

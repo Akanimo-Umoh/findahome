@@ -8,7 +8,7 @@ import {
 export type InspectionStage =
   | "none" // no inspection requested yet for this property
   | "awaiting_payment" // requested, fee not paid yet
-  | "awaiting_confirmation" // Paystack started, waiting on admin verification
+  | "awaiting_confirmation" // Paystack confirmed the payment, waiting on admin approval
   | "awaiting_schedule" // paid, waiting on agent to pick a date
   | "awaiting_buyer_confirm" // agent picked a date, buyer must confirm/reject
   | "confirmed" // buyer confirmed, visit upcoming
@@ -22,7 +22,8 @@ function getPropertyId(property: Inspection["property"]): string {
 const STAGE_BY_STATUS: Record<Inspection["status"], InspectionStage> = {
   none: "none",
   inspection_requested: "awaiting_payment",
-  inspection_initialized: "awaiting_confirmation",
+  inspection_initialized: "awaiting_payment",
+  inspection_payment_review: "awaiting_confirmation",
   inspection_paid: "awaiting_schedule",
   inspection_scheduled: "awaiting_buyer_confirm",
   inspection_confirmed: "confirmed",

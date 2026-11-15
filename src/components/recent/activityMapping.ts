@@ -8,6 +8,7 @@ function mapStatus(item: MergedTransaction): TransactionStatus {
     switch (item.status) {
       case "inspection_requested":
       case "inspection_initialized":
+      case "inspection_payment_review":
       case "inspection_paid":
         return "inspection_requested"
       case "inspection_scheduled":
@@ -58,8 +59,13 @@ const TYPE_LABEL: Record<TransactionStatus, string> = {
 // inspections that aren't confirmed yet the label comes from the raw status.
 function getStatusLabel(item: MergedTransaction, status: TransactionStatus) {
   if (item.recordType === "inspection") {
-    if (item.status === "inspection_initialized") return "Payment Under Review"
-    if (item.status === "inspection_requested") return "Awaiting Payment"
+    if (item.status === "inspection_payment_review")
+      return "Payment Under Review"
+    if (
+      item.status === "inspection_requested" ||
+      item.status === "inspection_initialized"
+    )
+      return "Awaiting Payment"
   }
   return STATUS_LABEL[status]
 }
