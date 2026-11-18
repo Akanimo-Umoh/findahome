@@ -92,7 +92,7 @@ export default function Step2({
         </FormField>
 
         <FormField
-          label="City"
+          label="Address / City"
           htmlFor="city"
           error={errors.city}
           className="mt-4"

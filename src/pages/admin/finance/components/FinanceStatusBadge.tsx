@@ -10,6 +10,7 @@ const STYLE: Record<LedgerStatus, { pill: string; dot: string }> = {
   in_escrow: { pill: "bg-blue-50 text-blue-700", dot: "bg-blue-500" },
   released: { pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
   disputed: { pill: "bg-rose-50 text-rose-700", dot: "bg-rose-500" },
+  refund_pending: { pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
   refunded: { pill: "bg-violet-50 text-violet-700", dot: "bg-violet-500" },
 }
 

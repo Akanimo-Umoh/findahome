@@ -83,22 +83,53 @@ export function buildEscrowRows({
       ? "released"
       : e.status === "refunded"
         ? "refunded"
-        : e.status === "pending"
-          ? "pending"
+        : e.status === "refund_pending"
+          ? "refund_pending"
           : openDispute
             ? "disputed"
             : "in_escrow"
     const property = e.property ?? linked?.property ?? null
+    const linkedComplete =
+      !!linked &&
+      (kind === "inspection"
+        ? linked.status === "inspection_completed"
+        : ["handover_completed", "funds_released"].includes(linked.status))
+    // The platform doesn't charge for inspections: the agent is paid the full
+    // amount, so there is no fee to read and no payout for the backend to confirm.
+    const noFee = kind === "inspection"
+    const platformFee = noFee
+      ? 0
+      : (e.platformFee ?? linked?.platformFee ?? null)
+
+    const netPayoutConfirmed = noFee || typeof e.netPayout === "number"
 
     return {
       id: e._id,
-      code: `TXN-${e._id.slice(-6).toUpperCase()}`,
+      code: e.code ?? `TXN-${e._id.slice(-6).toUpperCase()}`,
       reference: e.reference ?? "—",
       kind,
       status,
       released,
+      releaseReady:
+        status !== "refund_pending" &&
+        !!linked?.feePaid &&
+        linkedComplete &&
+        !openDispute &&
+        netPayoutConfirmed,
       amount: e.amount ?? 0,
+      platformFee,
+      netPayout: noFee
+        ? (e.amount ?? 0)
+        : (e.netPayout ??
+          (platformFee == null ? null : (e.amount ?? 0) - platformFee)),
+      netPayoutConfirmed,
       createdAt: e.createdAt,
+      releasedAt: e.releasedAt ?? null,
+      reason: e.reason ?? null,
+      refundedAt: e.refundedAt ?? null,
+      refundedAmount: e.refundedAmount ?? null,
+      transferReference: e.transferReference ?? null,
+      refundNote: e.refundNote ?? null,
       propertyId: property?._id ?? null,
       propertyTitle:
         property?.title ?? linked?.property?.title ?? "Unknown property",
@@ -112,7 +143,7 @@ export function buildEscrowRows({
   })
 }
 
-// In escrow + Released + Disputed add up to Total
+// In escrow + Released + Disputed + Refund pending + Refunded add up to Total
 export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
   const sum = (s?: EscrowState) =>
     rows.filter((r) => !s || r.status === s).reduce((t, r) => t + r.amount, 0)
@@ -121,16 +152,22 @@ export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
 
   return {
     total: sum(),
-    pending: sum("pending"),
     inEscrow: sum("in_escrow"),
     released: sum("released"),
     disputed: sum("disputed"),
+    refundPending: sum("refund_pending"),
+    refunded: sum("refunded"),
+    platformRevenue: rows.reduce(
+      (total, row) =>
+        total + (row.linked?.feePaid ? (row.platformFee ?? 0) : 0),
+      0
+    ),
     count: {
       all: count(),
-      pending: count("pending"),
       in_escrow: count("in_escrow"),
       released: count("released"),
       disputed: count("disputed"),
+      refund_pending: count("refund_pending"),
       refunded: count("refunded"),
     },
   }

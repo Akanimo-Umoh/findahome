@@ -3,6 +3,7 @@ import { LogOut } from "lucide-react"
 import logoIcon from "@/assets/images/icon-logo-tablet.svg"
 import { useLogout } from "@/hooks/useLogout"
 import { cn } from "@/lib/utils"
+import { useEscrowAttention } from "@/pages/admin/escrow/useEscrowAttention"
 import {
   adminFooterNav,
   adminNavGroups,
@@ -19,10 +20,12 @@ function NavLinkItem({
   item,
   active,
   onNavigate,
+  badge,
 }: {
   item: AdminNavItem
   active: boolean
   onNavigate?: () => void
+  badge?: number
 }) {
   const Icon = item.icon
   return (
@@ -46,6 +49,14 @@ function NavLinkItem({
         )}
         <Icon size={18} aria-hidden />
         {item.label}
+        {!!badge && (
+          <span
+            aria-label={`${badge} need attention`}
+            className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white"
+          >
+            {badge > 9 ? "9+" : badge}
+          </span>
+        )}
       </Link>
     </li>
   )
@@ -54,6 +65,7 @@ function NavLinkItem({
 export default function AdminSidebar({ onNavigate }: AdminSidebarProps) {
   const { pathname } = useLocation()
   const { handleLogout } = useLogout()
+  const attention = useEscrowAttention()
 
   return (
     <div className="flex h-full flex-col border-r border-slate-200 bg-white">
@@ -85,6 +97,11 @@ export default function AdminSidebar({ onNavigate }: AdminSidebarProps) {
                   item={item}
                   active={isNavItemActive(item, pathname)}
                   onNavigate={onNavigate}
+                  badge={
+                    item.to === "/admin/transactions"
+                      ? attention.total
+                      : undefined
+                  }
                 />
               ))}
             </ul>

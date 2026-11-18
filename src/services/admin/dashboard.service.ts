@@ -3,6 +3,7 @@ import type {
   AdminActivityRecord,
   AdminAdRecord,
   AdminDisputeRecord,
+  AdminDealRecord,
   AdminListingRecord,
   AdminUserRecord,
 } from "@/types/admin"
@@ -27,6 +28,17 @@ export const getAdminDisputes = async (): Promise<AdminDisputeRecord[]> => {
 export const getAdminAds = async (): Promise<AdminAdRecord[]> => {
   const { data } = await api.get("/ads")
   return data.data ?? []
+}
+
+export const getAdminDeals = async (): Promise<AdminDealRecord[]> => {
+  const [purchaseResponse, inspectionResponse] = await Promise.all([
+    api.get("/purchase/all-purchases"),
+    api.get("/inspection/all-inspections"),
+  ])
+  return [
+    ...(purchaseResponse.data.purchases ?? []),
+    ...(inspectionResponse.data.inspections ?? []),
+  ]
 }
 
 // transactions + escrows merged, newest first

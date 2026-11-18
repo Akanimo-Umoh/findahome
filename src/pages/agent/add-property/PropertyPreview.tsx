@@ -33,6 +33,8 @@ type PropertyData = {
   description?: string
   images: string[]
   videos?: string[]
+  status?: "pending" | "approved" | "rejected" | "sold"
+  rejectionReason?: string | null
   owner: {
     name: string
     profilePicture?: string | string[] | null
@@ -107,6 +109,19 @@ export default function PropertyPreview() {
           {/* spacer to keep title centered */}
           <div className="h-6 w-6 md:h-8 md:w-8" />
         </div>
+
+        {property.status === "rejected" && (
+          <div
+            role="alert"
+            className="mt-4 rounded-lg bg-red-50 px-3 py-2.5 text-[13px] text-red-700 md:text-[14px]"
+          >
+            <p className="font-semibold">This listing was not approved</p>
+            <p>
+              {property.rejectionReason ??
+                "Please review your listing details and update them."}
+            </p>
+          </div>
+        )}
 
         <div className="mt-6 xl:flex xl:justify-center xl:gap-7">
           {/* left column — carousel + video (lg) */}

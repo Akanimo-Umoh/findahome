@@ -38,7 +38,6 @@ export default function OnboardingSuccess() {
       ...user,
       ...serverUser,
       location: address ?? user.location,
-      isOnboarding: true,
     })
   }, [cameFromOnboarding, user, updateUser, location.state])
 

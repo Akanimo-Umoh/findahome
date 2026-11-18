@@ -27,13 +27,12 @@ export function useVerifyAgent() {
                 ...u,
                 verificationStatus: status,
                 verificationNote: status === "rejected" ? reason : undefined,
-                verifiedAt: new Date().toISOString(),
               }
             : u
         )
       )
       toast.success(
-        status === "verified" ? "Agent verified" : "Verification rejected"
+        status === "approved" ? "Agent verified" : "Verification rejected"
       )
     },
     onError: (err) =>

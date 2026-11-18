@@ -6,6 +6,7 @@ import type {
   AdminAdRecord,
   AdminDisputeEscrowRef,
   AdminDisputeRecord,
+  AdminDealRecord,
   AdminEscrowRecord,
   AdminListingRecord,
   AdminTransactionRecord,
@@ -26,6 +27,7 @@ export type RawSources = {
   disputes: AdminDisputeRecord[] | null
   ads: AdminAdRecord[] | null
   activities: AdminActivityRecord[] | null
+  deals: AdminDealRecord[] | null
 }
 
 const HOUR = 3_600_000
@@ -89,6 +91,14 @@ export function buildOverview(
   const houseHunters = src.users
     ? src.users.filter((u) => u.role === "user")
     : null
+  const agentReviewPending = (u: NonNullable<typeof agents>[number]) =>
+    u.verificationStatus === "pending"
+
+  const agentPendingCount = count(agents, agentReviewPending)
+  const agentVerifiedCount = count(
+    agents,
+    (u) => u.verificationStatus === "approved"
+  )
 
   // ---- listings ----
   const approved = (l: AdminListingRecord) => l.status === "approved"
@@ -134,18 +144,21 @@ export function buildOverview(
       newThisMonth: count(src.users, (u) => since(u.createdAt, 30 * DAY)),
       agents: {
         total: agents ? agents.length : null,
-        // No KYC approval state exists on User yet (isVerified is email-only)
-        pendingVerification: null,
-        verified: null,
+        pendingVerification: agentPendingCount,
+        verified: agentVerifiedCount,
       },
       houseHunters: {
         total: houseHunters ? houseHunters.length : null,
         newThisWeek: count(houseHunters, (u) => since(u.createdAt, 7 * DAY)),
-        // No last-active timestamp on User yet
-        activeThisWeek: null,
+        activeThisWeek: count(houseHunters, (u) =>
+          since(u.lastActive, 7 * DAY)
+        ),
       },
-      // No flag / suspend / ban fields or endpoints yet
-      risk: { flagged: null, suspended: null, banned: null },
+      risk: {
+        flagged: count(src.users, (u) => !!u.isFlagged),
+        suspended: count(src.users, (u) => !!u.isSuspended),
+        banned: count(src.users, (u) => !!u.isBanned),
+      },
     },
 
     listings: {
@@ -155,7 +168,7 @@ export function buildOverview(
         (l) => approved(l) && since(l.createdAt, 7 * DAY)
       ),
       pendingApproval: listingsPending,
-      flagged: null, // no flag field yet
+      flagged: count(src.listings, (l) => !!l.isFlagged),
       rejectedThisWeek: count(
         src.listings,
         (l) => l.status === "rejected" && since(l.updatedAt, 7 * DAY)
@@ -200,9 +213,11 @@ export function buildOverview(
 
     ads: {
       active: count(src.ads, (a) => a.status === "active"),
-      // Paying an ad sets it live immediately, so there is no approval queue
-      pendingApproval: null,
-      expiringSoon: null, // ads have no start / end date yet
+      pendingApproval: count(src.ads, (a) => a.status === "pending"),
+      expiringSoon: count(src.ads, (a) => {
+        const end = a.endDate ? new Date(a.endDate).getTime() : 0
+        return a.status === "active" && end >= now && end <= now + 7 * DAY
+      }),
       paidBudgetTotal: src.ads
         ? src.ads
             .filter((a) => a.isPaid)
@@ -210,11 +225,23 @@ export function buildOverview(
         : null,
     },
 
-    revenue: { platform: null }, // no platform-fee ledger yet
+    revenue: {
+      platform: src.deals
+        ? src.deals
+            .filter((deal) => deal.feePaid)
+            .reduce((total, deal) => total + (deal.platformFee ?? 0), 0)
+        : null,
+    },
 
     attention: {
-      agentApplications: null, // see users.agents.pendingVerification
-      pendingActions: sum(disputesOpen, listingsPending, pendingPayouts.count),
+      agentApplications: agentPendingCount,
+      pendingActions: sum(
+        disputesOpen,
+        listingsPending,
+        pendingPayouts.count,
+        agentPendingCount,
+        count(src.ads, (a) => a.status === "pending")
+      ),
       urgent: disputesOverdue,
     },
 

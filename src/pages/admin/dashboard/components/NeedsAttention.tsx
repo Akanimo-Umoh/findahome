@@ -3,6 +3,7 @@ import {
   Banknote,
   Building2,
   ChevronRight,
+  Landmark,
   Megaphone,
   Scale,
   Timer,
@@ -14,6 +15,7 @@ import MetricValue from "@/components/admin/ui/MetricValue"
 import { toneSoft, type Tone } from "@/components/admin/ui/tone"
 import { cn } from "@/lib/utils"
 import { formatNairaCompact } from "@/lib/adminFormat"
+import { useEscrowAttention } from "@/pages/admin/escrow/useEscrowAttention"
 import type { DashboardOverview } from "../types"
 
 type Props = {
@@ -38,6 +40,7 @@ export default function NeedsAttention({
   className,
 }: Props) {
   const o = overview
+  const attention = useEscrowAttention()
   const payoutAmount = o?.transactions.pendingPayouts.amount
 
   const rows: Row[] = [
@@ -58,6 +61,15 @@ export default function NeedsAttention({
       title: "Open disputes",
       sub: "Waiting for a decision",
       value: o?.disputes.open,
+    },
+    {
+      key: "escrow",
+      to: "/admin/transactions",
+      icon: Landmark,
+      tone: "warning",
+      title: "Escrow needs action",
+      sub: `${attention.pendingPayments} to confirm · ${attention.readyToRelease} to release · ${attention.refundsToSend} refunds to send`,
+      value: attention.total,
     },
     {
       key: "payouts",
@@ -85,7 +97,7 @@ export default function NeedsAttention({
       icon: UserCheck,
       tone: "info",
       title: "Agent applications",
-      sub: "Verification isn’t tracked yet",
+      sub: "Waiting for a verification decision",
       value: o?.attention.agentApplications,
     },
     {

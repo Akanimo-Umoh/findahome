@@ -6,13 +6,17 @@ export const getAdminAdList = async (): Promise<AdminAd[]> => {
   return data.data ?? []
 }
 
-// "rejected" and adminNote are not on the backend yet: until they are, the server answers 400 "Invalid status value" and the admin sees that message.
 export const setAdStatus = async (
   id: string,
-  status: "active" | "paused" | "rejected",
-  extra: { pauseReason?: string; adminNote?: string } = {}
+  status: "active" | "paused",
+  extra: { pauseReason?: string } = {}
 ) => {
   const { data } = await api.patch(`/ads/${id}`, { status, ...extra })
+  return data
+}
+
+export const reviewAd = async (id: string, status: "approved" | "rejected") => {
+  const { data } = await api.patch(`/ads/${id}/review`, { status })
   return data
 }
 

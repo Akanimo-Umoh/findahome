@@ -1,5 +1,6 @@
 import type { MergedTransaction } from "@/services/transaction.service"
 import type { Activity, TransactionStatus } from "@/types/transactions"
+import { cancelledLabel } from "@/lib/refundStatus"
 
 // maps a raw inspection/purchase record's backend status onto the existing
 // 10-phase TransactionStatus enum ActivityCard/transactionConfig already use
@@ -8,6 +9,7 @@ function mapStatus(item: MergedTransaction): TransactionStatus {
     switch (item.status) {
       case "inspection_requested":
       case "inspection_initialized":
+      case "inspection_payment_review":
       case "inspection_paid":
         return "inspection_requested"
       case "inspection_scheduled":
@@ -24,6 +26,7 @@ function mapStatus(item: MergedTransaction): TransactionStatus {
   // purchase
   switch (item.status) {
     case "none":
+    case "property_payment_review":
     case "property_payment_made":
       return "property_payment_pending"
     case "handover_requested":
@@ -52,6 +55,24 @@ const TYPE_LABEL: Record<TransactionStatus, string> = {
   handover_confirmed: "Handover Details",
   handover_completed: "Handover Completed",
   funds_released: "Transaction Receipt",
+}
+
+// The shared UI status folds three backend statuses into one, so for
+// inspections that aren't confirmed yet the label comes from the raw status.
+function getStatusLabel(item: MergedTransaction, status: TransactionStatus) {
+  const cancelled = cancelledLabel(item)
+  if (cancelled) return cancelled
+  if (item.status === "property_payment_review") return "Payment Under Review"
+  if (item.recordType === "inspection") {
+    if (item.status === "inspection_payment_review")
+      return "Payment Under Review"
+    if (
+      item.status === "inspection_requested" ||
+      item.status === "inspection_initialized"
+    )
+      return "Awaiting Payment"
+  }
+  return STATUS_LABEL[status]
 }
 
 const STATUS_LABEL: Record<TransactionStatus, string> = {
@@ -98,7 +119,7 @@ export function mapToActivity(item: MergedTransaction): Activity {
     id: item._id,
     type: TYPE_LABEL[status],
     status,
-    statusLabel: STATUS_LABEL[status],
+    statusLabel: getStatusLabel(item, status),
     date: formatDate(item.updatedAt),
     agentName: getAgentName(item),
     agentVerified: false, // not returned by the backend yet

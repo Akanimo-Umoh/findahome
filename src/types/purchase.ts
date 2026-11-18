@@ -1,11 +1,14 @@
 export type PurchaseStatus =
   | "none"
+  | "property_payment_review"
   | "property_payment_made"
   | "handover_requested"
   | "handover_scheduled"
+  | "handover_rescheduled"
   | "handover_confirmed"
   | "handover_completed"
   | "funds_released"
+  | "purchase_cancelled"
 
 export type Purchase = {
   _id: string

@@ -38,12 +38,17 @@ export default function BuyerStats({ summary, loading }: BuyerStatsProps) {
       value: summary.cancelledInspections,
       className: "text-red-600",
     },
+    {
+      label: "Cancelled Purchases",
+      value: summary.cancelledPurchases,
+      className: "text-red-600",
+    },
   ]
 
   return (
     <section
       aria-label="Buyer totals"
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5"
+      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6"
     >
       {tiles.map((t) => (
         <div

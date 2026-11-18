@@ -32,12 +32,22 @@ export type Inspection = {
     | "none"
     | "inspection_requested"
     | "inspection_initialized"
+    | "inspection_payment_review"
     | "inspection_paid"
     | "inspection_scheduled"
     | "inspection_confirmed"
     | "inspection_completed"
     | "inspection_cancelled"
   fee: number
+  // Paystack's amount differed from the fee; the admin sees this before approving
+  amountMismatch?: boolean
+  paidAmount?: number
+  // the payment was rejected or the deal refunded, and the admin still has to send the money back
+  refundDue?: boolean
+  refundAmount?: number
+  refundSentAt?: string | null
+  refundSentAmount?: number
+  refundReference?: string
   escrowHeldBy?: string
   feePaid: boolean
   feeReleased: boolean
@@ -92,6 +102,24 @@ export async function initializeInspectionPayment(
     reference: string
     inspectionId: string
     callback_url: string
+  }
+}
+
+// Called when the buyer comes back from Paystack. The server checks the
+// payment with Paystack and moves the inspection to inspection_payment_review.
+// "processing" means Paystack couldn't be reached; the webhook finishes it.
+export async function confirmInspectionPayment(
+  inspectionId: string,
+  reference?: string
+) {
+  const res = await api.post("/inspection/confirm-payment", {
+    inspectionId,
+    reference,
+  })
+  return res.data as {
+    success: boolean
+    status: Inspection["status"] | "processing"
+    message?: string
   }
 }
 

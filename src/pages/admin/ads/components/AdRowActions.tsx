@@ -77,7 +77,7 @@ export default function AdRowActions({
           </DropdownMenuItem>
         )}
         {(state === "active" || state === "paused") && (
-          // admins can't change an ad's duration on the backend yet
+          // The backend admin update path does not currently accept duration changes.
           <DropdownMenuItem className={item} disabled>
             <CalendarPlus aria-hidden />
             Extend Duration

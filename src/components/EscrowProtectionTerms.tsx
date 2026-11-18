@@ -7,17 +7,16 @@ type EscrowProtectionTermsProps = {
 }
 
 const terms = [
-  "Funds held securely until both parties confirm successful handover",
+  "Funds held securely until buyer confirms successful inspection/handover",
   "Full refund if property conditions are not met",
   "24/7 dispute resolution support available",
   "Legal documentation verified before release",
-  "Full refund if property conditions are not met",
 ]
 
 const notes = [
-  "Funds will be released within 24 hours of confirmed handover",
+  "Funds will be released within 24 hours of confirmed inspection/handover",
   "Any disputes must be reported within 48 hours",
-  "Transaction cannot be cancelled after handover confirmation",
+  "Transaction cannot be cancelled after inspection/handover confirmation",
 ]
 
 export default function EscrowProtectionTerms({

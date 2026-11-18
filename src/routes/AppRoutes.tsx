@@ -20,10 +20,6 @@ import AdminLayout from "@/layouts/AdminLayout"
 import { Dashboard as UserDashboard } from "@/pages/user/dashboard"
 import { FindAgents } from "@/pages/user/agents/find-agents"
 // import { FundWallet, Wallet } from "@/pages/user/wallet"
-import {
-  PropertyEscrowTransaction,
-  PropertyPayment,
-} from "@/pages/user/propertyPayment"
 import { Recent } from "@/pages/user/recent"
 import { SavedProperties } from "@/pages/user/saved-properties"
 import { UserTransactionDetails } from "@/pages/user/transaction/transaction-details"
@@ -71,6 +67,7 @@ import { Reports as AdminReports } from "@/pages/admin/reports"
 
 import { Miscellaneous } from "@/a"
 import { MyListings } from "@/pages/agent/my-listings"
+import Notifications from "@/pages/notifications/Notifications"
 import { MyTransactions } from "@/pages/agent/my-transaction"
 import Chats from "@/components/shared/Chats"
 // import { TransactionDetails } from "@/pages/agent/transaction-details"
@@ -220,10 +217,7 @@ export default function AppRoutes() {
         {/* fund wallet */}
         {/* <Route path="/fund-wallet" element={<FundWallet />} /> */}
         {/* escrow transaction details */}
-        <Route
-          path="/escrow-transactions-details"
-          element={<PropertyEscrowTransaction />}
-        />
+
         {/* <Route path="/visit-details" element={<InspectionVisitDetails />} /> */}
 
         {/* <Route
@@ -232,7 +226,6 @@ export default function AppRoutes() {
         /> */}
 
         {/* <Route path="/confirm-handover" element={<ConfirmHandover />} /> */}
-        <Route path="/property-payment" element={<PropertyPayment />} />
         <Route
           path="/transactions/:transactionId/confirm-handover"
           element={<UserPurchaseConfirmVisit />}
@@ -352,13 +345,14 @@ export default function AppRoutes() {
         element={<RoleBasedRoute allowedRoles={["user", "agent", "admin"]} />}
       >
         <Route element={<MainLayout />}>
-          <Route path="/notifications" element={<div>Notifications</div>} />
           <Route path="/help" element={<div>Help Center</div>} />
         </Route>
 
         <Route element={<NormalLayout />}>
+          <Route path="/notifications" element={<Notifications />} />
           {/* chats list */}
           <Route path="/messages" element={<Chats />} />
+          <Route path="/messages/new" element={<Chats />} />
           {/* single chat */}
           <Route path="/messages/:chatId" element={<Chats />} />
           <Route

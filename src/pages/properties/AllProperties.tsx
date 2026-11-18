@@ -29,7 +29,7 @@ export default function AllProperties() {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center pb-10">
       <div className="mx-6 flex min-h-screen w-full max-w-7xl flex-col font-ssPro">
         {/* main contents */}
         <main className="">

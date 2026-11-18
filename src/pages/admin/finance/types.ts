@@ -16,6 +16,7 @@ export type LedgerStatus =
   | "in_escrow"
   | "released"
   | "disputed"
+  | "refund_pending"
   | "refunded"
 
 export type PartyRole = "user" | "agent" | "admin" | null
@@ -51,7 +52,15 @@ export type PayoutRow = {
   status: PayoutStatus
   rawStatus: FinanceTxStatus
   date: string
-  // the agent's default bank account (the one chosen in the request isn't saved)
-  bank: AdminBank | null
+  // where to send the money: the account chosen in the request, or for older
+  // withdrawals (made before it was saved) the agent's default account
+  bank: PayoutBank | null
+  // true when `bank` is the account the agent picked for this withdrawal
+  bankFromRequest: boolean
   bankCount: number
 }
+
+export type PayoutBank = Pick<
+  AdminBank,
+  "bankName" | "accountNumber" | "accountName" | "isDefault"
+>

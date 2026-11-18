@@ -50,6 +50,8 @@ export default function Step3({
   existingVideo = null,
 }: Step3Props) {
   const [errors, setErrors] = useState<Step3Errors>({})
+  const [isCompressingImages, setIsCompressingImages] = useState(false)
+
   const isApartment = formData.propertyType === "apartment"
 
   const validate = (): boolean => {
@@ -79,10 +81,17 @@ export default function Step3({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (isCompressingImages) {
+      toast.error("Please wait for your photos to finish processing.")
+      return
+    }
+
     if (!validate()) {
       toast.error("Please fill in all required fields.")
       return
     }
+
     await onSubmit()
   }
 
@@ -269,6 +278,7 @@ export default function Step3({
                     if (errors.images)
                       setErrors((prev) => ({ ...prev, images: undefined }))
                   }}
+                  onProcessingChange={setIsCompressingImages}
                 />
                 {errors.images && (
                   <p className="mt-1 text-[11px] leading-4 text-red-500">
@@ -322,13 +332,15 @@ export default function Step3({
             variant="app-primary"
             size="full"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCompressingImages}
           >
-            {isSubmitting
-              ? "Submitting..."
-              : isEditMode
-                ? "Save Changes"
-                : "Submit"}
+            {isCompressingImages
+              ? "Compressing photos..."
+              : isSubmitting
+                ? "Submitting..."
+                : isEditMode
+                  ? "Save Changes"
+                  : "Submit"}
           </Button>
 
           <Button
@@ -336,7 +348,7 @@ export default function Step3({
             size="full"
             type="button"
             onClick={onBack}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isCompressingImages}
           >
             Previous
           </Button>

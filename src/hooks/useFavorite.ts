@@ -16,7 +16,10 @@ export function useFavorite(propertyId: string) {
     queryKey: ["favorites"],
     queryFn: async () => {
       const response = await api.get("/favorite")
-      return response.data.favorites
+      return response.data.favorites.filter(
+        (favorite: { property?: { status?: string } }) =>
+          favorite.property?.status === "approved"
+      )
     },
     enabled: !!user && !!token,
   })

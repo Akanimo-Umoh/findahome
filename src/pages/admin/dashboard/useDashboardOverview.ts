@@ -4,6 +4,7 @@ import {
   getAdminActivities,
   getAdminAds,
   getAdminDisputes,
+  getAdminDeals,
   getAdminListings,
   getAdminUsers,
 } from "@/services/admin/dashboard.service"
@@ -16,6 +17,7 @@ export const SOURCE_LABEL: Record<SourceName, string> = {
   listings: "listings",
   disputes: "disputes",
   ads: "ads",
+  deals: "purchase and inspection fees",
   activities: "transactions and escrow",
 }
 
@@ -31,15 +33,15 @@ async function loadOverview() {
     return null
   }
 
-  const [users, listings, disputes, ads, activities] = await Promise.allSettled(
-    [
+  const [users, listings, disputes, ads, activities, deals] =
+    await Promise.allSettled([
       getAdminUsers(),
       getAdminListings(),
       getAdminDisputes(),
       getAdminAds(),
       getAdminActivities(),
-    ]
-  )
+      getAdminDeals(),
+    ])
 
   const sources: RawSources = {
     users: settle(users, "users"),
@@ -47,6 +49,7 @@ async function loadOverview() {
     disputes: settle(disputes, "disputes"),
     ads: settle(ads, "ads"),
     activities: settle(activities, "activities"),
+    deals: settle(deals, "deals"),
   }
 
   // every source down → treat as a real error so the page can offer a retry

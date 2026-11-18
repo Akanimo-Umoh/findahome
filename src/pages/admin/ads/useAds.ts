@@ -4,6 +4,7 @@ import { requestError } from "@/lib/requestError"
 import {
   getAdminAdList,
   removeAd,
+  reviewAd,
   setAdStatus,
 } from "@/services/admin/ads.service"
 import type { AdminAd } from "@/types/adminAd"
@@ -23,7 +24,7 @@ export function useAdminAds() {
 export type AdAction = "approve" | "reject" | "pause" | "resume"
 
 const PLAN = {
-  approve: { status: "active", done: "Ad published" },
+  approve: { status: "approved", done: "Ad approved; awaiting payment" },
   reject: { status: "rejected", done: "Ad rejected" },
   pause: { status: "paused", done: "Ad paused" },
   resume: { status: "active", done: "Ad resumed" },
@@ -37,28 +38,25 @@ export function useAdAction() {
     mutationFn: ({
       id,
       action,
-      note,
     }: {
       id: string
       action: AdAction
       note?: string
-    }) =>
-      setAdStatus(
-        id,
-        PLAN[action].status,
-        // "admin" marks a pause made by the admin; the agent app only checks for "budget", so it can't break it
-        action === "pause"
-          ? { pauseReason: "admin", adminNote: note }
-          : { adminNote: note }
-      ),
-    onSuccess: (_res, { id, action, note }) => {
+    }) => {
+      if (action === "approve" || action === "reject") {
+        return reviewAd(id, PLAN[action].status)
+      }
+      return setAdStatus(id, PLAN[action].status, {
+        pauseReason: action === "pause" ? "admin" : undefined,
+      })
+    },
+    onSuccess: (_res, { id, action }) => {
       qc.setQueryData<AdminAd[]>(adsKey, (old) =>
         old?.map((a) =>
           a._id === id
             ? {
                 ...a,
                 status: PLAN[action].status,
-                adminNote: note ?? a.adminNote,
                 pauseReason: action === "pause" ? "admin" : null,
                 updatedAt: new Date().toISOString(),
               }

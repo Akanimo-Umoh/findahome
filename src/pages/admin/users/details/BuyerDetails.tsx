@@ -41,13 +41,17 @@ export default function BuyerDetails() {
     () => escrow.data?.disputes?.filter((d) => disputeUserId(d) === userId),
     [escrow.data, userId]
   )
+  const purchases = useMemo(
+    () => escrow.data?.purchases?.filter((p) => p.buyer?._id === userId),
+    [escrow.data, userId]
+  )
   const inspections = useMemo(
     () => escrow.data?.inspections?.filter((i) => i.user?._id === userId),
     [escrow.data, userId]
   )
   const summary = useMemo(
-    () => buyerSummary({ rows, disputes, inspections }),
-    [rows, disputes, inspections]
+    () => buyerSummary({ rows, disputes, purchases, inspections }),
+    [rows, disputes, purchases, inspections]
   )
 
   if (users.isLoading) {
@@ -55,8 +59,8 @@ export default function BuyerDetails() {
       <div className="space-y-5">
         <BackLink />
         <Skeleton className="h-44 w-full" />
-        <div className="grid gap-4 sm:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
+        <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-20 w-full" />
           ))}
         </div>
@@ -107,7 +111,7 @@ export default function BuyerDetails() {
             loading={escrow.isLoading}
           />
         </div>
-        <RiskBehavior summary={summary} />
+        <RiskBehavior summary={summary} riskLevel={buyer.riskLevel} />
       </div>
     </div>
   )

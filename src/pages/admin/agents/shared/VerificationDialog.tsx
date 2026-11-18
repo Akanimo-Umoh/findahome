@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
 import type { VerificationDecision } from "@/types/adminUser"
 
 const COPY: Record<
@@ -21,7 +21,7 @@ const COPY: Record<
     button: string
   }
 > = {
-  verified: {
+  approved: {
     title: "Verify this agent?",
     body: (n) => `${n} will be marked as a verified agent.`,
     confirm: "Verify agent",
@@ -55,7 +55,9 @@ export default function VerificationDialog({
 }: VerificationDialogProps) {
   const copy = COPY[action]
   const [reason, setReason] = useState("")
-  const needsReason = action === "rejected" && reason.trim() === ""
+  // a rejection needs a reason so the agent knows what to fix
+  const needsReason = action === "rejected"
+  const canConfirm = !pending && (!needsReason || reason.trim().length > 0)
 
   return (
     <Dialog open onOpenChange={(open) => !open && !pending && onClose()}>
@@ -65,20 +67,21 @@ export default function VerificationDialog({
           <DialogDescription>{copy.body(agentName)}</DialogDescription>
         </DialogHeader>
 
-        {action === "rejected" && (
-          <div>
+        {needsReason && (
+          <div className="space-y-1.5">
             <label
-              htmlFor="reject-reason"
-              className="mb-1.5 block text-[13px] font-semibold text-text-primary"
+              htmlFor="rejection-reason"
+              className="text-[13px] font-semibold"
             >
-              Reason
+              What should the agent fix?
             </label>
             <Textarea
-              id="reject-reason"
+              id="rejection-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="What does the agent need to fix?"
-              className="min-h-24"
+              placeholder="E.g. The ID photo is blurry. Please upload a clear copy."
+              maxLength={300}
+              disabled={pending}
             />
           </div>
         )}
@@ -89,8 +92,8 @@ export default function VerificationDialog({
           </Button>
           <Button
             className={copy.button}
-            disabled={pending || needsReason}
-            onClick={() => onConfirm(reason.trim() || undefined)}
+            disabled={!canConfirm}
+            onClick={() => onConfirm(needsReason ? reason.trim() : undefined)}
           >
             {pending ? copy.busy : copy.confirm}
           </Button>

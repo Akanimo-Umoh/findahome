@@ -13,7 +13,10 @@ export type Favorite = {
 
 const fetchFavorites = async (): Promise<Favorite[]> => {
   const response = await api.get("/favorite")
-  return response.data.favorites
+  const favorites = response.data.favorites as Favorite[]
+  return favorites.filter(
+    (favorite) => favorite.property?.status === "approved"
+  )
 }
 
 export function useSavedProperties() {

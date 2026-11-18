@@ -1,9 +1,16 @@
-import { Ban, Gavel, TriangleAlert, type LucideIcon } from "lucide-react"
+import {
+  Ban,
+  Gavel,
+  ShieldAlert,
+  TriangleAlert,
+  type LucideIcon,
+} from "lucide-react"
 import AdminSection from "@/components/admin/ui/AdminSection"
 import type { BuyerSummary } from "../../buyerMeta"
 
 type RiskBehaviorProps = {
   summary: BuyerSummary
+  riskLevel?: "none" | "low" | "medium" | "high"
 }
 
 const Signal = ({
@@ -32,12 +39,30 @@ const Signal = ({
 )
 
 // Only signals the backend can really back up. There is no overall risk level on users yet, so no Low / High banner.
-export default function RiskBehavior({ summary }: RiskBehaviorProps) {
+export default function RiskBehavior({
+  summary,
+  riskLevel,
+}: RiskBehaviorProps) {
   const dash = (n: number | null) => (n === null ? "—" : String(n))
+  const riskTone = {
+    none: "text-emerald-600",
+    low: "text-amber-500",
+    medium: "text-orange-600",
+    high: "text-red-600",
+  }
 
   return (
     <AdminSection title="Risk & Behavior">
       <ul className="divide-y divide-slate-100">
+        <Signal
+          icon={ShieldAlert}
+          tone={riskLevel ? riskTone[riskLevel] : "text-slate-400"}
+          label="Recorded risk level"
+          note="Stored account value; the frontend does not calculate a score"
+          value={
+            riskLevel ? riskLevel[0].toUpperCase() + riskLevel.slice(1) : "—"
+          }
+        />
         <Signal
           icon={TriangleAlert}
           tone="text-amber-500"
@@ -70,7 +95,7 @@ export default function RiskBehavior({ summary }: RiskBehaviorProps) {
       </ul>
 
       <p className="mt-2 border-t border-slate-100 pt-3 text-[12.5px] text-text-secondary">
-        Risk level, payment failures and chargebacks aren&rsquo;t tracked yet.
+        Payment failures and chargebacks aren&rsquo;t tracked yet.
       </p>
     </AdminSection>
   )

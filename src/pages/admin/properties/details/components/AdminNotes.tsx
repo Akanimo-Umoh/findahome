@@ -24,7 +24,9 @@ export default function AdminNotes({ property }: { property: AdminProperty }) {
   return (
     <AdminSection title="Admin Notes">
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[13px] text-text-secondary">Send notes to agents</p>
+        <p className="text-[13px] text-text-secondary">
+          Internal notes. The agent can&apos;t see these.
+        </p>
         {!open && (
           <button
             type="button"

@@ -4,6 +4,7 @@ import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
 import PickDate from "./PickDate"
+import { combineDateAndTime } from "@/lib/schedule"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
 import ScheduledSuccessfully from "./ScheduledSuccessfully"
@@ -14,6 +15,7 @@ import {
 import { toast } from "sonner"
 import Spinner from "@/components/Spinner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { requestError } from "@/lib/requestError"
 
 const SCHEDULABLE_STATUSES = ["property_payment_made", "handover_rescheduled"]
 
@@ -28,13 +30,19 @@ export default function ScheduleHandover() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState("10:30")
 
-  const { data: purchase, isLoading } = useQuery({
+  const {
+    data: purchase,
+    isLoading,
+    isFetchedAfterMount,
+  } = useQuery({
     queryKey: ["purchaseDetails", transactionId],
     queryFn: () => getPurchaseDetails(transactionId ?? ""),
     enabled: !!transactionId,
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
-  if (isLoading) return <Spinner />
+  if (isLoading || !isFetchedAfterMount) return <Spinner />
 
   if (!purchase) {
     return (
@@ -64,9 +72,11 @@ export default function ScheduleHandover() {
   const handleSubmit = async () => {
     if (!selectedDate || !transactionId) return
 
-    const [hours, minutes] = selectedTime.split(":").map(Number)
-    const combined = new Date(selectedDate)
-    combined.setHours(hours, minutes, 0, 0)
+    const combined = combineDateAndTime(selectedDate, selectedTime)
+    if (combined.getTime() <= Date.now()) {
+      toast.error("That time has already passed. Pick a later time.")
+      return
+    }
 
     setIsSubmitting(true)
     try {
@@ -85,7 +95,9 @@ export default function ScheduleHandover() {
       setHasScheduled(true)
       setShowSuccess(true)
     } catch (err) {
-      toast.error("Couldn't schedule the handover. Please try again.")
+      toast.error(
+        requestError(err, "Couldn't schedule the handover. Please try again.")
+      )
       console.error("scheduleHandover error:", err)
     } finally {
       setIsSubmitting(false)

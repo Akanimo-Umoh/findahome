@@ -32,9 +32,10 @@ export const disputeUserId = (d: RawDispute) =>
 export function buyerSummary(input: {
   rows?: EscrowRow[]
   disputes?: RawDispute[]
+  purchases?: RawLinkedRecord[]
   inspections?: RawLinkedRecord[]
 }) {
-  const { rows, disputes, inspections } = input
+  const { rows, disputes, purchases, inspections } = input
   const open = disputes?.filter(isOpenDispute).length ?? null
 
   return {
@@ -46,6 +47,9 @@ export function buyerSummary(input: {
     resolvedDisputes: disputes && open !== null ? disputes.length - open : null,
     cancelledInspections: inspections
       ? inspections.filter((i) => i.status === "inspection_cancelled").length
+      : null,
+    cancelledPurchases: purchases
+      ? purchases.filter((p) => p.status === "purchase_cancelled").length
       : null,
     disputeRate:
       rows && disputes && rows.length > 0

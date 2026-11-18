@@ -50,7 +50,7 @@ export default function Properties() {
     const { property, action } = review
     const done = { onSuccess: () => setReview(null) }
     if (action === "approved" || action === "rejected") {
-      reviewMutation.mutate({ id: property._id, status: action }, done)
+      reviewMutation.mutate({ id: property._id, status: action, reason }, done)
     } else {
       flagMutation.mutate(
         { id: property._id, flagged: action === "flagged", reason },

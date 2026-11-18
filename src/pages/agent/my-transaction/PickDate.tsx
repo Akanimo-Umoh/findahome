@@ -21,6 +21,16 @@ export default function PickDate({
   selectedTime,
   onSelectTime,
 }: PickDateProps) {
+  const now = new Date()
+
+  const isToday = selectedDate?.toDateString() === now.toDateString()
+
+  const minTime = isToday
+    ? `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes()
+      ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`
+    : undefined
+
   return (
     <Card className="mx-auto w-full">
       <CardContent className="mx-auto w-full">
@@ -28,6 +38,8 @@ export default function PickDate({
           mode="single"
           selected={selectedDate}
           onSelect={onSelectDate}
+          // past days can't be picked
+          disabled={{ before: new Date(new Date().setHours(0, 0, 0, 0)) }}
           className="w-full p-0 [&_table]:w-full"
         />
       </CardContent>
@@ -40,6 +52,7 @@ export default function PickDate({
                 id="time-from"
                 type="time"
                 step="1"
+                min={minTime}
                 value={selectedTime}
                 onChange={(e) => onSelectTime(e.target.value)}
                 className="appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"

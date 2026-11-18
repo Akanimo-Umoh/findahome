@@ -1,16 +1,29 @@
 import { useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import { ArrowLeft, CheckCircle2, RotateCcw, Undo2 } from "lucide-react"
+import {
+  ArrowLeft,
+  Banknote,
+  CheckCircle2,
+  RotateCcw,
+  Undo2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { formatNaira } from "@/lib/adminFormat"
 import { EscrowActionDialog } from "../components/EscrowActionDialog"
+import { EscrowRefundDialog } from "../components/EscrowRefundDialog"
+import { RefundSentDialog } from "../components/RefundSentDialog"
 import { DisputePanel } from "./components/DisputePanel"
 import { LinkedRecord } from "./components/LinkedRecord"
 import { MoneyPanel } from "./components/MoneyPanel"
 import { PartiesPanel } from "./components/PartiesPanel"
 import { ReleaseReadiness } from "./components/ReleaseReadiness"
 import { formatDate, KIND_LABEL } from "../format"
-import type { EscrowAction } from "../types"
-import { useEscrowData } from "../useEscrow"
+import {
+  isEscrowReleaseReady,
+  isRefundAwaitingTransfer,
+  type EscrowAction,
+} from "../types"
+import { useCompleteRefund, useEscrowData } from "../useEscrow"
 
 const BACK = "/admin/transactions"
 
@@ -29,6 +42,7 @@ export default function EscrowDetails() {
   const { escrowId } = useParams<{ escrowId: string }>()
   const { data, isLoading, isError, refetch } = useEscrowData()
   const [action, setAction] = useState<EscrowAction | null>(null)
+  const completeRefund = useCompleteRefund()
   const row = data?.rows.find((r) => r.id === escrowId)
 
   if (isLoading) {
@@ -83,26 +97,48 @@ export default function EscrowDetails() {
           <p className="mt-0.5 truncate text-xs text-slate-400">
             Reference: {row.reference}
           </p>
+          {row.status === "refund_pending" && (
+            <p className="mt-2 text-sm text-amber-700">
+              Refund approved. Send {formatNaira(row.amount)} to{" "}
+              {row.buyer.name}, then mark it as sent.
+            </p>
+          )}
+          {row.status === "refunded" && row.refundedAt && (
+            <p className="mt-2 text-sm text-slate-600">
+              Refund of {formatNaira(row.refundedAmount ?? row.amount)} sent on{" "}
+              {formatDate(row.refundedAt)}
+              {row.transferReference && ` · Transfer ${row.transferReference}`}
+              {row.refundNote && ` · ${row.refundNote}`}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {row.status === "refunded" ? null : !row.released ? (
+          {row.status === "refunded" ? null : isRefundAwaitingTransfer(row) ? (
+            <Button
+              onClick={() => setAction("complete_refund")}
+              className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
+            >
+              <Banknote className="mr-2 size-4" /> Mark refund sent
+            </Button>
+          ) : !row.released ? (
             <>
-              <Button
-                variant="outline"
-                disabled
-                title="Needs a refund endpoint on the backend"
-              >
+              <Button variant="outline" onClick={() => setAction("refund")}>
                 <RotateCcw className="mr-2 size-4" /> Refund buyer
               </Button>
               <Button
-                onClick={() =>
-                  setAction(row.status === "pending" ? "approve" : "release")
+                disabled={!isEscrowReleaseReady(row)}
+                title={
+                  row.netPayoutConfirmed
+                    ? isEscrowReleaseReady(row)
+                      ? undefined
+                      : "Payment, completion, and dispute checks must all pass before release"
+                    : "Release is disabled until the backend returns a confirmed net payout."
                 }
+                onClick={() => setAction("release")}
                 className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
               >
-                <CheckCircle2 className="mr-2 size-4" />{" "}
-                {row.status === "pending" ? "Approve payment" : "Release funds"}
+                <CheckCircle2 className="mr-2 size-4" /> Release funds
               </Button>
             </>
           ) : (
@@ -130,6 +166,24 @@ export default function EscrowDetails() {
         action={action}
         onClose={() => setAction(null)}
       />
+      {action === "refund" && (
+        <EscrowRefundDialog row={row} onClose={() => setAction(null)} />
+      )}
+      {action === "complete_refund" && (
+        <RefundSentDialog
+          expectedAmount={row.amount}
+          buyerName={row.buyer.name}
+          propertyTitle={row.propertyTitle}
+          pending={completeRefund.isPending}
+          onConfirm={(sent) =>
+            completeRefund.mutate(
+              { id: row.id, sent },
+              { onSuccess: () => setAction(null) }
+            )
+          }
+          onClose={() => setAction(null)}
+        />
+      )}
     </div>
   )
 }

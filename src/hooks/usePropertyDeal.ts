@@ -6,13 +6,15 @@ import type { MergedTransaction } from "@/services/transaction.service"
 export type DealStage =
   | "none" // nothing started for this property
   | "inspection_unpaid" // requested, fee not paid yet
-  | "inspection_review" // payment started, waiting to be verified
+  | "inspection_review" // payment received, waiting for the admin to approve it
   | "inspection_awaiting_schedule" // fee paid, agent has to pick a date
   | "inspection_scheduled" // agent picked a date, buyer has to confirm
   | "inspection_confirmed" // buyer confirmed, visit upcoming
   | "inspection_completed" // visit done, buyer can buy
-  | "inspection_cancelled"
+  | "inspection_cancelled" // cancelled and refunded (or never paid): the buyer may request again
+  | "inspection_refund_pending" // cancelled, the refund hasn't been sent yet: no new request until it is
   | "purchase_unpaid" // purchase started, property not paid for yet
+  | "purchase_review" // property paid, waiting for the admin to approve it
   | "handover_awaiting_schedule" // property paid, agent has to pick a handover date
   | "handover_scheduled" // agent picked a date, buyer has to confirm
   | "handover_confirmed" // buyer confirmed, handover upcoming
@@ -22,7 +24,8 @@ export type DealStage =
 const INSPECTION_STAGE: Record<string, DealStage> = {
   none: "none",
   inspection_requested: "inspection_unpaid",
-  inspection_initialized: "inspection_review",
+  inspection_initialized: "inspection_unpaid",
+  inspection_payment_review: "inspection_review",
   inspection_paid: "inspection_awaiting_schedule",
   inspection_scheduled: "inspection_scheduled",
   inspection_confirmed: "inspection_confirmed",
@@ -30,8 +33,11 @@ const INSPECTION_STAGE: Record<string, DealStage> = {
   inspection_cancelled: "inspection_cancelled",
 }
 
+// purchase_cancelled is left out on purpose: the inspection is still
+// completed, so the stage falls back to it and the buyer can buy again
 const PURCHASE_STAGE: Record<string, DealStage> = {
   none: "purchase_unpaid",
+  property_payment_review: "purchase_review",
   property_payment_made: "handover_awaiting_schedule",
   handover_requested: "handover_awaiting_schedule",
   // the buyer suggested a new time, so the agent has to schedule again
@@ -80,11 +86,16 @@ export function usePropertyDeal({
     (item) => item.recordType === "purchase" && belongsToThisChat(item)
   )
 
+  // a buyer may only request a new inspection once the money from the
+  // cancelled one has been sent back
+  const inspectionStage =
+    inspection?.status === "inspection_cancelled" && inspection.refundDue
+      ? "inspection_refund_pending"
+      : inspection && INSPECTION_STAGE[inspection.status]
+
   // once a purchase exists it is further along than the inspection
   const stage: DealStage =
-    (purchase && PURCHASE_STAGE[purchase.status]) ||
-    (inspection && INSPECTION_STAGE[inspection.status]) ||
-    "none"
+    (purchase && PURCHASE_STAGE[purchase.status]) || inspectionStage || "none"
 
   return { stage, inspection, purchase, isLoading }
 }

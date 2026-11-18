@@ -115,7 +115,7 @@ export default function AgentProfile() {
               <div className="flex flex-col gap-1">
                 <p className="text-[12px] font-semibold">{agent.name}</p>
 
-                {agent.isVerified && (
+                {agent.verificationStatus === "approved" && (
                   <div className="flex items-center gap-1">
                     <img src={ninIcon} alt="" className="h-4 w-4" />
                     <p className="text-[12px] leading-4 text-text-secondary md:text-[14px] md:leading-5.25">
@@ -239,7 +239,7 @@ export default function AgentProfile() {
             agentId={agentId}
             agentName={agent.name}
             agentAvatar={avatar}
-            isVerified={agent.isVerified}
+            isVerified={agent.verificationStatus === "approved"}
             deals={deals}
             existingReviews={existingReviews}
             initialRating={initialRating}

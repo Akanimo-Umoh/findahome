@@ -1,61 +1,93 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import successImg from "@/assets/images/img-pay-inspection-fee.png"
+import { useNavigate, useSearchParams } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
+import PaymentResultDialog from "@/components/shared/PaymentResultDialog"
+import {
+  referenceFromUrl,
+  usePaymentConfirmation,
+} from "@/hooks/usePaymentConfirmation"
+import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
+import { confirmPurchasePayment } from "@/services/purchase.service"
+
+const DRAFT_KEY = "pending-purchase-payment"
 
 type PurchaseDraft = { purchaseId: string; reference: string }
 
+function readDraft(): PurchaseDraft | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_KEY)
+    return raw ? (JSON.parse(raw) as PurchaseDraft) : null
+  } catch {
+    return null
+  }
+}
+
 export default function PurchasePaymentCallback() {
   const navigate = useNavigate()
-  const [draft] = useState<PurchaseDraft | null>(() => {
-    const raw = sessionStorage.getItem("pending-purchase-payment")
-    return raw ? JSON.parse(raw) : null
-  })
+  const queryClient = useQueryClient()
+  const [searchParams] = useSearchParams()
+  const [draft] = useState(readDraft)
+
+  const { status, message } = usePaymentConfirmation(
+    draft
+      ? () =>
+          confirmPurchasePayment(
+            draft.purchaseId,
+            referenceFromUrl(searchParams) ?? draft.reference
+          )
+      : null
+  )
 
   useEffect(() => {
-    if (!draft) {
-      navigate("/dashboard", { replace: true })
-      return
-    }
-    sessionStorage.removeItem("pending-purchase-payment")
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    if (!draft) navigate("/dashboard", { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (status === "confirming") return
+    // keep the draft after an error so a refresh can try confirming again
+    if (status !== "error") sessionStorage.removeItem(DRAFT_KEY)
+    invalidateDealQueries(queryClient)
+  }, [status, queryClient])
 
   if (!draft) return null
 
+  const viewTransaction = () =>
+    navigate(`/transactions/${draft.purchaseId}?type=purchase`, {
+      replace: true,
+    })
+
   return (
-    <Dialog open={true}>
-      <DialogContent className="flex max-h-[90vh] w-[calc(100%-48px)] max-w-[340px] flex-col gap-0 overflow-y-auto rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden">
-        <img src={successImg} alt="" className="mx-auto" />
-        <div className="mt-2 flex flex-col gap-6">
-          <div className="flex flex-col items-center justify-center gap-4">
-            <DialogTitle className="text-center font-raleway text-[18px] font-semibold tracking-[1px]">
-              Payment received
-            </DialogTitle>
-            <DialogDescription className="text-center text-[14px] text-text-secondary">
-              Your property payment is being confirmed. Once verified, funds
-              will be held in escrow and your agent will be notified to schedule
-              the handover.
-            </DialogDescription>
-          </div>
-          <Button
-            variant="app-primary"
-            size="full"
-            onClick={() =>
-              navigate(`/transactions/${draft.purchaseId}?type=purchase`, {
-                replace: true,
-              })
-            }
-          >
-            View Transaction
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <PaymentResultDialog
+      status={status}
+      message={message}
+      copy={{
+        received: {
+          title: "Payment received",
+          description:
+            "Your property payment has been received and is waiting for an admin to approve it. Once approved, the funds are held in escrow and your agent will be asked to schedule the handover.",
+        },
+        processing: {
+          title: "Payment being confirmed",
+          description:
+            "We're still confirming your payment with Paystack. It will update on its own shortly. Please don't pay again.",
+        },
+        failed: {
+          title: "Payment not completed",
+          description:
+            "Paystack didn't confirm this payment, so the property hasn't been paid for. You can try again from the transaction page.",
+        },
+        error: {
+          title: "We couldn't confirm yet",
+          description:
+            "If you completed the payment on Paystack, it's safe. Refresh this page in a moment to check again. Please don't pay twice.",
+        },
+      }}
+    >
+      <Button variant="app-primary" size="full" onClick={viewTransaction}>
+        View Transaction
+      </Button>
+    </PaymentResultDialog>
   )
 }

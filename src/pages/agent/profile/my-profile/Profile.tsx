@@ -1,7 +1,5 @@
 import verifiedIcon from "@/assets/images/icon-verified-green.svg"
 import addPicture from "@/assets/images/icon-picture.svg"
-import checkIcon from "@/assets/agentImages/icon-check-green-circle.svg"
-import pendingIcon from "@/assets/agentImages/icon-pending-review.svg"
 import creditIcon from "@/assets/agentImages/icon-white-credit-card.svg"
 import infoIcon from "@/assets/agentImages/icon-grey-info.svg"
 import lockIcon from "@/assets/agentImages/icon-blue-lock.svg"
@@ -11,19 +9,22 @@ import Avatar from "@/components/Avatar"
 import { useLogout } from "@/hooks/useLogout"
 import { useBankAccounts } from "@/hooks/useBankAccounts"
 import { useProfilePicture } from "@/hooks/useProfilePicture"
-import { useAgentProfile } from "@/hooks/useAgentDirectory"
 import PageHeader from "@/components/shared/PageHeader"
 import Skeleton from "@/components/ui/Skeleton"
 import { Button } from "@/components/ui/button"
 import { useRef } from "react"
 import { Link } from "react-router-dom"
+import { useMyVerification } from "@/hooks/useMyVerification"
+import { VERIFICATION_VIEW } from "@/lib/agentVerification"
+import { cn } from "@/lib/utils"
 
 export default function Profile() {
   const { user } = useAuthContext()
   const { handleLogout } = useLogout()
   const { changeProfilePicture, isUploading } = useProfilePicture()
   const { accounts, isLoading, error } = useBankAccounts()
-  const { agent, isLoading: isLoadingAgent } = useAgentProfile(user?._id ?? "")
+  const { status, isLoading: isLoadingStatus } = useMyVerification()
+  const view = status ? VERIFICATION_VIEW[status] : null
   const payoutAccount =
     accounts.find((account) => account.isDefault) ?? accounts[0]
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -74,11 +75,20 @@ export default function Profile() {
             </div>
           </div>
 
-          {agent?.isVerified && !isLoadingAgent && (
+          {view && !isLoadingStatus && (
             <div className="mt-2 flex items-center justify-center">
-              <div className="flex items-center gap-1 rounded-2xl bg-[#D8F3DC] px-2 py-0.5 text-[12px] leading-4 text-success">
-                <span>Verified</span>
-                <img src={verifiedIcon} alt="" className="h-4 w-4" />
+              <div
+                className={cn(
+                  "flex items-center gap-1 rounded-2xl px-2 py-0.5 text-[12px] leading-4",
+                  view.pill
+                )}
+              >
+                <span>{view.label}</span>
+                {status === "approved" ? (
+                  <img src={verifiedIcon} alt="" className="h-4 w-4" />
+                ) : (
+                  <view.Icon size={14} aria-hidden />
+                )}
               </div>
             </div>
           )}
@@ -104,27 +114,31 @@ export default function Profile() {
               <p className="text-text-secondary">{user?.phoneNumber}</p>
             </div>
 
-            <div className="flex items-center justify-between rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
-              <p>ID Verification</p>
+            <div className="rounded-lg bg-bg-tertiary px-2 py-1 text-[12px] leading-4">
+              <div className="flex items-center justify-between">
+                <p>Agent Verification</p>
 
-              {isLoadingAgent ? (
-                <Skeleton className="h-4 w-20" />
-              ) : agent ? (
-                <div className="flex items-center gap-1">
-                  <img
-                    src={agent.isVerified ? checkIcon : pendingIcon}
-                    alt=""
-                  />
-                  <p
-                    className={
-                      agent.isVerified ? "text-success" : "text-warning"
-                    }
-                  >
-                    {agent.isVerified ? "Verified" : "Pending Review"}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-text-secondary">Status unavailable</p>
+                {isLoadingStatus ? (
+                  <Skeleton className="h-4 w-20" />
+                ) : view ? (
+                  <div className={cn("flex items-center gap-1", view.text)}>
+                    <view.Icon size={14} aria-hidden />
+                    <p>{view.label}</p>
+                  </div>
+                ) : (
+                  <p className="text-text-secondary">Status unavailable</p>
+                )}
+              </div>
+              {view && status !== "approved" && (
+                <p className="mt-1 text-text-secondary">{view.hint}</p>
+              )}
+              {status === "rejected" && (
+                <Link
+                  to="/agent/onboarding"
+                  className="mt-1 inline-block font-semibold text-button-bg underline"
+                >
+                  Resubmit documents
+                </Link>
               )}
             </div>
           </div>

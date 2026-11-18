@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import api from "@/services/api"
 import { useAuthContext } from "@/context/AuthContext"
 import { toast } from "sonner"
-import { getSocket } from "@/services/socket"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 export type ChatMessage = {
@@ -37,6 +36,7 @@ export type ChatItem = {
   participants: ChatParticipant[]
   property: ChatProperty
   lastMessage?: ChatMessage
+  unreadCount?: number
   createdAt: string
   updatedAt: string
 }
@@ -103,30 +103,20 @@ export function useChatMessages({ chatId }: { chatId: string }) {
     queryKey: ["messages", chatId],
     queryFn: async () => {
       const res = await api.get(`/message/${chatId}`)
+      // the server marks these messages as read, so refresh the unread
+      // counts in the chat list now that it has done so
+      queryClient.invalidateQueries({ queryKey: ["chats"] })
       return res.data as ChatMessage[]
     },
     enabled: !!chatId,
+    // TODO(remove-polling): temporary fallback while live chat isn't working.
+    // Delete this line once messages arrive live without it (the backend must
+    // make each socket join a room named after the user id). It also refetches
+    // the chat list every 5s through the queryFn above.
+    refetchInterval: 5_000,
   })
 
-  // socket — append incoming messages directly to the query cache
-  useEffect(() => {
-    if (!user?._id) return
-
-    const socket = getSocket()
-    if (!socket.connected) socket.connect()
-    socket.emit("user_connected", user._id)
-
-    socket.on("receive_message", (message: ChatMessage) => {
-      queryClient.setQueryData<ChatMessage[]>(
-        ["messages", chatId],
-        (prev = []) => [...prev, message]
-      )
-    })
-
-    return () => {
-      socket.off("receive_message")
-    }
-  }, [user?._id, chatId, queryClient])
+  // incoming messages are handled by useRealtimeSync
 
   async function sendMessage(text: string) {
     if (!chatDetail || !text.trim() || !user?._id) return
@@ -152,14 +142,6 @@ export function useChatMessages({ chatId }: { chatId: string }) {
           chat._id === chatId ? { ...chat, lastMessage: newMessage } : chat
         )
       )
-
-      const socket = getSocket()
-      socket.emit("send_message", {
-        from: user._id,
-        to: chatDetail.participants.find((p) => p._id !== user._id)?._id,
-        text: text.trim(),
-        attachments: [],
-      })
     } catch {
       toast.error("Failed to send message")
     } finally {

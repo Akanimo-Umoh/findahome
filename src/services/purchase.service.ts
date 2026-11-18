@@ -20,7 +20,13 @@ export type Purchase = {
     | { _id: string; name?: string; email: string; phoneNumber?: string | null }
   owner:
     | string
-    | { _id: string; name?: string; email: string; phoneNumber?: string | null }
+    | {
+        _id: string
+        name?: string
+        email: string
+        phoneNumber?: string | null
+        profilePicture?: string | string[] | null
+      }
   inspection: string
   price: number
   feePaid: boolean
@@ -28,6 +34,7 @@ export type Purchase = {
   escrowHeldBy?: string
   status:
     | "none"
+    | "property_payment_review"
     | "property_payment_made"
     | "handover_requested"
     | "handover_scheduled"
@@ -35,6 +42,18 @@ export type Purchase = {
     | "handover_confirmed"
     | "handover_completed"
     | "funds_released"
+    | "purchase_cancelled"
+  // true while this purchase blocks other buyers from paying for the property
+  holdsProperty?: boolean
+  // Paystack's amount differed from the price; the admin sees this before approving
+  amountMismatch?: boolean
+  paidAmount?: number
+  // the payment was rejected or the deal refunded, and the admin still has to send the money back
+  refundDue?: boolean
+  refundAmount?: number
+  refundSentAt?: string | null
+  refundSentAmount?: number
+  refundReference?: string
   scheduledDate?: string | null
   initializedAt?: string | null
   paidAt?: string | null
@@ -66,6 +85,24 @@ export async function initializePurchasePayment(
     reference: string
     purchaseId: string
     callback_url: string
+  }
+}
+
+// Called when the buyer comes back from Paystack. The server checks the
+// payment with Paystack and moves the purchase to property_payment_review.
+// "processing" means Paystack couldn't be reached; the webhook finishes it.
+export async function confirmPurchasePayment(
+  purchaseId: string,
+  reference?: string
+) {
+  const res = await api.post("/purchase/confirm-payment", {
+    purchaseId,
+    reference,
+  })
+  return res.data as {
+    success: boolean
+    status: Purchase["status"] | "processing"
+    message?: string
   }
 }
 

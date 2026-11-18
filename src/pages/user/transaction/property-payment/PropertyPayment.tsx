@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { isAxiosError } from "axios"
 import blueNaira from "@/assets/images/icon-naira.svg"
 import greyNaira from "@/assets/images/icon-chat-naira.svg"
 import blackNaira from "@/assets/images/icon-black-naira.svg"
@@ -16,12 +17,15 @@ import {
   initializePurchasePayment,
 } from "@/services/purchase.service"
 import { getPersonDisplay } from "@/lib/personDisplay"
+import { requestError } from "@/lib/requestError"
+import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
 import Avatar from "@/components/Avatar"
 
 // this page is reached from an inspection's "Secure Property" button, so transactionId here is the *inspection* id, not a purchase id yet — a Purchase record doesn't exist until requestPurchase creates one
 export default function PropertyPayment() {
   const { transactionId: inspectionId } = useParams()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [isRequesting, setIsRequesting] = useState(false)
   const [isPaying, setIsPaying] = useState(false)
   const [purchaseId, setPurchaseId] = useState<string | null>(null)
@@ -54,14 +58,28 @@ export default function PropertyPayment() {
         const res = await requestPurchase(property._id)
         setPurchaseId(res.purchaseId)
       } catch (err) {
-        toast.error("Couldn't start purchase. Please try again.")
+        // already paid (or under review): the server sends that purchase's id,
+        // so open it rather than leaving the buyer on a dead payment page
+        const existingId = isAxiosError<{ purchaseId?: string }>(err)
+          ? err.response?.data?.purchaseId
+          : undefined
+        if (existingId) {
+          navigate(`/transactions/${existingId}?type=purchase`, {
+            replace: true,
+          })
+          return
+        }
+        // e.g. another buyer's payment for this property is under review
+        toast.error(
+          requestError(err, "Couldn't start purchase. Please try again.")
+        )
         console.error("requestPurchase error:", err)
       } finally {
         setIsRequesting(false)
       }
     }
     init()
-  }, [inspection, purchaseId])
+  }, [inspection, purchaseId, navigate])
 
   if (isLoading || isRequesting) return <Spinner />
 
@@ -100,7 +118,20 @@ export default function PropertyPayment() {
       )
       window.location.href = res.authorizationUrl
     } catch (err) {
-      toast.error("Couldn't start payment. Please try again.")
+      // 409: an earlier attempt was actually paid; the server has moved it to
+      // review, so show the transaction instead of charging again
+      if (isAxiosError(err) && err.response?.status === 409) {
+        invalidateDealQueries(queryClient)
+        toast.success(
+          "We've already received your payment. It's now waiting for admin approval."
+        )
+        navigate(`/transactions/${purchaseId}?type=purchase`, { replace: true })
+        return
+      }
+      // the server explains a block, e.g. another buyer's payment is under review
+      toast.error(
+        requestError(err, "Couldn't start payment. Please try again.")
+      )
       console.error("initializePurchasePayment error:", err)
       setIsPaying(false)
     }

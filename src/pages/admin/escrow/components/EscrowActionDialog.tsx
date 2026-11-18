@@ -21,16 +21,15 @@ interface Props {
 
 export function EscrowActionDialog({ row, action, onClose }: Props) {
   const mutation = useSetEscrowStatus()
-  if (!action) return null
+  // refunds have their own dialogs (a reason, then the transfer details)
+  if (action !== "release" && action !== "hold") return null
 
   const release = action === "release"
-  const approve = action === "approve"
   const confirm = () =>
     mutation.mutate(
       {
         id: row.id,
         status: release ? "released" : "on_hold",
-        approving: approve,
       },
       { onSuccess: onClose }
     )
@@ -43,27 +42,24 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {approve
-              ? "Approve this payment?"
-              : release
-                ? "Release funds to the agent?"
-                : "Move back to hold?"}
+            {release ? "Release funds to the agent?" : "Move back to hold?"}
           </DialogTitle>
           <DialogDescription>
-            {approve
-              ? `${formatNaira(row.amount)} from ${row.buyer.name} will be held in escrow, and ${row.agent.name} can continue with the next step.`
-              : release
-                ? `${formatNaira(row.amount)} will be added to ${row.agent.name}'s wallet balance. You can move it back to hold later.`
-                : `${formatNaira(row.amount)} will be taken out of ${row.agent.name}'s wallet balance and held in escrow again.`}
+            {release
+              ? `${formatNaira(row.netPayout ?? row.amount)} will be added to ${row.agent.name}'s wallet balance.`
+              : `${formatNaira(row.amount)} will be taken out of ${row.agent.name}'s wallet balance and held in escrow again.`}
           </DialogDescription>
         </DialogHeader>
 
-        {release && row.openDispute && (
+        {release && (!row.releaseReady || !row.netPayoutConfirmed) && (
           <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
             <AlertTriangle className="mt-0.5 size-4 shrink-0" />
             <p>
-              There is an open dispute ({row.dispute?.referenceId}). Releasing
-              now pays the agent before it is resolved.
+              {!row.netPayoutConfirmed
+                ? "Release is blocked because the backend has not returned a confirmed net payout. The current endpoint credits the full escrow amount, which may include the platform fee."
+                : row.openDispute
+                  ? `There is an open dispute (${row.dispute?.referenceId}). Release is blocked until it is resolved.`
+                  : "Release is blocked until payment is confirmed, the inspection or handover is complete, and no open dispute exists."}
             </p>
           </div>
         )}
@@ -78,17 +74,16 @@ export function EscrowActionDialog({ row, action, onClose }: Props) {
           </Button>
           <Button
             onClick={confirm}
-            disabled={mutation.isPending}
+            disabled={
+              mutation.isPending ||
+              (release && (!row.releaseReady || !row.netPayoutConfirmed))
+            }
             className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
           >
             {mutation.isPending && (
               <Loader2 className="mr-2 size-4 animate-spin" />
             )}
-            {approve
-              ? "Approve payment"
-              : release
-                ? "Release funds"
-                : "Move to hold"}
+            {release ? "Release funds" : "Move to hold"}
           </Button>
         </DialogFooter>
       </DialogContent>

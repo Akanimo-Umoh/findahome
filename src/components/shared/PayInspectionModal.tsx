@@ -14,7 +14,10 @@ import {
 } from "@/services/inspection.service"
 import { useInspectionDraft } from "@/hooks/useInspectionDraft"
 import axios from "axios"
+import { useQueryClient } from "@tanstack/react-query"
 import { useInspectionStatus } from "@/hooks/useInspectionStatus"
+import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
+import { requestError } from "@/lib/requestError"
 
 type PayInspectionProps = {
   isOpen: boolean
@@ -37,6 +40,7 @@ export default function PayInspectionModal({
   propertyPrice,
   propertyImage,
 }: PayInspectionProps) {
+  const queryClient = useQueryClient()
   const { saveDraft } = useInspectionDraft()
   const { stage: inspectionStage } = useInspectionStatus(propertyId)
   const [isRequesting, setIsRequesting] = useState(false)
@@ -58,6 +62,13 @@ export default function PayInspectionModal({
 
   useEffect(() => {
     if (!isOpen) return
+    if (inspectionStage === "refund_pending") {
+      toast.error(
+        "Your refund for the cancelled inspection is still being processed. You can request a new inspection once it has been sent."
+      )
+      onClose()
+      return
+    }
     if (inspectionStage === "awaiting_confirmation") {
       toast.error(
         "Your payment is already under review. We'll notify you once it's confirmed."
@@ -74,14 +85,19 @@ export default function PayInspectionModal({
       onClose()
       return
     }
-    // only proceed to requestInspection if stage is "none" or "awaiting_payment"
+    // only proceed to requestInspection if stage is "none", "awaiting_payment"
+    // or "cancelled" (the server starts a fresh request after a cancellation)
   }, [isOpen, inspectionStage])
 
   // create the Inspection record the moment the modal opens — buyer never
   // sees the code step, it's generated server-side and used later by the agent
   useEffect(() => {
     if (!isOpen || inspectionId) return
-    if (inspectionStage !== "none" && inspectionStage !== "awaiting_payment")
+    if (
+      inspectionStage !== "none" &&
+      inspectionStage !== "awaiting_payment" &&
+      inspectionStage !== "cancelled"
+    )
       return
 
     const init = async () => {
@@ -131,7 +147,19 @@ export default function PayInspectionModal({
 
       window.location.href = res.authorizationUrl
     } catch (err) {
-      toast.error("Couldn't start payment. Please try again.")
+      // 409: an earlier attempt on this request was actually paid. The server
+      // has just moved it to review, so refresh instead of paying again.
+      if (axios.isAxiosError(err) && err.response?.status === 409) {
+        invalidateDealQueries(queryClient)
+        toast.success(
+          "We've already received your payment. It's now waiting for admin approval."
+        )
+        onClose()
+      } else {
+        toast.error(
+          requestError(err, "Couldn't start payment. Please try again.")
+        )
+      }
       console.error("initializeInspectionPayment error:", err)
       setIsPaying(false)
     }

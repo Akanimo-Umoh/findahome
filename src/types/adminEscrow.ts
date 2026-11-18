@@ -15,20 +15,34 @@ export interface RawProperty {
 }
 
 export interface RawEscrow {
+  code?: string
   _id: string
   property?: RawProperty | null
   buyer?: RawUser | null
   seller?: RawUser | null
   amount: number
-  status: string // on_hold | released
+  platformFee?: number
+  netPayout?: number
+  // refund_pending: the admin approved a refund but hasn't sent the money yet
+  status: "on_hold" | "refund_pending" | "released" | "refunded"
   type?: string // inspection | purchase
   reference?: string
   createdAt: string
+  releasedAt?: string | null
+  releasedBy?: RawUser | string | null
+  reason?: string | null
+  // recorded when the admin marks an offline refund as sent
+  refundApprovedAt?: string | null
+  refundedAt?: string | null
+  refundedAmount?: number | null
+  transferReference?: string | null
+  refundNote?: string | null
 }
 
 // A Purchase or an Inspection (same reference as the escrow)
 export interface RawLinkedRecord {
   _id: string
+  code?: string
   reference?: string
   status: string
   property?: RawProperty | null
@@ -37,8 +51,19 @@ export interface RawLinkedRecord {
   owner?: RawUser | null
   feePaid?: boolean
   feeReleased?: boolean
+  platformFee?: number
+  fee?: number // inspection fee
+  price?: number // purchase amount
+  // Paystack's amount differed from the expected one; paidAmount is what Paystack received
+  amountMismatch?: boolean
+  paidAmount?: number
+  // a rejected payment (or refunded deal) whose money hasn't been sent back yet
+  refundDue?: boolean
+  refundAmount?: number
+  refundSentAt?: string | null
   initializedAt?: string
   paidAt?: string
+  paystackPaidAt?: string
   scheduledAt?: string
   confirmedAt?: string
   completedAt?: string

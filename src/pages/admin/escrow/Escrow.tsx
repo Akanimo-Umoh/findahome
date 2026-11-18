@@ -3,6 +3,15 @@ import { AlertTriangle, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { buildEscrowStats } from "./buildEscrowRows"
 import { EscrowPagination } from "./components/EscrowPagination"
+import { PendingPayments } from "./components/PendingPayments"
+import { RefundsDue } from "./components/RefundsDue"
+import { ReleaseReadyNotice } from "./components/ReleaseReadyNotice"
+import {
+  buildPendingPayments,
+  buildRefundsDue,
+  filterPendingPayments,
+} from "./pendingPayments"
+import { needsRelease } from "./useEscrowAttention"
 import { EscrowStats } from "./components/EscrowStats"
 import { EscrowTable } from "./components/EscrowTable"
 import { EscrowToolbar } from "./components/EscrowToolbar"
@@ -17,6 +26,27 @@ export default function Escrow() {
     [data, rows]
   )
   const f = useEscrowFilters(rows)
+  const pending = useMemo(
+    () =>
+      filterPendingPayments(
+        buildPendingPayments(data?.inspections, data?.purchases),
+        f.q
+      ),
+    [data, f.q]
+  )
+  const refundsDue = useMemo(
+    () =>
+      filterPendingPayments(
+        buildRefundsDue(
+          data?.inspections,
+          data?.purchases,
+          new Set(rows.map((r) => r.reference))
+        ),
+        f.q
+      ),
+    [data, rows, f.q]
+  )
+  const readyCount = useMemo(() => rows.filter(needsRelease).length, [rows])
 
   return (
     <div className="space-y-5">
@@ -32,6 +62,16 @@ export default function Escrow() {
       )}
 
       <EscrowStats stats={stats} loading={isLoading} />
+
+      <PendingPayments items={pending} />
+
+      <RefundsDue items={refundsDue} />
+
+      <ReleaseReadyNotice
+        count={readyCount}
+        active={f.ready}
+        onToggle={() => f.setReady(!f.ready)}
+      />
 
       <section className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 p-4">

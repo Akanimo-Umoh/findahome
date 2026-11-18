@@ -46,7 +46,7 @@ export default function AgentRowActions({
         <DropdownMenuItem
           className={item}
           disabled={locked || state === "verified"}
-          onSelect={() => onDecide(agent, "verified")}
+          onSelect={() => onDecide(agent, "approved")}
         >
           <CircleCheck aria-hidden />
           Verify agent

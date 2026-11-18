@@ -6,6 +6,7 @@ import { AxiosError } from "axios"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import type { DraftChatInfo } from "@/components/shared/DraftChat"
 
 type ChatAgentModalProps = {
   isOpen: boolean
@@ -13,6 +14,13 @@ type ChatAgentModalProps = {
   propertyId: string
   agentId: string
   agentIsVerified?: boolean
+  // shown on the empty draft chat before the first message is sent
+  agentName: string
+  agentAvatar?: string
+  propertyTitle: string
+  propertyImage?: string
+  propertyPrice?: number
+  propertyAddress?: string
 }
 
 const TERMS = [
@@ -30,12 +38,18 @@ export default function ChatAgentModal({
   onClose,
   propertyId,
   agentId,
+  agentName,
+  agentAvatar,
+  propertyTitle,
+  propertyImage,
+  propertyPrice,
+  propertyAddress,
 }: ChatAgentModalProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated } = useAuthContext()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const { createOrGetChat, isCreating } = useCreateOrGetChat()
+  const { findChat, isCreating } = useCreateOrGetChat()
 
   const redirectToLogin = () => {
     onClose()
@@ -58,10 +72,27 @@ export default function ChatAgentModal({
     }
 
     try {
-      const chatId = await createOrGetChat(propertyId, agentId)
-      if (!chatId) return
+      // only looks for a chat: nothing is created until the first message is sent
+      const found = await findChat(propertyId, agentId)
+      if (!found) return
       onClose()
-      navigate(`/messages/${chatId}`)
+
+      if (found.chatId) {
+        navigate(`/messages/${found.chatId}`)
+        return
+      }
+
+      const draft: DraftChatInfo = {
+        propertyId,
+        agentId,
+        agentName,
+        agentAvatar,
+        propertyTitle,
+        propertyImage,
+        propertyPrice,
+        propertyAddress,
+      }
+      navigate("/messages/new", { state: { draft } })
     } catch (err) {
       if (err instanceof AxiosError && err.response?.status === 401) {
         redirectToLogin()

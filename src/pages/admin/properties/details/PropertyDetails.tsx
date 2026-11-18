@@ -11,7 +11,6 @@ import DetailsHeader from "./components/DetailsHeader"
 import FactTiles from "./components/FactTiles"
 import LegalDocuments from "./components/LegalDocuments"
 import MediaGallery from "./components/MediaGallery"
-import ModerationChecklist from "./components/ModerationChecklist"
 import StatusTimeline from "./components/StatusTimeline"
 import VideoTour from "./components/VideoTour"
 import { usePropertyDetails } from "./usePropertyDetails"
@@ -85,7 +84,7 @@ export default function PropertyDetails() {
     if (!action) return
     const done = { onSuccess: () => setAction(null) }
     if (action === "approved" || action === "rejected") {
-      reviewMutation.mutate({ id: p._id, status: action }, done)
+      reviewMutation.mutate({ id: p._id, status: action, reason }, done)
     } else {
       flagMutation.mutate(
         { id: p._id, flagged: action === "flagged", reason },
@@ -133,7 +132,6 @@ export default function PropertyDetails() {
             }
           />
           <StatusTimeline property={p} />
-          <ModerationChecklist />
         </aside>
       </div>
 

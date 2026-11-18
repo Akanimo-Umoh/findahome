@@ -112,7 +112,8 @@ const PAYOUT_STATUS: Record<FinanceTx["status"], PayoutStatus> = {
 const bankOwner = (b: AdminBank) =>
   typeof b.user === "string" ? b.user : b.user?._id
 
-// Withdrawals only, with the agent's saved bank account (default one first).
+// Withdrawals only, with the account to pay: the one saved on the request,
+// else (older withdrawals) the agent's saved account, default one first.
 export function buildPayouts(input: {
   transactions: FinanceTx[]
   users: AdminUser[]
@@ -139,7 +140,9 @@ export function buildPayouts(input: {
         status: PAYOUT_STATUS[t.status] ?? "pending",
         rawStatus: t.status,
         date: t.createdAt,
-        bank: banks.find((b) => b.isDefault) ?? banks[0] ?? null,
+        bank:
+          t.bankDetails ?? banks.find((b) => b.isDefault) ?? banks[0] ?? null,
+        bankFromRequest: !!t.bankDetails,
         bankCount: banks.length,
       }
     })

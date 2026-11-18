@@ -1,6 +1,5 @@
-// What the admin Listings screens read from the backend. Only fields the
-// screens use are typed. Fields marked "not on the backend yet" are optional on
-// purpose: the UI works without them and lights up when the backend adds them.
+// What the admin Listings screens read from the backend. Optional fields are
+// retained for compatibility with records created before those fields existed.
 
 export type PropertyStatus = "pending" | "approved" | "rejected"
 export type PropertyKind = "land" | "apartment" | "duplex" | "bungalow"
@@ -23,7 +22,7 @@ export type StatusEvent = {
 
 export type AdminProperty = {
   _id: string
-  code?: string // not on the backend yet — the UI derives PROP-XXXXXX from _id
+  code?: string
   title: string
   price: number
   address: string
@@ -49,9 +48,9 @@ export type AdminProperty = {
   createdAt: string
   updatedAt: string
 
-  // ---- not on the backend yet ----
   isFlagged?: boolean
-  flagReason?: string
+  flagReason?: string | null
+  flaggedAt?: string | null
   adminNotes?: AdminNote[]
   statusHistory?: StatusEvent[]
 }
@@ -69,5 +68,5 @@ export type AdminAgentProfile = {
   businessName?: string | null
   licenseNumber?: string | null
   createdAt?: string
-  riskLevel?: RiskLevel // not on the backend yet
+  riskLevel?: RiskLevel
 }

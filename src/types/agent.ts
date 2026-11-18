@@ -1,8 +1,11 @@
+import type { VerificationStatus } from "@/lib/agentVerification"
+
 export type Agent = {
   _id: string
   name: string
   profilePicture: string[] | string | null
-  isVerified: boolean
+  isVerified?: boolean // email confirmation only
+  verificationStatus?: VerificationStatus
   about: string | null
   yearsOfExperience: number
   serviceArea: string[]

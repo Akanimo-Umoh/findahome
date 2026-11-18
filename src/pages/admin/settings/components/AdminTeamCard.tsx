@@ -59,7 +59,8 @@ export default function AdminTeamCard() {
       )}
 
       <p className="mt-3 border-t border-slate-100 pt-3 text-[12.5px] text-text-secondary">
-        Adding or removing admins isn&rsquo;t available yet.
+        Admin accounts are provisioned by the backend developer. All admins have
+        equal access.
       </p>
     </AdminSection>
   )

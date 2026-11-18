@@ -13,6 +13,7 @@ import type { Inspection } from "@/services/inspection.service"
 import { getPersonDisplay } from "@/lib/personDisplay"
 import {
   AGENT_BANNER_CONFIG,
+  getAgentInspectionBanner,
   getInspectionPaymentStatusLabel,
   getPurchasePaymentStatusLabel,
   getTimelineSteps,
@@ -50,7 +51,10 @@ export default function AgentTransactionDetails() {
     status,
     isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
-  const banner = AGENT_BANNER_CONFIG[status]
+  const banner =
+    (!isPurchase &&
+      getAgentInspectionBanner((transaction as Inspection).status)) ||
+    AGENT_BANNER_CONFIG[status]
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
 
@@ -77,6 +81,9 @@ export default function AgentTransactionDetails() {
   const actionsProps = {
     status,
     transactionId: transactionId ?? "",
+    // the agent can schedule only after the payment is confirmed
+    canSchedule:
+      isPurchase || (transaction as Inspection).status === "inspection_paid",
   }
 
   return (

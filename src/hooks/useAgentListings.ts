@@ -19,6 +19,10 @@ export function useAgentListings() {
       return res.data.properties as AgentListing[]
     },
     enabled: !!user?._id,
+    // TODO(remove-polling): safety net in case a live update is missed. Keep it
+    // if the API host can't hold socket connections; otherwise delete both lines.
+    staleTime: 30_000,
+    refetchInterval: 30_000,
   })
 
   const activeListingsCount = useMemo(

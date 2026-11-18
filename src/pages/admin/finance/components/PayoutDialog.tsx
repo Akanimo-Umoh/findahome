@@ -67,15 +67,21 @@ export default function PayoutDialog({
           )}
         </div>
 
-        {bank && (
-          <p className="text-[12.5px] text-text-secondary">
-            This is the agent&rsquo;s {bank.isDefault ? "default" : "saved"}{" "}
-            account. The account chosen in the request isn&rsquo;t stored
-            {payout.bankCount > 1
-              ? `, and they have ${payout.bankCount} accounts saved, so confirm with them if unsure.`
-              : "."}
-          </p>
-        )}
+        {bank &&
+          (payout.bankFromRequest ? (
+            <p className="text-[12.5px] text-text-secondary">
+              This is the account the agent chose for this withdrawal.
+            </p>
+          ) : (
+            <p className="text-[12.5px] text-text-secondary">
+              This withdrawal was made before the chosen account was saved, so
+              this is the agent&rsquo;s {bank.isDefault ? "default" : "saved"}{" "}
+              account
+              {payout.bankCount > 1
+                ? `. They have ${payout.bankCount} accounts saved, so confirm with them if unsure.`
+                : "."}
+            </p>
+          ))}
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={pending}>

@@ -37,15 +37,15 @@ export function MoneyPanel({ row }: { row: EscrowRow }) {
       bar: "bg-[#274ad0]",
     },
     {
-      label: "Approved and held",
-      done: row.status !== "pending",
+      label: "Held in escrow",
+      done: true,
       date: row.createdAt,
       bar: "bg-[#274ad0]",
     },
     {
       label: "Released to agent",
       done: row.released,
-      date: null, // backend does not record a release date yet
+      date: row.releasedAt,
       bar: "bg-emerald-500",
     },
   ]
@@ -91,14 +91,27 @@ export function MoneyPanel({ row }: { row: EscrowRow }) {
             <Line label="Property price" value={property.price ?? 0} />
             <Line label="Escrow fee" value={property.escrowFee ?? 0} />
             <Line label="Service charge" value={property.serviceCharge ?? 0} />
+            {row.platformFee != null && (
+              <Line label="Platform fee" value={row.platformFee} />
+            )}
+            {row.netPayout != null && (
+              <Line label="Agent net payout" value={row.netPayout} />
+            )}
             <Line label="Total paid by buyer" value={row.amount} strong />
           </>
         ) : (
-          <Line
-            label={row.kind === "inspection" ? "Inspection fee" : "Amount"}
-            value={row.amount}
-            strong
-          />
+          <>
+            <Line
+              label={row.kind === "inspection" ? "Inspection fee" : "Amount"}
+              value={row.amount}
+            />
+            {row.platformFee != null && (
+              <Line label="Platform fee" value={row.platformFee} />
+            )}
+            {row.netPayout != null && (
+              <Line label="Agent net payout" value={row.netPayout} strong />
+            )}
+          </>
         )}
       </dl>
       {row.kind === "purchase" && property && (

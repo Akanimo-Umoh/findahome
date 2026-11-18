@@ -10,28 +10,39 @@ export const fundWallet = async (amount: number) => {
     success: boolean
     authorizationUrl: string
     reference: string
-    transactionId: string
   }
 }
 
-export const verifyWalletFunding = async (reference: string) => {
-  const { data } = await api.post("/transaction/verify-fund-wallet", {
+// Called when the agent comes back from Paystack. The server checks the
+// payment and records it as a pending funding for the admin to approve.
+// Nothing shows in the wallet's activity until this succeeds.
+export const confirmWalletFunding = async (reference: string) => {
+  const { data } = await api.post("/transaction/confirm-fund-wallet", {
     reference,
   })
   return data as {
     success: boolean
-    message: string
-    balance: number
+    status: "pending" | "approved" | "completed" | "declined" | "failed"
+    message?: string
   }
+}
+
+// a snapshot of where the money should go; saved on the withdrawal so the
+// admin still sees it if the agent later edits or deletes the account
+export type WithdrawalBankDetails = {
+  bankName: string
+  bankCode?: string
+  accountNumber: string
+  accountName: string
 }
 
 export const withdrawFunds = async (payload: {
   amount: number
-  accountId: string
+  bankDetails: WithdrawalBankDetails
 }) => {
   const { data } = await api.post("/transaction/withdraw", {
     amount: payload.amount,
-    bankId: payload.accountId,
+    bankDetails: payload.bankDetails,
   })
   return data as {
     success: boolean

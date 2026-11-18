@@ -106,6 +106,49 @@ export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
   },
 }
 
+// Buyer-facing banner before the payment is confirmed. The UI status
+// `inspection_requested` also covers "paid, waiting for the agent".
+export function getBuyerInspectionBanner(
+  inspection: Pick<Inspection, "status" | "refundDue" | "refundSentAt">
+): BannerConfig | undefined {
+  switch (inspection.status) {
+    // a new inspection can only be requested once the refund has been sent
+    case "inspection_cancelled":
+      if (inspection.refundDue)
+        return {
+          title: "Inspection Cancelled — Refund in Progress",
+          subtitle:
+            "Your payment will be sent back to you. You can request a new inspection once the refund has been sent.",
+        }
+      if (inspection.refundSentAt)
+        return {
+          title: "Inspection Cancelled — Refunded",
+          subtitle:
+            "Your payment has been sent back to you. You can request a new inspection from your chat with the agent.",
+        }
+      return {
+        title: "Inspection Cancelled",
+        subtitle:
+          "This inspection was cancelled. You can request a new one from your chat with the agent.",
+      }
+    case "none":
+    case "inspection_requested":
+    case "inspection_initialized":
+      return {
+        title: "Awaiting Payment",
+        subtitle: "The inspection fee hasn't been paid yet.",
+      }
+    case "inspection_payment_review":
+      return {
+        title: "Payment Under Review",
+        subtitle:
+          "We're confirming your payment. Your agent can schedule the inspection once it's confirmed.",
+      }
+    default:
+      return undefined
+  }
+}
+
 // CHANGED: agent-facing banners, added as a second named export in the same
 // shared file instead of duplicating the whole config file
 export const AGENT_BANNER_CONFIG: Partial<
@@ -135,6 +178,31 @@ export const AGENT_BANNER_CONFIG: Partial<
     title: "Handover Confirmed — Upcoming",
     subtitle: "The buyer has confirmed. Check the handover details below.",
   },
+}
+
+// What the agent sees before they're allowed to schedule. The UI status
+// `inspection_requested` covers four backend statuses, and only
+// `inspection_paid` (payment confirmed) means the agent can act.
+export function getAgentInspectionBanner(
+  status: Inspection["status"]
+): BannerConfig | undefined {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+    case "inspection_initialized":
+      return {
+        title: "Awaiting Buyer Payment",
+        subtitle: "The buyer hasn't paid the inspection fee yet.",
+      }
+    case "inspection_payment_review":
+      return {
+        title: "Payment Under Review",
+        subtitle:
+          "The buyer's payment is being confirmed. You can schedule the inspection once it's confirmed.",
+      }
+    default:
+      return undefined
+  }
 }
 
 export const SCHEDULE_SECTION_LABEL: Partial<
@@ -170,6 +238,7 @@ export function mapInspectionStatusToTransactionStatus(
     case "none":
     case "inspection_requested":
     case "inspection_initialized":
+    case "inspection_payment_review":
     case "inspection_paid":
       return "inspection_requested"
     case "inspection_scheduled":
@@ -177,8 +246,11 @@ export function mapInspectionStatusToTransactionStatus(
     case "inspection_confirmed":
       return "inspection_confirmed"
     case "inspection_completed":
-    case "inspection_cancelled":
       return "inspection_completed"
+    // not "completed": that would offer the buyer the purchase step. The
+    // first stage has no actions, and the banner explains the cancellation.
+    case "inspection_cancelled":
+      return "inspection_requested"
     default:
       return "inspection_requested"
   }
@@ -193,6 +265,8 @@ export function getInspectionPaymentStatusLabel(
     case "inspection_requested":
     case "inspection_initialized":
       return "Awaiting Payment"
+    case "inspection_payment_review":
+      return "Payment Under Review"
     case "inspection_paid":
       return "In Escrow"
     case "inspection_scheduled":

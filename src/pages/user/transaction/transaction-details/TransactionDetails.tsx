@@ -20,9 +20,11 @@ import { useTransactionDetails } from "@/hooks/useTransactionDetails"
 import Spinner from "@/components/Spinner"
 import RescheduleConfirmModal from "@/components/transaction-details/RescheduleConfirmModal"
 import { getPersonDisplay } from "@/lib/personDisplay"
+import { cancelledLabel } from "@/lib/refundStatus"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   BANNER_CONFIG,
+  getBuyerInspectionBanner,
   getInspectionPaymentStatusLabel,
   getPurchasePaymentStatusLabel,
   getTimelineSteps,
@@ -100,7 +102,9 @@ export default function TransactionDetails() {
     status,
     isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
-  const banner = BANNER_CONFIG[status]
+  const banner =
+    (!isPurchase && getBuyerInspectionBanner(transaction as Inspection)) ||
+    BANNER_CONFIG[status]
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
 
@@ -115,9 +119,12 @@ export default function TransactionDetails() {
     ? (transaction as Purchase).price
     : (transaction as Inspection).fee
 
-  const paymentStatusLabel = isPurchase
-    ? getPurchasePaymentStatusLabel((transaction as Purchase).status)
-    : getInspectionPaymentStatusLabel((transaction as Inspection).status)
+  // a cancelled deal shows where its refund stands (pending / refunded)
+  const paymentStatusLabel =
+    cancelledLabel(transaction) ??
+    (isPurchase
+      ? getPurchasePaymentStatusLabel((transaction as Purchase).status)
+      : getInspectionPaymentStatusLabel((transaction as Inspection).status))
 
   const handleConfirmAction = async () => {
     if (!transactionId) return
@@ -186,8 +193,13 @@ export default function TransactionDetails() {
     onConfirmAction: handleConfirmAction,
     onSuggestNewTime: handleSuggestNewTime,
     onGoToDashboard: () => navigate("/"),
-    // a receipt is available from the first payment on
-    receiptTo: transaction.feePaid
+    // an inspection receipt exists only once the inspection is completed;
+    // a purchase receipt is there from the first payment on
+    receiptTo: (
+      isPurchase
+        ? transaction.feePaid
+        : (transaction as Inspection).status === "inspection_completed"
+    )
       ? `/transactions/${transactionId}/receipt?type=${recordType}`
       : undefined,
     chatTo: agentChatPath,

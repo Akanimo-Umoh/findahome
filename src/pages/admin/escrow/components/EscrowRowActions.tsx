@@ -1,6 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { CheckCircle2, Eye, MoreVertical, RotateCcw, Undo2 } from "lucide-react"
+import {
+  Banknote,
+  CheckCircle2,
+  Eye,
+  MoreVertical,
+  RotateCcw,
+  Undo2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -9,11 +16,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EscrowActionDialog } from "./EscrowActionDialog"
-import type { EscrowAction, EscrowRow } from "../types"
+import { EscrowRefundDialog } from "./EscrowRefundDialog"
+import { RefundSentDialog } from "./RefundSentDialog"
+import {
+  isEscrowRefundable,
+  isEscrowReleaseReady,
+  isRefundAwaitingTransfer,
+  type EscrowAction,
+  type EscrowRow,
+} from "../types"
+import { useCompleteRefund } from "../useEscrow"
 
 export function EscrowRowActions({ row }: { row: EscrowRow }) {
   const navigate = useNavigate()
   const [action, setAction] = useState<EscrowAction | null>(null)
+  const completeRefund = useCompleteRefund()
 
   return (
     <>
@@ -34,30 +51,32 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
             <Eye className="size-4" /> View details
           </DropdownMenuItem>
 
-          {row.status === "pending" && (
-            <DropdownMenuItem onSelect={() => setAction("approve")}>
-              <CheckCircle2 className="size-4" /> Approve payment
+          {(row.status === "in_escrow" || row.status === "disputed") && (
+            <DropdownMenuItem
+              disabled={!isEscrowReleaseReady(row)}
+              title={
+                row.netPayoutConfirmed
+                  ? undefined
+                  : "Backend net payout is not confirmed"
+              }
+              onSelect={() => setAction("release")}
+            >
+              <CheckCircle2 className="size-4" /> Release funds
             </DropdownMenuItem>
           )}
-          {!row.released &&
-            row.status !== "pending" &&
-            row.status !== "refunded" && (
-              <DropdownMenuItem onSelect={() => setAction("release")}>
-                <CheckCircle2 className="size-4" /> Release funds
-              </DropdownMenuItem>
-            )}
           {row.released && (
             <DropdownMenuItem onSelect={() => setAction("hold")}>
               <Undo2 className="size-4" /> Move back to hold
             </DropdownMenuItem>
           )}
-          {!row.released && row.status !== "refunded" && (
-            // needs a refund endpoint on the backend
-            <DropdownMenuItem disabled>
+          {isEscrowRefundable(row) && (
+            <DropdownMenuItem onSelect={() => setAction("refund")}>
               <RotateCcw className="size-4" /> Refund buyer
-              <span className="ml-auto text-[10px] text-slate-400 uppercase">
-                Soon
-              </span>
+            </DropdownMenuItem>
+          )}
+          {isRefundAwaitingTransfer(row) && (
+            <DropdownMenuItem onSelect={() => setAction("complete_refund")}>
+              <Banknote className="size-4" /> Mark refund sent
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -68,6 +87,24 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
         action={action}
         onClose={() => setAction(null)}
       />
+      {action === "refund" && (
+        <EscrowRefundDialog row={row} onClose={() => setAction(null)} />
+      )}
+      {action === "complete_refund" && (
+        <RefundSentDialog
+          expectedAmount={row.amount}
+          buyerName={row.buyer.name}
+          propertyTitle={row.propertyTitle}
+          pending={completeRefund.isPending}
+          onConfirm={(sent) =>
+            completeRefund.mutate(
+              { id: row.id, sent },
+              { onSuccess: () => setAction(null) }
+            )
+          }
+          onClose={() => setAction(null)}
+        />
+      )}
     </>
   )
 }

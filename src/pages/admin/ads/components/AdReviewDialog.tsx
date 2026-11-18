@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -8,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
 import { formatNaira } from "@/lib/adminFormat"
 import { formatDate } from "@/pages/admin/escrow/format"
 import type { AdminAd } from "@/types/adminAd"
@@ -19,7 +17,7 @@ type AdReviewDialogProps = {
   ad: AdminAd
   // which decision is being saved, if any
   pending: AdAction | null
-  onDecide: (action: "approve" | "reject", note?: string) => void
+  onDecide: (action: "approve" | "reject") => void
   onClose: () => void
 }
 
@@ -37,9 +35,7 @@ export default function AdReviewDialog({
   onDecide,
   onClose,
 }: AdReviewDialogProps) {
-  const [note, setNote] = useState("")
   const busy = pending !== null
-  const clean = note.trim() || undefined
 
   return (
     <Dialog open onOpenChange={(open) => !open && !busy && onClose()}>
@@ -66,22 +62,6 @@ export default function AdReviewDialog({
           <Field label="Submitted" value={formatDate(ad.createdAt)} />
         </dl>
 
-        <div>
-          <label
-            htmlFor="ad-note"
-            className="mb-1.5 block text-[13px] font-semibold text-text-primary"
-          >
-            Admin note (optional)
-          </label>
-          <Textarea
-            id="ad-note"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Write something…"
-            className="min-h-20"
-          />
-        </div>
-
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={busy}>
             Cancel
@@ -89,16 +69,16 @@ export default function AdReviewDialog({
           <Button
             className="bg-red-600 text-white hover:bg-red-700"
             disabled={busy}
-            onClick={() => onDecide("reject", clean)}
+            onClick={() => onDecide("reject")}
           >
             {pending === "reject" ? "Rejecting…" : "Reject"}
           </Button>
           <Button
             variant="app-primary"
             disabled={busy}
-            onClick={() => onDecide("approve", clean)}
+            onClick={() => onDecide("approve")}
           >
-            {pending === "approve" ? "Publishing…" : "Approve & Publish"}
+            {pending === "approve" ? "Approving…" : "Approve Ad"}
           </Button>
         </DialogFooter>
       </DialogContent>

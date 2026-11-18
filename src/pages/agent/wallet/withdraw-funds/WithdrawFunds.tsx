@@ -205,6 +205,7 @@ import { useAuthContext } from "@/context/AuthContext"
 import { useBankAccounts } from "@/hooks/useBankAccounts"
 import { useRefreshUser } from "@/hooks/useRefreshUser"
 import { withdrawFunds } from "@/services/wallet.service"
+import { requestError } from "@/lib/requestError"
 import Skeleton from "@/components/ui/Skeleton"
 import SelectAccountModal from "./SelectAccountModal"
 import WithdrawalSuccessful from "./WithdrawalSuccessful"
@@ -254,11 +255,23 @@ export default function WithdrawFunds() {
 
     setIsSubmitting(true)
     try {
-      await withdrawFunds({ amount, accountId: account._id })
+      // send the account itself, not its id: the withdrawal keeps this copy so
+      // the admin pays the right account even if the agent edits it later
+      await withdrawFunds({
+        amount,
+        bankDetails: {
+          bankName: account.bankName,
+          bankCode: account.bankCode,
+          accountNumber: account.accountNumber,
+          accountName: account.accountName,
+        },
+      })
       await refreshUser()
       setIsSuccessOpen(true)
     } catch (err) {
-      toast.error("Failed to submit withdrawal. Please try again.")
+      toast.error(
+        requestError(err, "Failed to submit withdrawal. Please try again.")
+      )
       console.error("withdraw error:", err)
     } finally {
       setIsSubmitting(false)

@@ -58,13 +58,14 @@ export default function AdDetailsDialog({ ad, onClose }: AdDetailsDialogProps) {
     { label: "Daily budget", value: formatNaira(ad.dailyBudget) },
     { label: "Duration", value: `${ad.duration} days` },
     { label: "Total budget", value: formatNaira(ad.adBudget) },
+    { label: "Start date", value: formatDateTime(ad.startDate) },
+    { label: "End date", value: formatDateTime(ad.endDate) },
     { label: "Paid", value: ad.isPaid ? "Yes" : "No" },
     { label: "Payment reference", value: ad.paymentReference ?? "—" },
     { label: "Submitted", value: formatDateTime(ad.createdAt) },
     { label: "Last updated", value: formatDateTime(ad.updatedAt) },
   ]
   if (paused) rows.push({ label: "Pause reason", value: paused })
-  if (ad.adminNote) rows.push({ label: "Admin note", value: ad.adminNote })
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>

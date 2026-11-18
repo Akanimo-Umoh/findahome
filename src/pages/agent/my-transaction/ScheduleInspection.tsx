@@ -4,6 +4,7 @@ import calendarIcon from "@/assets/images/icon-calendar.svg"
 import blueNairaIcon from "@/assets/agentImages/icon-blue-naira.svg"
 import locationIcon from "@/assets/agentImages/icon-white-location.svg"
 import PickDate from "./PickDate"
+import { combineDateAndTime, isInThePast } from "@/lib/schedule"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
 import ScheduledSuccessfully from "./ScheduledSuccessfully"
@@ -14,9 +15,25 @@ import {
 import { toast } from "sonner"
 import Spinner from "@/components/Spinner"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { requestError } from "@/lib/requestError"
 
 // only these statuses represent a genuinely schedulable inspection — anything else means this page was reached incorrectly
 const SCHEDULABLE_STATUSES = ["inspection_paid"]
+
+const notSchedulableMessage = (status: string) => {
+  switch (status) {
+    case "none":
+    case "inspection_requested":
+    case "inspection_initialized":
+      return "The buyer hasn't paid the inspection fee yet."
+    case "inspection_payment_review":
+      return "The buyer's payment is still being confirmed. You can schedule the inspection once it's confirmed."
+    case "inspection_cancelled":
+      return "This inspection was cancelled."
+    default:
+      return "This inspection has already been scheduled."
+  }
+}
 
 export default function ScheduleInspection() {
   const { transactionId } = useParams()
@@ -29,13 +46,23 @@ export default function ScheduleInspection() {
   const [selectedTime, setSelectedTime] = useState("10:30")
   const [hasScheduled, setHasScheduled] = useState(false)
 
-  const { data: inspection, isLoading } = useQuery({
+  const {
+    data: inspection,
+    isLoading,
+    isFetchedAfterMount,
+  } = useQuery({
     queryKey: ["inspectionDetails", transactionId],
     queryFn: () => getInspectionDetails(transactionId ?? ""),
     enabled: !!transactionId,
+    // always ask the server on arrival: a copy cached earlier can still say
+    // "scheduled" after the buyer has rejected the date
+    staleTime: 0,
+    refetchOnMount: "always",
   })
 
-  if (isLoading) return <Spinner />
+  // wait for the first fresh answer only (not for later background refetches),
+  // so the "already scheduled" screen can't flash up from stale data
+  if (isLoading || !isFetchedAfterMount) return <Spinner />
 
   if (!inspection) {
     return (
@@ -52,7 +79,7 @@ export default function ScheduleInspection() {
     return (
       <div className="flex h-[calc(100vh-72px)] flex-col items-center justify-center gap-4 px-6 text-center">
         <p className="text-[14px] text-text-secondary">
-          This inspection has already been scheduled.
+          {notSchedulableMessage(inspection.status)}
         </p>
         <Button
           variant="app-primary"
@@ -90,9 +117,12 @@ export default function ScheduleInspection() {
   const handleSubmit = async () => {
     if (!selectedDate || !transactionId) return
 
-    const [hours, minutes] = selectedTime.split(":").map(Number)
-    const combined = new Date(selectedDate)
-    combined.setHours(hours, minutes, 0, 0)
+    const combined = combineDateAndTime(selectedDate, selectedTime)
+    // checked again here, because the page may have been open for a while
+    if (combined.getTime() <= Date.now()) {
+      toast.error("That time has already passed. Pick a later time.")
+      return
+    }
 
     setIsSubmitting(true)
     try {
@@ -112,7 +142,9 @@ export default function ScheduleInspection() {
       setHasScheduled(true)
       setShowSuccess(true)
     } catch (err) {
-      toast.error("Couldn't schedule the inspection. Please try again.")
+      toast.error(
+        requestError(err, "Couldn't schedule the inspection. Please try again.")
+      )
       console.error("scheduleInspection error:", err)
     } finally {
       setIsSubmitting(false)
@@ -270,10 +302,21 @@ export default function ScheduleInspection() {
               </label>
             </div>
 
+            {isInThePast(selectedDate, selectedTime) && (
+              <p className="text-[12px] leading-4 text-state-error">
+                That time has already passed. Pick a later time.
+              </p>
+            )}
+
             <Button
               variant="app-primary"
               size="full"
-              disabled={!isConfirmed || !selectedDate || isSubmitting}
+              disabled={
+                !isConfirmed ||
+                !selectedDate ||
+                isSubmitting ||
+                isInThePast(selectedDate, selectedTime)
+              }
               onClick={handleSubmit}
             >
               {isSubmitting ? "Scheduling..." : submitLabel}
