@@ -21,8 +21,8 @@ interface Props {
 
 export function EscrowActionDialog({ row, action, onClose }: Props) {
   const mutation = useSetEscrowStatus()
-  // refunds have their own dialog, because they need a reason
-  if (!action || action === "refund") return null
+  // refunds have their own dialogs (a reason, then the transfer details)
+  if (action !== "release" && action !== "hold") return null
 
   const release = action === "release"
   const confirm = () =>

@@ -5,7 +5,13 @@ import type { EscrowRow, EscrowTab } from "./types"
 import { needsRelease } from "./useEscrowAttention"
 
 export const PAGE_SIZE = 10
-const TABS: EscrowTab[] = ["in_escrow", "released", "disputed", "refunded"]
+const TABS: EscrowTab[] = [
+  "in_escrow",
+  "released",
+  "disputed",
+  "refund_pending",
+  "refunded",
+]
 
 export function useEscrowFilters(rows: EscrowRow[]) {
   const [params, setParams] = useSearchParams()

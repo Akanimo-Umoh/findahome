@@ -34,10 +34,11 @@ export function EscrowStats({ stats, loading }: Props) {
       hint: `${stats?.count.disputed ?? 0} on hold`,
     },
     {
-      label: "Refunded",
-      value: stats?.refunded,
+      // approved refunds still to be sent offline count here too
+      label: "Refunds",
+      value: stats === null ? undefined : stats.refunded + stats.refundPending,
       dot: "bg-slate-400",
-      hint: `${stats?.count.refunded ?? 0} refunded`,
+      hint: `${stats?.count.refunded ?? 0} sent · ${stats?.count.refund_pending ?? 0} to send`,
     },
     {
       label: "Platform revenue",

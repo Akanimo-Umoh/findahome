@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient, type QueryClient } from "@tanstack/react-query"
 import { useAuthContext } from "@/context/AuthContext"
 import { getSocket } from "@/services/socket"
 import { myVerificationKey } from "@/hooks/useMyVerification"
@@ -26,14 +26,29 @@ const DEAL_EVENTS = new Set([
   "inspection_reschedule_requested",
   "inspection_confirmed",
   "inspection_completed",
+  // the admin rejected the payment, or a refund was recorded
+  "inspection_cancelled",
+  "inspection_refund_sent",
   "purchase_requested",
   "purchase_payment_initialized",
+  "property_payment_review",
   "purchase_payment_verified",
   "purchase_status_changed",
+  "purchase_cancelled",
+  "purchase_refund_sent",
   "handover_scheduled",
   "handover_reschedule_requested",
   "handover_confirmed",
   "handover_completed",
+])
+
+// Money moved in or out of an agent's wallet (funding, payouts, withdrawals).
+const WALLET_EVENTS = new Set([
+  "wallet_funding_pending",
+  "wallet_funded",
+  "agent_payment",
+  "withdrawal_requested",
+  "transaction_status_changed",
 ])
 
 // Everything that reads a deal's stage: the chat mini actions, the transaction
@@ -48,6 +63,13 @@ const DEAL_KEYS = [
   ["agentTransactionDetails"],
   ["admin", "escrow"],
 ]
+
+// Marks every query that shows a deal's stage as stale. Also used by the
+// Paystack return pages, so the chat and lists show the new status straight away.
+export function invalidateDealQueries(queryClient: QueryClient) {
+  DEAL_KEYS.forEach((queryKey) => queryClient.invalidateQueries({ queryKey }))
+  queryClient.invalidateQueries({ queryKey: ["notifications"] })
+}
 
 type NotificationEvent = {
   type?: string
@@ -99,12 +121,16 @@ export function useRealtimeSync() {
         event.type &&
         (DEAL_EVENTS.has(event.type) || event.type.startsWith("escrow_"))
       ) {
-        DEAL_KEYS.forEach((queryKey) =>
-          queryClient.invalidateQueries({ queryKey })
-        )
-        queryClient.invalidateQueries({ queryKey: ["notifications"] })
+        invalidateDealQueries(queryClient)
         // an escrow release changes the agent's balance, which is read from
         // their account
+        queryClient.invalidateQueries({ queryKey: myVerificationKey })
+      }
+
+      if (event.type && WALLET_EVENTS.has(event.type)) {
+        queryClient.invalidateQueries({ queryKey: ["agentActivities"] })
+        queryClient.invalidateQueries({ queryKey: ["admin", "finance"] })
+        queryClient.invalidateQueries({ queryKey: ["notifications"] })
         queryClient.invalidateQueries({ queryKey: myVerificationKey })
       }
 
@@ -132,6 +158,10 @@ export function useRealtimeSync() {
       socket.off("connect", register)
       socket.off("notification", onNotification)
       socket.off("receive_message", onMessage)
+      // The server picks the user's room from the token sent at connect time,
+      // so after a logout or account switch the old connection must go. The
+      // next run connects again with the new token.
+      socket.disconnect()
     }
   }, [user?._id, token, queryClient])
 }

@@ -13,6 +13,10 @@ export function getSocket(): Socket {
     socket = io(SOCKET_URL, {
       transports: ["websocket"],
       autoConnect: false,
+      // The server refuses connections without a valid JWT and puts the
+      // socket in that user's room. A function (not a fixed object) so every
+      // connect and reconnect sends the token of whoever is logged in now.
+      auth: (cb) => cb({ token: localStorage.getItem("token") }),
     })
   }
   return socket

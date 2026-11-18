@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button"
 import { buildEscrowStats } from "./buildEscrowRows"
 import { EscrowPagination } from "./components/EscrowPagination"
 import { PendingPayments } from "./components/PendingPayments"
+import { RefundsDue } from "./components/RefundsDue"
 import { ReleaseReadyNotice } from "./components/ReleaseReadyNotice"
-import { buildPendingPayments, filterPendingPayments } from "./pendingPayments"
+import {
+  buildPendingPayments,
+  buildRefundsDue,
+  filterPendingPayments,
+} from "./pendingPayments"
 import { needsRelease } from "./useEscrowAttention"
 import { EscrowStats } from "./components/EscrowStats"
 import { EscrowTable } from "./components/EscrowTable"
@@ -29,6 +34,18 @@ export default function Escrow() {
       ),
     [data, f.q]
   )
+  const refundsDue = useMemo(
+    () =>
+      filterPendingPayments(
+        buildRefundsDue(
+          data?.inspections,
+          data?.purchases,
+          new Set(rows.map((r) => r.reference))
+        ),
+        f.q
+      ),
+    [data, rows, f.q]
+  )
   const readyCount = useMemo(() => rows.filter(needsRelease).length, [rows])
 
   return (
@@ -47,6 +64,8 @@ export default function Escrow() {
       <EscrowStats stats={stats} loading={isLoading} />
 
       <PendingPayments items={pending} />
+
+      <RefundsDue items={refundsDue} />
 
       <ReleaseReadyNotice
         count={readyCount}

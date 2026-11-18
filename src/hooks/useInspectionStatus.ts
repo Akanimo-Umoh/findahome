@@ -13,7 +13,8 @@ export type InspectionStage =
   | "awaiting_buyer_confirm" // agent picked a date, buyer must confirm/reject
   | "confirmed" // buyer confirmed, visit upcoming
   | "completed" // visit done, buyer can purchase
-  | "cancelled"
+  | "cancelled" // refunded (or never paid): a new request is allowed
+  | "refund_pending" // cancelled, money not sent back yet: no new request until it is
 
 function getPropertyId(property: Inspection["property"]): string {
   return typeof property === "string" ? property : property?._id
@@ -40,13 +41,23 @@ export function useInspectionStatus(propertyId?: string) {
     enabled: !!user?._id,
   })
 
-  const inspection: Inspection | undefined = propertyId
-    ? inspections.find((i) => getPropertyId(i.property) === propertyId)
-    : undefined
+  // After a refunded cancellation the buyer can request again, so one
+  // property can have old cancelled records and a new one. The live one
+  // wins, then a cancellation still waiting for its refund (it blocks a new
+  // request), then any other.
+  const forProperty = propertyId
+    ? inspections.filter((i) => getPropertyId(i.property) === propertyId)
+    : []
+  const inspection: Inspection | undefined =
+    forProperty.find((i) => i.status !== "inspection_cancelled") ??
+    forProperty.find((i) => i.refundDue) ??
+    forProperty[0]
 
-  const stage: InspectionStage = inspection
-    ? STAGE_BY_STATUS[inspection.status]
-    : "none"
+  const stage: InspectionStage = !inspection
+    ? "none"
+    : inspection.status === "inspection_cancelled" && inspection.refundDue
+      ? "refund_pending"
+      : STAGE_BY_STATUS[inspection.status]
 
   return {
     inspection,

@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "sonner"
-import { escrowService } from "@/services/admin/escrow.service"
+import { escrowService, type RefundSent } from "@/services/admin/escrow.service"
 import { buildEscrowRows } from "./buildEscrowRows"
+import type { EscrowKind } from "./types"
 
 export const ESCROW_QUERY_KEY = ["admin", "escrow"] as const
 
@@ -116,18 +117,70 @@ export function describeError(e: unknown) {
   }
 }
 
-export function useRefundEscrow() {
+// Step 1 of a refund: the deal is cancelled and the escrow waits in
+// refund_pending until the admin has sent the money.
+export function useApproveRefund() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (v: { id: string; reason: string }) =>
-      escrowService.refund(v.id, v.reason),
+      escrowService.approveRefund(v.id, v.reason),
     onSuccess: () => {
-      toast.success("Refunded. The amount was returned to the buyer's wallet.")
+      toast.success(
+        "Refund approved. Send the money to the buyer, then mark it as sent."
+      )
       qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
     },
     onError: (e) => {
-      console.error("refund failed:", describeError(e))
+      console.error("refund approval failed:", describeError(e))
       toast.error(errorMessage(e))
     },
+  })
+}
+
+// Step 2: records the offline transfer. The escrow becomes refunded.
+export function useCompleteRefund() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { id: string; sent: RefundSent }) =>
+      escrowService.completeRefund(v.id, v.sent),
+    onSuccess: () => {
+      toast.success("Refund recorded as sent. The buyer has been notified.")
+      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
+    },
+    onError: (e) => {
+      console.error("refund completion failed:", describeError(e))
+      toast.error(errorMessage(e))
+    },
+  })
+}
+
+// Turns down a payment under review (wrong amount, duplicate, …). The deal
+// is cancelled and its money shows under "Refunds to send".
+export function useRejectPayment() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { kind: EscrowKind; id: string; reason: string }) =>
+      escrowService.rejectPayment(v.kind, v.id, v.reason),
+    onSuccess: () => {
+      toast.success(
+        "Payment rejected. Send the refund, then mark it as sent below."
+      )
+      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
+    },
+    onError: (e) => toast.error(errorMessage(e)),
+  })
+}
+
+// Records the offline refund of a rejected payment.
+export function useMarkRefundSent() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (v: { kind: EscrowKind; id: string; sent: RefundSent }) =>
+      escrowService.markRefundSent(v.kind, v.id, v.sent),
+    onSuccess: () => {
+      toast.success("Refund recorded as sent. The buyer has been notified.")
+      qc.invalidateQueries({ queryKey: ESCROW_QUERY_KEY })
+    },
+    onError: (e) => toast.error(errorMessage(e)),
   })
 }

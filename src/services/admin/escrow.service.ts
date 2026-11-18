@@ -5,6 +5,12 @@ import type {
   RawLinkedRecord,
 } from "@/types/adminEscrow"
 
+export type RefundSent = {
+  amountSent: number
+  transferReference: string
+  note?: string
+}
+
 export const escrowService = {
   async list() {
     const { data } = await api.get<{ escrows: RawEscrow[] }>("/escrow")
@@ -44,8 +50,43 @@ export const escrowService = {
     })
     return data
   },
-  async refund(escrowId: string, reason: string) {
-    const { data } = await api.patch(`/escrow/${escrowId}/refund`, { reason })
+  // Refunds are sent offline by the admin, so they take two steps.
+  // Step 1: approve. The escrow moves to refund_pending and the deal is cancelled.
+  async approveRefund(escrowId: string, reason: string) {
+    const { data } = await api.patch(`/escrow/${escrowId}/refund-approval`, {
+      reason,
+    })
+    return data
+  },
+  // Step 2: after sending the money, record it. The escrow becomes refunded.
+  // amountSent is always sent: the server reads it before the escrow loads.
+  async completeRefund(escrowId: string, sent: RefundSent) {
+    const { data } = await api.patch(
+      `/escrow/${escrowId}/refund-complete`,
+      sent
+    )
+    return data
+  },
+  // A payment under review that shouldn't go ahead (wrong amount, duplicate).
+  // The record is cancelled and marked refundDue; no escrow exists yet.
+  async rejectPayment(
+    kind: "inspection" | "purchase",
+    id: string,
+    reason: string
+  ) {
+    const { data } = await api.post(`/${kind}/reject-payment`, { id, reason })
+    return data
+  },
+  // Records the offline refund for a rejected payment.
+  async markRefundSent(
+    kind: "inspection" | "purchase",
+    id: string,
+    sent: RefundSent
+  ) {
+    const { data } = await api.post(`/${kind}/mark-refund-sent`, {
+      id,
+      ...sent,
+    })
     return data
   },
   async setStatus(escrowId: string, status: "on_hold" | "released") {

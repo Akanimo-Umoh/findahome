@@ -44,7 +44,6 @@ function getBuyerStep(
     case "inspection_unpaid":
       return { title: "Pay inspection fee", icon: "pay", kind: "pay" }
 
-    // TODO: when the backend records the admin's payment confirmation, split this into "under review" and "confirmed" here
     case "inspection_review":
       return status("Payment under review", "pay")
 
@@ -74,7 +73,16 @@ function getBuyerStep(
       )
 
     case "inspection_cancelled":
-      return status("Inspection cancelled", "visit")
+      // refunded (or never paid), so the buyer may start over; the server
+      // ignores cancelled requests and creates a fresh one
+      return {
+        title: "Request inspection again",
+        icon: "pay",
+        kind: "pay",
+      }
+
+    case "inspection_refund_pending":
+      return status("Refund in progress", "pay")
 
     case "purchase_unpaid":
       // same page as above, it resumes the unpaid purchase
@@ -84,7 +92,9 @@ function getBuyerStep(
         inspectionId && `/property-payment/${inspectionId}`
       )
 
-    // TODO: same as above, split once the backend records the admin's confirmation
+    case "purchase_review":
+      return status("Payment under review", "pay")
+
     case "handover_awaiting_schedule":
       return status("Awaiting handover schedule", "visit")
 
@@ -143,10 +153,14 @@ function getAgentStep(
       )
 
     case "inspection_cancelled":
+    case "inspection_refund_pending":
       return status("Inspection cancelled", "visit")
 
     case "purchase_unpaid":
       return status("Awaiting property payment", "pay")
+
+    case "purchase_review":
+      return status("Payment awaiting approval", "pay")
 
     case "handover_awaiting_schedule":
       return link(

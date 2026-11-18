@@ -9,6 +9,7 @@ export const STATE_LABEL: Record<EscrowState, string> = {
   in_escrow: "In escrow",
   released: "Released",
   disputed: "Disputed",
+  refund_pending: "Refund pending",
   refunded: "Refunded",
 }
 

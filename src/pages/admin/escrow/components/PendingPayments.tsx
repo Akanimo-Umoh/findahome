@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Loader2 } from "lucide-react"
+import { AlertTriangle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -9,30 +9,66 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Textarea } from "@/components/ui/textarea"
 import { formatNaira } from "@/lib/adminFormat"
 import { KIND_LABEL, formatDate } from "../format"
 import type { PendingPayment } from "../pendingPayments"
-import { useConfirmPayment } from "../useEscrow"
+import { useConfirmPayment, useRejectPayment } from "../useEscrow"
 
 const PREVIEW_COUNT = 5
 
+type Decision = { payment: PendingPayment; action: "approve" | "reject" }
+
+function MismatchNote({ p }: { p: PendingPayment }) {
+  if (!p.amountMismatch) return null
+  return (
+    <p className="flex items-center gap-1 text-[12.5px] font-semibold text-amber-700">
+      <AlertTriangle className="size-3.5" />
+      Paystack received{" "}
+      {p.paidAmount != null ? formatNaira(p.paidAmount) : "a different amount"},
+      expected {formatNaira(p.amount)}
+    </p>
+  )
+}
+
 export function PendingPayments({ items }: { items: PendingPayment[] }) {
-  const [selected, setSelected] = useState<PendingPayment | null>(null)
+  const [decision, setDecision] = useState<Decision | null>(null)
+  const [reason, setReason] = useState("")
   const [showAll, setShowAll] = useState(false)
-  const mutation = useConfirmPayment()
+  const approve = useConfirmPayment()
+  const reject = useRejectPayment()
 
   if (items.length === 0) return null
 
   // oldest first; only the first few show until the admin asks for the rest
   const visible = showAll ? items : items.slice(0, PREVIEW_COUNT)
+  const pending = approve.isPending || reject.isPending
 
-  const confirm = () => {
-    if (!selected) return
-    mutation.mutate(
-      { kind: selected.kind, id: selected.id, reference: selected.reference },
-      { onSuccess: () => setSelected(null) }
-    )
+  const open = (payment: PendingPayment, action: Decision["action"]) => {
+    setReason("")
+    setDecision({ payment, action })
   }
+  const close = () => !pending && setDecision(null)
+
+  const submit = () => {
+    if (!decision) return
+    const { payment } = decision
+    const done = { onSuccess: () => setDecision(null) }
+    if (decision.action === "approve") {
+      approve.mutate(
+        { kind: payment.kind, id: payment.id, reference: payment.reference },
+        done
+      )
+    } else {
+      reject.mutate(
+        { kind: payment.kind, id: payment.id, reason: reason.trim() },
+        done
+      )
+    }
+  }
+
+  const selected = decision?.payment
+  const rejecting = decision?.action === "reject"
 
   return (
     <section className="rounded-xl border border-amber-200 bg-amber-50/50">
@@ -41,8 +77,8 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
           Payments awaiting confirmation ({items.length})
         </h2>
         <p className="text-[13px] text-text-secondary">
-          Find the reference on Paystack first. Confirm only once you can see
-          the payment there.
+          Find the reference on Paystack first. Approve only once you can see
+          the payment there. Reject it if it&apos;s wrong or a duplicate.
         </p>
       </header>
 
@@ -64,6 +100,7 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
                 Reference:{" "}
                 <span className="font-mono select-all">{p.reference}</span>
               </p>
+              <MismatchNote p={p} />
             </div>
 
             <div className="text-right">
@@ -71,13 +108,21 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
                 {formatNaira(p.amount)}
               </p>
               <p className="text-[12.5px] text-text-secondary">
-                Started {formatDate(p.startedAt)}
+                Paid {formatDate(p.startedAt)}
               </p>
             </div>
 
-            <Button variant="outline" onClick={() => setSelected(p)}>
-              Confirm payment
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => open(p, "reject")}>
+                Reject
+              </Button>
+              <Button
+                onClick={() => open(p, "approve")}
+                className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
+              >
+                Approve
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
@@ -95,41 +140,58 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
       )}
 
       {selected && (
-        <Dialog
-          open
-          onOpenChange={(open) =>
-            !open && !mutation.isPending && setSelected(null)
-          }
-        >
+        <Dialog open onOpenChange={(isOpen) => !isOpen && close()}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Confirm this payment?</DialogTitle>
+              <DialogTitle>
+                {rejecting ? "Reject this payment?" : "Approve this payment?"}
+              </DialogTitle>
               <DialogDescription>
-                {formatNaira(selected.amount)} from {selected.buyerName} for{" "}
-                {selected.propertyTitle}. Reference {selected.reference}. This
-                creates the escrow and lets the agent continue. The server also
-                checks the reference with Paystack and refuses if it isn&apos;t
-                a successful payment.
+                {formatNaira(selected.paidAmount ?? selected.amount)} from{" "}
+                {selected.buyerName} for {selected.propertyTitle}. Reference{" "}
+                {selected.reference}.{" "}
+                {rejecting
+                  ? "The deal is cancelled and the buyer is told a refund is coming. You then send the money back and mark the refund as sent."
+                  : "This creates the escrow and lets the agent continue. The server also checks the reference with Paystack and refuses if it isn't a successful payment."}
               </DialogDescription>
             </DialogHeader>
 
+            <MismatchNote p={selected} />
+
+            {rejecting && (
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="reject-reason"
+                  className="text-[13px] font-semibold"
+                >
+                  Reason (the buyer sees this)
+                </label>
+                <Textarea
+                  id="reject-reason"
+                  value={reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  placeholder="E.g. The amount paid doesn't match the fee."
+                  maxLength={300}
+                  disabled={pending}
+                />
+              </div>
+            )}
+
             <DialogFooter className="gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setSelected(null)}
-                disabled={mutation.isPending}
-              >
+              <Button variant="outline" onClick={close} disabled={pending}>
                 Cancel
               </Button>
               <Button
-                onClick={confirm}
-                disabled={mutation.isPending}
-                className="bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
+                onClick={submit}
+                disabled={pending || (rejecting && !reason.trim())}
+                className={
+                  rejecting
+                    ? "bg-red-600 text-white hover:bg-red-600/90"
+                    : "bg-[#274ad0] text-white hover:bg-[#274ad0]/90"
+                }
               >
-                {mutation.isPending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                )}
-                Confirm payment
+                {pending && <Loader2 className="mr-2 size-4 animate-spin" />}
+                {rejecting ? "Reject payment" : "Approve payment"}
               </Button>
             </DialogFooter>
           </DialogContent>

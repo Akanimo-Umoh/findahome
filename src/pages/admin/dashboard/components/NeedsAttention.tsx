@@ -68,7 +68,7 @@ export default function NeedsAttention({
       icon: Landmark,
       tone: "warning",
       title: "Escrow needs action",
-      sub: `${attention.pendingPayments} to confirm · ${attention.readyToRelease} ready to release`,
+      sub: `${attention.pendingPayments} to confirm · ${attention.readyToRelease} to release · ${attention.refundsToSend} refunds to send`,
       value: attention.total,
     },
     {

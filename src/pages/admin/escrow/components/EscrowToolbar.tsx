@@ -7,6 +7,7 @@ const TABS: { id: EscrowTab; label: string }[] = [
   { id: "in_escrow", label: "In escrow" },
   { id: "released", label: "Released" },
   { id: "disputed", label: "Disputed" },
+  { id: "refund_pending", label: "Refund pending" },
   { id: "refunded", label: "Refunded" },
 ]
 

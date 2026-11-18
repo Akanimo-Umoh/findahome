@@ -18,6 +18,13 @@ export type FinanceTx = {
   type: FinanceTxType
   status: FinanceTxStatus
   approvedAt?: string
+  // withdrawals: a copy of the account the agent chose, saved at request time
+  bankDetails?: {
+    bankName: string
+    bankCode?: string
+    accountNumber: string
+    accountName: string
+  } | null
   createdAt: string
   updatedAt: string
 }

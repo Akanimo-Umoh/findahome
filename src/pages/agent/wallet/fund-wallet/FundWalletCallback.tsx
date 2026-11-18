@@ -1,129 +1,74 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
+import { useQueryClient } from "@tanstack/react-query"
+import PaymentResultDialog from "@/components/shared/PaymentResultDialog"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from "@/components/ui/dialog"
-import successImg from "@/assets/images/img-pay-inspection-fee.png"
-import Spinner from "@/components/Spinner"
-import { verifyWalletFunding } from "@/services/wallet.service"
-import { useRefreshUser } from "@/hooks/useRefreshUser"
+  referenceFromUrl,
+  usePaymentConfirmation,
+} from "@/hooks/usePaymentConfirmation"
+import { confirmWalletFunding } from "@/services/wallet.service"
+
+const REFERENCE_KEY = "pending-wallet-funding-reference"
 
 export default function FundWalletCallback() {
   const navigate = useNavigate()
-  const { refreshUser } = useRefreshUser()
+  const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
-  const [status, setStatus] = useState<"verifying" | "success" | "pending">(
-    "verifying"
+
+  const [reference] = useState(
+    () =>
+      referenceFromUrl(searchParams) ?? sessionStorage.getItem(REFERENCE_KEY)
   )
-  const [balance, setBalance] = useState<number | null>(null)
+
+  // the server records the funding as pending; an admin approves it and only
+  // then is the wallet credited
+  const { status, message } = usePaymentConfirmation(
+    reference ? () => confirmWalletFunding(reference) : null
+  )
 
   useEffect(() => {
-    const verify = async () => {
-      const reference =
-        searchParams.get("reference") ??
-        sessionStorage.getItem("pending-wallet-funding-reference")
+    if (status === "confirming") return
+    if (status !== "error") sessionStorage.removeItem(REFERENCE_KEY)
+    // the pending funding now shows in the wallet's activity
+    queryClient.invalidateQueries({ queryKey: ["agentActivities"] })
+  }, [status, queryClient])
 
-      if (!reference) {
-        setStatus("pending")
-        return
-      }
-
-      try {
-        const res = await verifyWalletFunding(reference)
-        sessionStorage.removeItem("pending-wallet-funding-reference")
-        setBalance(res.balance)
-        setStatus("success")
-        await refreshUser()
-      } catch (err) {
-        // agents can't self-verify right now — payment likely went through,
-        // it's just waiting on an admin to confirm and credit it
-        console.error("verifyWalletFunding error:", err)
-        sessionStorage.removeItem("pending-wallet-funding-reference")
-        setStatus("pending")
-      }
-    }
-
-    verify()
-  }, [searchParams, refreshUser])
-
-  if (status === "verifying") {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 font-ssPro">
-        <Spinner />
-        <p className="text-[14px] text-text-secondary">
-          Confirming your payment...
-        </p>
-      </div>
-    )
-  }
-
-  if (status === "pending") {
-    return (
-      <Dialog open={true}>
-        <DialogContent className="w-[calc(100%-48px)] max-w-[340px] gap-0 rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden">
-          <img src={successImg} alt="" className="mx-auto" />
-
-          <div className="mt-2 flex flex-col gap-6">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <DialogTitle className="text-center font-raleway text-[18px] font-semibold tracking-[1px]">
-                Payment received
-              </DialogTitle>
-              <DialogDescription className="text-center text-[14px] text-text-secondary">
-                Your payment was successful. It's being confirmed and will be
-                credited to your wallet within 20–30 minutes.
-              </DialogDescription>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={() => navigate("/agent/wallet", { replace: true })}
-                className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
-              >
-                View Wallet
-              </button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    )
-  }
+  const goToWallet = () => navigate("/agent/wallet", { replace: true })
 
   return (
-    <Dialog open={true}>
-      <DialogContent className="w-[calc(100%-48px)] max-w-[340px] gap-0 rounded-xl px-[27px] py-[43px] font-ssPro text-text-primary [&>button]:hidden">
-        <img src={successImg} alt="" className="mx-auto" />
-
-        <div className="mt-2 flex flex-col gap-6">
-          <div className="flex flex-col items-center justify-center gap-4">
-            <DialogTitle className="text-center font-raleway text-[18px] font-semibold tracking-[1px]">
-              Wallet Funded!
-            </DialogTitle>
-            <DialogDescription className="text-center text-[14px] text-text-secondary">
-              {balance !== null
-                ? `Your new balance is ₦${balance.toLocaleString()}.`
-                : "Your wallet has been credited successfully."}
-            </DialogDescription>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <button
-              onClick={() => navigate("/agent/wallet", { replace: true })}
-              className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
-            >
-              View Wallet
-            </button>
-            <button
-              onClick={() => navigate("/agent/dashboard", { replace: true })}
-              className="h-11.25 w-full rounded-lg border border-text-secondary font-raleway text-[14px] font-semibold tracking-[1px]"
-            >
-              Go to dashboard
-            </button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <PaymentResultDialog
+      status={status}
+      message={message}
+      copy={{
+        received: {
+          title: "Payment received",
+          description:
+            "Your payment was successful and is waiting for an admin to approve it. Your wallet will be credited once it's approved.",
+        },
+        processing: {
+          title: "Payment being confirmed",
+          description:
+            "We're still confirming your payment with Paystack. It will show in your wallet's activity shortly. Please don't pay again.",
+        },
+        failed: {
+          title: "Payment not completed",
+          description:
+            "Paystack didn't confirm this payment, so nothing was charged. You can try funding your wallet again.",
+        },
+        error: {
+          title: reference ? "We couldn't confirm yet" : "No payment found",
+          description: reference
+            ? "If you completed the payment on Paystack, it's safe. Refresh this page in a moment to check again. Please don't pay twice."
+            : "We couldn't find a payment to confirm. If you paid, check your wallet's activity shortly.",
+        },
+      }}
+    >
+      <button
+        onClick={goToWallet}
+        className="button-style h-11.25 w-full rounded-lg font-raleway text-[14px] font-semibold tracking-[1px] text-white"
+      >
+        View Wallet
+      </button>
+    </PaymentResultDialog>
   )
 }

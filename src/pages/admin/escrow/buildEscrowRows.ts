@@ -83,9 +83,11 @@ export function buildEscrowRows({
       ? "released"
       : e.status === "refunded"
         ? "refunded"
-        : openDispute
-          ? "disputed"
-          : "in_escrow"
+        : e.status === "refund_pending"
+          ? "refund_pending"
+          : openDispute
+            ? "disputed"
+            : "in_escrow"
     const property = e.property ?? linked?.property ?? null
     const linkedComplete =
       !!linked &&
@@ -109,6 +111,7 @@ export function buildEscrowRows({
       status,
       released,
       releaseReady:
+        status !== "refund_pending" &&
         !!linked?.feePaid &&
         linkedComplete &&
         !openDispute &&
@@ -123,6 +126,10 @@ export function buildEscrowRows({
       createdAt: e.createdAt,
       releasedAt: e.releasedAt ?? null,
       reason: e.reason ?? null,
+      refundedAt: e.refundedAt ?? null,
+      refundedAmount: e.refundedAmount ?? null,
+      transferReference: e.transferReference ?? null,
+      refundNote: e.refundNote ?? null,
       propertyId: property?._id ?? null,
       propertyTitle:
         property?.title ?? linked?.property?.title ?? "Unknown property",
@@ -136,7 +143,7 @@ export function buildEscrowRows({
   })
 }
 
-// In escrow + Released + Disputed add up to Total
+// In escrow + Released + Disputed + Refund pending + Refunded add up to Total
 export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
   const sum = (s?: EscrowState) =>
     rows.filter((r) => !s || r.status === s).reduce((t, r) => t + r.amount, 0)
@@ -148,6 +155,7 @@ export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
     inEscrow: sum("in_escrow"),
     released: sum("released"),
     disputed: sum("disputed"),
+    refundPending: sum("refund_pending"),
     refunded: sum("refunded"),
     platformRevenue: rows.reduce(
       (total, row) =>
@@ -159,6 +167,7 @@ export function buildEscrowStats(rows: EscrowRow[]): EscrowStatsData {
       in_escrow: count("in_escrow"),
       released: count("released"),
       disputed: count("disputed"),
+      refund_pending: count("refund_pending"),
       refunded: count("refunded"),
     },
   }

@@ -87,7 +87,7 @@ export default function PayoutTable({
                     {p.code}
                   </td>
                   <td className={td}>
-                    {!banksKnown ? (
+                    {!banksKnown && !p.bankFromRequest ? (
                       "—"
                     ) : p.bank ? (
                       <>

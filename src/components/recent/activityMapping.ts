@@ -1,5 +1,6 @@
 import type { MergedTransaction } from "@/services/transaction.service"
 import type { Activity, TransactionStatus } from "@/types/transactions"
+import { cancelledLabel } from "@/lib/refundStatus"
 
 // maps a raw inspection/purchase record's backend status onto the existing
 // 10-phase TransactionStatus enum ActivityCard/transactionConfig already use
@@ -25,6 +26,7 @@ function mapStatus(item: MergedTransaction): TransactionStatus {
   // purchase
   switch (item.status) {
     case "none":
+    case "property_payment_review":
     case "property_payment_made":
       return "property_payment_pending"
     case "handover_requested":
@@ -58,6 +60,9 @@ const TYPE_LABEL: Record<TransactionStatus, string> = {
 // The shared UI status folds three backend statuses into one, so for
 // inspections that aren't confirmed yet the label comes from the raw status.
 function getStatusLabel(item: MergedTransaction, status: TransactionStatus) {
+  const cancelled = cancelledLabel(item)
+  if (cancelled) return cancelled
+  if (item.status === "property_payment_review") return "Payment Under Review"
   if (item.recordType === "inspection") {
     if (item.status === "inspection_payment_review")
       return "Payment Under Review"

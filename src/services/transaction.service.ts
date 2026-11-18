@@ -28,6 +28,10 @@ export type MergedTransaction = {
   _id: string
   recordType: TransactionRecordType
   status: string
+  // set when the admin rejected the payment or refunded the deal; cleared
+  // (with refundSentAt filled in) once the money has been sent back
+  refundDue?: boolean
+  refundSentAt?: string | null
   price?: number // purchase
   fee?: number // inspection
   createdAt: string

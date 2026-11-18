@@ -1,9 +1,17 @@
 import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
 
 export type EscrowKind = "inspection" | "purchase"
-export type EscrowState = "in_escrow" | "released" | "disputed" | "refunded"
+// refund_pending: a refund was approved and the admin still has to send the
+// money (offline) and record it
+export type EscrowState =
+  | "in_escrow"
+  | "released"
+  | "disputed"
+  | "refund_pending"
+  | "refunded"
 export type EscrowTab = "all" | EscrowState
-export type EscrowAction = "release" | "hold" | "refund"
+// refund = approve the refund; complete_refund = record that it was sent
+export type EscrowAction = "release" | "hold" | "refund" | "complete_refund"
 
 export interface Party {
   id: string | null
@@ -27,6 +35,11 @@ export interface EscrowRow {
   createdAt: string
   releasedAt: string | null
   reason: string | null
+  // filled in once an offline refund is recorded as sent
+  refundedAt: string | null
+  refundedAmount: number | null
+  transferReference: string | null
+  refundNote: string | null
   propertyId: string | null
   propertyTitle: string
   propertyAddress: string | null
@@ -42,19 +55,32 @@ export interface EscrowStatsData {
   inEscrow: number
   released: number
   disputed: number
+  refundPending: number
   refunded: number
   platformRevenue: number
   count: Record<EscrowTab, number>
 }
 
-// Funds can be returned to the buyer while they are still held (in escrow or
-// disputed), but not after they were released to the agent or already refunded.
+// A refund can be approved while the funds are still held (in escrow or
+// disputed), but not after they were released to the agent or once a refund
+// is already approved or sent.
 export function isEscrowRefundable(row: EscrowRow): boolean {
-  return !row.released && row.status !== "refunded"
+  return row.status === "in_escrow" || row.status === "disputed"
+}
+
+// a refund has been approved and is waiting for the admin to send the money
+export function isRefundAwaitingTransfer(row: EscrowRow): boolean {
+  return row.status === "refund_pending"
 }
 
 export function isEscrowReleaseReady(row: EscrowRow): boolean {
-  if (row.released || row.status === "refunded" || row.openDispute) return false
+  if (
+    row.released ||
+    row.status === "refunded" ||
+    row.status === "refund_pending" ||
+    row.openDispute
+  )
+    return false
   if (!row.linked?.feePaid) return false
   if (!row.netPayoutConfirmed) return false
 

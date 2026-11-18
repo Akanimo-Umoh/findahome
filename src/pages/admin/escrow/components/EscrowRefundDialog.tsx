@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { formatNaira } from "@/lib/adminFormat"
 import { KIND_LABEL } from "../format"
 import type { EscrowRow } from "../types"
-import { describeError, useRefundEscrow } from "../useEscrow"
+import { describeError, useApproveRefund } from "../useEscrow"
 
 export function EscrowRefundDialog({
   row,
@@ -24,7 +24,7 @@ export function EscrowRefundDialog({
   onClose: () => void
 }) {
   const [reason, setReason] = useState("")
-  const mutation = useRefundEscrow()
+  const mutation = useApproveRefund()
 
   const confirm = () =>
     mutation.mutate(
@@ -47,13 +47,12 @@ export function EscrowRefundDialog({
     >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Refund the buyer?</DialogTitle>
+          <DialogTitle>Approve a refund?</DialogTitle>
           <DialogDescription>
-            {formatNaira(row.amount)} will be returned to {row.buyer.name}
-            &apos;s wallet balance and the {KIND_LABEL[
-              row.kind
-            ].toLowerCase()}{" "}
-            will be cancelled. {row.agent.name} will not be paid.
+            The {KIND_LABEL[row.kind].toLowerCase()} will be cancelled and{" "}
+            {row.agent.name} will not be paid. You then send{" "}
+            {formatNaira(row.amount)} to {row.buyer.name} yourself and mark the
+            refund as sent. The platform doesn&apos;t move the money.
           </DialogDescription>
         </DialogHeader>
 
@@ -93,7 +92,7 @@ export function EscrowRefundDialog({
             role="alert"
             className="space-y-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
           >
-            <p className="font-semibold">Refund failed</p>
+            <p className="font-semibold">Refund approval failed</p>
             <p className="font-mono text-[12px] break-words select-all">
               {failure.status ?? "no response"} {failure.method} {failure.url}
               <br />
@@ -121,7 +120,7 @@ export function EscrowRefundDialog({
             {mutation.isPending && (
               <Loader2 className="mr-2 size-4 animate-spin" />
             )}
-            Refund buyer
+            Approve refund
           </Button>
         </DialogFooter>
       </DialogContent>
