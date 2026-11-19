@@ -28,7 +28,10 @@ export type Purchase = {
         profilePicture?: string | string[] | null
       }
   inspection: string
+  // the total the buyer pays: property price + platform fee + service charge
   price: number
+  // the platform's fee on the sale, kept from the agent's payout
+  platformFee?: number
   feePaid: boolean
   feeReleased: boolean
   escrowHeldBy?: string

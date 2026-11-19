@@ -94,19 +94,21 @@ export function buildReceipt(
   const amount = isPurchase ? (t as Purchase).price : (t as Inspection).fee
   const status = record.status
 
-  // Only split the total when the parts really add up to it: the fees are read from the property as it is now, and may have changed since the payment.
+  // Only split the total when the parts really add up to it. The platform fee
+  // is the one saved on the purchase when it was made; the property's price
+  // and service charge are read as they are now and may have changed since.
+  const platformFee = isPurchase
+    ? ((t as Purchase).platformFee ?? property?.escrowFee ?? 0)
+    : 0
   const lines: ReceiptData["lines"] = []
   if (
     isPurchase &&
     property?.price !== undefined &&
-    property.price +
-      (property.escrowFee ?? 0) +
-      (property.serviceCharge ?? 0) ===
-      amount
+    property.price + platformFee + (property.serviceCharge ?? 0) === amount
   ) {
     lines.push({ label: "Property price", amount: property.price })
-    if (property.escrowFee) {
-      lines.push({ label: "Escrow fee", amount: property.escrowFee })
+    if (platformFee) {
+      lines.push({ label: "Platform fee", amount: platformFee })
     }
     if (property.serviceCharge) {
       lines.push({ label: "Service charge", amount: property.serviceCharge })

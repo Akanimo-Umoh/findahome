@@ -15,6 +15,7 @@ import { getInspectionDetails } from "@/services/inspection.service"
 import {
   requestPurchase,
   initializePurchasePayment,
+  getPurchaseDetails,
 } from "@/services/purchase.service"
 import { getPersonDisplay } from "@/lib/personDisplay"
 import { requestError } from "@/lib/requestError"
@@ -36,6 +37,15 @@ export default function PropertyPayment() {
     queryKey: ["inspectionDetails", inspectionId],
     queryFn: () => getInspectionDetails(inspectionId ?? ""),
     enabled: !!inspectionId,
+  })
+
+  // the purchase is what Paystack charges: its price is the total and it
+  // carries the platform fee, so the breakdown reads from it, not from the
+  // inspection (whose property comes without the fee fields)
+  const { data: purchase } = useQuery({
+    queryKey: ["purchaseDetails", purchaseId],
+    queryFn: () => getPurchaseDetails(purchaseId ?? ""),
+    enabled: !!purchaseId,
   })
 
   useEffect(() => {
@@ -137,12 +147,15 @@ export default function PropertyPayment() {
     typeof inspection.owner === "string" ? undefined : inspection.owner,
     "Agent"
   )
-  console.log("owner profilePicture raw:", JSON.stringify(inspection.owner))
-
-  const propertyPrice = property?.price ?? 0
-  const escrowFee = property?.escrowFee ?? 0
-  const serviceFee = property?.serviceCharge ?? 0
-  const totalFee = propertyPrice + escrowFee + serviceFee
+  const purchaseProperty =
+    purchase && typeof purchase.property !== "string"
+      ? purchase.property
+      : undefined
+  const propertyPrice = purchaseProperty?.price ?? property?.price ?? 0
+  const platformFee = purchase?.platformFee ?? purchaseProperty?.escrowFee ?? 0
+  const serviceFee = purchaseProperty?.serviceCharge ?? 0
+  // exactly what Paystack will charge
+  const totalFee = purchase?.price ?? propertyPrice + platformFee + serviceFee
 
   const handlePay = async () => {
     if (!purchaseId) return
@@ -226,12 +239,16 @@ export default function PropertyPayment() {
 
             <div className="flex items-center justify-between">
               <p className="flex items-center text-[12px] leading-4 text-text-secondary">
-                <span>Escrow fee</span>
-                <img src={greyInfo} alt="" />
+                <span>Platform fee</span>
+                <img
+                  src={greyInfo}
+                  alt=""
+                  title="FindaHome's fee for holding your payment securely in escrow until the handover"
+                />
               </p>
               <p className="flex items-center text-[12px] leading-4 text-text-secondary">
                 <img src={greyNaira} alt="" />
-                <span>{escrowFee.toLocaleString()}</span>
+                <span>{platformFee.toLocaleString()}</span>
               </p>
             </div>
 
@@ -287,7 +304,8 @@ export default function PropertyPayment() {
               variant="app-primary"
               size="full"
               onClick={handlePay}
-              disabled={!purchaseId || isPaying}
+              // wait for the purchase, so the total shown is the one charged
+              disabled={!purchaseId || !purchase || isPaying}
             >
               {isPaying ? "Redirecting..." : "Proceed with payment"}
             </Button>
