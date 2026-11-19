@@ -18,6 +18,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useInspectionStatus } from "@/hooks/useInspectionStatus"
 import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
 import { requestError } from "@/lib/requestError"
+import { REFUND_FEE_NOTICE } from "@/lib/refundFee"
 
 type PayInspectionProps = {
   isOpen: boolean
@@ -245,6 +246,13 @@ export default function PayInspectionModal({
                   <p className="text-[12px] leading-4 text-text-secondary">
                     Payment is held securely by FindaHome until inspection is
                     complete
+                  </p>
+                </div>
+
+                <div className="flex items-start gap-1">
+                  <img src={infoIcon} alt="" className="mt-0.5" />
+                  <p className="text-[12px] leading-4 text-text-secondary">
+                    {REFUND_FEE_NOTICE}
                   </p>
                 </div>
               </div>

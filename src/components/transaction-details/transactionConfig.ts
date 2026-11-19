@@ -109,7 +109,10 @@ export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
 // Buyer-facing banner before the payment is confirmed. The UI status
 // `inspection_requested` also covers "paid, waiting for the agent".
 export function getBuyerInspectionBanner(
-  inspection: Pick<Inspection, "status" | "refundDue" | "refundSentAt">
+  inspection: Pick<
+    Inspection,
+    "status" | "refundDue" | "refundSentAt" | "refundSentAmount"
+  >
 ): BannerConfig | undefined {
   switch (inspection.status) {
     // a new inspection can only be requested once the refund has been sent
@@ -123,8 +126,12 @@ export function getBuyerInspectionBanner(
       if (inspection.refundSentAt)
         return {
           title: "Inspection Cancelled — Refunded",
-          subtitle:
-            "Your payment has been sent back to you. You can request a new inspection from your chat with the agent.",
+          // the amount sent is the payment less the refund processing fee
+          subtitle: `${
+            inspection.refundSentAmount
+              ? `₦${inspection.refundSentAmount.toLocaleString()} has been sent back to you, after the refund processing fee.`
+              : "Your payment has been sent back to you, after the refund processing fee."
+          } You can request a new inspection from your chat with the agent.`,
         }
       return {
         title: "Inspection Cancelled",

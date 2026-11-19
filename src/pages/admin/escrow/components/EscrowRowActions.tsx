@@ -92,7 +92,7 @@ export function EscrowRowActions({ row }: { row: EscrowRow }) {
       )}
       {action === "complete_refund" && (
         <RefundSentDialog
-          expectedAmount={row.amount}
+          amountPaid={row.amount}
           buyerName={row.buyer.name}
           propertyTitle={row.propertyTitle}
           pending={completeRefund.isPending}

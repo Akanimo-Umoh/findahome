@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { formatNaira } from "@/lib/adminFormat"
+import { calculateRefundFee } from "@/lib/refundFee"
 import { KIND_LABEL } from "../format"
 import type { EscrowRow } from "../types"
 import { describeError, useApproveRefund } from "../useEscrow"
@@ -51,8 +52,11 @@ export function EscrowRefundDialog({
           <DialogDescription>
             The {KIND_LABEL[row.kind].toLowerCase()} will be cancelled and{" "}
             {row.agent.name} will not be paid. You then send{" "}
-            {formatNaira(row.amount)} to {row.buyer.name} yourself and mark the
-            refund as sent. The platform doesn&apos;t move the money.
+            {formatNaira(row.amount - calculateRefundFee(row.amount))} to{" "}
+            {row.buyer.name} yourself ({formatNaira(row.amount)} paid, less the{" "}
+            {formatNaira(calculateRefundFee(row.amount))} processing fee, which
+            you can waive) and mark the refund as sent. The platform
+            doesn&apos;t move the money.
           </DialogDescription>
         </DialogHeader>
 

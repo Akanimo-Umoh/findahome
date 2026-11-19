@@ -19,6 +19,7 @@ import {
 } from "@/services/purchase.service"
 import { getPersonDisplay } from "@/lib/personDisplay"
 import { requestError } from "@/lib/requestError"
+import { REFUND_FEE_NOTICE } from "@/lib/refundFee"
 import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
 import Avatar from "@/components/Avatar"
 
@@ -293,9 +294,9 @@ export default function PropertyPayment() {
           </div>
         </div>
 
-        <p className="mt-1 flex items-center gap-1 text-[11px] leading-4 text-text-secondary">
-          <img src={greyInfo} alt="" className="h-3 w-3" />A processing fee
-          applies if this payment is refunded or cancelled.
+        <p className="mt-1 flex items-start gap-1 text-[11px] leading-4 text-text-secondary">
+          <img src={greyInfo} alt="" className="mt-0.5 h-3 w-3 shrink-0" />
+          {REFUND_FEE_NOTICE}
         </p>
 
         <div className="mt-6 mb-10 flex flex-col gap-2">

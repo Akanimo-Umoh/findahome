@@ -61,7 +61,7 @@ export function RefundsDue({ items }: { items: RefundDue[] }) {
 
       {selected && (
         <RefundSentDialog
-          expectedAmount={selected.amount}
+          amountPaid={selected.amount}
           buyerName={selected.buyerName}
           propertyTitle={selected.propertyTitle}
           pending={mutation.isPending}

@@ -6,7 +6,11 @@ import type {
 } from "@/types/adminEscrow"
 
 export type RefundSent = {
+  // what the admin actually sent: amount paid minus the processing fee
   amountSent: number
+  // the refund processing fee kept (0 when waived)
+  processingFee: number
+  waiveProcessingFee: boolean
   transferReference: string
   note?: string
 }

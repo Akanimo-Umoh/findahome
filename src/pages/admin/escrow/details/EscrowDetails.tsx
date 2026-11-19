@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatNaira } from "@/lib/adminFormat"
+import { calculateRefundFee } from "@/lib/refundFee"
 import { EscrowActionDialog } from "../components/EscrowActionDialog"
 import { EscrowRefundDialog } from "../components/EscrowRefundDialog"
 import { RefundSentDialog } from "../components/RefundSentDialog"
@@ -99,8 +100,11 @@ export default function EscrowDetails() {
           </p>
           {row.status === "refund_pending" && (
             <p className="mt-2 text-sm text-amber-700">
-              Refund approved. Send {formatNaira(row.amount)} to{" "}
-              {row.buyer.name}, then mark it as sent.
+              Refund approved. Send{" "}
+              {formatNaira(row.amount - calculateRefundFee(row.amount))} to{" "}
+              {row.buyer.name} ({formatNaira(row.amount)} paid, less the{" "}
+              {formatNaira(calculateRefundFee(row.amount))} processing fee),
+              then mark it as sent.
             </p>
           )}
           {row.status === "refunded" && row.refundedAt && (
@@ -171,7 +175,7 @@ export default function EscrowDetails() {
       )}
       {action === "complete_refund" && (
         <RefundSentDialog
-          expectedAmount={row.amount}
+          amountPaid={row.amount}
           buyerName={row.buyer.name}
           propertyTitle={row.propertyTitle}
           pending={completeRefund.isPending}

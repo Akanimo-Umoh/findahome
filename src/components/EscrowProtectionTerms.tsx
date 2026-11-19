@@ -1,5 +1,6 @@
 import verifiedIcon from "@/assets/images/icon-verified-green.svg"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { REFUND_FEE_RANGE, REFUND_FEE_TIERS } from "@/lib/refundFee"
 
 type EscrowProtectionTermsProps = {
   isOpen: boolean
@@ -8,7 +9,8 @@ type EscrowProtectionTermsProps = {
 
 const terms = [
   "Funds held securely until buyer confirms successful inspection/handover",
-  "Full refund if property conditions are not met",
+  // not "full": a processing fee is deducted from every refund (see notes)
+  "Refund if property conditions are not met",
   "24/7 dispute resolution support available",
   "Legal documentation verified before release",
 ]
@@ -17,6 +19,7 @@ const notes = [
   "Funds will be released within 24 hours of confirmed inspection/handover",
   "Any disputes must be reported within 48 hours",
   "Transaction cannot be cancelled after inspection/handover confirmation",
+  `Refunds and cancellations carry a processing fee of ${REFUND_FEE_RANGE}, deducted from the amount refunded (${REFUND_FEE_TIERS})`,
 ]
 
 export default function EscrowProtectionTerms({
