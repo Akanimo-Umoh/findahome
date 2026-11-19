@@ -152,8 +152,13 @@ export default function ScheduleInspection() {
   }
 
   // redirect to the transaction details page, not the dashboard — the agent should immediately see the schedule they just set
+  // open this inspection's transaction page, whatever page the agent came
+  // from (going "back" landed in the chat when scheduling started there).
+  // replace: so Back from the details doesn't reopen the finished form.
   const handleGoToDetails = () => {
-    navigate(-1)
+    navigate(`/agent/transactions/${transactionId}?type=inspection`, {
+      replace: true,
+    })
   }
 
   return (

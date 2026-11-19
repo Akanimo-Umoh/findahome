@@ -35,10 +35,19 @@ const STAGE_BY_STATUS: Record<Inspection["status"], InspectionStage> = {
 export function useInspectionStatus(propertyId?: string) {
   const { user } = useAuthContext()
 
-  const { data: inspections = [], isLoading } = useQuery({
+  // always stale, like the chat's deal list: the stage changes because of
+  // other people (an admin approving, rejecting or refunding), so it must
+  // re-check on focus too, not wait five minutes for the cache to expire
+  const {
+    data: inspections = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQuery({
     queryKey: ["user-inspections", user?._id],
     queryFn: getUserInspections,
     enabled: !!user?._id,
+    staleTime: 0,
   })
 
   // After a refunded cancellation the buyer can request again, so one
@@ -63,5 +72,7 @@ export function useInspectionStatus(propertyId?: string) {
     inspection,
     stage,
     isLoading,
+    isFetching,
+    refetch,
   }
 }

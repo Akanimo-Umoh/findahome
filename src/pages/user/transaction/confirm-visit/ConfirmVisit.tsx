@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import goBack from "@/assets/images/icon-back.svg"
@@ -49,7 +49,28 @@ export default function ConfirmVisit() {
     refetchOnMount: "always",
   })
 
-  if (isLoading || isFetching) return <Spinner />
+  // This page only opens for a confirmed visit. Once the buyer completes it
+  // here, the live "inspection completed" event refetches the inspection
+  // while the rating is still saving, so "not completable" is only a problem
+  // when this page didn't do the completing itself.
+  const notCompletable =
+    !!inspection &&
+    !hasCompleted &&
+    !isSubmitting &&
+    !isFetching &&
+    inspection.status !== COMPLETABLE_STATUS
+
+  useEffect(() => {
+    if (!notCompletable) return
+    toast.error("This inspection isn't ready to be marked completed.")
+    navigate(`/transactions/${transactionId}?type=inspection`, {
+      replace: true,
+    })
+  }, [notCompletable, navigate, transactionId])
+
+  // spinner only for the first load; a background refetch (the live event
+  // after completing) must not unmount the form mid-submit
+  if (isLoading || (isFetching && !inspection)) return <Spinner />
 
   if (!inspection) {
     return (
@@ -61,13 +82,7 @@ export default function ConfirmVisit() {
     )
   }
 
-  if (!hasCompleted && inspection.status !== COMPLETABLE_STATUS) {
-    toast.error("This inspection isn't ready to be marked completed.")
-    navigate(`/transactions/${transactionId}?type=inspection`, {
-      replace: true,
-    })
-    return null
-  }
+  if (notCompletable) return null
 
   const property =
     typeof inspection.property === "string" ? undefined : inspection.property
@@ -84,7 +99,12 @@ export default function ConfirmVisit() {
     setIsSubmitting(true)
     try {
       await completeInspection(transactionId)
+      // remember it straight away: the rating below can take a moment, and
+      // the inspection may already be refetched as completed meanwhile
+      setHasCompleted(true)
 
+      // the rating is optional and the server only needs a paid inspection
+      // for it, so a failure here doesn't undo the completion
       if (rating > 0) {
         const propertyId =
           typeof inspection.property === "string"
@@ -112,7 +132,6 @@ export default function ConfirmVisit() {
       queryClient.invalidateQueries({
         queryKey: ["userPurchasesAndInspections"],
       })
-      setHasCompleted(true)
       setSuccessOpen(true)
     } catch (err) {
       toast.error("Couldn't confirm the inspection. Please try again.")

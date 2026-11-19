@@ -21,6 +21,7 @@ import Avatar from "../Avatar"
 import { formatChatDateLabel } from "@/lib/utils"
 import RequestSuccessful from "./RequestSuccessful"
 import { usePropertyDeal } from "@/hooks/usePropertyDeal"
+import { usePropertyTaken } from "@/hooks/usePropertyTaken"
 import { getNextStep } from "./chatNextStep"
 
 type ChatMessagesProps = {
@@ -132,10 +133,16 @@ export default function ChatMessages({
 
   const refId = property?._id?.slice(-4).toUpperCase()
 
+  // another buyer has paid for this property, so this buyer can't buy it
+  const { isTaken: propertyTaken } = usePropertyTaken(
+    isAgent ? undefined : property?._id
+  )
+
   // the one next step for this side of the deal, or null when there is none
   const nextStep = getNextStep(stage, isAgent, {
     inspectionId: inspection?._id,
     purchaseId: purchase?._id,
+    propertyTaken,
   })
 
   const miniLinks: {

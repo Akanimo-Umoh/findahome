@@ -13,6 +13,9 @@ type BaseProperty = {
   nearbyPlaces: string[]
   listingType: string
   status: "pending" | "approved" | "rejected" | "sold"
+  // true once a buyer has paid for it (or their payment is under review):
+  // other buyers can't buy it any more, though inspections stay open
+  isTaken?: boolean
   owner: {
     _id: string
     name: string

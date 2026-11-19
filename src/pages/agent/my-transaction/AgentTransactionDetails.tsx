@@ -14,6 +14,7 @@ import { getPersonDisplay } from "@/lib/personDisplay"
 import {
   AGENT_BANNER_CONFIG,
   getAgentInspectionBanner,
+  getAgentPayoutBanner,
   getInspectionPaymentStatusLabel,
   getPurchasePaymentStatusLabel,
   getTimelineSteps,
@@ -51,7 +52,12 @@ export default function AgentTransactionDetails() {
     status,
     isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
+  // once the buyer has completed it, tell the agent when the money is coming
   const banner =
+    getAgentPayoutBanner(
+      isPurchase ? (transaction as Purchase) : (transaction as Inspection),
+      isPurchase ? "purchase" : "inspection"
+    ) ||
     (!isPurchase &&
       getAgentInspectionBanner((transaction as Inspection).status)) ||
     AGENT_BANNER_CONFIG[status]

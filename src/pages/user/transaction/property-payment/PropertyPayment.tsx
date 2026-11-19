@@ -29,6 +29,8 @@ export default function PropertyPayment() {
   const [isRequesting, setIsRequesting] = useState(false)
   const [isPaying, setIsPaying] = useState(false)
   const [purchaseId, setPurchaseId] = useState<string | null>(null)
+  // why the server won't start a purchase (e.g. the property is under offer)
+  const [blockedMessage, setBlockedMessage] = useState<string | null>(null)
 
   const { data: inspection, isLoading } = useQuery({
     queryKey: ["inspectionDetails", inspectionId],
@@ -47,7 +49,7 @@ export default function PropertyPayment() {
   // create the Purchase record the moment the page loads — mirrors
   // PayInspectionModal's "request on open" pattern
   useEffect(() => {
-    if (!inspection || purchaseId) return
+    if (!inspection || purchaseId || blockedMessage) return
     const property =
       typeof inspection.property === "string" ? undefined : inspection.property
     if (!property?._id) return
@@ -69,19 +71,55 @@ export default function PropertyPayment() {
           })
           return
         }
-        // e.g. another buyer's payment for this property is under review
-        toast.error(
-          requestError(err, "Couldn't start purchase. Please try again.")
-        )
+        // a 400 without a purchase id means the server won't let this buyer
+        // buy it now (e.g. another buyer's payment is under review): show
+        // why instead of a payment form that can't work
+        if (isAxiosError(err) && err.response?.status === 400) {
+          setBlockedMessage(
+            requestError(err, "This property can't be purchased right now.")
+          )
+        } else {
+          toast.error(
+            requestError(err, "Couldn't start purchase. Please try again.")
+          )
+        }
         console.error("requestPurchase error:", err)
       } finally {
         setIsRequesting(false)
       }
     }
     init()
-  }, [inspection, purchaseId, navigate])
+  }, [inspection, purchaseId, blockedMessage, navigate])
 
   if (isLoading || isRequesting) return <Spinner />
+
+  if (blockedMessage) {
+    return (
+      <div className="px-6 md:px-8 md:pt-6">
+        <div className="mx-auto max-w-3xl">
+          <PageHeader title="Property Payment" responsive />
+          <div className="mt-6 rounded-xl bg-bg-accent px-4 py-6 text-center">
+            <p className="font-raleway text-[16px] font-semibold tracking-[1px] text-text-primary">
+              Property under offer
+            </p>
+            <p className="mt-2 text-[14px] text-text-secondary">
+              {blockedMessage}
+            </p>
+            <Button
+              variant="app-primary"
+              size="full"
+              className="mt-5"
+              onClick={() =>
+                navigate(`/transactions/${inspectionId}`, { replace: true })
+              }
+            >
+              Back to inspection
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!inspection) {
     return (

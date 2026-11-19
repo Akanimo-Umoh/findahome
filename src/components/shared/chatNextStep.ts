@@ -12,6 +12,9 @@ export type NextStep = {
 type Ids = {
   inspectionId?: string
   purchaseId?: string
+  // another buyer has paid for the property (or their payment is under
+  // review), so this buyer can't buy it; inspections stay open
+  propertyTaken?: boolean
 }
 
 const status = (title: string, icon: NextStep["icon"]): NextStep => ({
@@ -37,8 +40,15 @@ export function getNextStep(
 
 function getBuyerStep(
   stage: DealStage,
-  { inspectionId, purchaseId }: Ids
+  { inspectionId, purchaseId, propertyTaken }: Ids
 ): NextStep | null {
+  // the buying steps close once someone else has paid for the property
+  if (
+    propertyTaken &&
+    (stage === "inspection_completed" || stage === "purchase_unpaid")
+  )
+    return status("Property under offer", "pay")
+
   switch (stage) {
     case "none":
     case "inspection_unpaid":

@@ -22,6 +22,8 @@ interface TransactionActionsProps {
   chatTo: string
   scheduledAtLabel?: string
   agentName: string
+  // another buyer has paid for the property, so "Secure Property" is closed
+  propertyTaken?: boolean
 }
 
 export default function TransactionActions({
@@ -40,6 +42,7 @@ export default function TransactionActions({
   chatTo,
   scheduledAtLabel,
   agentName,
+  propertyTaken,
 }: TransactionActionsProps) {
   // const showRequestInspection = status === "inspection_requested"
   const showConfirmInspection = status === "inspection_scheduled"
@@ -104,13 +107,24 @@ export default function TransactionActions({
         )}
 
         {/* Phase 4 — inspection done, prompt to secure property */}
-        {showSecureProperty && (
-          <Button variant="app-primary" size="full" asChild>
-            <Link to={`/property-payment/${transactionId}`}>
-              Secure Property
-            </Link>
-          </Button>
-        )}
+        {showSecureProperty &&
+          (propertyTaken ? (
+            <div className="w-full rounded-lg bg-bg-accent px-4 py-3 text-center">
+              <p className="font-raleway text-[14px] font-semibold tracking-[1px] text-text-primary">
+                Property under offer
+              </p>
+              <p className="mt-1 text-[13px] text-text-secondary">
+                Another buyer has paid for this property. If their purchase
+                doesn&apos;t go through, you&apos;ll be able to secure it here.
+              </p>
+            </div>
+          ) : (
+            <Button variant="app-primary" size="full" asChild>
+              <Link to={`/property-payment/${transactionId}`}>
+                Secure Property
+              </Link>
+            </Button>
+          ))}
 
         {/* Phase 6 — waiting for agent to schedule handover */}
         {/* {showRequestHandover && (

@@ -11,6 +11,7 @@ import TransactionActions from "@/components/transaction-details/TransactionActi
 
 import PageHeader from "@/components/shared/PageHeader"
 import { useAgentChatForProperty } from "@/hooks/useAgentChatForProperty"
+import { usePropertyTaken } from "@/hooks/usePropertyTaken"
 import {
   confirmInspection,
   rescheduleInspection,
@@ -71,6 +72,9 @@ export default function TransactionDetails() {
 
   const { chatId } = useAgentChatForProperty(property?._id)
   const agentChatPath = chatId ? `/messages/${chatId}` : "/messages"
+
+  // another buyer has paid for it, so "Secure Property" is closed
+  const { isTaken: propertyTaken } = usePropertyTaken(property?._id)
 
   if (isLoading || isFetching) return <Spinner />
 
@@ -205,6 +209,7 @@ export default function TransactionDetails() {
     chatTo: agentChatPath,
     scheduledAtLabel: formatSchedule(transaction.scheduledDate),
     agentName: agent.name,
+    propertyTaken,
   }
 
   const scheduledDateValue = isPurchase

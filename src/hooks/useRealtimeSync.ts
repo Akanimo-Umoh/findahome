@@ -61,6 +61,7 @@ const DEAL_KEYS = [
   ["purchaseDetails"],
   ["transactionDetails"],
   ["agentTransactionDetails"],
+  ["agentVisitDetails"],
   ["admin", "escrow"],
 ]
 

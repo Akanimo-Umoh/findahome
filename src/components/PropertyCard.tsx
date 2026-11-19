@@ -195,6 +195,13 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
           className="h-full w-full object-cover"
         />
 
+        {/* another buyer has paid for it; it can still be inspected */}
+        {property.isTaken && (
+          <span className="absolute top-2 left-2 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white">
+            Under offer
+          </span>
+        )}
+
         {/* z-20 keeps the button above the card-wide link */}
         <button
           type="button"

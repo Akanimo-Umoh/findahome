@@ -42,7 +42,12 @@ export default function PayInspectionModal({
 }: PayInspectionProps) {
   const queryClient = useQueryClient()
   const { saveDraft } = useInspectionDraft()
-  const { stage: inspectionStage } = useInspectionStatus(propertyId)
+  const { stage: inspectionStage, refetch: refetchInspections } =
+    useInspectionStatus(propertyId)
+  // true once fresh data has arrived for this opening: the stage can change
+  // because of someone else (an admin approving, rejecting or refunding), so
+  // decide nothing from what was cached before the window opened
+  const [stageChecked, setStageChecked] = useState(false)
   const [isRequesting, setIsRequesting] = useState(false)
   const [isPaying, setIsPaying] = useState(false)
   const [inspectionId, setInspectionId] = useState<string | null>(null)
@@ -60,8 +65,28 @@ export default function PayInspectionModal({
     return () => window.removeEventListener("pageshow", handlePageShow)
   }, [])
 
+  // each time the window opens, fetch the inspection's current state first
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) {
+      setStageChecked(false)
+      // forget the last request: it may since have been rejected or
+      // refunded, and the next opening must start from the current state
+      setInspectionId(null)
+      setFee(null)
+      setReference(null)
+      return
+    }
+    let cancelled = false
+    refetchInspections().finally(() => {
+      if (!cancelled) setStageChecked(true)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [isOpen, refetchInspections])
+
+  useEffect(() => {
+    if (!isOpen || !stageChecked) return
     if (inspectionStage === "refund_pending") {
       toast.error(
         "Your refund for the cancelled inspection is still being processed. You can request a new inspection once it has been sent."
@@ -87,12 +112,12 @@ export default function PayInspectionModal({
     }
     // only proceed to requestInspection if stage is "none", "awaiting_payment"
     // or "cancelled" (the server starts a fresh request after a cancellation)
-  }, [isOpen, inspectionStage])
+  }, [isOpen, stageChecked, inspectionStage])
 
   // create the Inspection record the moment the modal opens — buyer never
   // sees the code step, it's generated server-side and used later by the agent
   useEffect(() => {
-    if (!isOpen || inspectionId) return
+    if (!isOpen || !stageChecked || inspectionId) return
     if (
       inspectionStage !== "none" &&
       inspectionStage !== "awaiting_payment" &&
@@ -126,7 +151,7 @@ export default function PayInspectionModal({
 
     init()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, propertyId, inspectionStage])
+  }, [isOpen, stageChecked, propertyId, inspectionStage])
 
   const handlePay = async () => {
     if (!inspectionId) return
@@ -177,7 +202,7 @@ export default function PayInspectionModal({
         </div>
 
         <div className="flex-1 space-y-2 overflow-y-auto px-6 pt-6">
-          {isRequesting ? (
+          {isRequesting || !stageChecked ? (
             <Spinner className="flex justify-center py-10" />
           ) : (
             <>

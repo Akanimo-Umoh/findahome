@@ -126,6 +126,16 @@ export default function PropertyDetails() {
                     {property.price.toLocaleString()}
                   </p>
                 </div>
+
+                {/* another buyer has paid; inspections are still allowed */}
+                {property.isTaken && (
+                  <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
+                    <span className="font-semibold">Under offer.</span> Another
+                    buyer has paid for this property. You can still book an
+                    inspection, and buy it if their purchase doesn&apos;t go
+                    through.
+                  </div>
+                )}
               </div>
 
               <div className="mt-2 space-y-3 md:mt-3">

@@ -180,6 +180,42 @@ export const AGENT_BANNER_CONFIG: Partial<
   },
 }
 
+// What the agent sees once the buyer has completed the inspection or the
+// handover: the money stays in escrow until an admin releases it to the
+// agent's wallet (feeReleased). Undefined while the deal isn't finished.
+export function getAgentPayoutBanner(
+  record:
+    | Pick<Inspection, "status" | "feeReleased" | "fee">
+    | Pick<Purchase, "status" | "feeReleased">,
+  kind: "inspection" | "purchase"
+): BannerConfig | undefined {
+  const finished =
+    kind === "inspection"
+      ? record.status === "inspection_completed"
+      : record.status === "handover_completed" ||
+        record.status === "funds_released"
+  if (!finished) return undefined
+
+  // inspections pay the agent the full fee; a purchase payout is the price
+  // minus the platform fee, which this record doesn't carry
+  const amount =
+    kind === "inspection" && "fee" in record
+      ? `₦${record.fee.toLocaleString()}`
+      : "your payout"
+  const what = kind === "inspection" ? "inspection" : "handover"
+
+  if (record.feeReleased || record.status === "funds_released")
+    return {
+      title: "Payment Released",
+      subtitle: `${amount === "your payout" ? "Your payout" : amount} for this ${what} has been added to your wallet.`,
+    }
+
+  return {
+    title: `${kind === "inspection" ? "Inspection" : "Handover"} Completed — Payment Coming`,
+    subtitle: `The buyer has confirmed the ${what}. An admin will release ${amount} to your wallet shortly.`,
+  }
+}
+
 // What the agent sees before they're allowed to schedule. The UI status
 // `inspection_requested` covers four backend statuses, and only
 // `inspection_paid` (payment confirmed) means the agent can act.

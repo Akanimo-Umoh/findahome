@@ -13,6 +13,7 @@ import {
 } from "@/services/inspection.service"
 import Spinner from "@/components/Spinner"
 import { getPersonDisplay } from "@/lib/personDisplay"
+import { getAgentPayoutBanner } from "@/components/transaction-details/transactionConfig"
 import { getPurchaseDetails, type Purchase } from "@/services/purchase.service"
 
 export default function AgentVisitDetails() {
@@ -68,6 +69,13 @@ export default function AgentVisitDetails() {
     ? (transaction as Purchase).status === "handover_completed"
     : (transaction as Inspection).status === "inspection_completed"
 
+  // once the buyer has completed it: "payment coming" until the admin
+  // releases the escrow, then "payment released"
+  const payoutBanner = getAgentPayoutBanner(
+    isHandover ? (transaction as Purchase) : (transaction as Inspection),
+    isHandover ? "purchase" : "inspection"
+  )
+
   return (
     <div className="md:pt-6">
       <div className="mx-auto max-w-7xl">
@@ -90,18 +98,12 @@ export default function AgentVisitDetails() {
             />
             <VisitBanner
               title={
-                canMarkComplete
-                  ? isHandover
-                    ? "Handover Completed"
-                    : "Inspection Completed"
-                  : isHandover
-                    ? "Handover Scheduled"
-                    : "Inspection Scheduled"
+                payoutBanner?.title ??
+                (isHandover ? "Handover Scheduled" : "Inspection Scheduled")
               }
               subtitle={
-                canMarkComplete
-                  ? `The buyer has confirmed this ${isHandover ? "handover" : "inspection"} is complete.`
-                  : `The ${isHandover ? "handover" : "visit"} has been scheduled successfully`
+                payoutBanner?.subtitle ??
+                `The ${isHandover ? "handover" : "visit"} has been scheduled successfully`
               }
             />
 
