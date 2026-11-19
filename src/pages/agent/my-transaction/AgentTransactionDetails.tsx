@@ -84,12 +84,18 @@ export default function AgentTransactionDetails() {
     ? (transaction as Purchase).scheduledDate
     : (transaction as Inspection).scheduledDate
 
+  const purchaseStatus = isPurchase ? (transaction as Purchase).status : null
   const actionsProps = {
     status,
     transactionId: transactionId ?? "",
-    // the agent can schedule only after the payment is confirmed
-    canSchedule:
-      isPurchase || (transaction as Inspection).status === "inspection_paid",
+    // the agent can schedule only after the admin has approved the payment.
+    // a purchase under review or cancelled maps to the same stage, so check
+    // the raw status
+    canSchedule: isPurchase
+      ? purchaseStatus === "property_payment_made" ||
+        purchaseStatus === "handover_rescheduled"
+      : (transaction as Inspection).status === "inspection_paid",
+    paymentUnderReview: purchaseStatus === "property_payment_review",
   }
 
   return (

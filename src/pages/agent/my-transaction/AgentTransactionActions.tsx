@@ -6,12 +6,15 @@ interface AgentTransactionActionsProps {
   status: TransactionStatus
   transactionId: string
   canSchedule?: boolean
+  // the buyer has paid for the property and an admin hasn't approved it yet
+  paymentUnderReview?: boolean
 }
 
 export default function AgentTransactionActions({
   status,
   transactionId,
   canSchedule = true,
+  paymentUnderReview = false,
 }: AgentTransactionActionsProps) {
   const showScheduleInspection = status === "inspection_requested"
   const showInspectionVisitDetails =
@@ -59,12 +62,19 @@ export default function AgentTransactionActions({
           </Button>
         )}
 
-        {showScheduleHandover && (
+        {showScheduleHandover && canSchedule && (
           <Button variant="app-primary" size="full" asChild>
             <Link to={`/agent/transactions/${transactionId}/schedule-handover`}>
               Schedule Handover
             </Link>
           </Button>
+        )}
+
+        {showScheduleHandover && paymentUnderReview && (
+          <p className="text-center text-[12px] leading-4 text-text-secondary">
+            The buyer&apos;s payment is under review. You can schedule the
+            handover once an admin approves it.
+          </p>
         )}
 
         {showHandoverVisitDetails && (
