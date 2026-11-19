@@ -17,7 +17,9 @@ export const getAdminBanks = async (): Promise<AdminBank[]> => {
 
 export const setTransactionStatus = async (
   transactionId: string,
-  status: "pending" | "approved" | "failed"
+  // declined/failed on a withdrawal gives the money back to the agent once,
+  // and can't be changed afterwards
+  status: "pending" | "approved" | "failed" | "declined"
 ) => {
   const { data } = await api.post("/transaction/change-transaction-status", {
     transactionId,

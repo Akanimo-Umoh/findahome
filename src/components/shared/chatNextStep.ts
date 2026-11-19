@@ -141,8 +141,12 @@ function getAgentStep(
       return null
 
     case "inspection_unpaid":
-    case "inspection_review":
       return status("Awaiting inspection payment", "pay")
+
+    // the buyer has paid; an admin still has to approve it before the agent
+    // can schedule
+    case "inspection_review":
+      return status("Payment under review", "pay")
 
     case "inspection_awaiting_schedule":
       return link(
@@ -169,8 +173,9 @@ function getAgentStep(
     case "purchase_unpaid":
       return status("Awaiting property payment", "pay")
 
+    // same wording as the inspection review and the buyer's side
     case "purchase_review":
-      return status("Payment awaiting approval", "pay")
+      return status("Payment under review", "pay")
 
     case "handover_awaiting_schedule":
       return link(

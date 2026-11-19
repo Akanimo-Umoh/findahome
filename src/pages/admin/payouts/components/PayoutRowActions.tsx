@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { CircleCheck, EllipsisVertical, Eye, RotateCcw } from "lucide-react"
+import { CircleCheck, CircleX, EllipsisVertical, Eye } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,6 +11,7 @@ import type { PayoutRow } from "../../finance/types"
 type PayoutRowActionsProps = {
   payout: PayoutRow
   onProcess: (payout: PayoutRow) => void
+  onDecline: (payout: PayoutRow) => void
 }
 
 const item = "cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 text-[14px]"
@@ -18,6 +19,7 @@ const item = "cursor-pointer gap-2.5 rounded-lg px-2.5 py-2 text-[14px]"
 export default function PayoutRowActions({
   payout,
   onProcess,
+  onDecline,
 }: PayoutRowActionsProps) {
   return (
     <DropdownMenu>
@@ -46,10 +48,15 @@ export default function PayoutRowActions({
             Process now
           </DropdownMenuItem>
         )}
-        {payout.status === "failed" && (
-          <DropdownMenuItem className={item} onSelect={() => onProcess(payout)}>
-            <RotateCcw aria-hidden />
-            Retry payout
+        {/* A declined/failed withdrawal is final: its money is already back
+            in the agent's wallet, so there's no "retry"; they request again. */}
+        {payout.status === "pending" && (
+          <DropdownMenuItem
+            className={`${item} text-red-600 focus:text-red-600`}
+            onSelect={() => onDecline(payout)}
+          >
+            <CircleX aria-hidden />
+            Decline
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

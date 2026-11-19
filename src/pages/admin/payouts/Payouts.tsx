@@ -2,6 +2,15 @@ import { useMemo, useState } from "react"
 import { SearchX, TriangleAlert, X } from "lucide-react"
 import AdminPagination from "@/components/admin/ui/AdminPagination"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { formatNaira } from "@/lib/adminFormat"
 import { useAdminUsers } from "@/pages/admin/users/useAdminUsers"
 import { buildPayouts } from "../finance/buildFinance"
 import PayoutDialog from "../finance/components/PayoutDialog"
@@ -16,6 +25,8 @@ import { usePayoutFilters } from "./usePayoutFilters"
 export default function Payouts() {
   const { filters, update, clear, hasActive, resetKey } = usePayoutFilters()
   const [payout, setPayout] = useState<PayoutRow | null>(null)
+  // a withdrawal the admin is about to decline (money goes back to the agent)
+  const [declining, setDeclining] = useState<PayoutRow | null>(null)
 
   const finance = useFinanceData()
   const users = useAdminUsers()
@@ -148,6 +159,7 @@ export default function Payouts() {
             loading={loading}
             banksKnown={banksKnown}
             onProcess={setPayout}
+            onDecline={setDeclining}
           />
         )}
 
@@ -171,6 +183,48 @@ export default function Payouts() {
           onConfirm={confirm}
           onClose={() => setPayout(null)}
         />
+      )}
+
+      {declining && (
+        <Dialog
+          open
+          onOpenChange={(open) =>
+            !open && !setStatus.isPending && setDeclining(null)
+          }
+        >
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Decline this withdrawal?</DialogTitle>
+              <DialogDescription>
+                {formatNaira(declining.amount)} goes back into{" "}
+                {declining.agent.name}&rsquo;s wallet, and the withdrawal
+                can&rsquo;t be changed afterwards. They can request a new one.
+                Only decline it if you haven&rsquo;t sent the money.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setDeclining(null)}
+                disabled={setStatus.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() =>
+                  setStatus.mutate(
+                    { id: declining.id, status: "declined" },
+                    { onSuccess: () => setDeclining(null) }
+                  )
+                }
+                disabled={setStatus.isPending}
+                className="bg-red-600 text-white hover:bg-red-600/90"
+              >
+                {setStatus.isPending ? "Declining…" : "Decline withdrawal"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   )

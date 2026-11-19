@@ -12,6 +12,7 @@ type PayoutTableProps = {
   // false when the bank request failed: show "—", not "No account"
   banksKnown: boolean
   onProcess: (payout: PayoutRow) => void
+  onDecline: (payout: PayoutRow) => void
 }
 
 const th =
@@ -23,6 +24,7 @@ export default function PayoutTable({
   loading,
   banksKnown,
   onProcess,
+  onDecline,
 }: PayoutTableProps) {
   return (
     <div className="overflow-x-auto">
@@ -112,7 +114,11 @@ export default function PayoutTable({
                     <FinanceStatusBadge status={p.status} />
                   </td>
                   <td className={`${td} text-right`}>
-                    <PayoutRowActions payout={p} onProcess={onProcess} />
+                    <PayoutRowActions
+                      payout={p}
+                      onProcess={onProcess}
+                      onDecline={onDecline}
+                    />
                   </td>
                 </tr>
               ))}

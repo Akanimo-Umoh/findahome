@@ -47,7 +47,7 @@ export function useSetPayoutStatus() {
       status,
     }: {
       id: string
-      status: "pending" | "approved" | "failed"
+      status: "pending" | "approved" | "failed" | "declined"
     }) => setTransactionStatus(id, status),
     onSuccess: (_res, { id, status }) => {
       const now = new Date().toISOString()
@@ -68,7 +68,11 @@ export function useSetPayoutStatus() {
             }
           : old
       )
-      toast.success("Payout marked as paid")
+      toast.success(
+        status === "approved"
+          ? "Payout marked as paid"
+          : "Withdrawal declined. The amount is back in the agent's wallet."
+      )
     },
     onError: (err) =>
       toast.error(
