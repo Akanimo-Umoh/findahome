@@ -27,5 +27,10 @@ export type Activity = {
 
 export type TimelineStep = {
   label: string
+  // formatted date, or "Completed" for a step that's done but has no date;
+  // undefined while the step is still pending
   completedAt?: string
+  // raw values, for the receipt
+  at: string | null
+  done: boolean
 }

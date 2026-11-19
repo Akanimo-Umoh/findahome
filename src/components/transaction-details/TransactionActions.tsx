@@ -50,6 +50,7 @@ export default function TransactionActions({
   const showSecureProperty = status === "inspection_completed"
   // const showRequestHandover = status === "handover_requested"
   const showConfirmHandover = status === "handover_scheduled"
+  const isHandover = status.startsWith("handover")
   const showViewHandoverDetails = status === "handover_confirmed"
   const showViewReceipt = status === "funds_released"
   const disputeType =
@@ -196,17 +197,19 @@ export default function TransactionActions({
       <ScheduleConfirmedOverlay
         open={isConfirmedOverlayOpen}
         onOpenChange={onConfirmedOverlayOpenChange}
-        title={showConfirmHandover ? "Handover Scheduled!" : "Visit Scheduled!"}
+        // from the deal type, not "scheduled": after confirming, the page
+        // refreshes to the confirmed status while this is still open
+        title={isHandover ? "Handover Scheduled!" : "Visit Scheduled!"}
         description={
-          showConfirmHandover
+          isHandover
             ? "Your property handover has been confirmed"
             : "Your property visit has been confirmed"
         }
         viewDetailsLabel={
-          showConfirmHandover ? "View Handover Details" : "View Visit Details"
+          isHandover ? "View Handover Details" : "View Visit Details"
         }
         viewDetailsTo={`/transactions/${transactionId}/visit${
-          showConfirmHandover ? "?type=purchase" : ""
+          isHandover ? "?type=purchase" : ""
         }`}
         chatTo={chatTo}
         scheduledAtLabel={scheduledAtLabel}

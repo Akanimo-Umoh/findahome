@@ -145,7 +145,10 @@ export default function ConfirmVisit() {
     <div className="px-6 md:px-8 md:pt-6">
       <div className="mx-auto max-w-3xl text-text-primary">
         <div className="relative flex items-center justify-center">
-          <button onClick={() => navigate(-1)} className="absolute left-0">
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute left-0 cursor-pointer"
+          >
             <img src={goBack} alt="" className="h-6 w-6 md:h-8 md:w-8" />
           </button>
           <p className="font-raleway text-[18px] font-semibold tracking-[1px] md:text-[22px]">

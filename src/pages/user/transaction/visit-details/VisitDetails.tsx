@@ -14,6 +14,7 @@ import {
 } from "@/services/inspection.service"
 import { useAgentChatForProperty } from "@/hooks/useAgentChatForProperty"
 import Spinner from "@/components/Spinner"
+import { getPersonDisplay } from "@/lib/personDisplay"
 import idIcon from "@/assets/images/icon-inspection-visit-id.svg"
 import listsIcon from "@/assets/images/icon-inspection-visit-list.svg"
 import pictureIcon from "@/assets/images/icon-inspection-visit-camera.svg"
@@ -79,19 +80,12 @@ export default function VisitDetails() {
     )
   }
 
-  const ownerPicture =
-    typeof transaction.owner === "string"
-      ? undefined
-      : transaction.owner?.profilePicture
-  const owner =
-    typeof transaction.owner === "string"
-      ? { name: "Agent", avatar: undefined }
-      : {
-          name: transaction.owner?.name ?? transaction.owner?.email,
-          avatar: Array.isArray(ownerPicture)
-            ? ownerPicture[0]
-            : (ownerPicture ?? undefined),
-        }
+  // same reading of name and picture as the rest of the app
+  const agent = getPersonDisplay(
+    typeof transaction.owner === "string" ? undefined : transaction.owner,
+    "Agent"
+  )
+  const owner = { name: agent.name, avatar: agent.profilePicture }
 
   const price = isHandover
     ? (transaction as Purchase).price

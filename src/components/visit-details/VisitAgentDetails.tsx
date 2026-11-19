@@ -1,9 +1,10 @@
 import chatIcon from "@/assets/images/icon-chat.svg"
+import Avatar from "@/components/Avatar"
 
 interface VisitAgentDetailsProps {
   name: string
   isVerified?: boolean
-  avatar?: string
+  avatar?: string | null
   onChat?: () => void
 }
 
@@ -20,17 +21,14 @@ export default function VisitAgentDetails({
       </p>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {avatar ? (
-            <img
-              src={avatar}
-              alt=""
-              className="h-12.5 w-12.5 shrink-0 rounded-full object-cover md:h-25 md:w-25"
-            />
-          ) : (
-            <div className="flex h-12.5 w-12.5 shrink-0 items-center justify-center rounded-full bg-bg-accent font-raleway text-[18px] font-semibold text-button-bg md:h-25 md:w-25">
-              {name.charAt(0).toUpperCase()}
-            </div>
-          )}
+          {/* the shared Avatar falls back to initials when the picture is
+              missing or fails to load, instead of a broken-image icon */}
+          <Avatar
+            name={name}
+            src={avatar}
+            size="custom"
+            className="h-12.5 w-12.5 font-raleway text-[18px] md:h-25 md:w-25"
+          />
           <div>
             <p className="line-clamp-2 text-[12px] font-semibold md:text-[14px]">
               {name}

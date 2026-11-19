@@ -49,7 +49,7 @@ export default function AgentTransactionDetails() {
     : mapInspectionStatusToTransactionStatus((transaction as Inspection).status)
 
   const timelineSteps = getTimelineSteps(
-    status,
+    isPurchase ? "purchase" : "inspection",
     isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
   // once the buyer has completed it, tell the agent when the money is coming

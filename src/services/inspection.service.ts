@@ -53,10 +53,15 @@ export type Inspection = {
   feeReleased: boolean
   scheduledDate?: string | null
   initializedAt?: string | null
+  // when Paystack confirmed the buyer's payment (paidAt is the admin approval)
+  paystackPaidAt?: string | null
   paidAt?: string | null
   scheduledAt?: string | null
   confirmedAt?: string | null
   completedAt?: string | null
+  // set by the backend once it records them (see docs/backend-fixes-code.md)
+  feeReleasedAt?: string | null
+  cancelledAt?: string | null
   createdAt: string
   updatedAt: string
 }

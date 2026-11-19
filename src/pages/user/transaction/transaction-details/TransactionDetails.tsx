@@ -103,7 +103,7 @@ export default function TransactionDetails() {
     : mapInspectionStatusToTransactionStatus((transaction as Inspection).status)
 
   const timelineSteps = getTimelineSteps(
-    status,
+    isPurchase ? "purchase" : "inspection",
     isPurchase ? (transaction as Purchase) : (transaction as Inspection)
   )
   const banner =

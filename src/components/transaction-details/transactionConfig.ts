@@ -2,34 +2,60 @@ import type { Inspection } from "@/services/inspection.service"
 import type { Purchase } from "@/services/purchase.service"
 import type { TransactionStatus, TimelineStep } from "@/types/transactions"
 
-const INSPECTION_STEPS = [
-  "Payment Made by Buyer",
-  "Funds held in Escrow",
-  "Agent scheduled an inspection",
-  "Inspection schedule confirmed",
-  "Inspection Completed",
-]
+// the fields the timeline reads; status is an inspection or a purchase status
+type TimelineRecord = { status: string } & Pick<
+  Inspection,
+  | "paystackPaidAt"
+  | "paidAt"
+  | "scheduledAt"
+  | "confirmedAt"
+  | "completedAt"
+  | "feeReleased"
+  | "feeReleasedAt"
+  | "cancelledAt"
+  | "refundDue"
+  | "refundSentAt"
+>
 
-// CHANGED: purchase/handover now has its own standalone 4-step timeline, no longer prefixed with inspection steps since they're separate transactions
-const HANDOVER_STEPS = [
-  "Property Payment Made",
-  "Agent scheduled handover",
-  "Handover schedule confirmed",
-  "Property Handover Completed",
-]
-
-const VISIBLE_STEPS: Record<TransactionStatus, string[]> = {
-  inspection_requested: INSPECTION_STEPS,
-  inspection_scheduled: INSPECTION_STEPS,
-  inspection_confirmed: INSPECTION_STEPS,
-  inspection_completed: INSPECTION_STEPS,
-  property_payment_pending: HANDOVER_STEPS,
-  handover_requested: HANDOVER_STEPS,
-  handover_scheduled: HANDOVER_STEPS,
-  handover_confirmed: HANDOVER_STEPS,
-  handover_completed: HANDOVER_STEPS,
-  funds_released: HANDOVER_STEPS,
+type StepDef = {
+  label: string
+  // the date that marks the step done
+  at: (r: TimelineRecord) => string | null | undefined
+  // for steps with no date of their own (the release to the agent)
+  done?: (r: TimelineRecord) => boolean
 }
+
+// The deal's steps in order. Each is done once its date is set. The payment
+// is "made" when Paystack confirms it (paystackPaidAt) and "held in escrow"
+// once an admin approves it (paidAt); older records only have paidAt.
+const paymentSteps = (paidLabel: string): StepDef[] => [
+  { label: paidLabel, at: (r) => r.paystackPaidAt ?? r.paidAt },
+  { label: "Payment approved, funds held in escrow", at: (r) => r.paidAt },
+]
+
+const INSPECTION_STEPS: StepDef[] = [
+  ...paymentSteps("Inspection fee paid by buyer"),
+  { label: "Agent scheduled an inspection", at: (r) => r.scheduledAt },
+  { label: "Inspection schedule confirmed", at: (r) => r.confirmedAt },
+  { label: "Inspection completed", at: (r) => r.completedAt },
+  {
+    label: "Inspection fee released to agent",
+    at: (r) => r.feeReleasedAt,
+    done: (r) => !!r.feeReleased,
+  },
+]
+
+const PURCHASE_STEPS: StepDef[] = [
+  ...paymentSteps("Property payment made"),
+  { label: "Agent scheduled handover", at: (r) => r.scheduledAt },
+  { label: "Handover schedule confirmed", at: (r) => r.confirmedAt },
+  { label: "Property handover completed", at: (r) => r.completedAt },
+  {
+    label: "Funds released to agent",
+    at: (r) => r.feeReleasedAt,
+    done: (r) => !!r.feeReleased || r.status === "funds_released",
+  },
+]
 
 function formatTimelineDate(dateStr?: string | null): string | undefined {
   if (!dateStr) return undefined
@@ -41,36 +67,45 @@ function formatTimelineDate(dateStr?: string | null): string | undefined {
   })
 }
 
+// The escrow timeline for an inspection or a purchase, used by the buyer's
+// and the agent's transaction pages and by the receipt.
 export function getTimelineSteps(
-  status: TransactionStatus,
-  record?:
-    | Pick<Inspection, "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt">
-    | Pick<Purchase, "paidAt" | "scheduledAt" | "confirmedAt" | "completedAt">
+  kind: "inspection" | "purchase",
+  record: Inspection | Purchase
 ): TimelineStep[] {
-  const visible = VISIBLE_STEPS[status]
+  const r: TimelineRecord = record
+  const cancelled =
+    r.status === "inspection_cancelled" || r.status === "purchase_cancelled"
 
-  const dates =
-    visible === INSPECTION_STEPS
-      ? [
-          record?.paidAt,
-          record?.paidAt,
-          record?.scheduledAt,
-          record?.confirmedAt,
-          record?.completedAt,
-        ]
-      : [
-          record?.paidAt,
-          record?.scheduledAt,
-          record?.confirmedAt,
-          record?.completedAt,
-        ]
+  let defs = kind === "purchase" ? PURCHASE_STEPS : INSPECTION_STEPS
 
-  return visible.map((label, index) => ({
-    label,
-    completedAt: formatTimelineDate(
-      index < dates.length ? dates[index] : undefined
-    ),
-  }))
+  // a cancelled deal stops where it was, then shows its refund
+  if (cancelled) {
+    const reached = defs.filter((d) => (d.done ? d.done(r) : !!d.at(r)))
+    defs = [
+      ...reached,
+      { label: "Cancelled", at: (x) => x.cancelledAt, done: () => true },
+      {
+        label: r.refundSentAt
+          ? "Refund sent to buyer"
+          : r.refundDue
+            ? "Refund pending"
+            : "Refund",
+        at: (x) => x.refundSentAt,
+      },
+    ]
+  }
+
+  return defs.map((d) => {
+    const at = d.at(r) ?? null
+    const done = d.done ? d.done(r) : !!at
+    return {
+      label: d.label,
+      at,
+      done,
+      completedAt: done ? (formatTimelineDate(at) ?? "Completed") : undefined,
+    }
+  })
 }
 
 export type BannerConfig = {

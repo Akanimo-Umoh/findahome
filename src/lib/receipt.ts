@@ -2,8 +2,6 @@ import {
   getInspectionPaymentStatusLabel,
   getPurchasePaymentStatusLabel,
   getTimelineSteps,
-  mapInspectionStatusToTransactionStatus,
-  mapPurchaseStatusToTransactionStatus,
 } from "@/components/transaction-details/transactionConfig"
 import type { Inspection } from "@/services/inspection.service"
 import type { Purchase } from "@/services/purchase.service"
@@ -120,37 +118,11 @@ export function buildReceipt(
     })
   }
 
-  const transactionStatus = isPurchase
-    ? mapPurchaseStatusToTransactionStatus((t as Purchase).status)
-    : mapInspectionStatusToTransactionStatus((t as Inspection).status)
-  const steps = getTimelineSteps(transactionStatus, record)
-  // same order as getTimelineSteps: the inspection flow lists "paid" twice
-  const dates = isPurchase
-    ? [
-        record.paidAt,
-        record.scheduledAt,
-        record.confirmedAt,
-        record.completedAt,
-      ]
-    : [
-        record.paidAt,
-        record.paidAt,
-        record.scheduledAt,
-        record.confirmedAt,
-        record.completedAt,
-      ]
-  const timeline: ReceiptStep[] = steps.map((s, i) => ({
-    label: s.label,
-    at: dates[i] ?? null,
-    done: !!dates[i],
-  }))
-  if (isPurchase) {
-    timeline.push({
-      label: "Funds released to agent",
-      at: null,
-      done: status === "funds_released",
-    })
-  }
+  // the same steps as the transaction page's escrow timeline
+  const timeline: ReceiptStep[] = getTimelineSteps(
+    isPurchase ? "purchase" : "inspection",
+    record
+  ).map((s) => ({ label: s.label, at: s.at, done: s.done }))
 
   const buyerFallback: ReceiptPerson = {
     name: viewer?.name ?? viewer?.email ?? "Buyer",

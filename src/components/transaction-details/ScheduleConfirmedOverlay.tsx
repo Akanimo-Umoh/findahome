@@ -28,12 +28,10 @@ export default function ScheduleConfirmedOverlay({
   agentName,
 }: ScheduleConfirmedOverlayProps) {
   return (
+    // closable (×, Escape, clicking outside): the transaction page behind it
+    // refreshes itself to the confirmed state, so closing just shows that
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="w-full rounded-2xl px-6 py-8 font-ssPro text-text-primary [&]:gap-0 [&>button]:hidden"
-        onEscapeKeyDown={(e) => e.preventDefault()}
-        onPointerDownOutside={(e) => e.preventDefault()}
-      >
+      <DialogContent className="w-full rounded-2xl px-6 py-8 font-ssPro text-text-primary [&]:gap-0">
         <DialogTitle className="sr-only">{title}</DialogTitle>
 
         <div className="flex justify-center">
