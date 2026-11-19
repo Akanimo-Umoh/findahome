@@ -88,8 +88,16 @@ export function buildRefundsDue(
       buyerEmail: buyer?.email ?? "",
     }
   }
+  // a payment still under review shows under "awaiting confirmation" (even
+  // if flagged refundDue, e.g. a second buyer's payment); it moves here once
+  // the admin rejects it
+  const inReview = (r: RawLinkedRecord) =>
+    r.status === "inspection_payment_review" ||
+    r.status === "property_payment_review"
   const due = (r: RawLinkedRecord) =>
-    !!r.refundDue && !(r.reference && escrowReferences.has(r.reference))
+    !!r.refundDue &&
+    !inReview(r) &&
+    !(r.reference && escrowReferences.has(r.reference))
 
   return [
     ...inspections.filter(due).map((i) => toDue(i, "inspection")),
