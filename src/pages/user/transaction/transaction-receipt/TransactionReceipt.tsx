@@ -2,10 +2,8 @@ import { useMemo, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
 import nairaIcon from "@/assets/images/icon-chat-naira.svg"
-import gmailIcon from "@/assets/images/icon-gmail.svg"
 import homeIcon from "@/assets/images/icon-escrow-dashboard.svg"
 import downloadIcon from "@/assets/images/icon-white-download.svg"
-import whatsappIcon from "@/assets/images/icon-whatsapp.svg"
 import checkIcon from "@/assets/images/icon-transaction-confirmed.svg"
 import { Button } from "@/components/ui/button"
 import PageHeader from "@/components/shared/PageHeader"
@@ -16,12 +14,7 @@ import { useAgentTransactionDetails } from "@/hooks/useAgentTransactionDetails"
 import type { Inspection } from "@/services/inspection.service"
 import type { Purchase } from "@/services/purchase.service"
 import { purchaseStatusOf } from "@/lib/purchaseStatus"
-import {
-  buildReceipt,
-  formatReceiptDate,
-  isReceiptReady,
-  receiptSummary,
-} from "@/lib/receipt"
+import { buildReceipt, formatReceiptDate, isReceiptReady } from "@/lib/receipt"
 import { downloadReceiptPdf } from "@/lib/receiptPdf"
 
 type Side = "buyer" | "agent"
@@ -69,7 +62,7 @@ function ReceiptPage({
   const { transactionId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuthContext()
-  const [busy, setBusy] = useState<"download" | "share" | null>(null)
+  const [downloading, setDownloading] = useState(false)
   const isAgent = side === "agent"
 
   // the signed-in user fills in the buyer only when the buyer is viewing
@@ -130,17 +123,15 @@ function ReceiptPage({
     )
   }
 
-  const run = async (kind: "download" | "share", work: () => Promise<void>) => {
-    setBusy(kind)
+  const download = async () => {
+    setDownloading(true)
     try {
-      await work()
+      await downloadReceiptPdf(receipt)
     } catch (err) {
-      // closing the share sheet is not an error
-      if (err instanceof DOMException && err.name === "AbortError") return
       console.error("receipt error:", err)
       toast.error("Couldn't create the receipt. Please try again.")
     } finally {
-      setBusy(null)
+      setDownloading(false)
     }
   }
 
@@ -151,9 +142,6 @@ function ReceiptPage({
     { title: "Date & Time:", text: formatReceiptDate(receipt.paidAt) },
     { title: "Receipt No:", text: receipt.receiptNo },
   ]
-
-  const summary = receiptSummary(receipt)
-  const subject = `FindaHome receipt ${receipt.receiptNo}`
 
   return (
     <div className="px-6 md:px-8 md:pt-6">
@@ -327,52 +315,18 @@ function ReceiptPage({
             {receipt.note}
           </p>
 
-          {/* share receipt */}
-          <div className="mt-4 space-y-2">
-            <p>Share Receipt</p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4 rounded-lg border border-bg-accent px-2 py-4">
-              <a
-                href={`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary)}`}
-                className="flex w-[85px] items-center gap-0.5 rounded-xl border border-bg-accent p-2"
-              >
-                <img src={gmailIcon} alt="" />
-                <p className="text-[12px] leading-4">Email</p>
-              </a>
-
-              <a
-                href={`https://wa.me/?text=${encodeURIComponent(summary)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="flex w-21.25 items-center gap-0.5 rounded-xl border border-bg-accent p-2"
-              >
-                <img src={whatsappIcon} alt="" />
-                <p className="text-[12px] leading-4">Whatsapp</p>
-              </a>
-            </div>
-
-            <p className="text-[12px] leading-4 text-text-secondary">
-              Email and WhatsApp share a short summary. Download the PDF to
-              attach the full receipt.
-            </p>
-          </div>
-
           {/* links */}
           <div className="mt-8 mb-10 space-y-3">
             <div className="flex flex-col items-center justify-center gap-3">
               <Button
                 variant="app-primary"
                 size="full"
-                disabled={!receipt.isPaid || busy !== null}
-                onClick={() =>
-                  run("download", () => downloadReceiptPdf(receipt))
-                }
+                disabled={!receipt.isPaid || downloading}
+                onClick={download}
               >
                 <img src={downloadIcon} alt="" />
                 <p>
-                  {busy === "download"
-                    ? "Preparing receipt…"
-                    : "Download Receipt(PDF)"}
+                  {downloading ? "Preparing receipt…" : "Download Receipt(PDF)"}
                 </p>
               </Button>
 

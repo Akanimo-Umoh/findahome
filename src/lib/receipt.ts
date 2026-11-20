@@ -69,7 +69,6 @@ export const formatReceiptDate = (iso?: string | null) =>
       })
     : "—"
 
-export const formatNairaAmount = (n: number) => `₦${n.toLocaleString("en-NG")}`
 
 // Receipt number from the record id (the backend has no receipt number).
 const receiptNumber = (id: string) => `RCT-${id.slice(-8).toUpperCase()}`
@@ -102,7 +101,10 @@ export function buildReceipt(
   const record = isPurchase ? (t as Purchase) : (t as Inspection)
 
   const amount = isPurchase ? (t as Purchase).price : (t as Inspection).fee
-  const status = record.status
+  // a release only sets feeReleased (the status stays at completed), so read
+  // a released deal as funds_released for the note and the status line
+  const released = !!record.feeReleased || record.status === "funds_released"
+  const status = released ? "funds_released" : record.status
 
   // Only split the total when the parts really add up to it. The platform fee
   // is the one saved on the purchase when it was made; the property's price
@@ -151,7 +153,9 @@ export function buildReceipt(
     typeLabel: isPurchase ? "Property payment" : "Inspection fee",
     statusLabel: isPurchase
       ? getPurchasePaymentStatusLabel(purchaseStatusOf(t as Purchase))
-      : getInspectionPaymentStatusLabel((t as Inspection).status),
+      : released
+        ? "Released"
+        : getInspectionPaymentStatusLabel((t as Inspection).status),
     reference: t.reference ?? null,
     paidAt: t.paidAt ?? null,
     amount,
@@ -174,16 +178,3 @@ export function buildReceipt(
 
 export const receiptFilename = (r: ReceiptData) =>
   `FindaHome-Receipt-${r.receiptNo}.pdf`
-
-// a short text summary for email and WhatsApp
-export const receiptSummary = (r: ReceiptData) =>
-  [
-    `FindaHome payment receipt ${r.receiptNo}`,
-    `${r.typeLabel}: ${formatNairaAmount(r.amount)}`,
-    `Property: ${r.property.title}`,
-    `Paid: ${formatReceiptDate(r.paidAt)}`,
-    r.reference ? `Reference: ${r.reference}` : "",
-    `Status: ${r.statusLabel}`,
-  ]
-    .filter(Boolean)
-    .join("\n")
