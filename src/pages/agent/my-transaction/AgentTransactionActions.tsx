@@ -9,6 +9,9 @@ interface AgentTransactionActionsProps {
   // the buyer has paid for the property and an admin hasn't approved it yet
   paymentUnderReview?: boolean
   isCancelled?: boolean
+  recordType?: "inspection" | "purchase"
+  // the admin has released the money to the agent: the receipt is ready
+  fundsReleased?: boolean
 }
 
 export default function AgentTransactionActions({
@@ -17,6 +20,8 @@ export default function AgentTransactionActions({
   canSchedule = true,
   paymentUnderReview = false,
   isCancelled = false,
+  recordType = "inspection",
+  fundsReleased = false,
 }: AgentTransactionActionsProps) {
   const showScheduleInspection =
     status === "inspection_requested" && !isCancelled
@@ -29,7 +34,8 @@ export default function AgentTransactionActions({
     status === "handover_scheduled" ||
     status === "handover_confirmed" ||
     status === "handover_completed"
-  const showViewReceipt = status === "funds_released"
+  // a purchase or an inspection, once its money has been released
+  const showViewReceipt = status === "funds_released" || fundsReleased
 
   return (
     <div className="mt-6 mb-8 lg:mt-0 lg:mb-0">
@@ -92,7 +98,9 @@ export default function AgentTransactionActions({
 
         {showViewReceipt && (
           <Button variant="app-primary" size="full" asChild>
-            <Link to={`/agent/transactions/${transactionId}/receipt`}>
+            <Link
+              to={`/agent/transactions/${transactionId}/receipt?type=${recordType}`}
+            >
               View Receipt
             </Link>
           </Button>

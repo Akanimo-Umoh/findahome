@@ -25,7 +25,10 @@ import { SavedProperties } from "@/pages/user/saved-properties"
 import { UserTransactionDetails } from "@/pages/user/transaction/transaction-details"
 import { UserVisitDetails } from "@/pages/user/transaction/visit-details"
 import { UserConfirmVisit } from "@/pages/user/transaction/confirm-visit"
-import { UserTransactionReceipt } from "@/pages/user/transaction/transaction-receipt"
+import {
+  AgentTransactionReceipt,
+  UserTransactionReceipt,
+} from "@/pages/user/transaction/transaction-receipt"
 import {
   PurchasePaymentCallback,
   UserPropertyPayment,
@@ -289,6 +292,10 @@ export default function AppRoutes() {
           <Route
             path="/agent/transactions/:transactionId/visit"
             element={<AgentVisitDetails />}
+          />
+          <Route
+            path="/agent/transactions/:transactionId/receipt"
+            element={<AgentTransactionReceipt />}
           />
 
           <Route

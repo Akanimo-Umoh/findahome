@@ -102,6 +102,8 @@ export default function AgentTransactionDetails() {
     isCancelled:
       !isPurchase &&
       (transaction as Inspection).status === "inspection_cancelled",
+    recordType,
+    fundsReleased: !!transaction.feeReleased,
   }
 
   return (

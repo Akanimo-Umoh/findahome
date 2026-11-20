@@ -12,6 +12,10 @@ import PageHeader from "@/components/shared/PageHeader"
 import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
 import { useTransactionDetails } from "@/hooks/useTransactionDetails"
+import { useAgentTransactionDetails } from "@/hooks/useAgentTransactionDetails"
+import type { Inspection } from "@/services/inspection.service"
+import type { Purchase } from "@/services/purchase.service"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
 import {
   buildReceipt,
   formatReceiptDate,
@@ -20,31 +24,82 @@ import {
 } from "@/lib/receipt"
 import { downloadReceiptPdf } from "@/lib/receiptPdf"
 
+type Side = "buyer" | "agent"
+
+type ReceiptPageProps = {
+  side: Side
+  transaction?: Inspection | Purchase
+  recordType: "inspection" | "purchase"
+  isLoading: boolean
+  isFetching: boolean
+  error: unknown
+}
+
+// the agent's copy exists once the money has been released to them
+const isReleased = (
+  record: Inspection | Purchase,
+  recordType: "inspection" | "purchase"
+) =>
+  recordType === "purchase"
+    ? purchaseStatusOf(record as Purchase) === "funds_released"
+    : !!record.feeReleased
+
+// /transactions/:id/receipt
 export default function TransactionReceipt() {
+  const { transactionId } = useParams()
+  const details = useTransactionDetails(transactionId ?? "")
+  return <ReceiptPage side="buyer" {...details} />
+}
+
+// /agent/transactions/:id/receipt
+export function AgentTransactionReceipt() {
+  const { transactionId } = useParams()
+  const details = useAgentTransactionDetails(transactionId ?? "")
+  return <ReceiptPage side="agent" {...details} />
+}
+
+function ReceiptPage({
+  side,
+  transaction,
+  recordType,
+  isLoading,
+  isFetching,
+  error,
+}: ReceiptPageProps) {
   const { transactionId } = useParams()
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [busy, setBusy] = useState<"download" | "share" | null>(null)
+  const isAgent = side === "agent"
 
-  const { transaction, recordType, isLoading, isFetching, error } =
-    useTransactionDetails(transactionId ?? "")
-
+  // the signed-in user fills in the buyer only when the buyer is viewing
   const receipt = useMemo(
-    () => (transaction ? buildReceipt(transaction, recordType, user) : null),
-    [transaction, recordType, user]
+    () =>
+      transaction
+        ? buildReceipt(transaction, recordType, isAgent ? null : user)
+        : null,
+    [transaction, recordType, user, isAgent]
   )
 
   if (isLoading || isFetching) return <Spinner />
 
-  // the receipt exists only once the buyer has finished their side
-  if (transaction && !isReceiptReady(recordType, transaction.status)) {
+  // the buyer gets it once their side is finished; the agent once the money
+  // has been released to them
+  const ready =
+    transaction &&
+    (isAgent
+      ? isReleased(transaction, recordType)
+      : isReceiptReady(recordType, transaction.status))
+  if (transaction && !ready) {
     return (
       <div className="flex h-[calc(100vh-72px)] items-center justify-center px-6">
         <div className="text-center">
           <p className="text-[14px] text-text-secondary">
-            Your receipt will be available once the{" "}
-            {recordType === "purchase" ? "handover" : "inspection"} has been
-            completed.
+            {isAgent
+              ? "The receipt will be available once the funds have been released to you."
+              : `Your receipt will be available once the ${
+                  recordType === "purchase" ? "handover" : "inspection"
+                } has been completed.`}
           </p>
           <button
             onClick={() => navigate(-1)}
@@ -322,15 +377,15 @@ export default function TransactionReceipt() {
               </Button>
 
               <Button variant="app-secondary" size="full" asChild>
-                <Link to="/">
+                <Link to={isAgent ? "/agent/dashboard" : "/"}>
                   <img src={homeIcon} alt="" />
-                  <p>Go to Homepage</p>
+                  <p>{isAgent ? "Go to Dashboard" : "Go to Homepage"}</p>
                 </Link>
               </Button>
             </div>
 
             <p className="text-center text-[12px] leading-4 text-text-secondary">
-              Having issues with agent?&nbsp;
+              Having issues with {isAgent ? "buyer" : "agent"}?&nbsp;
               <Link
                 to={`/open-dispute/${transactionId}?type=${recordType}`}
                 className="text-button-bg"
