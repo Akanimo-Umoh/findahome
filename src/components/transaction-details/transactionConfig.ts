@@ -290,14 +290,19 @@ export function getAgentPayoutBanner(
   }
 }
 
-// What the agent sees before they're allowed to schedule. The UI status
-// `inspection_requested` covers four backend statuses, and only
-// `inspection_paid` (payment confirmed) means the agent can act.
 // Shown to a buyer, at any stage, when someone else has paid for the
 // property. The wording says what that means for where this deal is.
+// `soldLabel` is set once that buyer has completed the handover ("Sold" or
+// "Rented"): the property is then off the market for good.
 export function getUnderOfferNotice(
-  record: Pick<Inspection, "status"> | Pick<Purchase, "status">
+  record: Pick<Inspection, "status"> | Pick<Purchase, "status">,
+  soldLabel?: string
 ): BannerConfig {
+  if (soldLabel)
+    return {
+      title: `Property ${soldLabel.toLowerCase()}`,
+      subtitle: `This property has been ${soldLabel.toLowerCase()} to another buyer and is no longer available.`,
+    }
   const title = "Property under offer"
   switch (record.status) {
     case "inspection_payment_review":
@@ -327,6 +332,9 @@ export function getUnderOfferNotice(
   }
 }
 
+// What the agent sees before they're allowed to schedule. The UI status
+// `inspection_requested` covers four backend statuses, and only
+// `inspection_paid` (payment confirmed) means the agent can act.
 export function getAgentInspectionBanner(
   inspection: Pick<Inspection, "status" | "cancelReason" | "refundDue">
 ): BannerConfig | undefined {

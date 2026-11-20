@@ -20,6 +20,7 @@ import ImageCarousel from "@/components/ImageCarousel"
 import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/context/AuthContext"
 import { toast } from "sonner"
+import { isSoldProperty, soldWord } from "@/lib/propertySold"
 
 export default function PropertyDetails() {
   const { id } = useParams<{ id: string }>()
@@ -127,14 +128,24 @@ export default function PropertyDetails() {
                   </p>
                 </div>
 
-                {/* another buyer has paid; inspections are still allowed */}
-                {property.isTaken && (
-                  <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
-                    <span className="font-semibold">Under offer.</span> Another
-                    buyer has paid for this property. You can still book an
-                    inspection, and buy it if their purchase doesn&apos;t go
-                    through.
+                {/* sold: off the market for good. under offer: another
+                    buyer has paid, the handover isn't done yet */}
+                {isSoldProperty(property) ? (
+                  <div className="mt-3 rounded-lg bg-slate-100 px-3 py-2 text-[13px] text-slate-700">
+                    <span className="font-semibold">
+                      {soldWord(property.listingType)}.
+                    </span>{" "}
+                    This property is no longer available.
                   </div>
+                ) : (
+                  property.isTaken && (
+                    <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
+                      <span className="font-semibold">Under offer.</span>{" "}
+                      Another buyer has paid for this property. New inspections
+                      are paused, and you can buy it if their purchase
+                      doesn&apos;t go through.
+                    </div>
+                  )
                 )}
               </div>
 
@@ -296,15 +307,19 @@ export default function PropertyDetails() {
               </section>
             )}
 
-            <Button
-              variant="app-primary"
-              size="full"
-              onClick={handleChatClick}
-              className="mt-6 mb-8 gap-2 text-[14px] tracking-[1px]"
-            >
-              <img src={chatIcon} alt="" className="h-6 w-6" />
-              <p className="text-white">Chat with Agent</p>
-            </Button>
+            {/* nothing to start on a sold property; an existing chat is
+                still in Messages */}
+            {!isSoldProperty(property) && (
+              <Button
+                variant="app-primary"
+                size="full"
+                onClick={handleChatClick}
+                className="mt-6 mb-8 gap-2 text-[14px] tracking-[1px]"
+              >
+                <img src={chatIcon} alt="" className="h-6 w-6" />
+                <p className="text-white">Chat with Agent</p>
+              </Button>
+            )}
           </section>
         </div>
 

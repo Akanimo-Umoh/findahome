@@ -50,7 +50,7 @@ export default function DetailsHeader({
             <Button
               size="lg"
               className="bg-red-600 text-white hover:bg-red-700"
-              disabled={p.status === "rejected"}
+              disabled={p.status === "rejected" || p.status === "sold"}
               onClick={() => onAction("rejected")}
             >
               <CircleX aria-hidden />
@@ -59,7 +59,7 @@ export default function DetailsHeader({
             <Button
               size="lg"
               className="bg-emerald-600 text-white hover:bg-emerald-700"
-              disabled={p.status === "approved"}
+              disabled={p.status === "approved" || p.status === "sold"}
               onClick={() => onAction("approved")}
             >
               <CircleCheck aria-hidden />

@@ -134,15 +134,19 @@ export default function ChatMessages({
   const refId = property?._id?.slice(-4).toUpperCase()
 
   // another buyer has paid for this property, so this buyer can't buy it
-  const { isTaken: propertyTaken } = usePropertyTaken(
-    isAgent ? undefined : property?._id
-  )
+  const {
+    isTaken: propertyTaken,
+    isSold: propertySold,
+    soldLabel,
+  } = usePropertyTaken(isAgent ? undefined : property?._id)
 
   // the one next step for this side of the deal, or null when there is none
   const nextStep = getNextStep(stage, isAgent, {
     inspectionId: inspection?._id,
     purchaseId: purchase?._id,
     propertyTaken,
+    propertySold,
+    soldLabel,
   })
 
   const miniLinks: {

@@ -38,7 +38,9 @@ export default function RowActions({ property, onReview }: RowActionsProps) {
         </DropdownMenuItem>
         <DropdownMenuItem
           className={item}
-          disabled={property.status === "approved"}
+          disabled={
+            property.status === "approved" || property.status === "sold"
+          }
           onSelect={() => onReview(property, "approved")}
         >
           <CircleCheck aria-hidden />
@@ -46,7 +48,9 @@ export default function RowActions({ property, onReview }: RowActionsProps) {
         </DropdownMenuItem>
         <DropdownMenuItem
           className={`${item} text-red-600 focus:bg-red-50 focus:text-red-600 [&_svg]:text-red-600!`}
-          disabled={property.status === "rejected"}
+          disabled={
+            property.status === "rejected" || property.status === "sold"
+          }
           onSelect={() => onReview(property, "rejected")}
         >
           <CircleX aria-hidden />

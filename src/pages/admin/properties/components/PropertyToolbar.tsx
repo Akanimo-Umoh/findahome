@@ -31,6 +31,7 @@ const TABS: { value: StatusFilter; label: string }[] = [
   { value: "approved", label: "Active" },
   { value: "pending", label: "Pending" },
   { value: "rejected", label: "Rejected" },
+  { value: "sold", label: "Sold" },
   { value: "flagged", label: "Flagged" },
 ]
 

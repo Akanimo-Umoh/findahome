@@ -48,7 +48,12 @@ export default function PayInspectionModal({
     useInspectionStatus(propertyId)
   // another buyer has paid for this property: no new inspection fees. the
   // server refuses them too, this just says so before anything is created
-  const { isTaken, refetch: refetchTaken } = usePropertyTaken(propertyId)
+  const {
+    isTaken,
+    isSold,
+    soldLabel,
+    refetch: refetchTaken,
+  } = usePropertyTaken(propertyId)
   // true once fresh data has arrived for this opening: the stage can change
   // because of someone else (an admin approving, rejecting or refunding), so
   // decide nothing from what was cached before the window opened
@@ -101,7 +106,9 @@ export default function PayInspectionModal({
         inspectionStage === "cancelled")
     ) {
       toast.error(
-        "Another buyer has paid for this property, so new inspections are paused. You can request one if it becomes available again."
+        isSold
+          ? `This property has been ${soldLabel.toLowerCase()} and is no longer available.`
+          : "Another buyer has paid for this property, so new inspections are paused. You can request one if it becomes available again."
       )
       onClose()
       return
@@ -131,7 +138,7 @@ export default function PayInspectionModal({
     }
     // only proceed to requestInspection if stage is "none", "awaiting_payment"
     // or "cancelled" (the server starts a fresh request after a cancellation)
-  }, [isOpen, stageChecked, inspectionStage, isTaken])
+  }, [isOpen, stageChecked, inspectionStage, isTaken, isSold, soldLabel])
 
   // create the Inspection record the moment the modal opens — buyer never
   // sees the code step, it's generated server-side and used later by the agent

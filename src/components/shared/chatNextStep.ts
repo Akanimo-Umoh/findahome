@@ -16,6 +16,9 @@ type Ids = {
   // review), so this buyer can't buy it or start a new inspection.
   // inspections already paid for carry on until the sale is approved
   propertyTaken?: boolean
+  // the handover is done: the property is off the market for good
+  propertySold?: boolean
+  soldLabel?: string // "Sold" or "Rented"
 }
 
 const status = (title: string, icon: NextStep["icon"]): NextStep => ({
@@ -41,7 +44,7 @@ export function getNextStep(
 
 function getBuyerStep(
   stage: DealStage,
-  { inspectionId, purchaseId, propertyTaken }: Ids
+  { inspectionId, purchaseId, propertyTaken, propertySold, soldLabel }: Ids
 ): NextStep | null {
   // the buying steps, and starting a new inspection, close once someone
   // else has paid for the property
@@ -53,7 +56,12 @@ function getBuyerStep(
       stage === "inspection_completed" ||
       stage === "purchase_unpaid")
   )
-    return status("Property under offer", "pay")
+    return status(
+      propertySold
+        ? `Property ${(soldLabel ?? "Sold").toLowerCase()}`
+        : "Property under offer",
+      "pay"
+    )
 
   switch (stage) {
     case "none":

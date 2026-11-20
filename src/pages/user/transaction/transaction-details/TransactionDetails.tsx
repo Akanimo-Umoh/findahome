@@ -80,7 +80,7 @@ export default function TransactionDetails() {
 
   // someone has paid for it. isTaken doesn't say who, so check whether it's
   // this buyer's own purchase holding it before calling it "another buyer"
-  const { isTaken } = usePropertyTaken(property?._id)
+  const { isTaken, isSold, soldLabel } = usePropertyTaken(property?._id)
   const { purchase: ownPurchase } = usePropertyDeal({
     propertyId: property?._id,
     isAgent: false,
@@ -130,7 +130,7 @@ export default function TransactionDetails() {
   const propertyTaken =
     isTaken && !ownOffer && !isPropertyTakenCancel(transaction as Inspection)
   const underOfferNotice = propertyTaken
-    ? getUnderOfferNotice(transaction)
+    ? getUnderOfferNotice(transaction, isSold ? soldLabel : undefined)
     : undefined
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"

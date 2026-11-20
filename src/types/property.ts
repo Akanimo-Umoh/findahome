@@ -12,9 +12,11 @@ type BaseProperty = {
   serviceCharge: number
   nearbyPlaces: string[]
   listingType: string
+  // sold: the buyer completed the handover (shown as "Rented" for a rent
+  // listing). set by the backend; off the market for good, no relisting
   status: "pending" | "approved" | "rejected" | "sold"
   // true once a buyer has paid for it (or their payment is under review):
-  // other buyers can't buy it any more, though inspections stay open
+  // other buyers can't buy it or start a new inspection
   isTaken?: boolean
   owner: {
     _id: string

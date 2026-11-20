@@ -13,6 +13,9 @@ const LISTING_EVENTS = new Set([
   "property_approved",
   "property_rejected",
   "property_pending",
+  // the buyer completed the handover (off the market), or that deal was undone
+  "property_sold",
+  "property_available",
 ])
 
 // An inspection or purchase moved to a new stage.

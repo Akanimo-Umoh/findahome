@@ -163,6 +163,7 @@ import { useFavorite } from "@/hooks/useFavorite"
 import naira from "@/assets/images/naira.svg"
 import verifiedIcon from "@/assets/images/icon-verified-green.svg"
 import Avatar from "./Avatar"
+import { isSoldProperty, soldWord } from "@/lib/propertySold"
 
 type PropertyCardProps = {
   property: Property
@@ -195,11 +196,18 @@ export default function PropertyCard({ property, to }: PropertyCardProps) {
           className="h-full w-full object-cover"
         />
 
-        {/* another buyer has paid for it; it can still be inspected */}
-        {property.isTaken && (
-          <span className="absolute top-2 left-2 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white">
-            Under offer
+        {/* sold (handover done) beats under offer (paid, handover pending).
+            sold ones only show up where a buyer kept them, e.g. saved */}
+        {isSoldProperty(property) ? (
+          <span className="absolute top-2 left-2 rounded-full bg-slate-700 px-2.5 py-1 text-[11px] font-semibold text-white">
+            {soldWord(property.listingType)}
           </span>
+        ) : (
+          property.isTaken && (
+            <span className="absolute top-2 left-2 rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white">
+              Under offer
+            </span>
+          )
         )}
 
         {/* z-20 keeps the button above the card-wide link */}

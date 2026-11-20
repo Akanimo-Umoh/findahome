@@ -50,6 +50,7 @@ export const countStatuses = (list: AdminProperty[]): StatusCounts => ({
   approved: list.filter((p) => p.status === "approved").length,
   pending: list.filter((p) => p.status === "pending").length,
   rejected: list.filter((p) => p.status === "rejected").length,
+  sold: list.filter((p) => p.status === "sold").length,
   flagged: list.filter((p) => p.isFlagged).length,
 })
 

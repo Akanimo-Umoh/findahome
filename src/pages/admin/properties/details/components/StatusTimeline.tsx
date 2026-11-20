@@ -15,11 +15,13 @@ const DOT: Record<PropertyStatus, string> = {
   approved: "bg-emerald-500",
   pending: "bg-amber-500",
   rejected: "bg-red-500",
+  sold: "bg-slate-500",
 }
 const TEXT: Record<PropertyStatus, string> = {
   approved: "text-emerald-700",
   pending: "text-amber-700",
   rejected: "text-red-700",
+  sold: "text-slate-700",
 }
 
 // Uses the server's history when it has one; until then, builds what the

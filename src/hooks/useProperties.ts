@@ -12,7 +12,9 @@ export const useProperties = () => {
   })
 
   return {
-    properties: data ?? [],
+    // the market: sold properties are off it for good. the cache keeps them
+    // (shared with usePropertyTaken), so they're dropped here
+    properties: (data ?? []).filter((p) => p.status === "approved"),
     loading: isLoading,
     error: error ? "Failed to fetch properties" : null,
   }

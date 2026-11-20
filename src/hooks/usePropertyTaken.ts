@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getAllProperties } from "@/services/property.service"
 import type { Property } from "@/types/property"
+import { isSoldProperty, soldWord } from "@/lib/propertySold"
 
 // Whether another buyer has already paid for this property (or their payment
 // is under review), so this buyer can't buy it. Read from the property list,
@@ -20,5 +21,13 @@ export function usePropertyTaken(propertyId?: string) {
   })
 
   const property = data?.find((p) => p._id === propertyId)
-  return { isTaken: !!property?.isTaken, isLoading, refetch }
+  // sold: the handover is done and it's off the market for good
+  const isSold = isSoldProperty(property)
+  return {
+    isTaken: !!property?.isTaken || isSold,
+    isSold,
+    soldLabel: soldWord(property?.listingType),
+    isLoading,
+    refetch,
+  }
 }

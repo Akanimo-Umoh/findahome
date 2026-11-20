@@ -1,7 +1,8 @@
 // What the admin Listings screens read from the backend. Optional fields are
 // retained for compatibility with records created before those fields existed.
 
-export type PropertyStatus = "pending" | "approved" | "rejected"
+// sold: the buyer completed the handover; set by the backend, off the market for good
+export type PropertyStatus = "pending" | "approved" | "rejected" | "sold"
 export type PropertyKind = "land" | "apartment" | "duplex" | "bungalow"
 export type ListingKind = "rent" | "sale"
 

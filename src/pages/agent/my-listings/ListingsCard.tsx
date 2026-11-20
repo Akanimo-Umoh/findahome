@@ -26,6 +26,7 @@ import EditIcon from "@/components/icons/EditIcon"
 import DeleteIcon from "@/components/icons/DeleteIcon"
 import ShareIcon from "@/components/icons/ShareIcon"
 import { useNavigate } from "react-router-dom"
+import { soldWord } from "@/lib/propertySold"
 
 interface ListingsCardProps {
   activeFilter: FilterStatus
@@ -35,7 +36,13 @@ interface ListingsCardProps {
   error: string | null
 }
 
-function StatusBanner({ status }: { status: ListingStatus }) {
+function StatusBanner({
+  status,
+  listingType,
+}: {
+  status: ListingStatus
+  listingType?: string
+}) {
   if (status === "approved")
     return (
       <div className="flex w-fit items-center justify-center gap-1 rounded-lg bg-[#149D1833] p-2 md:mt-4 md:ml-0">
@@ -72,7 +79,8 @@ function StatusBanner({ status }: { status: ListingStatus }) {
         <img src={soldIcon} alt="" className="h-4 w-4 md:h-6 md:w-6" />
 
         <p className="text-[12px] leading-4 text-button-bg md:text-[14px] md:leading-5.25">
-          Congratulations! This property has been sold
+          Congratulations! This property has been{" "}
+          {soldWord(listingType).toLowerCase()}
         </p>
       </div>
     )
@@ -363,7 +371,8 @@ export default function ListingsCard({
                       className="cursor-pointer rounded-lg p-1.5 text-black/60 transition-all duration-200 hover:scale-110 hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-transparent disabled:hover:text-black/60"
                       disabled={
                         listing.status === "rejected" ||
-                        listing.status === "pending"
+                        listing.status === "pending" ||
+                        listing.status === "sold"
                       }
                     >
                       <ShareIcon className="h-4 w-4 md:h-6 md:w-6" />
@@ -372,7 +381,10 @@ export default function ListingsCard({
                 </div>
 
                 <div className="mt-2">
-                  <StatusBanner status={status} />
+                  <StatusBanner
+                    status={status}
+                    listingType={listing.listingType}
+                  />
                 </div>
               </div>
             </div>

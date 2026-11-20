@@ -22,12 +22,15 @@ export const STATUS_LABEL: Record<PropertyStatus, string> = {
   approved: "Active",
   pending: "Pending",
   rejected: "Rejected",
+  // the buyer completed the handover (sale or rent); off the market for good
+  sold: "Sold",
 }
 
 export const STATUS_LABEL_LONG: Record<PropertyStatus, string> = {
   approved: "Active",
   pending: "Pending review",
   rejected: "Rejected",
+  sold: "Sold / rented",
 }
 
 // Older records may not have a generated property code.

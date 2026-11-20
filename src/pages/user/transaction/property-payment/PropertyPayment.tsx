@@ -21,6 +21,7 @@ import { getPersonDisplay } from "@/lib/personDisplay"
 import { requestError } from "@/lib/requestError"
 import { REFUND_FEE_NOTICE } from "@/lib/refundFee"
 import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
+import { usePropertyTaken } from "@/hooks/usePropertyTaken"
 import Avatar from "@/components/Avatar"
 
 // this page is reached from an inspection's "Secure Property" button, so transactionId here is the *inspection* id, not a purchase id yet — a Purchase record doesn't exist until requestPurchase creates one
@@ -39,6 +40,13 @@ export default function PropertyPayment() {
     queryFn: () => getInspectionDetails(inspectionId ?? ""),
     enabled: !!inspectionId,
   })
+
+  // words the blocked screen: sold (off the market) or under offer
+  const { isSold, soldLabel } = usePropertyTaken(
+    typeof inspection?.property === "string"
+      ? inspection.property
+      : inspection?.property?._id
+  )
 
   // the purchase is what Paystack charges: its price is the total and it
   // carries the platform fee, so the breakdown reads from it, not from the
@@ -111,10 +119,14 @@ export default function PropertyPayment() {
           <PageHeader title="Property Payment" responsive />
           <div className="mt-6 rounded-xl bg-bg-accent px-4 py-6 text-center">
             <p className="font-raleway text-[16px] font-semibold tracking-[1px] text-text-primary">
-              Property under offer
+              {isSold
+                ? `Property ${soldLabel.toLowerCase()}`
+                : "Property under offer"}
             </p>
             <p className="mt-2 text-[14px] text-text-secondary">
-              {blockedMessage}
+              {isSold
+                ? `This property has been ${soldLabel.toLowerCase()} and is no longer available.`
+                : blockedMessage}
             </p>
             <Button
               variant="app-primary"

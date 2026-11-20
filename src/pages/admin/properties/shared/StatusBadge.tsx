@@ -7,6 +7,7 @@ const STYLE: Record<PropertyStatus, { pill: string; dot: string }> = {
   approved: { pill: "bg-emerald-50 text-emerald-700", dot: "bg-emerald-500" },
   pending: { pill: "bg-amber-50 text-amber-700", dot: "bg-amber-500" },
   rejected: { pill: "bg-red-50 text-red-700", dot: "bg-red-500" },
+  sold: { pill: "bg-slate-100 text-slate-700", dot: "bg-slate-500" },
 }
 
 type StatusBadgeProps = {
