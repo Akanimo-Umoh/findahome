@@ -69,7 +69,6 @@ export const formatReceiptDate = (iso?: string | null) =>
       })
     : "—"
 
-
 // Receipt number from the record id (the backend has no receipt number).
 const receiptNumber = (id: string) => `RCT-${id.slice(-8).toUpperCase()}`
 

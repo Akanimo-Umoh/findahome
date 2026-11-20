@@ -51,7 +51,7 @@ export default function AddAccount() {
   }
 
   return (
-    <div className="mb-10 md:pt-6 lg:pt-8">
+    <div className="pb-10 md:pt-6 lg:pt-8">
       {/* header */}
       <div className="relative flex items-center justify-center">
         <button

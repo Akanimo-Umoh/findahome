@@ -46,7 +46,7 @@ export default function Transactions() {
 
   return (
     <div>
-      <div className="flex items-center justify-center gap-5">
+      <div className="flex flex-wrap items-center justify-center gap-2 xs:gap-5">
         {tabs.map((tab) => (
           <button
             key={tab.value}

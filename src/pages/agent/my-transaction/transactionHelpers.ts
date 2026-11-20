@@ -2,7 +2,7 @@ import type { MergedTransaction } from "@/services/transaction.service"
 import { cancelledLabel } from "@/lib/refundStatus"
 import { purchaseStatusOf } from "@/lib/purchaseStatus"
 
-export type FilterStatus = "all" | "pending" | "completed"
+export type FilterStatus = "all" | "pending" | "completed" | "cancelled"
 
 const PURCHASE_STATUS_LABEL: Record<string, string> = {
   none: "Awaiting Inspection",
@@ -83,4 +83,6 @@ export const tabs: { label: string; value: FilterStatus }[] = [
   { label: "All", value: "all" },
   { label: "Pending", value: "pending" },
   { label: "Completed", value: "completed" },
+  // rejected payments and refunded deals
+  { label: "Cancelled", value: "cancelled" },
 ]
