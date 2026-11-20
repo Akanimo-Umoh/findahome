@@ -1,4 +1,6 @@
 // buildEscrowRows.ts
+import { isPropertyTakenCancel } from "@/lib/refundFee"
+import { buildPropertyOffers, otherOfferFor } from "./propertyOffers"
 import type {
   RawDispute,
   RawEscrow,
@@ -69,6 +71,8 @@ export function buildEscrowRows({
     }
   }
 
+  const offers = buildPropertyOffers(purchases)
+
   return escrows.map((e) => {
     const hit = e.reference ? linkedByRef.get(e.reference) : undefined
     const linked = hit?.record ?? null
@@ -130,6 +134,16 @@ export function buildEscrowRows({
       refundedAmount: e.refundedAmount ?? null,
       transferReference: e.transferReference ?? null,
       refundNote: e.refundNote ?? null,
+      refundFeeWaived: !!e.refundFeeWaived || isPropertyTakenCancel(linked),
+      // only matters while the money is still here to refund or release
+      otherOffer:
+        status === "released" || status === "refunded"
+          ? null
+          : otherOfferFor(offers, {
+              _id: linked?._id ?? e._id,
+              property,
+              buyer: e.buyer ?? linked?.buyer ?? linked?.user,
+            }),
       propertyId: property?._id ?? null,
       propertyTitle:
         property?.title ?? linked?.property?.title ?? "Unknown property",

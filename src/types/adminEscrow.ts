@@ -37,6 +37,9 @@ export interface RawEscrow {
   refundedAmount?: number | null
   transferReference?: string | null
   refundNote?: string | null
+  // no processing fee on this refund (the property was secured by another
+  // buyer before the inspection); the server enforces it
+  refundFeeWaived?: boolean
 }
 
 // A Purchase or an Inspection (same reference as the escrow)
@@ -61,6 +64,8 @@ export interface RawLinkedRecord {
   refundDue?: boolean
   refundAmount?: number
   refundSentAt?: string | null
+  // "property_taken": another buyer secured the property, no refund fee
+  cancelReason?: string | null
   initializedAt?: string
   paidAt?: string
   paystackPaidAt?: string

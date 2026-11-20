@@ -1,5 +1,6 @@
 import type { MergedTransaction } from "@/services/transaction.service"
 import { cancelledLabel } from "@/lib/refundStatus"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
 
 export type FilterStatus = "all" | "pending" | "completed"
 
@@ -34,7 +35,9 @@ export function getStatusLabel(item: MergedTransaction): string {
     item.recordType === "purchase"
       ? PURCHASE_STATUS_LABEL
       : INSPECTION_STATUS_LABEL
-  return map[item.status] ?? item.status
+  const status =
+    item.recordType === "purchase" ? purchaseStatusOf(item) : item.status
+  return map[status] ?? status
 }
 
 export function getCategory(
@@ -46,7 +49,12 @@ export function getCategory(
   )
     return "cancelled"
   if (item.recordType === "purchase") {
-    return item.status === "funds_released" ? "completed" : "pending"
+    // the buyer has finished once the handover is completed, whether or not
+    // the admin has released the money yet (the banner shows that)
+    return item.status === "handover_completed" ||
+      item.status === "funds_released"
+      ? "completed"
+      : "pending"
   }
   return item.status === "inspection_completed" ? "completed" : "pending"
 }

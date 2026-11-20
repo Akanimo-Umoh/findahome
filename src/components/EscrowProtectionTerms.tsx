@@ -20,6 +20,7 @@ const notes = [
   "Any disputes must be reported within 48 hours",
   "Transaction cannot be cancelled after inspection/handover confirmation",
   `Refunds and cancellations carry a processing fee of ${REFUND_FEE_RANGE}, deducted from the amount refunded (${REFUND_FEE_TIERS})`,
+  "If another buyer secures the property before your inspection takes place, your inspection is cancelled and your fee refunded in full, with no processing fee",
 ]
 
 export default function EscrowProtectionTerms({

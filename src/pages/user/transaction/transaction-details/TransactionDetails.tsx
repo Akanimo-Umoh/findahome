@@ -22,6 +22,10 @@ import Spinner from "@/components/Spinner"
 import RescheduleConfirmModal from "@/components/transaction-details/RescheduleConfirmModal"
 import { getPersonDisplay } from "@/lib/personDisplay"
 import { cancelledLabel } from "@/lib/refundStatus"
+import { isReceiptReady } from "@/lib/receipt"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
+import { isPropertyTakenCancel } from "@/lib/refundFee"
+import { usePropertyDeal } from "@/hooks/usePropertyDeal"
 import { useQueryClient } from "@tanstack/react-query"
 import {
   BANNER_CONFIG,
@@ -29,6 +33,7 @@ import {
   getInspectionPaymentStatusLabel,
   getPurchasePaymentStatusLabel,
   getTimelineSteps,
+  getUnderOfferNotice,
   mapInspectionStatusToTransactionStatus,
   mapPurchaseStatusToTransactionStatus,
   PAYMENT_TYPE_LABEL,
@@ -73,8 +78,17 @@ export default function TransactionDetails() {
   const { chatId } = useAgentChatForProperty(property?._id)
   const agentChatPath = chatId ? `/messages/${chatId}` : "/messages"
 
-  // another buyer has paid for it, so "Secure Property" is closed
-  const { isTaken: propertyTaken } = usePropertyTaken(property?._id)
+  // someone has paid for it. isTaken doesn't say who, so check whether it's
+  // this buyer's own purchase holding it before calling it "another buyer"
+  const { isTaken } = usePropertyTaken(property?._id)
+  const { purchase: ownPurchase } = usePropertyDeal({
+    propertyId: property?._id,
+    isAgent: false,
+  })
+  const ownOffer =
+    !!ownPurchase &&
+    ownPurchase.status !== "none" &&
+    ownPurchase.status !== "purchase_cancelled"
 
   if (isLoading || isFetching) return <Spinner />
 
@@ -99,7 +113,9 @@ export default function TransactionDetails() {
   const isPurchase = recordType === "purchase"
 
   const status = isPurchase
-    ? mapPurchaseStatusToTransactionStatus((transaction as Purchase).status)
+    ? mapPurchaseStatusToTransactionStatus(
+        purchaseStatusOf(transaction as Purchase)
+      )
     : mapInspectionStatusToTransactionStatus((transaction as Inspection).status)
 
   const timelineSteps = getTimelineSteps(
@@ -109,6 +125,13 @@ export default function TransactionDetails() {
   const banner =
     (!isPurchase && getBuyerInspectionBanner(transaction as Inspection)) ||
     BANNER_CONFIG[status]
+  // another buyer has paid for it: say so at every stage, except when this
+  // inspection was already cancelled for that reason (its banner says so)
+  const propertyTaken =
+    isTaken && !ownOffer && !isPropertyTakenCancel(transaction as Inspection)
+  const underOfferNotice = propertyTaken
+    ? getUnderOfferNotice(transaction)
+    : undefined
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
 
@@ -127,7 +150,7 @@ export default function TransactionDetails() {
   const paymentStatusLabel =
     cancelledLabel(transaction) ??
     (isPurchase
-      ? getPurchasePaymentStatusLabel((transaction as Purchase).status)
+      ? getPurchasePaymentStatusLabel(purchaseStatusOf(transaction as Purchase))
       : getInspectionPaymentStatusLabel((transaction as Inspection).status))
 
   const handleConfirmAction = async () => {
@@ -197,13 +220,9 @@ export default function TransactionDetails() {
     onConfirmAction: handleConfirmAction,
     onSuggestNewTime: handleSuggestNewTime,
     onGoToDashboard: () => navigate("/"),
-    // an inspection receipt exists only once the inspection is completed;
-    // a purchase receipt is there from the first payment on
-    receiptTo: (
-      isPurchase
-        ? transaction.feePaid
-        : (transaction as Inspection).status === "inspection_completed"
-    )
+    // a receipt exists only once the buyer has finished their side: the
+    // inspection is completed, or the handover is marked completed
+    receiptTo: isReceiptReady(recordType, transaction.status)
       ? `/transactions/${transactionId}/receipt?type=${recordType}`
       : undefined,
     chatTo: agentChatPath,
@@ -246,6 +265,15 @@ export default function TransactionDetails() {
                 <TransactionBanner
                   title={banner.title}
                   subtitle={banner.subtitle}
+                />
+              </section>
+            )}
+
+            {underOfferNotice && (
+              <section>
+                <TransactionBanner
+                  title={underOfferNotice.title}
+                  subtitle={underOfferNotice.subtitle}
                 />
               </section>
             )}

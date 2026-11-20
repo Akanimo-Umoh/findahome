@@ -16,6 +16,7 @@ import { useInspectionDraft } from "@/hooks/useInspectionDraft"
 import axios from "axios"
 import { useQueryClient } from "@tanstack/react-query"
 import { useInspectionStatus } from "@/hooks/useInspectionStatus"
+import { usePropertyTaken } from "@/hooks/usePropertyTaken"
 import { invalidateDealQueries } from "@/hooks/useRealtimeSync"
 import { requestError } from "@/lib/requestError"
 import { REFUND_FEE_NOTICE } from "@/lib/refundFee"
@@ -45,6 +46,9 @@ export default function PayInspectionModal({
   const { saveDraft } = useInspectionDraft()
   const { stage: inspectionStage, refetch: refetchInspections } =
     useInspectionStatus(propertyId)
+  // another buyer has paid for this property: no new inspection fees. the
+  // server refuses them too, this just says so before anything is created
+  const { isTaken, refetch: refetchTaken } = usePropertyTaken(propertyId)
   // true once fresh data has arrived for this opening: the stage can change
   // because of someone else (an admin approving, rejecting or refunding), so
   // decide nothing from what was cached before the window opened
@@ -78,16 +82,30 @@ export default function PayInspectionModal({
       return
     }
     let cancelled = false
-    refetchInspections().finally(() => {
+    Promise.allSettled([refetchInspections(), refetchTaken()]).finally(() => {
       if (!cancelled) setStageChecked(true)
     })
     return () => {
       cancelled = true
     }
-  }, [isOpen, refetchInspections])
+  }, [isOpen, refetchInspections, refetchTaken])
 
   useEffect(() => {
     if (!isOpen || !stageChecked) return
+    // only blocks starting or paying a new one; a paid inspection shows its
+    // own message below
+    if (
+      isTaken &&
+      (inspectionStage === "none" ||
+        inspectionStage === "awaiting_payment" ||
+        inspectionStage === "cancelled")
+    ) {
+      toast.error(
+        "Another buyer has paid for this property, so new inspections are paused. You can request one if it becomes available again."
+      )
+      onClose()
+      return
+    }
     if (inspectionStage === "refund_pending") {
       toast.error(
         "Your refund for the cancelled inspection is still being processed. You can request a new inspection once it has been sent."
@@ -113,12 +131,12 @@ export default function PayInspectionModal({
     }
     // only proceed to requestInspection if stage is "none", "awaiting_payment"
     // or "cancelled" (the server starts a fresh request after a cancellation)
-  }, [isOpen, stageChecked, inspectionStage])
+  }, [isOpen, stageChecked, inspectionStage, isTaken])
 
   // create the Inspection record the moment the modal opens — buyer never
   // sees the code step, it's generated server-side and used later by the agent
   useEffect(() => {
-    if (!isOpen || !stageChecked || inspectionId) return
+    if (!isOpen || !stageChecked || inspectionId || isTaken) return
     if (
       inspectionStage !== "none" &&
       inspectionStage !== "awaiting_payment" &&

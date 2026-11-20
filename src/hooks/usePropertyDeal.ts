@@ -1,4 +1,5 @@
 import { useUserActivities } from "@/hooks/useUserActivities"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
 import { useAgentTransactionsList } from "@/hooks/useAgentTransactionsList"
 import type { MergedTransaction } from "@/services/transaction.service"
 
@@ -95,7 +96,9 @@ export function usePropertyDeal({
 
   // once a purchase exists it is further along than the inspection
   const stage: DealStage =
-    (purchase && PURCHASE_STAGE[purchase.status]) || inspectionStage || "none"
+    (purchase && PURCHASE_STAGE[purchaseStatusOf(purchase)]) ||
+    inspectionStage ||
+    "none"
 
   return { stage, inspection, purchase, isLoading }
 }

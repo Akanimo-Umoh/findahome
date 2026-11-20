@@ -7,7 +7,7 @@ import type { Property } from "@/types/property"
 // not GET /property/:id: the details endpoint notifies the agent of a "view"
 // on every call, which the chat and transaction pages would repeat.
 export function usePropertyTaken(propertyId?: string) {
-  const { data, isLoading } = useQuery<Property[]>({
+  const { data, isLoading, refetch } = useQuery<Property[]>({
     queryKey: ["properties"],
     queryFn: async () => {
       const list = await getAllProperties()
@@ -20,5 +20,5 @@ export function usePropertyTaken(propertyId?: string) {
   })
 
   const property = data?.find((p) => p._id === propertyId)
-  return { isTaken: !!property?.isTaken, isLoading }
+  return { isTaken: !!property?.isTaken, isLoading, refetch }
 }

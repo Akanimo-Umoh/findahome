@@ -1,6 +1,7 @@
 import type { Inspection } from "@/services/inspection.service"
 import type { Purchase } from "@/services/purchase.service"
 import type { TransactionStatus, TimelineStep } from "@/types/transactions"
+import { isPropertyTakenCancel } from "@/lib/refundFee"
 
 // the fields the timeline reads; status is an inspection or a purchase status
 type TimelineRecord = { status: string } & Pick<
@@ -146,12 +147,43 @@ export const BANNER_CONFIG: Partial<Record<TransactionStatus, BannerConfig>> = {
 export function getBuyerInspectionBanner(
   inspection: Pick<
     Inspection,
-    "status" | "refundDue" | "refundSentAt" | "refundSentAmount"
+    | "status"
+    | "refundDue"
+    | "refundSentAt"
+    | "refundSentAmount"
+    | "refundAmount"
+    | "cancelReason"
   >
 ): BannerConfig | undefined {
   switch (inspection.status) {
     // a new inspection can only be requested once the refund has been sent
     case "inspection_cancelled":
+      // another buyer secured the property: a full refund, no fee
+      if (isPropertyTakenCancel(inspection)) {
+        if (inspection.refundDue)
+          return {
+            title: "Inspection Cancelled — Property Secured",
+            subtitle: `Another buyer secured this property, so your inspection was cancelled. ${
+              inspection.refundAmount
+                ? `Your ₦${inspection.refundAmount.toLocaleString()} will be refunded in full`
+                : "Your payment will be refunded in full"
+            }, with no processing fee.`,
+          }
+        if (inspection.refundSentAt)
+          return {
+            title: "Inspection Cancelled — Refunded",
+            subtitle: `Another buyer secured this property. ${
+              inspection.refundSentAmount
+                ? `₦${inspection.refundSentAmount.toLocaleString()} has been sent back to you in full.`
+                : "Your payment has been sent back to you in full."
+            }`,
+          }
+        return {
+          title: "Inspection Cancelled — Property Secured",
+          subtitle:
+            "Another buyer secured this property before your inspection was paid for, so it was cancelled. You weren't charged.",
+        }
+      }
       if (inspection.refundDue)
         return {
           title: "Inspection Cancelled — Refund in Progress",
@@ -261,10 +293,57 @@ export function getAgentPayoutBanner(
 // What the agent sees before they're allowed to schedule. The UI status
 // `inspection_requested` covers four backend statuses, and only
 // `inspection_paid` (payment confirmed) means the agent can act.
+// Shown to a buyer, at any stage, when someone else has paid for the
+// property. The wording says what that means for where this deal is.
+export function getUnderOfferNotice(
+  record: Pick<Inspection, "status"> | Pick<Purchase, "status">
+): BannerConfig {
+  const title = "Property under offer"
+  switch (record.status) {
+    case "inspection_payment_review":
+    case "inspection_paid":
+    case "inspection_scheduled":
+    case "inspection_confirmed":
+      return {
+        title,
+        subtitle:
+          "Another buyer has paid for this property. Your inspection can go ahead for now, but if their payment is approved, it will be cancelled and your fee refunded in full, with no processing fee.",
+      }
+    case "inspection_completed":
+    case "none":
+    case "purchase_cancelled":
+      return {
+        title,
+        subtitle:
+          "Another buyer has paid for this property. If their purchase doesn't go through, you'll be able to secure it.",
+      }
+    default:
+      // not paid for yet, or cancelled: a new inspection can't start
+      return {
+        title,
+        subtitle:
+          "Another buyer has paid for this property, so new inspections are paused. You can request one if it becomes available again.",
+      }
+  }
+}
+
 export function getAgentInspectionBanner(
-  status: Inspection["status"]
+  inspection: Pick<Inspection, "status" | "cancelReason" | "refundDue">
 ): BannerConfig | undefined {
-  switch (status) {
+  switch (inspection.status) {
+    case "inspection_cancelled":
+      if (isPropertyTakenCancel(inspection))
+        return {
+          title: "Inspection Cancelled — Property Secured",
+          subtitle:
+            "Another buyer secured this property, so this inspection was cancelled. There's nothing for you to do; the buyer's fee is refunded.",
+        }
+      return {
+        title: "Inspection Cancelled",
+        subtitle: inspection.refundDue
+          ? "This inspection was cancelled and the buyer is being refunded."
+          : "This inspection was cancelled.",
+      }
     case "none":
     case "inspection_requested":
     case "inspection_initialized":

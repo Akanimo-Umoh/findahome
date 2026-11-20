@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { formatNaira } from "@/lib/adminFormat"
 import { KIND_LABEL, formatDate } from "../format"
 import type { PendingPayment } from "../pendingPayments"
+import { OtherOfferNote } from "./OtherOfferNote"
 import { useConfirmPayment, useRejectPayment } from "../useEscrow"
 
 const PREVIEW_COUNT = 5
@@ -101,6 +102,12 @@ export function PendingPayments({ items }: { items: PendingPayment[] }) {
                 <span className="font-mono select-all">{p.reference}</span>
               </p>
               <MismatchNote p={p} />
+              <OtherOfferNote
+                offer={p.otherOffer}
+                kind={p.kind}
+                state="pending"
+                className="mt-2"
+              />
             </div>
 
             <div className="text-right">

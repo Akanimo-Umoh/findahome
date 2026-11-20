@@ -62,6 +62,9 @@ export type Inspection = {
   // set by the backend once it records them (see docs/backend-fixes-code.md)
   feeReleasedAt?: string | null
   cancelledAt?: string | null
+  // "property_taken": cancelled because another buyer secured the property.
+  // refunded in full, with no processing fee
+  cancelReason?: string | null
   createdAt: string
   updatedAt: string
 }

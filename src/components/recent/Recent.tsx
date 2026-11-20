@@ -3,10 +3,11 @@ import PageHeader from "../shared/PageHeader"
 import Skeleton from "@/components/ui/Skeleton"
 import { useUserActivities } from "@/hooks/useUserActivities"
 import { mapToActivity } from "./activityMapping"
+import { sortByLastUpdated } from "@/lib/sortByLastUpdated"
 
 export default function Recent() {
   const { items, isLoading, error } = useUserActivities()
-  const activities = items.map(mapToActivity)
+  const activities = sortByLastUpdated(items).map(mapToActivity)
 
   return (
     <div className="mb-10 px-6 md:px-8 md:pt-6">

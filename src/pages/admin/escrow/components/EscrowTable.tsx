@@ -4,6 +4,8 @@ import { formatDate, KIND_LABEL } from "../format"
 import type { EscrowRow } from "../types"
 import { EscrowRowActions } from "./EscrowRowActions"
 import { EscrowStatusBadge } from "./EscrowStatusBadge"
+import { OtherOfferNote } from "./OtherOfferNote"
+import { escrowOfferState } from "../propertyOffers"
 
 const HEAD = [
   "Transaction",
@@ -67,6 +69,13 @@ export function EscrowTable({ rows }: { rows: EscrowRow[] }) {
                   {r.propertyTitle}
                 </Link>
                 <p className="text-xs text-slate-400 tabular-nums">{r.code}</p>
+                <OtherOfferNote
+                  offer={r.otherOffer}
+                  kind={r.kind}
+                  state={escrowOfferState(r)}
+                  compact
+                  className="mt-1 max-w-56"
+                />
               </td>
               <td className="px-4 py-3">
                 <Person

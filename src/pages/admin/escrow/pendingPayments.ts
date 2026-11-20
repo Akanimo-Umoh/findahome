@@ -1,5 +1,11 @@
+import { isPropertyTakenCancel } from "@/lib/refundFee"
 import type { RawLinkedRecord } from "@/types/adminEscrow"
 import type { EscrowKind } from "./types"
+import {
+  buildPropertyOffers,
+  otherOfferFor,
+  type PropertyOffer,
+} from "./propertyOffers"
 
 export interface PendingPayment {
   id: string
@@ -11,13 +17,19 @@ export interface PendingPayment {
   // whether to approve or reject before any escrow exists
   amountMismatch: boolean
   paidAmount: number | null
+  // another buyer's purchase holds this property: approve or reject?
+  otherOffer: PropertyOffer | null
   propertyTitle: string
   buyerName: string
   buyerEmail: string
   startedAt?: string
 }
 
-const toRow = (r: RawLinkedRecord, kind: EscrowKind): PendingPayment => {
+const toRow = (
+  r: RawLinkedRecord,
+  kind: EscrowKind,
+  offers: Map<string, PropertyOffer>
+): PendingPayment => {
   const buyer = r.buyer ?? r.user
   return {
     id: r._id,
@@ -26,6 +38,7 @@ const toRow = (r: RawLinkedRecord, kind: EscrowKind): PendingPayment => {
     amount: (kind === "inspection" ? r.fee : r.price) ?? 0,
     amountMismatch: !!r.amountMismatch,
     paidAmount: r.paidAmount ?? null,
+    otherOffer: otherOfferFor(offers, r),
     propertyTitle: r.property?.title ?? "Unknown property",
     buyerName: buyer?.name ?? "Unknown user",
     buyerEmail: buyer?.email ?? "",
@@ -39,13 +52,14 @@ export function buildPendingPayments(
   inspections: RawLinkedRecord[] = [],
   purchases: RawLinkedRecord[] = []
 ): PendingPayment[] {
+  const offers = buildPropertyOffers(purchases)
   const pendingInspections = inspections
     .filter((i) => i.status === "inspection_payment_review" && !i.feePaid)
-    .map((i) => toRow(i, "inspection"))
+    .map((i) => toRow(i, "inspection", offers))
 
   const pendingPurchases = purchases
     .filter((p) => p.status === "property_payment_review" && !p.feePaid)
-    .map((p) => toRow(p, "purchase"))
+    .map((p) => toRow(p, "purchase", offers))
 
   // first come, first served
   return [...pendingInspections, ...pendingPurchases].sort((a, b) =>
@@ -61,6 +75,8 @@ export interface RefundDue {
   propertyTitle: string
   buyerName: string
   buyerEmail: string
+  // cancelled because another buyer secured the property: no processing fee
+  feeWaived: boolean
 }
 
 // Rejected payments whose money the admin still has to send back. A refunded
@@ -86,6 +102,7 @@ export function buildRefundsDue(
       propertyTitle: r.property?.title ?? "Unknown property",
       buyerName: buyer?.name ?? "Unknown user",
       buyerEmail: buyer?.email ?? "",
+      feeWaived: isPropertyTakenCancel(r),
     }
   }
   // a payment still under review shows under "awaiting confirmation" (even

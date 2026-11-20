@@ -13,6 +13,8 @@ import { calculateRefundFee } from "@/lib/refundFee"
 import { EscrowActionDialog } from "../components/EscrowActionDialog"
 import { EscrowRefundDialog } from "../components/EscrowRefundDialog"
 import { RefundSentDialog } from "../components/RefundSentDialog"
+import { OtherOfferNote } from "../components/OtherOfferNote"
+import { escrowOfferState } from "../propertyOffers"
 import { DisputePanel } from "./components/DisputePanel"
 import { LinkedRecord } from "./components/LinkedRecord"
 import { MoneyPanel } from "./components/MoneyPanel"
@@ -98,7 +100,20 @@ export default function EscrowDetails() {
           <p className="mt-0.5 truncate text-xs text-slate-400">
             Reference: {row.reference}
           </p>
-          {row.status === "refund_pending" && (
+          <OtherOfferNote
+            offer={row.otherOffer}
+            kind={row.kind}
+            state={escrowOfferState(row)}
+            className="mt-2"
+          />
+          {row.status === "refund_pending" && row.refundFeeWaived && (
+            <p className="mt-2 text-sm text-amber-700">
+              Refund approved: another buyer secured this property. Send the
+              full {formatNaira(row.amount)} to {row.buyer.name} (no processing
+              fee), then mark it as sent.
+            </p>
+          )}
+          {row.status === "refund_pending" && !row.refundFeeWaived && (
             <p className="mt-2 text-sm text-amber-700">
               Refund approved. Send{" "}
               {formatNaira(row.amount - calculateRefundFee(row.amount))} to{" "}
@@ -176,6 +191,7 @@ export default function EscrowDetails() {
       {action === "complete_refund" && (
         <RefundSentDialog
           amountPaid={row.amount}
+          feeWaived={row.refundFeeWaived}
           buyerName={row.buyer.name}
           propertyTitle={row.propertyTitle}
           pending={completeRefund.isPending}

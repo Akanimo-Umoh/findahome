@@ -20,7 +20,7 @@ export default function InspectionPaymentCallback() {
   // read once, before it gets cleared — this is also how we detect a refresh
   const [draft] = useState(() => getDraft())
 
-  const { status, message } = usePaymentConfirmation(
+  const { status, message, serverStatus } = usePaymentConfirmation(
     draft
       ? () =>
           confirmInspectionPayment(
@@ -61,11 +61,20 @@ export default function InspectionPaymentCallback() {
       status={status}
       message={message}
       copy={{
-        received: {
-          title: "Payment received",
-          description:
-            "Your inspection fee has been received and is waiting for an admin to approve it. Once approved, your agent will be asked to schedule your inspection.",
-        },
+        // another buyer secured the property while this buyer was on
+        // Paystack: the server recorded the payment for a full refund
+        received:
+          serverStatus === "inspection_cancelled"
+            ? {
+                title: "Property no longer available",
+                description:
+                  "We received your payment, but another buyer secured this property first. Your inspection fee will be refunded to you in full, with no processing fee.",
+              }
+            : {
+                title: "Payment received",
+                description:
+                  "Your inspection fee has been received and is waiting for an admin to approve it. Once approved, your agent will be asked to schedule your inspection.",
+              },
         processing: {
           title: "Payment being confirmed",
           description:

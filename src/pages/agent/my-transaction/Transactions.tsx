@@ -11,6 +11,7 @@ import {
   type FilterStatus,
 } from "./transactionHelpers"
 import { useAgentTransactionsList } from "@/hooks/useAgentTransactionsList"
+import { sortByLastUpdated } from "@/lib/sortByLastUpdated"
 import Pagination from "@/components/shared/Pagination"
 
 const ITEMS_PER_PAGE = 24
@@ -21,10 +22,12 @@ export default function Transactions() {
   const currentPage = Number(searchParams.get("page")) || 1
   const { items, isLoading, error } = useAgentTransactionsList()
 
+  // most recently updated first, so a deal that just moved on is at the top
+  const sorted = sortByLastUpdated(items)
   const filtered =
     activeTab === "all"
-      ? items
-      : items.filter((item) => getCategory(item) === activeTab)
+      ? sorted
+      : sorted.filter((item) => getCategory(item) === activeTab)
 
   // client-side pagination over the filtered list
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE)

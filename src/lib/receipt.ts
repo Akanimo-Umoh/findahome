@@ -5,6 +5,18 @@ import {
 } from "@/components/transaction-details/transactionConfig"
 import type { Inspection } from "@/services/inspection.service"
 import type { Purchase } from "@/services/purchase.service"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
+
+// the buyer gets a receipt only once their side is finished: the inspection
+// is completed, or they've marked the handover completed. before that the
+// deal can still be rejected or refunded
+export const isReceiptReady = (
+  kind: "inspection" | "purchase",
+  status: string
+) =>
+  kind === "purchase"
+    ? status === "handover_completed" || status === "funds_released"
+    : status === "inspection_completed"
 
 export type ReceiptPerson = { name: string; email: string; phone: string }
 
@@ -138,7 +150,7 @@ export function buildReceipt(
     isPaid,
     typeLabel: isPurchase ? "Property payment" : "Inspection fee",
     statusLabel: isPurchase
-      ? getPurchasePaymentStatusLabel((t as Purchase).status)
+      ? getPurchasePaymentStatusLabel(purchaseStatusOf(t as Purchase))
       : getInspectionPaymentStatusLabel((t as Inspection).status),
     reference: t.reference ?? null,
     paidAt: t.paidAt ?? null,

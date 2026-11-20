@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import goBack from "@/assets/images/icon-back.svg"
@@ -40,7 +40,26 @@ export default function PurchaseConfirmVisit() {
     refetchOnMount: "always",
   })
 
-  if (isLoading || isFetching) return <Spinner />
+  // This page only opens for a confirmed handover. Once the buyer completes
+  // it here, the live "handover completed" event refetches the purchase
+  // while the rating is still saving, so "not completable" is only a problem
+  // when this page didn't do the completing itself.
+  const notCompletable =
+    !!purchase &&
+    !hasCompleted &&
+    !isSubmitting &&
+    !isFetching &&
+    purchase.status !== COMPLETABLE_STATUS
+
+  useEffect(() => {
+    if (!notCompletable) return
+    toast.error("This handover isn't ready to be marked completed.")
+    navigate(`/transactions/${transactionId}?type=purchase`, { replace: true })
+  }, [notCompletable, navigate, transactionId])
+
+  // spinner only for the first load; a background refetch (the live event
+  // after completing) must not unmount the form mid-submit
+  if (isLoading || (isFetching && !purchase)) return <Spinner />
 
   if (!purchase) {
     return (
@@ -52,11 +71,7 @@ export default function PurchaseConfirmVisit() {
     )
   }
 
-  if (!hasCompleted && purchase.status !== COMPLETABLE_STATUS) {
-    toast.error("This handover isn't ready to be marked completed.")
-    navigate(`/transactions/${transactionId}?type=purchase`, { replace: true })
-    return null
-  }
+  if (notCompletable) return null
 
   const property =
     typeof purchase.property === "string" ? undefined : purchase.property
@@ -72,7 +87,11 @@ export default function PurchaseConfirmVisit() {
     setIsSubmitting(true)
     try {
       await completeHandover(transactionId)
+      // remember it straight away: the rating below can take a moment, and
+      // the purchase may already be refetched as completed meanwhile
+      setHasCompleted(true)
 
+      // the rating is optional, so a failure here doesn't undo the completion
       if (rating > 0) {
         const propertyId =
           typeof purchase.property === "string"
@@ -100,7 +119,6 @@ export default function PurchaseConfirmVisit() {
       queryClient.invalidateQueries({
         queryKey: ["userPurchasesAndInspections"],
       })
-      setHasCompleted(true)
       setSuccessOpen(true)
     } catch (err) {
       toast.error("Couldn't confirm the handover. Please try again.")

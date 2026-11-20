@@ -22,6 +22,14 @@ export function calculateRefundFee(amountPaid: number): number {
   return Math.min(fee, amountPaid)
 }
 
+// an inspection cancelled because another buyer secured the property: the
+// buyer did nothing wrong, so the refund is in full (the server enforces it)
+export const PROPERTY_TAKEN = "property_taken"
+
+export const isPropertyTakenCancel = (
+  r?: { cancelReason?: string | null } | null
+) => r?.cancelReason === PROPERTY_TAKEN
+
 // one wording everywhere the buyer is told about it
 export const REFUND_FEE_NOTICE = `If this payment is refunded or cancelled, a processing fee of ${REFUND_FEE_RANGE} (depending on the amount paid) is deducted from the refund.`
 

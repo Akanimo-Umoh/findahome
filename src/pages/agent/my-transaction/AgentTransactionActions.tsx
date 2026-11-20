@@ -8,6 +8,7 @@ interface AgentTransactionActionsProps {
   canSchedule?: boolean
   // the buyer has paid for the property and an admin hasn't approved it yet
   paymentUnderReview?: boolean
+  isCancelled?: boolean
 }
 
 export default function AgentTransactionActions({
@@ -15,8 +16,10 @@ export default function AgentTransactionActions({
   transactionId,
   canSchedule = true,
   paymentUnderReview = false,
+  isCancelled = false,
 }: AgentTransactionActionsProps) {
-  const showScheduleInspection = status === "inspection_requested"
+  const showScheduleInspection =
+    status === "inspection_requested" && !isCancelled
   const showInspectionVisitDetails =
     status === "inspection_scheduled" ||
     status === "inspection_confirmed" ||

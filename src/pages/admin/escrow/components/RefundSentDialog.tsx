@@ -18,6 +18,9 @@ import type { RefundSent } from "@/services/admin/escrow.service"
 type RefundSentDialogProps = {
   // what the buyer paid; the refund is this minus the processing fee
   amountPaid: number
+  // no processing fee on this refund (the property was secured by another
+  // buyer); the server waives it anyway, so the box is ticked and locked
+  feeWaived?: boolean
   buyerName: string
   propertyTitle: string
   pending: boolean
@@ -30,6 +33,7 @@ type RefundSentDialogProps = {
 // pays a processing fee on refunds, unless the admin waives it.
 export function RefundSentDialog({
   amountPaid,
+  feeWaived = false,
   buyerName,
   propertyTitle,
   pending,
@@ -37,7 +41,7 @@ export function RefundSentDialog({
   onClose,
 }: RefundSentDialogProps) {
   const standardFee = calculateRefundFee(amountPaid)
-  const [waiveFee, setWaiveFee] = useState(false)
+  const [waiveFee, setWaiveFee] = useState(feeWaived)
   const processingFee = waiveFee ? 0 : standardFee
   const amountOwed = amountPaid - processingFee
 
@@ -118,14 +122,14 @@ export function RefundSentDialog({
             className="mt-0.5"
             checked={waiveFee}
             onChange={(e) => toggleWaive(e.target.checked)}
-            disabled={pending}
+            disabled={pending || feeWaived}
           />
           <span>
             Waive the processing fee
             <span className="block text-[12px] text-text-secondary">
-              When the refund isn&apos;t the buyer&apos;s fault, e.g. a
-              duplicate payment, a property already taken, or an agent who
-              didn&apos;t show up.
+              {feeWaived
+                ? "No fee on this one: the inspection was cancelled because another buyer secured the property. Send the full amount."
+                : "When the refund isn't the buyer's fault, e.g. a duplicate payment, a property already taken, or an agent who didn't show up."}
             </span>
           </span>
         </label>

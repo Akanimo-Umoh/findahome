@@ -11,6 +11,7 @@ import { useAgentTransactionDetails } from "@/hooks/useAgentTransactionDetails"
 import Spinner from "@/components/Spinner"
 import type { Inspection } from "@/services/inspection.service"
 import { getPersonDisplay } from "@/lib/personDisplay"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
 import {
   AGENT_BANNER_CONFIG,
   getAgentInspectionBanner,
@@ -45,7 +46,9 @@ export default function AgentTransactionDetails() {
   const isPurchase = recordType === "purchase"
 
   const status = isPurchase
-    ? mapPurchaseStatusToTransactionStatus((transaction as Purchase).status)
+    ? mapPurchaseStatusToTransactionStatus(
+        purchaseStatusOf(transaction as Purchase)
+      )
     : mapInspectionStatusToTransactionStatus((transaction as Inspection).status)
 
   const timelineSteps = getTimelineSteps(
@@ -58,8 +61,7 @@ export default function AgentTransactionDetails() {
       isPurchase ? (transaction as Purchase) : (transaction as Inspection),
       isPurchase ? "purchase" : "inspection"
     ) ||
-    (!isPurchase &&
-      getAgentInspectionBanner((transaction as Inspection).status)) ||
+    (!isPurchase && getAgentInspectionBanner(transaction as Inspection)) ||
     AGENT_BANNER_CONFIG[status]
   const scheduleLabel = SCHEDULE_SECTION_LABEL[status]
   const paymentTypeLabel = PAYMENT_TYPE_LABEL[status] ?? "Inspection Fee"
@@ -77,7 +79,7 @@ export default function AgentTransactionDetails() {
     : (transaction as Inspection).fee
 
   const paymentStatusLabel = isPurchase
-    ? getPurchasePaymentStatusLabel((transaction as Purchase).status)
+    ? getPurchasePaymentStatusLabel(purchaseStatusOf(transaction as Purchase))
     : getInspectionPaymentStatusLabel((transaction as Inspection).status)
 
   const scheduledDateValue = isPurchase
@@ -96,6 +98,10 @@ export default function AgentTransactionDetails() {
         purchaseStatus === "handover_rescheduled"
       : (transaction as Inspection).status === "inspection_paid",
     paymentUnderReview: purchaseStatus === "property_payment_review",
+    // a cancelled inspection maps to the "requested" stage; nothing to schedule
+    isCancelled:
+      !isPurchase &&
+      (transaction as Inspection).status === "inspection_cancelled",
   }
 
   return (

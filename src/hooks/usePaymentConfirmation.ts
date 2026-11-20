@@ -24,6 +24,9 @@ export function usePaymentConfirmation(confirm: Confirm | null) {
     confirm ? "confirming" : "error"
   )
   const [message, setMessage] = useState<string | null>(null)
+  // the record's status the server sent back, for pages that word the
+  // result differently (e.g. an inspection cancelled while the buyer paid)
+  const [serverStatus, setServerStatus] = useState<string | null>(null)
   const confirmRef = useRef(confirm)
 
   useEffect(() => {
@@ -34,6 +37,7 @@ export function usePaymentConfirmation(confirm: Confirm | null) {
     run()
       .then((res) => {
         if (cancelled) return
+        setServerStatus(res.status ?? null)
         setStatus(res.status === "processing" ? "processing" : "received")
       })
       .catch((err: unknown) => {
@@ -54,7 +58,7 @@ export function usePaymentConfirmation(confirm: Confirm | null) {
     }
   }, [])
 
-  return { status, message }
+  return { status, message, serverStatus }
 }
 
 // Paystack sends the buyer back with ?reference=...&trxref=...

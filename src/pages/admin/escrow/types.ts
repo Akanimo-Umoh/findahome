@@ -1,4 +1,5 @@
 import type { RawDispute, RawLinkedRecord } from "@/types/adminEscrow"
+import type { PropertyOffer } from "./propertyOffers"
 
 export type EscrowKind = "inspection" | "purchase"
 // refund_pending: a refund was approved and the admin still has to send the
@@ -40,6 +41,11 @@ export interface EscrowRow {
   refundedAmount: number | null
   transferReference: string | null
   refundNote: string | null
+  // the refund carries no processing fee (property secured by another buyer)
+  refundFeeWaived: boolean
+  // another buyer's purchase holds this property (under review or approved);
+  // only set while this escrow still has money in it
+  otherOffer: PropertyOffer | null
   propertyId: string | null
   propertyTitle: string
   propertyAddress: string | null

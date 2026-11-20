@@ -1,6 +1,7 @@
 import type { MergedTransaction } from "@/services/transaction.service"
 import type { Activity, TransactionStatus } from "@/types/transactions"
 import { cancelledLabel } from "@/lib/refundStatus"
+import { purchaseStatusOf } from "@/lib/purchaseStatus"
 
 // maps a raw inspection/purchase record's backend status onto the existing
 // 10-phase TransactionStatus enum ActivityCard/transactionConfig already use
@@ -23,8 +24,8 @@ function mapStatus(item: MergedTransaction): TransactionStatus {
     }
   }
 
-  // purchase
-  switch (item.status) {
+  // purchase. a released one reads as funds_released (see purchaseStatusOf)
+  switch (purchaseStatusOf(item)) {
     case "none":
     case "property_payment_review":
     case "property_payment_made":

@@ -21,7 +21,8 @@ export function RefundsDue({ items }: { items: RefundDue[] }) {
           Refunds to send ({items.length})
         </h2>
         <p className="text-[13px] text-text-secondary">
-          Payments you rejected. Send each buyer their money, then mark it as
+          Payments you rejected, and inspections cancelled because another buyer
+          secured the property. Send each buyer their money, then mark it as
           sent so they are told.
         </p>
       </header>
@@ -40,6 +41,11 @@ export function RefundsDue({ items }: { items: RefundDue[] }) {
                 {KIND_LABEL[r.kind]} · {r.buyerName}
                 {r.buyerEmail && ` (${r.buyerEmail})`}
               </p>
+              {r.feeWaived && (
+                <p className="text-[12.5px] text-text-secondary">
+                  Property secured by another buyer: refund in full, no fee
+                </p>
+              )}
               {r.reference && (
                 <p className="text-[12.5px] text-text-secondary">
                   Paystack reference:{" "}
@@ -62,6 +68,7 @@ export function RefundsDue({ items }: { items: RefundDue[] }) {
       {selected && (
         <RefundSentDialog
           amountPaid={selected.amount}
+          feeWaived={selected.feeWaived}
           buyerName={selected.buyerName}
           propertyTitle={selected.propertyTitle}
           pending={mutation.isPending}

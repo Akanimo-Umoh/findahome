@@ -13,7 +13,8 @@ type Ids = {
   inspectionId?: string
   purchaseId?: string
   // another buyer has paid for the property (or their payment is under
-  // review), so this buyer can't buy it; inspections stay open
+  // review), so this buyer can't buy it or start a new inspection.
+  // inspections already paid for carry on until the sale is approved
   propertyTaken?: boolean
 }
 
@@ -42,10 +43,15 @@ function getBuyerStep(
   stage: DealStage,
   { inspectionId, purchaseId, propertyTaken }: Ids
 ): NextStep | null {
-  // the buying steps close once someone else has paid for the property
+  // the buying steps, and starting a new inspection, close once someone
+  // else has paid for the property
   if (
     propertyTaken &&
-    (stage === "inspection_completed" || stage === "purchase_unpaid")
+    (stage === "none" ||
+      stage === "inspection_unpaid" ||
+      stage === "inspection_cancelled" ||
+      stage === "inspection_completed" ||
+      stage === "purchase_unpaid")
   )
     return status("Property under offer", "pay")
 

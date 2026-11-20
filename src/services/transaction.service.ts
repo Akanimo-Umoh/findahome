@@ -32,6 +32,8 @@ export type MergedTransaction = {
   // (with refundSentAt filled in) once the money has been sent back
   refundDue?: boolean
   refundSentAt?: string | null
+  // the admin has released the escrow to the agent
+  feeReleased?: boolean
   price?: number // purchase
   fee?: number // inspection
   createdAt: string

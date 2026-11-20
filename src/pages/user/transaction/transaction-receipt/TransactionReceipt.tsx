@@ -12,7 +12,12 @@ import PageHeader from "@/components/shared/PageHeader"
 import Spinner from "@/components/Spinner"
 import { useAuthContext } from "@/context/AuthContext"
 import { useTransactionDetails } from "@/hooks/useTransactionDetails"
-import { buildReceipt, formatReceiptDate, receiptSummary } from "@/lib/receipt"
+import {
+  buildReceipt,
+  formatReceiptDate,
+  isReceiptReady,
+  receiptSummary,
+} from "@/lib/receipt"
 import { downloadReceiptPdf } from "@/lib/receiptPdf"
 
 export default function TransactionReceipt() {
@@ -31,17 +36,14 @@ export default function TransactionReceipt() {
 
   if (isLoading || isFetching) return <Spinner />
 
-  // an inspection receipt only exists once the inspection has been completed
-  if (
-    transaction &&
-    recordType === "inspection" &&
-    transaction.status !== "inspection_completed"
-  ) {
+  // the receipt exists only once the buyer has finished their side
+  if (transaction && !isReceiptReady(recordType, transaction.status)) {
     return (
       <div className="flex h-[calc(100vh-72px)] items-center justify-center px-6">
         <div className="text-center">
           <p className="text-[14px] text-text-secondary">
-            Your receipt will be available once the inspection has been
+            Your receipt will be available once the{" "}
+            {recordType === "purchase" ? "handover" : "inspection"} has been
             completed.
           </p>
           <button
